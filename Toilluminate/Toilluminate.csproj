@@ -269,6 +269,7 @@
     <Content Include="assets\vendors\custom\jqvmap\jqvmap.bundle.css" />
     <Content Include="assets\vendors\custom\jqvmap\jqvmap.bundle.js" />
     <Content Include="index.html" />
+    <Content Include="PageLoad.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
