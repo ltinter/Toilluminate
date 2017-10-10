@@ -269,4 +269,5 @@ $(document).ready(function ()
 {
     playerStatusShare();
     initGroupTree();
+    DatatableResponsiveColumnsDemo();
 });
