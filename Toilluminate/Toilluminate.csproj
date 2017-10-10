@@ -66,6 +66,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\JavaScript.js" />
     <Content Include="packages.config" />
     <Content Include="assets\vendors\base\fonts\flaticon\Flaticon.eot" />
     <Content Include="assets\vendors\base\fonts\flaticon\Flaticon.ttf" />
