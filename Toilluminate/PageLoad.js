@@ -1,18 +1,16 @@
-﻿var playerStatusShare = function ()
-{
-    if ($('#m_chart_player_status_share').length == 0)
-    {
+﻿var playerStatusShare = function () {
+    if ($('#m_chart_player_status_share').length == 0) {
         return;
     }
 
     var chart = new Chartist.Pie('#m_chart_player_status_share', {
         series: [{
-                value: 46,
-                className: 'custom',
-                meta: {
-                    color: mUtil.getColor('success')
-                }
-            },
+            value: 46,
+            className: 'custom',
+            meta: {
+                color: mUtil.getColor('success')
+            }
+        },
             {
                 value: 4,
                 className: 'custom',
@@ -42,10 +40,8 @@
         showLabel: false
     });
 
-    chart.on('draw', function (data)
-    {
-        if (data.type === 'slice')
-        {
+    chart.on('draw', function (data) {
+        if (data.type === 'slice') {
             // Get the total path length in order to use for dash array animation
             var pathLength = data.element._node.getTotalLength();
 
@@ -69,8 +65,7 @@
             };
 
             // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
-            if (data.index !== 0)
-            {
+            if (data.index !== 0) {
                 animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
             }
 
@@ -88,10 +83,8 @@
     });
 
     // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
-    chart.on('created', function ()
-    {
-        if (window.__anim21278907124)
-        {
+    chart.on('created', function () {
+        if (window.__anim21278907124) {
             clearTimeout(window.__anim21278907124);
             window.__anim21278907124 = null;
         }
@@ -100,7 +93,7 @@
 }
 
 var initGroupTree = function () {
-    $("#groupTree").jstree({
+    var jstreeData = {
         "core": {
             "themes": {
                 "responsive": true
@@ -126,7 +119,7 @@ var initGroupTree = function () {
                     "children": [
                         { "text": "Big Kfc", "icon": "fa fa-file m--font-waring" }
                     ]
-                },{
+                }, {
                     "text": "Burger King",
                     "icon": "fa fa-folder m--font-danger",
                     "children": [
@@ -150,7 +143,9 @@ var initGroupTree = function () {
         },
         "state": { "key": "demo2" },
         "plugins": ["dnd", "state", "types"]
-    });
+    };
+    $("#groupTree").jstree(jstreeData);
+    $("#groupTreeForPlayerEdit").jstree(jstreeData);
 }
 
 var DatatableResponsiveColumnsDemo = function () {
@@ -265,8 +260,7 @@ var DatatableResponsiveColumnsDemo = function () {
     $('#m_form_status, #m_form_type').selectpicker();
 }
 
-$(document).ready(function ()
-{
+$(document).ready(function () {
     playerStatusShare();
     initGroupTree();
     DatatableResponsiveColumnsDemo();
