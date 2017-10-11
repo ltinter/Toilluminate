@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToilluminateModel", "Toillu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToilluminateApp", "ToilluminateApp\ToilluminateApp.csproj", "{9162A4EF-4798-4D48-B654-BBF697F05B0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToilluminateWeb", "ToilluminateWeb\ToilluminateWeb.csproj", "{FB199EA2-D8B0-4B1E-8001-3D76C15C68E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{9162A4EF-4798-4D48-B654-BBF697F05B0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9162A4EF-4798-4D48-B654-BBF697F05B0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9162A4EF-4798-4D48-B654-BBF697F05B0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB199EA2-D8B0-4B1E-8001-3D76C15C68E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB199EA2-D8B0-4B1E-8001-3D76C15C68E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB199EA2-D8B0-4B1E-8001-3D76C15C68E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB199EA2-D8B0-4B1E-8001-3D76C15C68E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
