@@ -25,6 +25,15 @@ namespace ToilluminateModel
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<FileMaster> FileMaster { get; set; }
         public virtual DbSet<FileTypeMaster> FileTypeMaster { get; set; }
+        public virtual DbSet<GroupMaster> GroupMaster { get; set; }
+        public virtual DbSet<PlayerMaster> PlayerMaster { get; set; }
+        public virtual DbSet<PlayerPlayListLinkTable> PlayerPlayListLinkTable { get; set; }
+        public virtual DbSet<PlayListMaster> PlayListMaster { get; set; }
+        public virtual DbSet<TemplatTypeMaster> TemplatTypeMaster { get; set; }
+        public virtual DbSet<TempleFileLinkTable> TempleFileLinkTable { get; set; }
+        public virtual DbSet<TempletMaster> TempletMaster { get; set; }
+        public virtual DbSet<UserMaster> UserMaster { get; set; }
     }
 }
