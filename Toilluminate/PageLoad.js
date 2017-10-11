@@ -1,18 +1,16 @@
-﻿var playerStatusShare = function ()
-{
-    if ($('#m_chart_player_status_share').length == 0)
-    {
+﻿var playerStatusShare = function () {
+    if ($('#m_chart_player_status_share').length == 0) {
         return;
     }
 
     var chart = new Chartist.Pie('#m_chart_player_status_share', {
         series: [{
-                value: 46,
-                className: 'custom',
-                meta: {
-                    color: mUtil.getColor('success')
-                }
-            },
+            value: 46,
+            className: 'custom',
+            meta: {
+                color: mUtil.getColor('success')
+            }
+        },
             {
                 value: 4,
                 className: 'custom',
@@ -42,10 +40,8 @@
         showLabel: false
     });
 
-    chart.on('draw', function (data)
-    {
-        if (data.type === 'slice')
-        {
+    chart.on('draw', function (data) {
+        if (data.type === 'slice') {
             // Get the total path length in order to use for dash array animation
             var pathLength = data.element._node.getTotalLength();
 
@@ -69,8 +65,7 @@
             };
 
             // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
-            if (data.index !== 0)
-            {
+            if (data.index !== 0) {
                 animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
             }
 
@@ -88,10 +83,8 @@
     });
 
     // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
-    chart.on('created', function ()
-    {
-        if (window.__anim21278907124)
-        {
+    chart.on('created', function () {
+        if (window.__anim21278907124) {
             clearTimeout(window.__anim21278907124);
             window.__anim21278907124 = null;
         }
@@ -100,7 +93,7 @@
 }
 
 var initGroupTree = function () {
-    $("#groupTree").jstree({
+    var jstreeData = {
         "core": {
             "themes": {
                 "responsive": true
@@ -116,25 +109,77 @@ var initGroupTree = function () {
                     }
                 }, {
                     "text": "Starbucks",
-                    "icon": "fa fa-warning m--font-danger"
+                    "icon": "fa fa-sitemap m--font-warning"
                 }, {
                     "text": "KFC",
-                    "icon": "fa fa-folder m--font-success",
+                    "icon": "fa fa-sitemap m--font-success",
                     "state": {
                         "opened": true
                     },
                     "children": [
-                        { "text": "Big Kfc", "icon": "fa fa-file m--font-waring" }
+                        { "text": "Big Kfc", "icon": "fa fa-sitemap m--font-warning" }
                     ]
-                },{
+                }, {
                     "text": "Burger King",
-                    "icon": "fa fa-folder m--font-danger",
+                    "icon": "fa fa-sitemap m--font-danger",
                     "children": [
-                        { "text": "Shop 1", "icon": "fa fa-file m--font-waring" },
-                        { "text": "Shop 2", "icon": "fa fa-file m--font-success" },
-                        { "text": "Shop 3", "icon": "fa fa-file m--font-default" },
-                        { "text": "Shop 4", "icon": "fa fa-file m--font-danger" },
-                        { "text": "Shop 5", "icon": "fa fa-file m--font-info" }
+                        { "text": "Shop 1", "icon": "fa fa-sitemap m--font-warning" },
+                        { "text": "Shop 2", "icon": "fa fa-sitemap m--font-success" },
+                        { "text": "Shop 3", "icon": "fa fa-sitemap m--font-default" },
+                        { "text": "Shop 4", "icon": "fa fa-sitemap m--font-danger" },
+                        { "text": "Shop 5", "icon": "fa fa-sitemap m--font-info" }
+                    ]
+                }]
+            }
+            ]
+        },
+        "types": {
+            "default": {
+                "icon": "fa fa-sitemap m--font-success"
+            },
+            "file": {
+                "icon": "fa fa-sitemap  m--font-success"
+            }
+        },
+        "state": { "key": "demo2" },
+        "plugins": ["dnd", "state", "types"]
+    };
+    $("#groupTree").jstree(jstreeData);
+    $("#groupTreeForPlayerEdit").jstree(jstreeData);
+    $("#groupTreeForFileManager").jstree($.extend(true, jstreeData, { "plugins": ["state", "types"] }));
+
+    var jstreeFolderData = {
+        "core": {
+            "themes": {
+                "responsive": true
+            },
+            // so that create works
+            "check_callback": true,
+            'data': [{
+                "text": "Tokyo",
+                "children": [{
+                    "text": "MacDonald",
+                    "state": {
+                        "selected": true
+                    }
+                }, {
+                    "text": "Starbucks",
+                }, {
+                    "text": "KFC",
+                    "state": {
+                        "opened": true
+                    },
+                    "children": [
+                        { "text": "Big Kfc" }
+                    ]
+                }, {
+                    "text": "Burger King",
+                    "children": [
+                        { "text": "Shop 1" },
+                        { "text": "Shop 2" },
+                        { "text": "Shop 3" },
+                        { "text": "Shop 4" },
+                        { "text": "Shop 5" }
                     ]
                 }]
             }
@@ -150,7 +195,8 @@ var initGroupTree = function () {
         },
         "state": { "key": "demo2" },
         "plugins": ["dnd", "state", "types"]
-    });
+    };
+    $("#folderTreeForFileManager").jstree(jstreeFolderData);
 }
 
 var DatatableResponsiveColumnsDemo = function () {
@@ -265,9 +311,51 @@ var DatatableResponsiveColumnsDemo = function () {
     $('#m_form_status, #m_form_type').selectpicker();
 }
 
-$(document).ready(function ()
-{
+var initTimeOptionsInPlayerEdit = function () {
+    $(".player-editor-timeoptions-hidden-input").each(function () {
+        $(this).ionRangeSlider({
+            type: "double",
+            min: 0,
+            max: 24,
+            from: 0,
+            to: 24,
+            postfix: " o'clock",
+            decorate_both: true,
+            grid: true,
+        });
+    })
+}
+
+var initPlayerEditorPlaylistDrag = function () {
+    $("#sortable-playlists").sortable({
+        connectWith: ".m-portlet__head",
+        items: ".m-portlet",
+        opacity: 0.8,
+        handle: '.m-portlet__head',
+        coneHelperSize: true,
+        placeholder: 'm-portlet--sortable-placeholder',
+        forcePlaceholderSize: true,
+        tolerance: "pointer",
+        helper: "clone",
+        tolerance: "pointer",
+        forcePlaceholderSize: !0,
+        helper: "clone",
+        cancel: ".m-portlet--sortable-empty", // cancel dragging if portlet is in fullscreen mode
+        revert: 250, // animation in milliseconds
+        axis: "y",
+        update: function (b, c) {
+            if (c.item.prev().hasClass("m-portlet--sortable-empty")) {
+                c.item.prev().before(c.item);
+            }
+        }
+    });
+}
+
+$(document).ready(function () {
+    $("#FileManagementContent").show();
     playerStatusShare();
     initGroupTree();
     DatatableResponsiveColumnsDemo();
+    initTimeOptionsInPlayerEdit();
+    initPlayerEditorPlaylistDrag();
 });
