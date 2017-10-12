@@ -29,20 +29,29 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.pnlShowImage = new System.Windows.Forms.Panel();
+            this.picImage2 = new System.Windows.Forms.PictureBox();
+            this.picImage1 = new System.Windows.Forms.PictureBox();
             this.pnlShowMessage = new System.Windows.Forms.Panel();
             this.pnlShowMediaWMP = new System.Windows.Forms.Panel();
+            this.axWMP = new AxWMPLib.AxWindowsMediaPlayer();
             this.pnlShowMediaVLC = new System.Windows.Forms.Panel();
             this.pnlShowWeb = new System.Windows.Forms.Panel();
+            this.wbsBox = new System.Windows.Forms.WebBrowser();
             this.pnlShowPDF = new System.Windows.Forms.Panel();
-            this.picImage1 = new System.Windows.Forms.PictureBox();
-            this.myToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.picImage2 = new System.Windows.Forms.PictureBox();
+            this.tipBox = new System.Windows.Forms.ToolTip(this.components);
             this.tmrImage = new System.Windows.Forms.Timer(this.components);
             this.tmrAll = new System.Windows.Forms.Timer(this.components);
+            this.axVLC = new AxAXVLC.AxVLCPlugin2();
             this.pnlShowImage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picImage1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picImage2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picImage1)).BeginInit();
+            this.pnlShowMediaWMP.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axWMP)).BeginInit();
+            this.pnlShowMediaVLC.SuspendLayout();
+            this.pnlShowWeb.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axVLC)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlShowImage
@@ -56,6 +65,22 @@
             this.pnlShowImage.TabIndex = 0;
             this.pnlShowImage.DoubleClick += new System.EventHandler(this.panle_DoubleClick);
             // 
+            // picImage2
+            // 
+            this.picImage2.Location = new System.Drawing.Point(110, 95);
+            this.picImage2.Name = "picImage2";
+            this.picImage2.Size = new System.Drawing.Size(100, 50);
+            this.picImage2.TabIndex = 1;
+            this.picImage2.TabStop = false;
+            // 
+            // picImage1
+            // 
+            this.picImage1.Location = new System.Drawing.Point(51, 51);
+            this.picImage1.Name = "picImage1";
+            this.picImage1.Size = new System.Drawing.Size(100, 50);
+            this.picImage1.TabIndex = 0;
+            this.picImage1.TabStop = false;
+            // 
             // pnlShowMessage
             // 
             this.pnlShowMessage.Location = new System.Drawing.Point(320, 0);
@@ -67,6 +92,7 @@
             // 
             // pnlShowMediaWMP
             // 
+            this.pnlShowMediaWMP.Controls.Add(this.axWMP);
             this.pnlShowMediaWMP.Location = new System.Drawing.Point(640, 0);
             this.pnlShowMediaWMP.Margin = new System.Windows.Forms.Padding(0);
             this.pnlShowMediaWMP.Name = "pnlShowMediaWMP";
@@ -74,8 +100,18 @@
             this.pnlShowMediaWMP.TabIndex = 2;
             this.pnlShowMediaWMP.DoubleClick += new System.EventHandler(this.panle_DoubleClick);
             // 
+            // axWMP
+            // 
+            this.axWMP.Enabled = true;
+            this.axWMP.Location = new System.Drawing.Point(39, 32);
+            this.axWMP.Name = "axWMP";
+            this.axWMP.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWMP.OcxState")));
+            this.axWMP.Size = new System.Drawing.Size(207, 150);
+            this.axWMP.TabIndex = 0;
+            // 
             // pnlShowMediaVLC
             // 
+            this.pnlShowMediaVLC.Controls.Add(this.axVLC);
             this.pnlShowMediaVLC.Location = new System.Drawing.Point(0, 240);
             this.pnlShowMediaVLC.Margin = new System.Windows.Forms.Padding(0);
             this.pnlShowMediaVLC.Name = "pnlShowMediaVLC";
@@ -85,12 +121,22 @@
             // 
             // pnlShowWeb
             // 
+            this.pnlShowWeb.Controls.Add(this.wbsBox);
             this.pnlShowWeb.Location = new System.Drawing.Point(320, 240);
             this.pnlShowWeb.Margin = new System.Windows.Forms.Padding(0);
             this.pnlShowWeb.Name = "pnlShowWeb";
             this.pnlShowWeb.Size = new System.Drawing.Size(320, 240);
             this.pnlShowWeb.TabIndex = 4;
             this.pnlShowWeb.DoubleClick += new System.EventHandler(this.panle_DoubleClick);
+            // 
+            // wbsBox
+            // 
+            this.wbsBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wbsBox.Location = new System.Drawing.Point(0, 0);
+            this.wbsBox.MinimumSize = new System.Drawing.Size(20, 20);
+            this.wbsBox.Name = "wbsBox";
+            this.wbsBox.Size = new System.Drawing.Size(320, 240);
+            this.wbsBox.TabIndex = 0;
             // 
             // pnlShowPDF
             // 
@@ -101,22 +147,6 @@
             this.pnlShowPDF.TabIndex = 5;
             this.pnlShowPDF.DoubleClick += new System.EventHandler(this.panle_DoubleClick);
             // 
-            // picImage1
-            // 
-            this.picImage1.Location = new System.Drawing.Point(51, 51);
-            this.picImage1.Name = "picImage1";
-            this.picImage1.Size = new System.Drawing.Size(100, 50);
-            this.picImage1.TabIndex = 0;
-            this.picImage1.TabStop = false;
-            // 
-            // picImage2
-            // 
-            this.picImage2.Location = new System.Drawing.Point(110, 95);
-            this.picImage2.Name = "picImage2";
-            this.picImage2.Size = new System.Drawing.Size(100, 50);
-            this.picImage2.TabIndex = 1;
-            this.picImage2.TabStop = false;
-            // 
             // tmrImage
             // 
             this.tmrImage.Tick += new System.EventHandler(this.tmrImage_Tick);
@@ -125,6 +155,15 @@
             // 
             this.tmrAll.Interval = 1000;
             this.tmrAll.Tick += new System.EventHandler(this.tmrAll_Tick);
+            // 
+            // axVLC
+            // 
+            this.axVLC.Enabled = true;
+            this.axVLC.Location = new System.Drawing.Point(12, 16);
+            this.axVLC.Name = "axVLC";
+            this.axVLC.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axVLC.OcxState")));
+            this.axVLC.Size = new System.Drawing.Size(259, 159);
+            this.axVLC.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -142,8 +181,13 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.DoubleClick += new System.EventHandler(this.MainForm_DoubleClick);
             this.pnlShowImage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picImage1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picImage2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picImage1)).EndInit();
+            this.pnlShowMediaWMP.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.axWMP)).EndInit();
+            this.pnlShowMediaVLC.ResumeLayout(false);
+            this.pnlShowWeb.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.axVLC)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -157,10 +201,13 @@
         private System.Windows.Forms.Panel pnlShowWeb;
         private System.Windows.Forms.Panel pnlShowPDF;
         private System.Windows.Forms.PictureBox picImage1;
-        private System.Windows.Forms.ToolTip myToolTip;
+        private System.Windows.Forms.ToolTip tipBox;
         private System.Windows.Forms.PictureBox picImage2;
         private System.Windows.Forms.Timer tmrImage;
         private System.Windows.Forms.Timer tmrAll;
+        private System.Windows.Forms.WebBrowser wbsBox;
+        private AxWMPLib.AxWindowsMediaPlayer axWMP;
+        private AxAXVLC.AxVLCPlugin2 axVLC;
     }
 }
 
