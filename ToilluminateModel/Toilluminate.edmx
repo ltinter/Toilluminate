@@ -5,34 +5,260 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="ToilluminateModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="FileMaster">
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+          <Property Name="FileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupID" Type="int" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="FileTypeID" Type="int" />
+          <Property Name="FileName" Type="nvarchar(max)" />
+          <Property Name="FileUrl" Type="nvarchar(max)" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="FileTypeMaster">
           <Key>
             <PropertyRef Name="FileTypeID" />
           </Key>
           <Property Name="FileTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FileTypeName" Type="nvarchar" MaxLength="100" />
-          <Property Name="FileTypeFormat" Type="nvarchar" MaxLength="100" />
-          <Property Name="FileTypeGroup" Type="int" />
+          <Property Name="FileTypeName" Type="nvarchar(max)" />
+          <Property Name="FileTypeFormat" Type="nvarchar(max)" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="GroupMaster">
+          <Key>
+            <PropertyRef Name="GroupID" />
+          </Key>
+          <Property Name="GroupID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupName" Type="nvarchar(max)" />
+          <Property Name="GroupParentID" Type="int" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PlayerMaster">
+          <Key>
+            <PropertyRef Name="PlayerID" />
+          </Key>
+          <Property Name="PlayerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupID" Type="int" />
+          <Property Name="PlayerName" Type="nvarchar(max)" />
+          <Property Name="PlayerAddress" Type="nvarchar(max)" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PlayerPlayListLinkTable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PlayerID" Type="int" />
+          <Property Name="PlayListID" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PlayListMaster">
+          <Key>
+            <PropertyRef Name="PlayListID" />
+          </Key>
+          <Property Name="PlayListID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupID" Type="int" />
+          <Property Name="PlayListName" Type="nvarchar(max)" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="TemplatTypeMaster">
+          <Key>
+            <PropertyRef Name="TempletTypeID" />
+          </Key>
+          <Property Name="TempletTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TempletTypeName" Type="nvarchar(max)" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="TempleFileLinkTable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TempletID" Type="int" />
+          <Property Name="FileID" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="TempletMaster">
+          <Key>
+            <PropertyRef Name="TempletID" />
+          </Key>
+          <Property Name="TempletID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PlayListID" Type="int" />
+          <Property Name="TempletTypeID" Type="int" />
+          <Property Name="TempletSettings" Type="nvarchar(max)" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserMaster">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupID" Type="int" />
+          <Property Name="UserName" Type="nvarchar(max)" />
+          <Property Name="Password" Type="nvarchar(max)" />
+          <Property Name="EmailAddress" Type="nvarchar(max)" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
         </EntityType>
         <EntityContainer Name="ToilluminateModelStoreContainer">
+          <EntitySet Name="FileMaster" EntityType="Self.FileMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeMaster" EntityType="Self.FileTypeMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupMaster" EntityType="Self.GroupMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlayerMaster" EntityType="Self.PlayerMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlayerPlayListLinkTable" EntityType="Self.PlayerPlayListLinkTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlayListMaster" EntityType="Self.PlayListMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TemplatTypeMaster" EntityType="Self.TemplatTypeMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TempleFileLinkTable" EntityType="Self.TempleFileLinkTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TempletMaster" EntityType="Self.TempletMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserMaster" EntityType="Self.UserMaster" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ToilluminateModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="FileMaster">
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+          <Property Name="FileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupID" Type="Int32" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="FileTypeID" Type="Int32" />
+          <Property Name="FileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="FileTypeMaster">
           <Key>
             <PropertyRef Name="FileTypeID" />
           </Key>
           <Property Name="FileTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FileTypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="FileTypeFormat" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="FileTypeGroup" Type="Int32" />
+          <Property Name="FileTypeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileTypeFormat" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="GroupMaster">
+          <Key>
+            <PropertyRef Name="GroupID" />
+          </Key>
+          <Property Name="GroupID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GroupParentID" Type="Int32" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PlayerMaster">
+          <Key>
+            <PropertyRef Name="PlayerID" />
+          </Key>
+          <Property Name="PlayerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupID" Type="Int32" />
+          <Property Name="PlayerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PlayerAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PlayerPlayListLinkTable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PlayerID" Type="Int32" />
+          <Property Name="PlayListID" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PlayListMaster">
+          <Key>
+            <PropertyRef Name="PlayListID" />
+          </Key>
+          <Property Name="PlayListID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupID" Type="Int32" />
+          <Property Name="PlayListName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="TemplatTypeMaster">
+          <Key>
+            <PropertyRef Name="TempletTypeID" />
+          </Key>
+          <Property Name="TempletTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TempletTypeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="TempleFileLinkTable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TempletID" Type="Int32" />
+          <Property Name="FileID" Type="Int32" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="TempletMaster">
+          <Key>
+            <PropertyRef Name="TempletID" />
+          </Key>
+          <Property Name="TempletID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PlayListID" Type="Int32" />
+          <Property Name="TempletTypeID" Type="Int32" />
+          <Property Name="TempletSettings" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="UserMaster">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupID" Type="Int32" />
+          <Property Name="UserName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityContainer Name="ToilluminateEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="FileMaster" EntityType="Self.FileMaster" />
           <EntitySet Name="FileTypeMaster" EntityType="Self.FileTypeMaster" />
+          <EntitySet Name="GroupMaster" EntityType="Self.GroupMaster" />
+          <EntitySet Name="PlayerMaster" EntityType="Self.PlayerMaster" />
+          <EntitySet Name="PlayerPlayListLinkTable" EntityType="Self.PlayerPlayListLinkTable" />
+          <EntitySet Name="PlayListMaster" EntityType="Self.PlayListMaster" />
+          <EntitySet Name="TemplatTypeMaster" EntityType="Self.TemplatTypeMaster" />
+          <EntitySet Name="TempleFileLinkTable" EntityType="Self.TempleFileLinkTable" />
+          <EntitySet Name="TempletMaster" EntityType="Self.TempletMaster" />
+          <EntitySet Name="UserMaster" EntityType="Self.UserMaster" />
         </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
@@ -40,13 +266,126 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ToilluminateModelStoreContainer" CdmEntityContainer="ToilluminateEntities">
+          <EntitySetMapping Name="FileMaster">
+            <EntityTypeMapping TypeName="ToilluminateModel.FileMaster">
+              <MappingFragment StoreEntitySet="FileMaster">
+                <ScalarProperty Name="FileID" ColumnName="FileID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="FileTypeID" ColumnName="FileTypeID" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="FileUrl" ColumnName="FileUrl" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="FileTypeMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.FileTypeMaster">
               <MappingFragment StoreEntitySet="FileTypeMaster">
                 <ScalarProperty Name="FileTypeID" ColumnName="FileTypeID" />
                 <ScalarProperty Name="FileTypeName" ColumnName="FileTypeName" />
                 <ScalarProperty Name="FileTypeFormat" ColumnName="FileTypeFormat" />
-                <ScalarProperty Name="FileTypeGroup" ColumnName="FileTypeGroup" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupMaster">
+            <EntityTypeMapping TypeName="ToilluminateModel.GroupMaster">
+              <MappingFragment StoreEntitySet="GroupMaster">
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="GroupParentID" ColumnName="GroupParentID" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlayerMaster">
+            <EntityTypeMapping TypeName="ToilluminateModel.PlayerMaster">
+              <MappingFragment StoreEntitySet="PlayerMaster">
+                <ScalarProperty Name="PlayerID" ColumnName="PlayerID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="PlayerName" ColumnName="PlayerName" />
+                <ScalarProperty Name="PlayerAddress" ColumnName="PlayerAddress" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlayerPlayListLinkTable">
+            <EntityTypeMapping TypeName="ToilluminateModel.PlayerPlayListLinkTable">
+              <MappingFragment StoreEntitySet="PlayerPlayListLinkTable">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PlayerID" ColumnName="PlayerID" />
+                <ScalarProperty Name="PlayListID" ColumnName="PlayListID" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlayListMaster">
+            <EntityTypeMapping TypeName="ToilluminateModel.PlayListMaster">
+              <MappingFragment StoreEntitySet="PlayListMaster">
+                <ScalarProperty Name="PlayListID" ColumnName="PlayListID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="PlayListName" ColumnName="PlayListName" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TemplatTypeMaster">
+            <EntityTypeMapping TypeName="ToilluminateModel.TemplatTypeMaster">
+              <MappingFragment StoreEntitySet="TemplatTypeMaster">
+                <ScalarProperty Name="TempletTypeID" ColumnName="TempletTypeID" />
+                <ScalarProperty Name="TempletTypeName" ColumnName="TempletTypeName" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TempleFileLinkTable">
+            <EntityTypeMapping TypeName="ToilluminateModel.TempleFileLinkTable">
+              <MappingFragment StoreEntitySet="TempleFileLinkTable">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TempletID" ColumnName="TempletID" />
+                <ScalarProperty Name="FileID" ColumnName="FileID" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TempletMaster">
+            <EntityTypeMapping TypeName="ToilluminateModel.TempletMaster">
+              <MappingFragment StoreEntitySet="TempletMaster">
+                <ScalarProperty Name="TempletID" ColumnName="TempletID" />
+                <ScalarProperty Name="PlayListID" ColumnName="PlayListID" />
+                <ScalarProperty Name="TempletTypeID" ColumnName="TempletTypeID" />
+                <ScalarProperty Name="TempletSettings" ColumnName="TempletSettings" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserMaster">
+            <EntityTypeMapping TypeName="ToilluminateModel.UserMaster">
+              <MappingFragment StoreEntitySet="UserMaster">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

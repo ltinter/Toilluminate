@@ -17,6 +17,8 @@ namespace ToilluminateModel
         public int FileTypeID { get; set; }
         public string FileTypeName { get; set; }
         public string FileTypeFormat { get; set; }
-        public Nullable<int> FileTypeGroup { get; set; }
+        public string Comments { get; set; }
+        public Nullable<System.DateTime> UpdateDate { get; set; }
+        public Nullable<System.DateTime> InsertDate { get; set; }
     }
 }

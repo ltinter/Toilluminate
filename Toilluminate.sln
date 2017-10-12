@@ -5,7 +5,11 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toilluminate", "Toilluminate\Toilluminate.csproj", "{41CF1F40-E243-4A55-837D-BC09623250F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToiClient", "..\..\C_Works\ToiTool\SRC\ToiClient\ToiClient.csproj", "{AF89F8CF-B05B-496A-8A20-63D2C93D9E36}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToilluminateModel", "ToilluminateModel\ToilluminateModel.csproj", "{219C8422-A380-4C96-9656-66B769185CC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToiClientExec", "..\..\C_Works\ToiTool\SRC\ToiClientExec\ToiClientExec.csproj", "{FD69A56D-58BE-445B-809E-F84C0F37AF01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToilluminateApp", "ToilluminateApp\ToilluminateApp.csproj", "{9162A4EF-4798-4D48-B654-BBF697F05B0B}"
 EndProject
