@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commons\ImageApp.cs" />
     <Compile Include="Commons\VariableInfo.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
