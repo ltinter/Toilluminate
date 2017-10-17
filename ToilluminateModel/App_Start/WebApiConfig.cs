@@ -16,18 +16,18 @@ namespace ToilluminateModel
             config.MapHttpAttributeRoutes();
 
 
-            //new route rules 1
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi2",
-                routeTemplate: "api/{controller}/{action}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
-            //new route rules 2
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi1",
-                routeTemplate: "api/{controller}/{action}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+            ////new route rules 1
+            //config.Routes.MapHttpRoute(
+            //    name: "DefaultApi2",
+            //    routeTemplate: "api/{controller}/{action}/{id}",
+            //    defaults: new { id = RouteParameter.Optional }
+            //);
+            ////new route rules 2
+            //config.Routes.MapHttpRoute(
+            //    name: "DefaultApi1",
+            //    routeTemplate: "api/{controller}/{action}",
+            //    defaults: new { id = RouteParameter.Optional }
+            //);
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

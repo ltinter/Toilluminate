@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="FileResource\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -166,12 +167,23 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Classes\ImageHelper.cs" />
+    <Compile Include="Controllers\FileMastersController.cs" />
+    <Compile Include="Controllers\FolderMastersController.cs" />
+    <Compile Include="Controllers\GroupMastersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PlayerMastersController.cs" />
+    <Compile Include="Controllers\PlayerPlayListLinkTablesController.cs" />
+    <Compile Include="Controllers\PlayListMastersController.cs" />
+    <Compile Include="Controllers\TemplatTypeMastersController.cs" />
+    <Compile Include="Controllers\TempleFileLinkTablesController.cs" />
+    <Compile Include="Controllers\TempletMastersController.cs" />
+    <Compile Include="Controllers\UserMastersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="FileMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
-    <Compile Include="FileTypeMaster.cs">
+    <Compile Include="FolderMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
@@ -225,6 +237,7 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="HtmlTestForWebAPI.html" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
