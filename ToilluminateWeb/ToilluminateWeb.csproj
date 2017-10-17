@@ -105,9 +105,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="packages.config" />
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.eot" />
     <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.ttf" />
     <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.woff" />
