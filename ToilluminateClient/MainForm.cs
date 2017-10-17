@@ -248,16 +248,18 @@ namespace ToilluminateClient
             {
                 this.tmrImage.Stop();
 
-                if (this.picImage1.Visible)
-                {
-                    nowPicture = picImage1;
-                    nextPicture = picImage2;
-                }
-                else
-                {
-                    nowPicture = picImage2;
-                    nextPicture = picImage1;
-                }
+                nowPicture = picImage2;
+                nextPicture = picImage1;
+                //if (this.picImage1.Visible)
+                //{
+                //    nowPicture = picImage1;
+                //    nextPicture = picImage2;
+                //}
+                //else
+                //{
+                //    nowPicture = picImage2;
+                //    nextPicture = picImage1;
+                //}
 
 
                 if (imageShowStyle == ImageShowStyle.None)
@@ -270,10 +272,11 @@ namespace ToilluminateClient
                             imageIndex = 0;
                         }
 
+                        nextPicture.Visible = true;
+
                         ShowImage(this.imageFileList[imageIndex]);
 
                         nextPicture.SendToBack();
-                        nextPicture.Visible = true;
 
                         nowPicture.Visible = false;
                         if (nowPicture.Image != null)
@@ -463,6 +466,10 @@ namespace ToilluminateClient
                 this.picImage2.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
                 nextPicture = this.picImage1;
                 nowPicture = this.picImage2;
+                //是图片的大小适应控件PictureBox的大小 
+                picImage1.SizeMode = PictureBoxSizeMode.StretchImage;
+                //是图片的大小适应控件PictureBox的大小 
+                picImage2.SizeMode = PictureBoxSizeMode.StretchImage;
 
                 this.axWMP.Location = new System.Drawing.Point(0, 0);
                 this.axWMP.Size = new System.Drawing.Size(pnlShowMediaWMP.Width, pnlShowMediaWMP.Height);
@@ -539,16 +546,25 @@ namespace ToilluminateClient
                     nextPicture.Image.Dispose();
                 }
                 //动态添加图片 
+                Image nowImageFile = Image.FromFile(imageFile);
 
-                nextPicture.Image = Image.FromFile(imageFile);
-                nextPicture.ImageLocation = "";
 
-                nextPicture.SizeMode = PictureBoxSizeMode.StretchImage;  //是图片的大小适应控件PictureBox的大小  
+                //Image nowImageFile = Image.FromFile(imageFile);
+
+                Bitmap nowBitmap = new Bitmap(nowImageFile);
+
+                //nextPicture.Image = Image.FromFile(imageFile);
+                //nextPicture.ImageLocation = "";
+                nowBitmap = ImageApp.ResizeImage(nowBitmap, nextPicture);
+
+                ImageApp.ShowBitmap(nowBitmap, nextPicture, ImageShowStyle.Fade);
+                //ImageApp.DanRu(nowBitmap, nextPicture);
+
                 tipBox.SetToolTip(nextPicture, "这是一张图片");  //当鼠标在图片上的时候，显示图片的信息  
             }
             catch (Exception ex)
             {
-                throw ex;
+                MessageBox.Show(ex.Message, "信息提示");
             }
         }
 
@@ -569,7 +585,7 @@ namespace ToilluminateClient
                 nextPicture.Image = null;
                 nextPicture.ImageLocation = imageUrl;
 
-                nextPicture.SizeMode = PictureBoxSizeMode.StretchImage;  //是图片的大小适应控件PictureBox的大小  
+                
                 tipBox.SetToolTip(nextPicture, "这是一张图片");  //当鼠标在图片上的时候，显示图片的信息  
             }
             catch (Exception ex)
@@ -831,18 +847,8 @@ namespace ToilluminateClient
         {
             try
             {
-                this.tmrImage.Stop();
-                if (this.picImage1.Image != null)
-                {
-                    this.picImage1.Image.Dispose();
-                }
-                if (this.picImage2.Image != null)
-                {
-                    this.picImage2.Image.Dispose();
-                }
-                this.picImage1.Visible = false;
-                this.picImage2.Visible = false;
-            }
+                this.tmrMessage.Stop();
+                            }
             catch (Exception ex)
             {
                 throw ex;
@@ -856,17 +862,7 @@ namespace ToilluminateClient
         {
             try
             {
-                this.tmrImage.Stop();
-                if (this.picImage1.Image != null)
-                {
-                    this.picImage1.Image.Dispose();
-                }
-                if (this.picImage2.Image != null)
-                {
-                    this.picImage2.Image.Dispose();
-                }
-                this.picImage1.Visible = false;
-                this.picImage2.Visible = false;
+                this.tmrWeb.Stop();
             }
             catch (Exception ex)
             {
@@ -880,17 +876,7 @@ namespace ToilluminateClient
         {
             try
             {
-                this.tmrImage.Stop();
-                if (this.picImage1.Image != null)
-                {
-                    this.picImage1.Image.Dispose();
-                }
-                if (this.picImage2.Image != null)
-                {
-                    this.picImage2.Image.Dispose();
-                }
-                this.picImage1.Visible = false;
-                this.picImage2.Visible = false;
+                this.tmrPDF.Stop();
             }
             catch (Exception ex)
             {

@@ -20,39 +20,4 @@ namespace ToilluminateClient
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public enum ImageShowStyle
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        None=0,
-        /// <summary>
-        /// 
-        /// </summary>
-        TopToDown = 1,
-        /// <summary>
-        /// 
-        /// </summary>
-        DownToTop = 2,
-        /// <summary>
-        /// 
-        /// </summary>
-        LeftToRight = 3,
-        /// <summary>
-        /// 
-        /// </summary>
-        RightToLeft = 4,
-        /// <summary>
-        /// 
-        /// </summary>
-        SmallToBig= 5,
-        /// <summary>
-        /// 
-        /// </summary>
-        Gradient = 6,
-
-    }
 }
