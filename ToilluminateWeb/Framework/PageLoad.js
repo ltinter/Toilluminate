@@ -178,30 +178,31 @@ var initGroupTree = function () {
     //        { "text": "Big Kfc", "icon": "fa fa-file m--font-waring" }
     //    ]
     //}
-    //var tempdataGroupTree = $.insmFramework('getGroupTreeData', {
-    //    groupId: group.Id,
-    //    success: function (tempdataGroupTreeData) {
-    //        if (tempdataGroupTreeData) {
-    //            function scanRoot(node) {
-    //                var selected = false;
-    //                GroupTreedata.push(node);
-    //                if (node.children.length > 0) {
-    //                    $.each(node.children, function (index, nod) {
-    //                        scanRoot(nod);
-    //                        if (nod.children.length > 0) {
-    //                            scanRoot(nod);
-    //                        };
-    //                    });
-    //                }
-    //                return selected;
-    //            }
-    //            scanRoot(tempdataGroupTreeData);
-    //        }
-    //    },
-    //    invalid: function () {
-    //        invalid = true;
-    //    }
-    //});
+    var tempdataGroupTree = $.insmFramework('getGroupTreeData', {
+        groupId: group.Id,
+        appurl:sgsfsgfs,
+        success: function (tempdataGroupTreeData) {
+            if (tempdataGroupTreeData) {
+                function scanRoot(node) {
+                    var selected = false;
+                    GroupTreedata.push(node);
+                    if (node.children.length > 0) {
+                        $.each(node.children, function (index, nod) {
+                            scanRoot(nod);
+                            if (nod.children.length > 0) {
+                                scanRoot(nod);
+                            };
+                        });
+                    }
+                    return selected;
+                }
+                scanRoot(tempdataGroupTreeData);
+            }
+        },
+        invalid: function () {
+            invalid = true;
+        }
+    });
 
 
 
