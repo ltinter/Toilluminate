@@ -4,28 +4,31 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ToilluminateModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ToilluminateModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="FileMaster">
           <Key>
             <PropertyRef Name="FileID" />
           </Key>
           <Property Name="FileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="GroupID" Type="int" />
+          <Property Name="FolderID" Type="int" />
           <Property Name="UserID" Type="int" />
-          <Property Name="FileTypeID" Type="int" />
+          <Property Name="FileType" Type="nvarchar" MaxLength="50" />
           <Property Name="FileName" Type="nvarchar(max)" />
           <Property Name="FileUrl" Type="nvarchar(max)" />
+          <Property Name="FileThumbnailUrl" Type="nvarchar(max)" />
+          <Property Name="FileData" Type="image" />
           <Property Name="Comments" Type="nvarchar(max)" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="InsertDate" Type="datetime" />
         </EntityType>
-        <EntityType Name="FileTypeMaster">
+        <EntityType Name="FolderMaster">
           <Key>
-            <PropertyRef Name="FileTypeID" />
+            <PropertyRef Name="FolderID" />
           </Key>
-          <Property Name="FileTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FileTypeName" Type="nvarchar(max)" />
-          <Property Name="FileTypeFormat" Type="nvarchar(max)" />
+          <Property Name="FolderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupID" Type="int" />
+          <Property Name="FolderName" Type="nvarchar(max)" />
+          <Property Name="FolderParentID" Type="int" />
           <Property Name="Comments" Type="nvarchar(max)" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="InsertDate" Type="datetime" />
@@ -120,7 +123,7 @@
         </EntityType>
         <EntityContainer Name="ToilluminateModelStoreContainer">
           <EntitySet Name="FileMaster" EntityType="Self.FileMaster" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="FileTypeMaster" EntityType="Self.FileTypeMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FolderMaster" EntityType="Self.FolderMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupMaster" EntityType="Self.GroupMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlayerMaster" EntityType="Self.PlayerMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlayerPlayListLinkTable" EntityType="Self.PlayerPlayListLinkTable" Schema="dbo" store:Type="Tables" />
@@ -130,36 +133,10 @@
           <EntitySet Name="TempletMaster" EntityType="Self.TempletMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserMaster" EntityType="Self.UserMaster" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ToilluminateModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="FileMaster">
-          <Key>
-            <PropertyRef Name="FileID" />
-          </Key>
-          <Property Name="FileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="GroupID" Type="Int32" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="FileTypeID" Type="Int32" />
-          <Property Name="FileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="FileUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="InsertDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="FileTypeMaster">
-          <Key>
-            <PropertyRef Name="FileTypeID" />
-          </Key>
-          <Property Name="FileTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FileTypeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="FileTypeFormat" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="InsertDate" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="GroupMaster">
           <Key>
             <PropertyRef Name="GroupID" />
@@ -249,8 +226,6 @@
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityContainer Name="ToilluminateEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="FileMaster" EntityType="Self.FileMaster" />
-          <EntitySet Name="FileTypeMaster" EntityType="Self.FileTypeMaster" />
           <EntitySet Name="GroupMaster" EntityType="Self.GroupMaster" />
           <EntitySet Name="PlayerMaster" EntityType="Self.PlayerMaster" />
           <EntitySet Name="PlayerPlayListLinkTable" EntityType="Self.PlayerPlayListLinkTable" />
@@ -259,40 +234,43 @@
           <EntitySet Name="TempleFileLinkTable" EntityType="Self.TempleFileLinkTable" />
           <EntitySet Name="TempletMaster" EntityType="Self.TempletMaster" />
           <EntitySet Name="UserMaster" EntityType="Self.UserMaster" />
+          <EntitySet Name="FileMaster" EntityType="ToilluminateModel.FileMaster" />
+          <EntitySet Name="FolderMaster" EntityType="ToilluminateModel.FolderMaster" />
         </EntityContainer>
+        <EntityType Name="FileMaster">
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+          <Property Name="FileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="FileType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileData" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+          <Property Name="FileThumbnailUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FolderID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="FolderMaster">
+          <Key>
+            <PropertyRef Name="FolderID" />
+          </Key>
+          <Property Name="FolderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupID" Type="Int32" />
+          <Property Name="FolderName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FolderParentID" Type="Int32" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ToilluminateModelStoreContainer" CdmEntityContainer="ToilluminateEntities">
-          <EntitySetMapping Name="FileMaster">
-            <EntityTypeMapping TypeName="ToilluminateModel.FileMaster">
-              <MappingFragment StoreEntitySet="FileMaster">
-                <ScalarProperty Name="FileID" ColumnName="FileID" />
-                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="FileTypeID" ColumnName="FileTypeID" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
-                <ScalarProperty Name="FileUrl" ColumnName="FileUrl" />
-                <ScalarProperty Name="Comments" ColumnName="Comments" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="FileTypeMaster">
-            <EntityTypeMapping TypeName="ToilluminateModel.FileTypeMaster">
-              <MappingFragment StoreEntitySet="FileTypeMaster">
-                <ScalarProperty Name="FileTypeID" ColumnName="FileTypeID" />
-                <ScalarProperty Name="FileTypeName" ColumnName="FileTypeName" />
-                <ScalarProperty Name="FileTypeFormat" ColumnName="FileTypeFormat" />
-                <ScalarProperty Name="Comments" ColumnName="Comments" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="GroupMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.GroupMaster">
               <MappingFragment StoreEntitySet="GroupMaster">
@@ -386,6 +364,36 @@
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileMaster">
+            <EntityTypeMapping TypeName="ToilluminateModel.FileMaster">
+              <MappingFragment StoreEntitySet="FileMaster">
+                <ScalarProperty Name="FolderID" ColumnName="FolderID" />
+                <ScalarProperty Name="FileThumbnailUrl" ColumnName="FileThumbnailUrl" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="FileData" ColumnName="FileData" />
+                <ScalarProperty Name="FileUrl" ColumnName="FileUrl" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="FileType" ColumnName="FileType" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="FileID" ColumnName="FileID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FolderMaster">
+            <EntityTypeMapping TypeName="ToilluminateModel.FolderMaster">
+              <MappingFragment StoreEntitySet="FolderMaster">
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="FolderParentID" ColumnName="FolderParentID" />
+                <ScalarProperty Name="FolderName" ColumnName="FolderName" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="FolderID" ColumnName="FolderID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

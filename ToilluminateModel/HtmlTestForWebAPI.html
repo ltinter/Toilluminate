@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>NBA App</title>
+</head>
+<body>
+
+    <div>
+        <h2>All Players</h2>
+        <ul id="players" />
+    </div>
+    <div>
+        <h2>Search by ID</h2>
+        <input type="text" id="prodId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="player" />
+    </div>
+    <div>
+        <div>
+            <h2>Add File</h2>
+            <table>
+                <tr>
+                    <td>
+                        <label>FILE NAME :</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_filename" size="5" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>FILE TYPE ID :</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_filetypeid" size="5" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>GROUP ID :</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_groupid" size="5" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>FILE URL:</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_fileurl" size="5" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>FILE COMMENTS:</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_comments" size="5" />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td>
+                        <input type="file" id="file_fileupload" name="fileupload" multiple="multiple" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <input type="button" value="SAVE FILE" onclick="fileUpload();" />
+        </div>
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var uri = 'api/FileMasters';
+        var FileMaster = {
+            create: function () {
+                FileName: "";
+                FileTypeID: "";
+                FolderID: "";
+                FileUrl: "";
+                FileData:"";
+                Comments: "";
+                return FileMaster;
+            }
+        }
+        $(document).ready(function () {
+            pageInit();
+        });
+        function pageInit() {
+
+            $.ajax({
+                url: uri,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('#players').empty();
+                    $.each(data, function (key, item) {
+                        var player = $('#players');
+                        $('<li>', { text: formatItem(item) }).append(
+                        $('<img>', { src: item.FileThumbnailUrl }).width('200px').fadeIn(),
+                        $('<input type="button" value = "Delete" onclick="deleteFile(this,' + item.FileID + ')">').width('50px')).appendTo(player);
+                    });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function formatItem(item) {
+            return item.FileName;
+            //return item.FileID + ": " + item.FileName + "(" + item.FileTypeID + ')' + " - " + item.GroupID + "(" + item.FileUrl + ")";
+        }
+
+        function find() {
+            var id = $('#prodId').val();
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#player').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#player').text('Error: ' + err);
+                });
+        }
+        function fileUpload() {
+            var files = $("#file_fileupload").prop('files');
+            $.each(files, function (key, file) {
+                var formData = new FormData();
+                formData.append("FileData", file);
+                formData.append("UserID", 2);
+                formData.append("FolderID", 1);
+
+                $.ajax({
+                    url: 'api/uploadFile',
+                    type: "POST",
+                    //contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function () {
+                        pageInit();
+                        $("#file_fileupload").val('');
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                    }
+                });
+            });
+        }
+        function deleteFile(obj,fileID){
+
+            $.ajax({
+                url: uri+"/"+fileID,
+                type: "DELETE",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $(obj).parent().fadeOut(500, function() {
+                        $(obj).parent().remove();
+                    });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
