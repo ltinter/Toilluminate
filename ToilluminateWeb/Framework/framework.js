@@ -136,7 +136,7 @@
                 }
             };
             $.insmFramework('ajax', {
-                url: _plugin.settings.apiUrl + '/AppSettings.aspx',
+                url: options.apiUrl,
                 data: data
             });
             return $this;
