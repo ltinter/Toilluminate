@@ -105,6 +105,28 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="packages.config" />
+    <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.eot" />
+    <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.ttf" />
+    <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.woff" />
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.eot" />
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.ttf" />
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.woff" />
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.woff2" />
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\FontAwesome.otf" />
+    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.eot" />
+    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.ttf" />
+    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.woff" />
+    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.woff2" />
+    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.eot" />
+    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.ttf" />
+    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.woff" />
+    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.woff2" />
+    <Content Include="Framework\assets\vendors\base\fonts\socicon\socicon.eot" />
+    <Content Include="Framework\assets\vendors\base\fonts\socicon\socicon.ttf" />
+    <Content Include="Framework\assets\vendors\base\fonts\socicon\socicon.woff" />
+    <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.eot" />
+    <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.ttf" />
+    <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.woff" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
