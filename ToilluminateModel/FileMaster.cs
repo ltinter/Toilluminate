@@ -19,7 +19,6 @@ namespace ToilluminateModel
         public string FileType { get; set; }
         public string FileName { get; set; }
         public string FileUrl { get; set; }
-        public byte[] FileData { get; set; }
         public string Comments { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
