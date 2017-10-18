@@ -42,7 +42,26 @@ namespace ToilluminateClient
             Application.SetCompatibleTextRenderingDefault(false);
 
             //共通変数が初期化
-            InitVariableInfo();
+            VariableInfo.InitVariableInfo();
+            
+            // 設定ファイルのオープン
+            if (File.Exists(VariableInfo.IniFile) == false)
+            {
+                IniFileInfo.CreateDefaultIniFile(VariableInfo.IniFile);
+            }
+
+            // 設定読み込み
+            IniFileInfo.GetIniInfo(VariableInfo.IniFile);
+            DictionaryInfo.InitMultilingualDictionaryForClient();
+
+            // ログイン認証
+            using (LoginForm loginFormInstance = new LoginForm())
+            {
+                if (DialogResult.OK != loginFormInstance.ShowDialog())
+                {
+                    return;
+                }
+            }
 
             // メイン画面起動
             MainForm mainFormInstance = new MainForm();
@@ -53,16 +72,5 @@ namespace ToilluminateClient
 
         #endregion
 
-        /// <summary>
-        /// 共通変数が初期化
-        /// </summary>
-        private static void InitVariableInfo()
-        {
-            VariableInfo.ClientPath = Application.StartupPath;
-#if DEBUG
-            VariableInfo.ClientPath = new DirectoryInfo(Application.StartupPath).Parent.Parent.Parent.FullName;
-#endif
-            
-        }
     }
 }

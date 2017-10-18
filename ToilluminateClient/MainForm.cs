@@ -555,7 +555,7 @@ namespace ToilluminateClient
 
                 //nextPicture.Image = Image.FromFile(imageFile);
                 //nextPicture.ImageLocation = "";
-                nowBitmap = ImageApp.ResizeImage(nowBitmap, nextPicture);
+                nowBitmap = ImageApp.ResizeBitmap(nowBitmap, nextPicture.Size);
 
                 ImageApp.ShowBitmap(nowBitmap, nextPicture, ImageShowStyle.Fade);
                 //ImageApp.DanRu(nowBitmap, nextPicture);

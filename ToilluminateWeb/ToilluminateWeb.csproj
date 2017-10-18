@@ -105,9 +105,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="packages.config" />
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.eot" />
     <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.ttf" />
     <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.woff" />
@@ -130,6 +127,75 @@
     <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.eot" />
     <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.ttf" />
     <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.woff" />
+    <Content Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\FontAwesome.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\socicon\socicon.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\socicon\socicon.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\socicon\socicon.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -138,171 +204,493 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Framework\assets\app\js\dashboard.js" />
-    <Content Include="Framework\assets\app\js\layout-builder.js" />
-    <Content Include="Framework\assets\app\media\img\bg\bg-1.jpg" />
-    <Content Include="Framework\assets\app\media\img\bg\bg-2.jpg" />
-    <Content Include="Framework\assets\app\media\img\bg\bg-3.jpg" />
-    <Content Include="Framework\assets\app\media\img\bg\bg-4.jpg" />
-    <Content Include="Framework\assets\app\media\img\blog\blog1.jpg" />
-    <Content Include="Framework\assets\app\media\img\blog\blog2.jpg" />
-    <Content Include="Framework\assets\app\media\img\blog\blog3.jpg" />
-    <Content Include="Framework\assets\app\media\img\blog\blog4.jpg" />
-    <Content Include="Framework\assets\app\media\img\blog\blog5.jpg" />
-    <Content Include="Framework\assets\app\media\img\client-logos\logo1.png" />
-    <Content Include="Framework\assets\app\media\img\client-logos\logo2.png" />
-    <Content Include="Framework\assets\app\media\img\client-logos\logo3.png" />
-    <Content Include="Framework\assets\app\media\img\client-logos\logo4.png" />
-    <Content Include="Framework\assets\app\media\img\client-logos\logo5.png" />
-    <Content Include="Framework\assets\app\media\img\files\css.svg" />
-    <Content Include="Framework\assets\app\media\img\files\csv.svg" />
-    <Content Include="Framework\assets\app\media\img\files\doc.svg" />
-    <Content Include="Framework\assets\app\media\img\files\html.svg" />
-    <Content Include="Framework\assets\app\media\img\files\javascript.svg" />
-    <Content Include="Framework\assets\app\media\img\files\jpg.svg" />
-    <Content Include="Framework\assets\app\media\img\files\mp4.svg" />
-    <Content Include="Framework\assets\app\media\img\files\pdf.svg" />
-    <Content Include="Framework\assets\app\media\img\files\xml.svg" />
-    <Content Include="Framework\assets\app\media\img\files\zip.svg" />
-    <Content Include="Framework\assets\app\media\img\icons\exchange.svg" />
-    <Content Include="Framework\assets\app\media\img\icons\logout.svg" />
-    <Content Include="Framework\assets\app\media\img\icons\question.svg" />
-    <Content Include="Framework\assets\app\media\img\icons\warning.svg" />
-    <Content Include="Framework\assets\app\media\img\logos\logo-1.png" />
-    <Content Include="Framework\assets\app\media\img\logos\logo-2.png" />
-    <Content Include="Framework\assets\app\media\img\logos\logo-3.png" />
-    <Content Include="Framework\assets\app\media\img\misc\notification_bg.jpg" />
-    <Content Include="Framework\assets\app\media\img\misc\quick_actions_bg.jpg" />
-    <Content Include="Framework\assets\app\media\img\misc\user_profile_bg.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product1.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product10.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product11.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product2.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product3.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product4.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product5.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product6.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product7.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product8.jpg" />
-    <Content Include="Framework\assets\app\media\img\products\product9.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_1.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_10.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_11.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_12.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_13.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_14.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_2.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_3.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_4.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_5.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_6.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_7.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_8.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\100_9.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_1.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_10.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_11.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_12.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_13.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_14.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_2.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_3.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_4.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_5.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_6.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_7.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_8.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\300_9.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\user1.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\user2.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\user3.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\user4.jpg" />
-    <Content Include="Framework\assets\app\media\img\users\user5.jpg" />
-    <Content Include="Framework\assets\demo\default\base\scripts.bundle.js" />
+    <Content Include="Framework\assets\app\js\dashboard.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\js\layout-builder.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\bg\bg-1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\bg\bg-2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\bg\bg-3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\bg\bg-4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\blog\blog1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\blog\blog2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\blog\blog3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\blog\blog4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\blog\blog5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\client-logos\logo1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\client-logos\logo2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\client-logos\logo3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\client-logos\logo4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\client-logos\logo5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\css.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\csv.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\doc.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\html.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\javascript.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\jpg.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\mp4.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\pdf.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\xml.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\files\zip.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\icons\exchange.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\icons\logout.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\icons\question.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\icons\warning.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\logos\logo-1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\logos\logo-2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\logos\logo-3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\misc\notification_bg.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\misc\quick_actions_bg.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\misc\user_profile_bg.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product10.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product11.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\products\product9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_10.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_11.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_12.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_13.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_14.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\100_9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_10.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_11.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_12.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_13.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_14.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\300_9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\user1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\user2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\user3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\user4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\app\media\img\users\user5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\base\scripts.bundle.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Framework\assets\demo\default\base\style.bundle.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Framework\assets\demo\default\custom\components\base\blockui.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\base\bootstrap-notify.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\base\dropdown.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\base\scrollable.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\base\toastr.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\base\treeview.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\charts\amcharts\charts.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\charts\amcharts\maps.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\charts\amcharts\stock-charts.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\charts\flotcharts.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\charts\google-charts.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\charts\morris-charts.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\api\events.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\api\methods.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\column-rendering.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\column-width.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\data-ajax.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\data-json.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\data-local.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\record-selection.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\responsive-columns.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\translation.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\child\data-ajax.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\child\data-local.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\locked\both.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\locked\left.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\locked\right.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\scrolling\both.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\scrolling\horizontal.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\datatables\scrolling\vertical.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\validation\form-controls.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\validation\form-widgets.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\autosize.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-datepicker.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-daterangepicker.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-datetimepicker.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-markdown.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-maxlength.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-select.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-selectsplitter.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-switch.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-timepicker.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-touchspin.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\clipboard.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\dropzone.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\google-recaptcha.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\input-mask.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\ion-range-slider.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\select2.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\summernote.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\typeahead.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\maps\google-maps.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\maps\jqvmap.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\maps\jvectormap.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\portlets\draggable.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\utils\idle-timer.js" />
-    <Content Include="Framework\assets\demo\default\custom\components\utils\session-timeout.js" />
+    <Content Include="Framework\assets\demo\default\custom\components\base\blockui.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\base\bootstrap-notify.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\base\dropdown.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\base\scrollable.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\base\toastr.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\base\treeview.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\charts\amcharts\charts.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\charts\amcharts\maps.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\charts\amcharts\stock-charts.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\charts\flotcharts.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\charts\google-charts.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\charts\morris-charts.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\api\events.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\api\methods.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\column-rendering.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\column-width.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\data-ajax.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\data-json.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\data-local.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\record-selection.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\responsive-columns.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\base\translation.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\child\data-ajax.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\child\data-local.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\locked\both.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\locked\left.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\locked\right.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\scrolling\both.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\scrolling\horizontal.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\datatables\scrolling\vertical.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\validation\form-controls.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\validation\form-widgets.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\autosize.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-datepicker.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-daterangepicker.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-datetimepicker.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-markdown.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-maxlength.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-select.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-selectsplitter.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-switch.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-timepicker.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\bootstrap-touchspin.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\clipboard.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\dropzone.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\google-recaptcha.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\input-mask.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\ion-range-slider.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\select2.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\summernote.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\forms\widgets\typeahead.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\maps\google-maps.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\maps\jqvmap.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\maps\jvectormap.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\portlets\draggable.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\utils\idle-timer.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\custom\components\utils\session-timeout.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Framework\assets\demo\default\custom\header\actions.js" />
-    <Content Include="Framework\assets\demo\default\media\img\logo\favicon.ico" />
-    <Content Include="Framework\assets\demo\default\media\img\logo\logo.png" />
-    <Content Include="Framework\assets\demo\default\media\img\logo\logo_compact.png" />
-    <Content Include="Framework\assets\demo\default\media\img\logo\logo_default_dark.png" />
-    <Content Include="Framework\assets\demo\default\media\img\logo\logo_default_light.png" />
-    <Content Include="Framework\assets\demo\default\media\img\misc\notification_bg.jpg" />
-    <Content Include="Framework\assets\demo\default\media\img\misc\quick_actions_bg.jpg" />
-    <Content Include="Framework\assets\demo\default\media\img\misc\user_profile_bg.jpg" />
-    <Content Include="Framework\assets\demo\demo2\base\scripts.bundle.js" />
-    <Content Include="Framework\assets\demo\demo2\base\style.bundle.css" />
-    <Content Include="Framework\assets\demo\demo2\media\img\logo\favicon.ico" />
-    <Content Include="Framework\assets\demo\demo2\media\img\logo\logo.png" />
-    <Content Include="Framework\assets\snippets\pages\user\login.js" />
-    <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.svg" />
-    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.svg" />
-    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.svg" />
-    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.svg" />
-    <Content Include="Framework\assets\vendors\base\fonts\socicon\socicon.svg" />
-    <Content Include="Framework\assets\vendors\base\images\ion.rangeSlider\sprite-skin-flat.png" />
-    <Content Include="Framework\assets\vendors\base\images\jstree\32px.png" />
-    <Content Include="Framework\assets\vendors\base\images\jstree\40px.png" />
-    <Content Include="Framework\assets\vendors\base\images\jstree\throbber.gif" />
-    <Content Include="Framework\assets\vendors\base\images\malihu-custom-scrollbar-plugin\mCSB_buttons.png" />
+    <Content Include="Framework\assets\demo\default\media\img\logo\favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\media\img\logo\logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\media\img\logo\logo_compact.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\media\img\logo\logo_default_dark.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\media\img\logo\logo_default_light.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\media\img\misc\notification_bg.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\media\img\misc\quick_actions_bg.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\default\media\img\misc\user_profile_bg.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\demo2\base\scripts.bundle.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\demo2\base\style.bundle.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\demo2\media\img\logo\favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\demo\demo2\media\img\logo\logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\snippets\pages\user\login.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\line-awesome\line-awesome.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\fonts\socicon\socicon.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\images\ion.rangeSlider\sprite-skin-flat.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\images\jstree\32px.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\images\jstree\40px.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\images\jstree\throbber.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\base\images\malihu-custom-scrollbar-plugin\mCSB_buttons.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Framework\assets\vendors\base\vendors.bundle.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -315,10 +703,18 @@
     <Content Include="Framework\assets\vendors\base\webfont.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Framework\assets\vendors\custom\flot\flot.bundle.js" />
-    <Content Include="Framework\assets\vendors\custom\gmaps\gmaps.js" />
-    <Content Include="Framework\assets\vendors\custom\jqvmap\jqvmap.bundle.css" />
-    <Content Include="Framework\assets\vendors\custom\jqvmap\jqvmap.bundle.js" />
+    <Content Include="Framework\assets\vendors\custom\flot\flot.bundle.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\custom\gmaps\gmaps.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\custom\jqvmap\jqvmap.bundle.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\assets\vendors\custom\jqvmap\jqvmap.bundle.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="Framework\Header\header.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

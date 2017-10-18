@@ -24,21 +24,22 @@ namespace ToilluminateClient
         /// </summary>
         public static Color BackClearColor = Color.Gray;
 
+        #region " "
         /// <summary>
         /// 
         /// </summary>
         /// <param name="sourceBmp"></param>
-        /// <param name="picBox"></param>
+        /// <param name="size"></param>
+        /// <param name="fillMode"></param>
         /// <returns></returns>
-
-        public static Bitmap ResizeImage(Bitmap sourceBmp, PictureBox picBox)
+        public static Bitmap ResizeBitmap(Bitmap sourceBmp, Size size)
         {
-            return ResizeImage(sourceBmp, picBox, FillMode.Fill);
+            return ResizeBitmap(sourceBmp, size, FillMode.Fill);
         }
-        public static Bitmap ResizeImage(Bitmap sourceBmp, PictureBox picBox, FillMode fillMode)
+        public static Bitmap ResizeBitmap(Bitmap sourceBmp, Size size, FillMode fillMode)
         {
-            float xRate = (float)sourceBmp.Width / picBox.Size.Width;
-            float yRate = (float)sourceBmp.Height / picBox.Size.Height;
+            float xRate = (float)sourceBmp.Width / size.Width;
+            float yRate = (float)sourceBmp.Height / size.Height;
             if (xRate <= 1 && yRate <= 1 && FillMode.Center == fillMode)
             {
                 return sourceBmp;
@@ -58,12 +59,13 @@ namespace ToilluminateClient
                     }
                     else //if (FillMode.Zoom== fillMode)
                     {
-                        newW = picBox.Size.Width;
-                        newH = picBox.Size.Height;
+                        newW = size.Width;
+                        newH = size.Height;
                     }
 
                     Bitmap b = new Bitmap(newW, newH);
                     g = Graphics.FromImage(b);
+                    g.Clear(BackClearColor);
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     g.DrawImage(sourceBmp, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, sourceBmp.Width, sourceBmp.Height), GraphicsUnit.Pixel);
                     g.Dispose();
@@ -82,515 +84,7 @@ namespace ToilluminateClient
                 }
             }
         }
-
-        /// <summary>
-        /// 将图片转换成黑白色效果
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void HeiBaiSeImage(Bitmap bmp, PictureBox picBox)
-        {
-            //以黑白效果显示图像
-            Bitmap oldBitmap;
-            Bitmap newBitmap = null;
-            try
-            {
-                int Height = bmp.Height;
-                int Width = bmp.Width;
-                newBitmap = new Bitmap(Width, Height);
-                oldBitmap = bmp;
-                Color pixel;
-                for (int x = 0; x < Width; x++)
-                    for (int y = 0; y < Height; y++)
-                    {
-                        pixel = oldBitmap.GetPixel(x, y);
-                        int r, g, b, Result = 0;
-                        r = pixel.R;
-                        g = pixel.G;
-                        b = pixel.B;
-                        //实例程序以加权平均值法产生黑白图像
-                        int iType = 2;
-                        switch (iType)
-                        {
-                            case 0://平均值法
-                                Result = ((r + g + b) / 3);
-                                break;
-                            case 1://最大值法
-                                Result = r > g ? r : g;
-                                Result = Result > b ? Result : b;
-                                break;
-                            case 2://加权平均值法
-                                Result = ((int)(0.7 * r) + (int)(0.2 * g) + (int)(0.1 * b));
-                                break;
-                        }
-                        newBitmap.SetPixel(x, y, Color.FromArgb(Result, Result, Result));
-                    }
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            picBox.Image = newBitmap;
-        }
-
-        /// <summary>
-        /// 雾化效果
-        /// </summary>
-        /// <param name="bmp"></param>
-        /// <param name="picBox"></param>
-        public static void WuHuaImage(Bitmap bmp, PictureBox picBox)
-        {
-            //雾化效果
-            Bitmap oldBitmap;
-            Bitmap newBitmap = null;
-            try
-            {
-                int Height = bmp.Height;
-                int Width = bmp.Width;
-                newBitmap = new Bitmap(Width, Height);
-                oldBitmap = bmp;
-                Color pixel;
-                for (int x = 1; x < Width - 1; x++)
-                    for (int y = 1; y < Height - 1; y++)
-                    {
-                        System.Random MyRandom = new Random();
-                        int k = MyRandom.Next(123456);
-                        //像素块大小
-                        int dx = x + k % 19;
-                        int dy = y + k % 19;
-                        if (dx >= Width)
-                            dx = Width - 1;
-                        if (dy >= Height)
-                            dy = Height - 1;
-                        pixel = oldBitmap.GetPixel(dx, dy);
-                        newBitmap.SetPixel(x, y, pixel);
-                    }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            picBox.Image = newBitmap;
-        }
-
-
-        /// <summary>
-        /// 锐化效果
-        /// </summary>
-        /// <param name="bmp"></param>
-        /// <param name="picBox"></param>
-        public static void RuiHuaImage(Bitmap bmp, PictureBox picBox)
-        {
-            Bitmap oldBitmap;
-            Bitmap newBitmap = null;
-            try
-            {
-                int Height = bmp.Height;
-                int Width = bmp.Width;
-                newBitmap = new Bitmap(Width, Height);
-                oldBitmap = bmp;
-                Color pixel;
-                //拉普拉斯模板
-                int[] Laplacian = { -1, -1, -1, -1, 9, -1, -1, -1, -1 };
-                for (int x = 1; x < Width - 1; x++)
-                    for (int y = 1; y < Height - 1; y++)
-                    {
-                        int r = 0, g = 0, b = 0;
-                        int Index = 0;
-                        for (int col = -1; col <= 1; col++)
-                            for (int row = -1; row <= 1; row++)
-                            {
-                                pixel = oldBitmap.GetPixel(x + row, y + col); r += pixel.R * Laplacian[Index];
-                                g += pixel.G * Laplacian[Index];
-                                b += pixel.B * Laplacian[Index];
-                                Index++;
-                            }
-                        //处理颜色值溢出
-                        r = r > 255 ? 255 : r;
-                        r = r < 0 ? 0 : r;
-
-                        g = g > 255 ? 255 : g;
-                        g = g < 0 ? 0 : g;
-
-                        b = b > 255 ? 255 : b;
-                        b = b < 0 ? 0 : b;
-
-                        newBitmap.SetPixel(x - 1, y - 1, Color.FromArgb(r, g, b));
-                    }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            picBox.Image = newBitmap;
-        }
-
-        /// <summary>
-        ///底片效果
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void DiPianImage(Bitmap bmp, PictureBox picBox)
-        {
-            Bitmap oldBitmap;
-            Bitmap newBitmap = null;
-            try
-            {
-                int Height = bmp.Height;
-                int Width = bmp.Width;
-                newBitmap = new Bitmap(Width, Height);
-                oldBitmap = bmp;
-                Color pixel;
-                for (int x = 1; x < Width; x++)
-                {
-                    for (int y = 1; y < Height; y++)
-                    {
-                        int r, g, b;
-                        pixel = oldBitmap.GetPixel(x, y);
-                        r = 255 - pixel.R;
-                        g = 255 - pixel.G;
-                        b = 255 - pixel.B;
-                        newBitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "信息提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            picBox.Image = newBitmap;
-        }
-
-
-        /// <summary>
-        ///浮雕效果
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void FuDiaoImage(Bitmap bmp, PictureBox picBox)
-        {
-            Bitmap oldBitmap;
-            Bitmap newBitmap = null;
-            try
-            {
-                int Height = bmp.Height;
-                int Width = bmp.Width;
-                newBitmap = new Bitmap(Width, Height);
-                oldBitmap = bmp;
-                Color pixel1, pixel2;
-                for (int x = 0; x < Width - 1; x++)
-                {
-                    for (int y = 0; y < Height - 1; y++)
-                    {
-                        int r = 0, g = 0, b = 0;
-                        pixel1 = oldBitmap.GetPixel(x, y);
-                        pixel2 = oldBitmap.GetPixel(x + 1, y + 1);
-                        r = Math.Abs(pixel1.R - pixel2.R + 128);
-                        g = Math.Abs(pixel1.G - pixel2.G + 128);
-                        b = Math.Abs(pixel1.B - pixel2.B + 128);
-                        if (r > 255)
-                            r = 255;
-                        if (r < 0)
-                            r = 0;
-                        if (g > 255)
-                            g = 255;
-                        if (g < 0)
-                            g = 0;
-                        if (b > 255)
-                            b = 255;
-                        if (b < 0)
-                            b = 0;
-                        newBitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "信息提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            picBox.Image = newBitmap;
-        }
-
-
-        /// <summary>
-        /// 日光照射效果
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void RiGuangZhaoSheImage(Bitmap bmp, PictureBox picBox)
-        {
-            //以光照效果显示图像
-            Graphics MyGraphics = picBox.CreateGraphics();
-            MyGraphics.Clear(Color.White);
-            Bitmap MyBmp = new Bitmap(bmp, bmp.Width, bmp.Height);
-            int MyWidth = MyBmp.Width;
-            int MyHeight = MyBmp.Height;
-            Bitmap MyImage = MyBmp.Clone(new RectangleF(0, 0, MyWidth, MyHeight), System.Drawing.Imaging.PixelFormat.DontCare);
-            int A = MyWidth / 2;
-            int B = MyHeight / 2;
-            //MyCenter图片中心点，发亮此值会让强光中心发生偏移
-            Point MyCenter = new Point(MyWidth / 2, MyHeight / 2);
-            //R强光照射面的半径，即”光晕”
-            int R = Math.Min(MyWidth / 2, MyHeight / 2);
-            for (int i = MyWidth - 1; i >= 1; i--)
-            {
-                for (int j = MyHeight - 1; j >= 1; j--)
-                {
-                    float MyLength = (float)Math.Sqrt(Math.Pow((i - MyCenter.X), 2) + Math.Pow((j - MyCenter.Y), 2));
-                    //如果像素位于”光晕”之内
-                    if (MyLength < R)
-                    {
-                        Color MyColor = MyImage.GetPixel(i, j);
-                        int r, g, b;
-                        //220亮度增加常量，该值越大，光亮度越强
-                        float MyPixel = 220.0f * (1.0f - MyLength / R);
-                        r = MyColor.R + (int)MyPixel;
-                        r = Math.Max(0, Math.Min(r, 255));
-                        g = MyColor.G + (int)MyPixel;
-                        g = Math.Max(0, Math.Min(g, 255));
-                        b = MyColor.B + (int)MyPixel;
-                        b = Math.Max(0, Math.Min(b, 255));
-                        //将增亮后的像素值回写到位图
-                        Color MyNewColor = Color.FromArgb(255, r, g, b);
-                        MyImage.SetPixel(i, j, MyNewColor);
-                    }
-                }
-                //重新绘制图片
-                MyGraphics.DrawImage(MyImage, new Rectangle(0, 0, MyWidth, MyHeight));
-            }
-        }
-
-
-        /// <summary>
-        /// 油画效果
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void YouHuaImage(Bitmap bmp, PictureBox picBox)
-        {
-            //以油画效果显示图像
-            Graphics g = picBox.CreateGraphics();
-            int width = bmp.Width;
-            int height = bmp.Height;
-            RectangleF rect = new RectangleF(0, 0, width, height);
-            Bitmap bmpSource = bmp;
-            Bitmap img = bmpSource.Clone(rect, System.Drawing.Imaging.PixelFormat.DontCare);
-            //产生随机数序列
-            Random rnd = new Random();
-            //取不同的值决定油画效果的不同程度
-            int iModel = 2;
-            int i = width - iModel;
-            while (i > 1)
-            {
-                int j = height - iModel;
-                while (j > 1)
-                {
-                    int iPos = rnd.Next(100000) % iModel;
-                    //将该点的RGB值设置成附近iModel点之内的任一点
-                    Color color = img.GetPixel(i + iPos, j + iPos);
-                    img.SetPixel(i, j, color);
-                    j = j - 1;
-                }
-                i = i - 1;
-            }
-            //重新绘制图像
-            g.Clear(Color.White);
-            g.DrawImage(img, new Rectangle(0, 0, width, height));
-        }
-
-
-        /// <summary>
-        /// 垂直百叶窗
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void BaiYeChuang1(Bitmap bmp, PictureBox picBox)
-        {
-            //垂直百叶窗显示图像
-            Graphics g = null;
-            try
-            {
-                Bitmap bmpSource = (Bitmap)bmp.Clone();
-                int dw = bmpSource.Width / 30;
-                int dh = bmpSource.Height;
-                g = picBox.CreateGraphics();
-                g.Clear(BackClearColor);
-                Point[] MyPoint = new Point[30];
-                for (int x = 0; x < 30; x++)
-                {
-                    MyPoint[x].Y = 0;
-                    MyPoint[x].X = x * dw;
-                }
-                Bitmap bitmap = new Bitmap(bmpSource.Width, bmpSource.Height);
-                for (int i = 0; i < dw; i++)
-                {
-                    for (int j = 0; j < 30; j++)
-                    {
-                        for (int k = 0; k < dh; k++)
-                        {
-                            bitmap.SetPixel(MyPoint[j].X + i, MyPoint[j].Y + k, bmpSource.GetPixel(MyPoint[j].X + i, MyPoint[j].Y + k));
-                        }
-                    }
-                    picBox.Refresh();
-                    picBox.Image = bitmap;
-                    System.Threading.Thread.Sleep(120);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                //if (null != g)
-                //{
-                //    g.Dispose();
-                //}
-            }
-
-        }
-
-
-        /// <summary>
-        /// 水平百叶窗
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void BaiYeChuang2(Bitmap bmp, PictureBox picBox)
-        {
-            //水平百叶窗显示图像
-            Graphics g = null;
-            try
-            {
-                Bitmap bmpSource = (Bitmap)bmp.Clone();
-                int dh = bmpSource.Height / 20;
-                int dw = bmpSource.Width;
-                g = picBox.CreateGraphics();
-                g.Clear(BackClearColor);
-                Point[] MyPoint = new Point[20];
-                for (int y = 0; y < 20; y++)
-                {
-                    MyPoint[y].X = 0;
-                    MyPoint[y].Y = y * dh;
-                }
-                Bitmap bitmap = new Bitmap(bmpSource.Width, bmpSource.Height);
-                for (int i = 0; i < dh; i++)
-                {
-                    for (int j = 0; j < 20; j++)
-                    {
-                        for (int k = 0; k < dw; k++)
-                        {
-                            bitmap.SetPixel(MyPoint[j].X + k, MyPoint[j].Y + i, bmpSource.GetPixel(MyPoint[j].X + k, MyPoint[j].Y + i));
-                        }
-                    }
-                    picBox.Refresh();
-                    picBox.Image = bitmap;
-                    System.Threading.Thread.Sleep(100);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (null != g)
-                {
-                    g.Dispose();
-                }
-            }
-        }
-        
-
-        /// <summary>
-        /// 逆时针旋转
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void XuanZhuan90(Bitmap bmp, PictureBox picBox)
-        {
-            try
-            {
-                Graphics g = picBox.CreateGraphics();
-                bmp.RotateFlip(RotateFlipType.Rotate90FlipXY);
-                g.Clear(Color.White);
-                g.DrawImage(bmp, 0, 0);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
-        }
-
-        /// <summary>
-        /// 顺时针旋转
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void XuanZhuan270(Bitmap bmp, PictureBox picBox)
-        {
-            try
-            {
-                Graphics g = picBox.CreateGraphics();
-                bmp.RotateFlip(RotateFlipType.Rotate270FlipXY);
-                g.Clear(Color.White);
-                g.DrawImage(bmp, 0, 0);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
-        }
-
-        /// <summary>
-        /// 分块显示
-        /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
-        public static void Block(Bitmap bmpSource, PictureBox picBox)
-        {
-            Graphics g = null;
-            try
-            {
-                //以分块效果显示图像
-                g = picBox.CreateGraphics();
-
-                int width = bmpSource.Width;
-                int height = bmpSource.Height;
-                //定义将图片切分成四个部分的区域
-                RectangleF[] block ={
-                    new RectangleF(0,0,width/2,height/2),
-                    new RectangleF(width/2,0,width/2,height/2),
-                    new RectangleF(0,height/2,width/2,height/2),
-                    new RectangleF(width/2,height/2,width/2,height/2)};
-                //分别克隆图片的四个部分    
-                Bitmap[] MyBitmapBlack ={
-                bmpSource.Clone(block[0],System.Drawing.Imaging.PixelFormat.DontCare),
-                bmpSource.Clone(block[1],System.Drawing.Imaging.PixelFormat.DontCare),
-                bmpSource.Clone(block[2],System.Drawing.Imaging.PixelFormat.DontCare),
-                bmpSource.Clone(block[3],System.Drawing.Imaging.PixelFormat.DontCare)};
-                //绘制图片的四个部分，各部分绘制时间间隔为0.5秒                    
-                g.DrawImage(MyBitmapBlack[0], 0, 0);
-                System.Threading.Thread.Sleep(500);
-                g.DrawImage(MyBitmapBlack[1], width / 2, 0);
-                System.Threading.Thread.Sleep(500);
-                g.DrawImage(MyBitmapBlack[3], width / 2, height / 2);
-                System.Threading.Thread.Sleep(500);
-                g.DrawImage(MyBitmapBlack[2], 0, height / 2);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (null != g)
-                {
-                    g.Dispose();
-                }
-            }
-        }
+        #endregion
 
 
         /// <summary>
@@ -658,6 +152,55 @@ namespace ToilluminateClient
         }
 
         #region " private "
+
+        /// <summary>
+        /// 分块显示
+        /// </summary>
+        /// <param name="bmp">Bitmap 对象</param>
+        /// <param name="picBox">PictureBox 对象</param>
+        private static void ShowBitmap_Block(Bitmap bmpSource, PictureBox picBox)
+        {
+            Graphics g = null;
+            try
+            {
+                //以分块效果显示图像
+                g = picBox.CreateGraphics();
+
+                int width = bmpSource.Width;
+                int height = bmpSource.Height;
+                //定义将图片切分成四个部分的区域
+                RectangleF[] block ={
+                    new RectangleF(0,0,width/2,height/2),
+                    new RectangleF(width/2,0,width/2,height/2),
+                    new RectangleF(0,height/2,width/2,height/2),
+                    new RectangleF(width/2,height/2,width/2,height/2)};
+                //分别克隆图片的四个部分    
+                Bitmap[] MyBitmapBlack ={
+                bmpSource.Clone(block[0],System.Drawing.Imaging.PixelFormat.DontCare),
+                bmpSource.Clone(block[1],System.Drawing.Imaging.PixelFormat.DontCare),
+                bmpSource.Clone(block[2],System.Drawing.Imaging.PixelFormat.DontCare),
+                bmpSource.Clone(block[3],System.Drawing.Imaging.PixelFormat.DontCare)};
+                //绘制图片的四个部分，各部分绘制时间间隔为0.5秒                    
+                g.DrawImage(MyBitmapBlack[0], 0, 0);
+                System.Threading.Thread.Sleep(500);
+                g.DrawImage(MyBitmapBlack[1], width / 2, 0);
+                System.Threading.Thread.Sleep(500);
+                g.DrawImage(MyBitmapBlack[3], width / 2, height / 2);
+                System.Threading.Thread.Sleep(500);
+                g.DrawImage(MyBitmapBlack[2], 0, height / 2);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (null != g)
+                {
+                    g.Dispose();
+                }
+            }
+        }
 
         /// <summary>
         /// 淡入效果
@@ -1290,6 +833,11 @@ namespace ToilluminateClient
                 {
                     ShowBitmap_Fade(bmpSource, picBox);
                 }
+                else if (ImageShowStyle.Block == imgShowStyle)
+                {
+                    ShowBitmap_Block(bmpSource, picBox);
+                }
+                
                 
                 else if (ImageShowStyle.Special == imgShowStyle)
                 {
@@ -1337,6 +885,7 @@ namespace ToilluminateClient
 
                 Bitmap bmpNew = new Bitmap(bmpSource.Width, bmpSource.Height);
                 g = Graphics.FromImage(bmpNew);
+                g.Clear(BackClearColor);
 
                 if (BitmapSpecialStyle.None == bmpSpecialStyle)
                 {
@@ -1491,6 +1040,11 @@ namespace ToilluminateClient
         /// 
         /// </summary>
         Fade = 12,
+        /// <summary>
+        /// 
+        /// </summary>
+        Block = 13,
+        
         /// <summary>
         /// 
         /// </summary>
