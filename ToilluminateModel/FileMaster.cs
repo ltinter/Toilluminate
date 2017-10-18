@@ -25,5 +25,6 @@ namespace ToilluminateModel
         public Nullable<System.DateTime> InsertDate { get; set; }
         public string FileThumbnailUrl { get; set; }
         public Nullable<int> FolderID { get; set; }
+        public string Settings { get; set; }
     }
 }
