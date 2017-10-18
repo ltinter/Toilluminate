@@ -89,6 +89,12 @@
         $(document).ready(function () {
             pageInit();
         });
+        function addElementToPlayer(item) {
+            var player = $('#players');
+            $('<li>', { text: formatItem(item) }).append(
+            $('<img>', { src: item.FileThumbnailUrl }).width('200px').fadeIn(),
+            $('<input type="button" value = "Delete" onclick="deleteFile(this,' + item.FileID + ')">').width('50px')).appendTo(player);
+        }
         function pageInit() {
 
             $.ajax({
@@ -98,10 +104,7 @@
                 success: function (data) {
                     $('#players').empty();
                     $.each(data, function (key, item) {
-                        var player = $('#players');
-                        $('<li>', { text: formatItem(item) }).append(
-                        $('<img>', { src: item.FileThumbnailUrl }).width('200px').fadeIn(),
-                        $('<input type="button" value = "Delete" onclick="deleteFile(this,' + item.FileID + ')">').width('50px')).appendTo(player);
+                        addElementToPlayer(item);
                     });
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -133,21 +136,21 @@
                 formData.append("FolderID", 1);
 
                 $.ajax({
-                    url: 'api/uploadFile',
+                    url: uri + '/UploadFile',
                     type: "POST",
                     //contentType: "application/json; charset=utf-8",
                     processData: false,
                     contentType: false,
                     data: formData,
-                    success: function () {
-                        pageInit();
-                        $("#file_fileupload").val('');
+                    success: function (data) {
+                        addElementToPlayer(data);
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         alert("请求失败，消息：" + textStatus + "  " + errorThrown);
                     }
                 });
             });
+            $("#file_fileupload").val('');
         }
         function deleteFile(obj,fileID){
 

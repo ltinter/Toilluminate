@@ -110,8 +110,8 @@ namespace ToilluminateModel.Controllers
             return Ok(fileMaster);
         }
 
-        [HttpPost, Route("api/uploadFile")]
-        public async Task<string> uploadFile()
+        [HttpPost, Route("api/FileMasters/UploadFile")]
+        public async Task<IHttpActionResult> UploadFile()
         {
             try
             {
@@ -147,23 +147,21 @@ namespace ToilluminateModel.Controllers
                 File.WriteAllBytes(thumbnailFilePath, thumbnailFile);
 
 
-                FileMaster fm = new FileMaster();
-                fm.FolderID = int.Parse(HttpContext.Current.Request["FolderID"]);
-                fm.UserID = int.Parse(HttpContext.Current.Request["UserID"]);
-                fm.FileType = fileNameSplit.Length > 0 ? fileNameSplit[fileNameSplit.Length - 1] : "";
-                fm.FileName = fileName;
-                fm.FileUrl = FORLDER + "/" + fileName;
-                fm.FileThumbnailUrl = THUMBNAILFORLDER + "/" + fileName;
-                db.FileMaster.Add(fm);
-                db.SaveChanges();
+                FileMaster fileMaster = new FileMaster();
+                fileMaster.FolderID = int.Parse(HttpContext.Current.Request["FolderID"]);
+                fileMaster.UserID = int.Parse(HttpContext.Current.Request["UserID"]);
+                fileMaster.FileType = fileNameSplit.Length > 0 ? fileNameSplit[fileNameSplit.Length - 1] : "";
+                fileMaster.FileName = fileName;
+                fileMaster.FileUrl = FORLDER + "/" + fileName;
+                fileMaster.FileThumbnailUrl = THUMBNAILFORLDER + "/" + fileName;
+                db.FileMaster.Add(fileMaster);
+                await db.SaveChangesAsync();
 
-                var result
-                    = string.Format("Received '{0}' with length: {1}", fileName, file.Length);
-                return result;
+                return Ok(fileMaster);
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw;
             }
         }
 
