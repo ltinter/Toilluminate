@@ -167,64 +167,108 @@ var initGroupTree = function () {
 
     //var userGroup = $.insmFramework('user').group;
     //var group = userGroup;
-    //var GroupTreedata = [];
-    //var a  ={
-    //    "text": "KFC",
-    //    "icon": "fa fa-folder m--font-success",
-    //    "state": {
-    //        "opened": true
-    //    },
-    //    "children": [
-    //        { "text": "Big Kfc", "icon": "fa fa-file m--font-waring" }
-    //    ]
-    //}
+    var GroupTreedata = [];
     var tempdataGroupTree = $.insmFramework('getGroupTreeData', {
-        groupId: group.Id,
-        appurl:sgsfsgfs,
         success: function (tempdataGroupTreeData) {
-            if (tempdataGroupTreeData) {
-                function scanRoot(node) {
-                    var selected = false;
-                    GroupTreedata.push(node);
-                    if (node.children.length > 0) {
-                        $.each(node.children, function (index, nod) {
-                            scanRoot(nod);
-                            if (nod.children.length > 0) {
-                                scanRoot(nod);
+            if (tempdataGroupTreeData) { 
+                function scanRoot(groupTreedata, usegroupdata) {
+                    $.each(groupTreedata, function (index, item) {
+                        if (item.GroupParentID == null) {
+                            var item = {
+                                text: item.GroupName,
+                                icon: "fa fa-folder m--font-success",
+                                GroupID: item.GroupID,
+                                id: item.GroupID,
+                                GroupParentID: item.GroupParentID,
+                                click : function (node) {
+                                    return { 'id': node.id };
+                                },
+                                children:[]
                             };
+                            usegroupdata.push(item);
+                            return true
+                        }
+                        if (item.GroupParentID) {
+                            var childrenitem = {
+                                text: item.GroupName,
+                                icon: "fa fa-folder m--font-success",
+                                GroupID: item.GroupID,
+                                GroupParentID: item.GroupParentID,
+                                click: function (node) {
+                                    return { 'id': node.id };
+                                },
+                                children: []
+                            };
+
+                            $.each(usegroupdata, function (index, rootitem) {
+                                if (rootitem.GroupID == item.GroupParentID) {
+                                    rootitem.children.push(childrenitem);
+                                    return true
+                                } else if (rootitem.children && rootitem.children.length > 0) {
+                                    if (scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
+                                    {
+                                        rootitem.children.push(scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
+                                        return true
+                                    } else {
+                                        return false
+                                    }
+                                }
+                                return false
+                            })
+                        }
+                    });
+                    return usegroupdata;
+                }
+                function scansubRoot(childrendata, usegroupdata, groupParentID) {
+                    if (childrendata.length > 0) {
+                        $.each(childrendata, function (index, subFolder) {
+                            if (subFolder.GroupID == groupParentID) {
+                                subFolder.children.push(usegroupdata);
+                                return childrendata;
+                            }
                         });
                     }
-                    return selected;
                 }
-                scanRoot(tempdataGroupTreeData);
-            }
+                temptestdata = scanRoot(tempdataGroupTreeData, GroupTreedata);
+
+                $("#groupTree").jstree({
+                    "core": {
+                        "themes": {
+                            "responsive": true
+                        },
+                        // so that create works
+                        "check_callback": true,
+                        'data': temptestdata
+                    },
+                    "types": {
+                        "default": {
+                            "icon": "fa fa-folder m--font-success"
+                        },
+                        "file": {
+                            "icon": "fa fa-file  m--font-success"
+                        }
+                    },
+                    "state": { "key": "demo2" },
+                    "plugins": ["dnd", "state", "types"]
+                });
+                $("#groupTree").on("changed.jstree", function (e, data) {
+                    //存储当前选中的区域的名称
+                    //alert(data.instance.get_node(data.selected).text);
+                    if (data.node && data.node.original) {
+                        alert(data.node.original.GroupID);
+                        alert(data.node.original.GroupParentID);
+                        $.data(document, "selectedGroupID", data.node.original.GroupID);
+                    } 
+                   
+                });
+                $("#newgroup").click(function (e) {
+                    alert('asda')
+                })
+            } 
         },
         invalid: function () {
             invalid = true;
         }
-    });
-
-
-
-    $("#groupTree").jstree({
-        "core": {
-            "themes": {
-                "responsive": true
-            },
-            // so that create works
-            "check_callback": true,
-            'data': temptestdata
-        },
-        "types": {
-            "default": {
-                "icon": "fa fa-folder m--font-success"
-            },
-            "file": {
-                "icon": "fa fa-file  m--font-success"
-            }
-        },
-        "state": { "key": "demo2" },
-        "plugins": ["dnd", "state", "types"]
     });
 }
 
