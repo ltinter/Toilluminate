@@ -15,12 +15,13 @@ namespace ToilluminateModel
     public partial class UserMaster
     {
         public int UserID { get; set; }
-        public Nullable<int> GroupID { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string EmailAddress { get; set; }
         public string Comments { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
+        public Nullable<int> GroupID { get; set; }
+        public string Settings { get; set; }
     }
 }
