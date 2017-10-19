@@ -31,9 +31,9 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.pnlShowImage = new System.Windows.Forms.Panel();
-            this.picImage2 = new System.Windows.Forms.PictureBox();
-            this.picImage1 = new System.Windows.Forms.PictureBox();
+            this.picImage = new System.Windows.Forms.PictureBox();
             this.pnlShowMessage = new System.Windows.Forms.Panel();
+            this.lblMessage = new System.Windows.Forms.Label();
             this.pnlShowMediaWMP = new System.Windows.Forms.Panel();
             this.axWMP = new AxWMPLib.AxWindowsMediaPlayer();
             this.pnlShowMediaVLC = new System.Windows.Forms.Panel();
@@ -48,10 +48,8 @@
             this.tmrMessage = new System.Windows.Forms.Timer(this.components);
             this.tmrWeb = new System.Windows.Forms.Timer(this.components);
             this.tmrPDF = new System.Windows.Forms.Timer(this.components);
-            this.lblMessage = new System.Windows.Forms.Label();
             this.pnlShowImage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picImage2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picImage1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picImage)).BeginInit();
             this.pnlShowMessage.SuspendLayout();
             this.pnlShowMediaWMP.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWMP)).BeginInit();
@@ -62,8 +60,7 @@
             // 
             // pnlShowImage
             // 
-            this.pnlShowImage.Controls.Add(this.picImage2);
-            this.pnlShowImage.Controls.Add(this.picImage1);
+            this.pnlShowImage.Controls.Add(this.picImage);
             this.pnlShowImage.Location = new System.Drawing.Point(0, 0);
             this.pnlShowImage.Margin = new System.Windows.Forms.Padding(0);
             this.pnlShowImage.Name = "pnlShowImage";
@@ -71,21 +68,13 @@
             this.pnlShowImage.TabIndex = 0;
             this.pnlShowImage.DoubleClick += new System.EventHandler(this.panle_DoubleClick);
             // 
-            // picImage2
+            // picImage
             // 
-            this.picImage2.Location = new System.Drawing.Point(110, 95);
-            this.picImage2.Name = "picImage2";
-            this.picImage2.Size = new System.Drawing.Size(100, 50);
-            this.picImage2.TabIndex = 1;
-            this.picImage2.TabStop = false;
-            // 
-            // picImage1
-            // 
-            this.picImage1.Location = new System.Drawing.Point(51, 51);
-            this.picImage1.Name = "picImage1";
-            this.picImage1.Size = new System.Drawing.Size(100, 50);
-            this.picImage1.TabIndex = 0;
-            this.picImage1.TabStop = false;
+            this.picImage.Location = new System.Drawing.Point(51, 51);
+            this.picImage.Name = "picImage";
+            this.picImage.Size = new System.Drawing.Size(100, 50);
+            this.picImage.TabIndex = 0;
+            this.picImage.TabStop = false;
             // 
             // pnlShowMessage
             // 
@@ -96,6 +85,15 @@
             this.pnlShowMessage.Size = new System.Drawing.Size(320, 240);
             this.pnlShowMessage.TabIndex = 1;
             this.pnlShowMessage.DoubleClick += new System.EventHandler(this.panle_DoubleClick);
+            // 
+            // lblMessage
+            // 
+            this.lblMessage.Location = new System.Drawing.Point(192, 105);
+            this.lblMessage.Name = "lblMessage";
+            this.lblMessage.Size = new System.Drawing.Size(100, 23);
+            this.lblMessage.TabIndex = 0;
+            this.lblMessage.Text = "lblMessage";
+            this.lblMessage.DoubleClick += new System.EventHandler(this.control_DoubleClick);
             // 
             // pnlShowMediaWMP
             // 
@@ -193,15 +191,6 @@
             this.tmrPDF.Interval = 1000;
             this.tmrPDF.Tick += new System.EventHandler(this.tmrPDF_Tick);
             // 
-            // lblMessage
-            // 
-            this.lblMessage.Location = new System.Drawing.Point(192, 105);
-            this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(100, 23);
-            this.lblMessage.TabIndex = 0;
-            this.lblMessage.Text = "lblMessage";
-            this.lblMessage.DoubleClick += new System.EventHandler(this.control_DoubleClick);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -218,8 +207,7 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.DoubleClick += new System.EventHandler(this.MainForm_DoubleClick);
             this.pnlShowImage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picImage2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picImage1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picImage)).EndInit();
             this.pnlShowMessage.ResumeLayout(false);
             this.pnlShowMediaWMP.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.axWMP)).EndInit();
@@ -238,9 +226,8 @@
         private System.Windows.Forms.Panel pnlShowMediaVLC;
         private System.Windows.Forms.Panel pnlShowWeb;
         private System.Windows.Forms.Panel pnlShowPDF;
-        private System.Windows.Forms.PictureBox picImage1;
+        private System.Windows.Forms.PictureBox picImage;
         private System.Windows.Forms.ToolTip tipBox;
-        private System.Windows.Forms.PictureBox picImage2;
         private System.Windows.Forms.Timer tmrImage;
         private System.Windows.Forms.Timer tmrAll;
         private System.Windows.Forms.WebBrowser wbsBox;

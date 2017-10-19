@@ -36,8 +36,23 @@
     <StartupObject>ToilluminateClient.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,11 +72,20 @@
     <Compile Include="Commons\LogApp.cs" />
     <Compile Include="Commons\Utility.cs" />
     <Compile Include="Commons\VariableInfo.cs" />
+    <Compile Include="FileMaster.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FolderMaster.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
     <Compile Include="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GroupMaster.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -69,8 +93,44 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerMaster.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerPlayListLinkTable.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PlayListMaster.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TemplatTypeMaster.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TempleFileLinkTable.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TempletMaster.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Toilluminate.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Toilluminate.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Toilluminate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Toilluminate.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Toilluminate.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="UserMaster.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -87,6 +147,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -96,11 +157,29 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EntityDeploy Include="Toilluminate.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Toilluminate.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Toilluminate.edmx.diagram">
+      <DependentUpon>Toilluminate.edmx</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Toilluminate.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Toilluminate.edmx</DependentUpon>
+      <LastGenOutput>Toilluminate.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Toilluminate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Toilluminate.edmx</DependentUpon>
+      <LastGenOutput>Toilluminate.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <COMReference Include="AxAXVLC">
       <Guid>{DF2BBE39-40A8-433B-A279-073F48DA94B6}</Guid>
@@ -136,6 +215,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
