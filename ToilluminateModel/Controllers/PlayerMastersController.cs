@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -100,6 +101,22 @@ namespace ToilluminateModel.Controllers
             await db.SaveChangesAsync();
 
             return Ok(playerMaster);
+        }
+
+        [HttpPost, Route("api/PlayerMasters/GetPlayerByGroupID/{GroupID}")]
+        public async Task<IQueryable<PlayerMaster>> GetPlayerByGroupID(int GroupID)
+        {
+            return db.PlayerMaster.Where(a => a.GroupID == GroupID);
+        }
+
+        [HttpPost, Route("api/PlayerMasters/GetPlayListByPlayerID/{PlayerID}")]
+        public async Task<IQueryable<PlayListMaster>> GetPlayListByPlayerID(int PlayerID)
+        {
+            //int?[] playListIDs = (from ppl in db.PlayerPlayListLinkTable where ppl.PlayerID == PlayerID select ppl.PlayListID).ToArray<int?>();
+            //return db.PlayListMaster.Where(a=> playListIDs.Contains(a.PlayListID));
+            return db.PlayListMaster
+                    .Where(q => db.PlayerPlayListLinkTable
+                    .Where(s => s.PlayListID == q.PlayListID && s.PlayerID == PlayerID).Count() > 0);
         }
 
         protected override void Dispose(bool disposing)

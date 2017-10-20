@@ -70,6 +70,22 @@
         <div>
             <input type="button" value="SAVE FILE" onclick="fileUpload();" />
         </div>
+        <div>
+            <input type="button" value="GET PLAYLIST BY GROUPID" onclick="GetPlayListByGroupID();"/>
+            <div id="rst1"/>
+        </div>
+        <div>
+            <input type="button" value="GET INHERITFORCED PLAYLIST BY GROUPID" onclick="GetInheritForcedPlayListByGroupID();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="ADD NEW GROUPID" onclick="AddNewGroup();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="GET PLAYLIST BY PLAYERID" onclick="GetPlayListByPlayerID();" />
+            <div id="rst2" />
+        </div>
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
@@ -84,6 +100,13 @@
                 FileData:"";
                 Comments: "";
                 return FileMaster;
+            }
+        }
+        var GroupMaster = {
+            create: function () {
+                GroupName: "";
+                GroupParentID: "";
+                return GroupMaster;
             }
         }
         $(document).ready(function () {
@@ -162,6 +185,64 @@
                     $(obj).parent().fadeOut(500, function() {
                         $(obj).parent().remove();
                     });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetPlayListByGroupID() {
+            $.ajax({
+                url: 'api/PlayListMasters/GetPlayListByGroupID/'+1,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetInheritForcedPlayListByGroupID() {
+            $.ajax({
+                url: 'api/PlayListMasters/GetInheritForcedPlayListByGroupID/' + 14,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+
+        function AddNewGroup() {
+            var newGroup = GroupMaster.create();  
+            newGroup.GroupName = "tsx_test_01";   
+            newGroup.GroupParentID = "3";
+            $.ajax({
+                url: 'api/GroupMasters',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data:JSON.stringify(newGroup),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+
+        function GetPlayListByPlayerID() {
+            $.ajax({
+                url: 'api/PlayerMasters/GetPlayListByPlayerID/1/2',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert("请求失败，消息：" + textStatus + "  " + errorThrown);

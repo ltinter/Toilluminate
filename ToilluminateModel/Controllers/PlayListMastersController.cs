@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -103,9 +106,22 @@ namespace ToilluminateModel.Controllers
         }
 
 
-        //[HttpPost, Route("api/uploadFile")]
-        //public async Task<IHttpActionResult> uploadFile()
-        //{
+        [HttpPost, Route("api/PlayListMasters/GetPlayListByGroupID/{GroupID}")]
+        public async Task<IQueryable<PlayListMaster>> GetPlayListByGroupID(int GroupID)
+        {
+            return db.PlayListMaster.Where(a=>a.GroupID == GroupID);
+        }
+
+        [HttpPost, Route("api/PlayListMasters/GetInheritForcedPlayListByGroupID/{GroupID}")]
+        public async Task<IQueryable<PlayListMaster>> GetInheritForcedPlayListByGroupID(int GroupID)
+        {
+            List<int> GroupIDList = new List<int>();
+            PublicMethods.GetInheritGroupIDs(GroupID,ref GroupIDList,db);
+            int [] groupIDs = GroupIDList.ToArray<int>();
+            //Expression<Func<PlayListMaster, bool>> filter = a => groupIDs.Contains((int)a.GroupID);
+            return db.PlayListMaster.Where(a => groupIDs.Contains((int)a.GroupID));
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -168,6 +168,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Classes\ImageHelper.cs" />
+    <Compile Include="Classes\PublicMethods.cs" />
     <Compile Include="Controllers\FileMastersController.cs" />
     <Compile Include="Controllers\FolderMastersController.cs" />
     <Compile Include="Controllers\GroupMastersController.cs" />
