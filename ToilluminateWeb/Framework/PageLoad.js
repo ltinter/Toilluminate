@@ -100,75 +100,30 @@
 }
 
 var initGroupTree = function () {
-    //
-    var temptestdata = [{
-        "text": "Tokyo",
-        "children": [{
-            "text": "MacDonald",
-            "state": {
-                "selected": true
-            }
-        }, {
-            "text": "Starbucks",
-            "icon": "fa fa-warning m--font-danger"
-        }, {
-            "text": "KFC",
-            "icon": "fa fa-folder m--font-success",
-            "state": {
-                "opened": true
-            },
-            "children": [
-                { "text": "Big Kfc", "icon": "fa fa-file m--font-waring" }
-            ]
-        },{
-            "text": "Burger King",
-            "icon": "fa fa-folder m--font-danger",
-            "children": [
-                { "text": "Shop 1", "icon": "fa fa-file m--font-waring" },
-                { "text": "Shop 2", "icon": "fa fa-file m--font-success" },
-                { "text": "Shop 3", "icon": "fa fa-file m--font-default" },
-                { "text": "Shop 4", "icon": "fa fa-file m--font-danger" },
-                { "text": "Shop 5", "icon": "fa fa-file m--font-info" }
-            ]
-        }]
-    },
-    {
-        "text": "Tokyo2",
-        "children": [{
-            "text": "MacDonald2",
-            "state": {
-                "selected": true
-            }
-        }, {
-            "text": "Starbucks2",
-            "icon": "fa fa-warning m--font-danger"
-        }, {
-            "text": "KFC2",
-            "icon": "fa fa-folder m--font-success",
-            "state": {
-                "opened": true
-            },
-            "children": [
-                { "text": "Big Kfc", "icon": "fa fa-file m--font-waring" }
-            ]
-        }, {
-            "text": "Burger King2",
-            "icon": "fa fa-folder m--font-danger",
-            "children": [
-                { "text": "Shop 1", "icon": "fa fa-file m--font-waring" },
-                { "text": "Shop 2", "icon": "fa fa-file m--font-success" },
-                { "text": "Shop 3", "icon": "fa fa-file m--font-default" },
-                { "text": "Shop 4", "icon": "fa fa-file m--font-danger" },
-                { "text": "Shop 5", "icon": "fa fa-file m--font-info" }
-            ]
-        }]
-    }
-    ]
-
     //var userGroup = $.insmFramework('user').group;
     //var group = userGroup;
     var GroupTreedata = [];
-    var tempdataGroupTree = $.insmFramework('getGroupTreeData', {
+    var jstreeData = {
+        "core": {
+            "themes": {
+                "responsive": true
+            },
+            // so that create works
+            "check_callback": true,
+            'data': GroupTreedata
+        },
+        "types": {
+            "default": {
+                "icon": "fa fa-sitemap m--font-success"
+            },
+            "file": {
+                "icon": "fa fa-sitemap  m--font-success"
+            }
+        },
+        "state": { "key": "demo2" },
+        "plugins": ["dnd", "state", "types"]
+    };
+    $.insmFramework('getGroupTreeData', {
         success: function (tempdataGroupTreeData) {
             if (tempdataGroupTreeData) { 
                 function scanRoot(groupTreedata, usegroupdata) {
@@ -185,7 +140,7 @@ var initGroupTree = function () {
                                 },
                                 children:[]
                             };
-                            usegroupdata.push(item);
+                            GroupTreedata.push(item);
                             return true
                         }
                         if (item.GroupParentID) {
@@ -200,69 +155,72 @@ var initGroupTree = function () {
                                 children: []
                             };
 
-                            $.each(usegroupdata, function (index, rootitem) {
+                            $.each(GroupTreedata, function (index, rootitem) {
                                 if (rootitem.GroupID == item.GroupParentID) {
                                     rootitem.children.push(childrenitem);
-                                    return true
                                 } else if (rootitem.children && rootitem.children.length > 0) {
                                     if (scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
                                     {
                                         rootitem.children.push(scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
-                                        return true
-                                    } else {
-                                        return false
                                     }
                                 }
-                                return false
                             })
                         }
                     });
-                    return usegroupdata;
+                    //return usegroupdata;
                 }
-                function scansubRoot(childrendata, usegroupdata, groupParentID) {
+                function scansubRoot(childrendata, childrengroupdata, groupParentID) {
                     if (childrendata.length > 0) {
                         $.each(childrendata, function (index, subFolder) {
                             if (subFolder.GroupID == groupParentID) {
-                                subFolder.children.push(usegroupdata);
+                                subFolder.children.push(childrengroupdata);
                                 return childrendata;
+                            } else {
+                                if (subFolder.children && subFolder.children.length > 0) {
+                                    scansubRoot(subFolder.children, childrengroupdata, groupParentID)
+                                }
                             }
                         });
                     }
                 }
-                temptestdata = scanRoot(tempdataGroupTreeData, GroupTreedata);
+                scanRoot(tempdataGroupTreeData, GroupTreedata);
 
-                $("#groupTree").jstree({
-                    "core": {
-                        "themes": {
-                            "responsive": true
-                        },
-                        // so that create works
-                        "check_callback": true,
-                        'data': temptestdata
-                    },
-                    "types": {
-                        "default": {
-                            "icon": "fa fa-folder m--font-success"
-                        },
-                        "file": {
-                            "icon": "fa fa-file  m--font-success"
-                        }
-                    },
-                    "state": { "key": "demo2" },
-                    "plugins": ["dnd", "state", "types"]
+                jstreeData.core.data = GroupTreedata;
+                
+                $('#groupTree').jstree(jstreeData);
+                $('#groupTreeForPlayerEdit').jstree(jstreeData);
+
+                $("#groupTreeForPlayerEdit").on("changed.jstree", function (e, data) {
+                    //存储当前选中的区域的名称
+                    if (data.node && data.node.original) {
+                        $.data(document, "selectedGroupID", data.node.original.GroupID);
+                    } 
+                    console.log("The selected nodes are:");
+                    console.log(data.selected);
+                    //alert('node.text is:' + data.node.text);
+                    console.log(data);
                 });
                 $("#groupTree").on("changed.jstree", function (e, data) {
                     //存储当前选中的区域的名称
-                    //alert(data.instance.get_node(data.selected).text);
                     if (data.node && data.node.original) {
-                        alert(data.node.original.GroupID);
-                        alert(data.node.original.GroupParentID);
-                        $.data(document, "selectedGroupID", data.node.original.GroupID);
-                    } 
-                   
+                        $.data(document, "deleteGroupID", data.node.original.GroupID);
+                    }
+
                 });
                 $("#newgroup").click(function (e) {
-                    alert('asda')
+                    $("#div_1").hide();
+                    return;
+                })
+                $("#deletegroup").click(function (e) {
+                    var newGroupdata = $.insmFramework('deleteGroup', {
+                        deleteGroupId: $.data(document, "deleteGroupID"),
+                        success: function (resultdata) {
+                            initGroupTree();
+                        }
+                    })
+                })
+                $("#button_save").click(function (e) {
+                    addNewGroup();
                 })
             } 
         },
@@ -270,8 +228,115 @@ var initGroupTree = function () {
             invalid = true;
         }
     });
-}
 
+}
+var addNewGroup = function () {
+    if ($.trim($("#groupname").val()) == '') {
+        alert('Group name is empty!');
+    }
+    var newGroupdata = $.insmFramework('creatGroup', {
+        newGroupName: $("#groupname").val(),
+        active: 'On',
+        onlineUnits: 'Off',
+        //displayUnits: '',
+        note: $("#text_note").val(),
+        newGroupNameParentID: $.data(document, "selectedGroupID"),
+        success: function (data) {
+            $("#div_1").show();
+            if (data) {
+                
+
+                //$.insmFramework('getGroupTreeData', {
+                //    success: function (tempdataGroupTreeData) {
+                //        if (tempdataGroupTreeData) {
+                //            function scanRoot(groupTreedata, usegroupdata) {
+                //                $.each(groupTreedata, function (index, item) {
+                //                    if (item.GroupParentID == null) {
+                //                        var item = {
+                //                            text: item.GroupName,
+                //                            icon: "fa fa-folder m--font-success",
+                //                            GroupID: item.GroupID,
+                //                            id: item.GroupID,
+                //                            GroupParentID: item.GroupParentID,
+                //                            click: function (node) {
+                //                                return { 'id': node.id };
+                //                            },
+                //                            children: []
+                //                        };
+                //                        GroupTreedata.push(item);
+                //                        return true
+                //                    }
+                //                    if (item.GroupParentID) {
+                //                        var childrenitem = {
+                //                            text: item.GroupName,
+                //                            icon: "fa fa-folder m--font-success",
+                //                            GroupID: item.GroupID,
+                //                            GroupParentID: item.GroupParentID,
+                //                            click: function (node) {
+                //                                return { 'id': node.id };
+                //                            },
+                //                            children: []
+                //                        };
+
+                //                        $.each(GroupTreedata, function (index, rootitem) {
+                //                            if (rootitem.GroupID == item.GroupParentID) {
+                //                                rootitem.children.push(childrenitem);
+                //                            } else if (rootitem.children && rootitem.children.length > 0) {
+                //                                if (scansubRoot(rootitem.children, childrenitem, item.GroupParentID)) {
+                //                                    rootitem.children.push(scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
+                //                                }
+                //                            }
+                //                        })
+                //                    }
+                //                });
+                //                //return usegroupdata;
+                //            }
+                //            function scansubRoot(childrendata, childrengroupdata, groupParentID) {
+                //                if (childrendata.length > 0) {
+                //                    $.each(childrendata, function (index, subFolder) {
+                //                        if (subFolder.GroupID == groupParentID) {
+                //                            subFolder.children.push(childrengroupdata);
+                //                            return childrendata;
+                //                        } else {
+                //                            if (subFolder.children && subFolder.children.length > 0) {
+                //                                scansubRoot(subFolder.children, childrengroupdata, groupParentID)
+                //                            }
+                //                        }
+                //                    });
+                //                }
+                //            }
+                //            scanRoot(tempdataGroupTreeData, GroupTreedata);
+
+                //            jstreeData.core.data = GroupTreedata;
+
+                //            $("#groupTree").jstree().settings.core.data = GroupTreedata;
+                //            $("#groupTreeForPlayerEdit").jstree().settings.core.data = GroupTreedata;
+
+                //            $("#groupTree").jstree().refresh(true);
+                //            $("#groupTreeForPlayerEdit").jstree().refresh(true);
+                //        }
+                //    },
+                //    invalid: function () {
+                //        invalid = true;
+                //    }
+                //});
+            }
+            
+            
+        }
+        
+    }) 
+}
+//var openAll = function () {
+    $("#expandAll").click(function () {
+        $('#jstree').jstree('open_all');
+    });   
+//}
+//var closeAll = function () {
+    $("#collapseAll").click(function () {
+        $('#jstree').jstree('close_all');
+    });
+//}
 var DatatableResponsiveColumnsDemo = function () {
     var datatable = $('.m_datatable').mDatatable({
         // datasource definition

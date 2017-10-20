@@ -119,27 +119,152 @@
             });
             return $this;
         },
+        //ajax: function (options) {
+        //    // Global vars
+        //    var $this = $('html').eq(0);
+        //    var _plugin = $this.data('insmFramework');
+
+        //    var restartOptions = $.extend(true, {}, options);
+        //    //if (_plugin.settings.password) {
+        //    //    $.extend(options.data, {
+        //    //        username: _plugin.settings.username,
+        //    //        password: _plugin.settings.password,
+        //    //        format: 'json'
+        //    //    });
+        //    //} else {
+        //    //    $.extend(options.data, {
+        //    //        session: _plugin.settings.session,
+        //    //        format: 'json'
+        //    //    });
+        //    //}
+        //    //if (options.data.session == null || options.data.session == 'null' || options.data.session == '') {
+        //    //    delete options.data.session;
+        //    //}
+
+        //    var callbacks = {
+        //        success: options.data.success,
+        //        denied: options.data.denied,
+        //        invalid: options.data.invalid,
+        //        warning: options.data.warning,
+        //        unauthorized: options.data.unauthorized,
+        //        error: options.data.error
+        //    };
+
+        //    if (!callbacks.success || !callbacks.denied) {
+        //        //throw new Error('Required callbacks not defined');
+        //        $.insmNotification({
+        //            type: "warning",
+        //            message: 'Required callbacks not defined',
+        //            text: 'Required callbacks not defined'
+        //        });
+        //    }
+
+        //    // Retry callback
+        //    callbacks.retry = function (message) {
+        //        if (!_plugin.data.retryFlag) {
+        //            _plugin.data.retryFlag = true;
+        //            //$.insmNotification({
+        //            //	type: 'warning',
+        //            //	message: 'Communication with API was timed out: ' + message
+        //            //});
+        //            setTimeout(function () {
+        //                _plugin.data.retryFlag = false;
+        //            }, 5000);
+        //        }
+        //        setTimeout(function () {
+        //            $.insmFramework('ajax', restartOptions);
+        //        }, 1000);
+        //    };
+
+        //    delete options.data.success;
+        //    delete options.data.denied;
+        //    delete options.data.invalid;
+        //    delete options.data.warning;
+        //    delete options.data.unauthorized;
+        //    delete options.data.error;
+
+        //    var urlLength = JSON.stringify(options.data).length + options.url.length;
+        //    //if (urlLength > 1000) {
+        //    //    var trackingId = new Date().getTime();
+        //    //    $.extend(options.data, {
+        //    //        trackingId: trackingId
+        //    //    });
+        //    //    //the server will support cross domain ajax call in the future
+
+        //    //    var iframe = $('<iframe name="guid' + _guid + '" ></iframe>').css({
+        //    //        display: 'none'
+        //    //    }).appendTo('body');
+
+        //    //    // Removed because it did not work in IE8. Not sure if it was needed for something else.
+        //    //    /*.append(
+		//	//	$('<html />').append(
+		//	//		$('<head />').append('<meta http-equiv="X-UA-Compatible" content="IE=9">')
+		//	//	)
+		//	//);*/
+
+        //    //    var form = $(document.createElement('form')).css({
+        //    //        display: 'none'
+        //    //    }).appendTo('body');
+
+        //    //    // TODO: Add track ID.
+        //    //    form.attr("action", options.url);
+        //    //    form.attr("method", "POST");
+        //    //    form.attr("enctype", "multipart/form-data");
+        //    //    form.attr("encoding", "application/x-www-form-urlencoded");
+        //    //    form.attr("target", "guid" + _guid++);
+        //    //    $.each(options.data, function (key, value) {
+        //    //        form.append($('<input name="' + key + '" />').val(value));
+        //    //    });
+
+        //    //    form.submit();
+        //    //    form.remove();
+
+        //    //    return $.insmFramework('track', {
+        //    //        trackId: trackingId,
+        //    //        data: callbacks,
+        //    //        iframe: iframe
+        //    //    });
+        //    //}
+        //    //else {
+        //        var timedOut = false;
+        //        var timeoutHandle = setTimeout(function () {
+        //            timedOut = true;
+        //            callbacks.retry('The request took too long. Please check your connection.');
+        //        }, 300000);
+
+        //        return $.ajax({
+        //            type: 'GET',
+        //            dataType: 'jsonp',
+        //            url: options.url,
+        //            data: options.data,
+        //            success: function (data) {
+        //                _plugin.data.timestamp = data.Timestamp;
+        //                if (!timedOut) {
+        //                    clearTimeout(timeoutHandle);
+        //                    $.insmFramework('callback', {
+        //                        result: data,
+        //                        params: callbacks,
+        //                        url: options.url
+        //                    });
+        //                }
+        //            },
+        //            error: function (data) {
+        //                if (!timedOut) {
+        //                    clearTimeout(timeoutHandle);
+        //                    $.insmFramework('callback', {
+        //                        result: data,
+        //                        params: callbacks,
+        //                        url: options.url
+        //                    });
+        //                }
+        //            }
+        //        });
+        //    //}
+        //},
         ajax: function (options) {
-            // Global vars
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
-
             var restartOptions = $.extend(true, {}, options);
-            //if (_plugin.settings.password) {
-            //    $.extend(options.data, {
-            //        username: _plugin.settings.username,
-            //        password: _plugin.settings.password,
-            //        format: 'json'
-            //    });
-            //} else {
-            //    $.extend(options.data, {
-            //        session: _plugin.settings.session,
-            //        format: 'json'
-            //    });
-            //}
-            //if (options.data.session == null || options.data.session == 'null' || options.data.session == '') {
-            //    delete options.data.session;
-            //}
 
             var callbacks = {
                 success: options.data.success,
@@ -150,95 +275,28 @@
                 error: options.data.error
             };
 
-            if (!callbacks.success || !callbacks.denied) {
-                //throw new Error('Required callbacks not defined');
-                $.insmNotification({
-                    type: "warning",
-                    message: 'Required callbacks not defined',
-                    text: 'Required callbacks not defined'
-                });
-            }
-
-            // Retry callback
-            callbacks.retry = function (message) {
-                if (!_plugin.data.retryFlag) {
-                    _plugin.data.retryFlag = true;
-                    //$.insmNotification({
-                    //	type: 'warning',
-                    //	message: 'Communication with API was timed out: ' + message
-                    //});
-                    setTimeout(function () {
-                        _plugin.data.retryFlag = false;
-                    }, 5000);
-                }
-                setTimeout(function () {
-                    $.insmFramework('ajax', restartOptions);
-                }, 1000);
-            };
-
-            delete options.data.success;
-            delete options.data.denied;
-            delete options.data.invalid;
-            delete options.data.warning;
-            delete options.data.unauthorized;
-            delete options.data.error;
-
-            var urlLength = JSON.stringify(options.data).length + options.url.length;
-            //if (urlLength > 1000) {
-            //    var trackingId = new Date().getTime();
-            //    $.extend(options.data, {
-            //        trackingId: trackingId
-            //    });
-            //    //the server will support cross domain ajax call in the future
-
-            //    var iframe = $('<iframe name="guid' + _guid + '" ></iframe>').css({
-            //        display: 'none'
-            //    }).appendTo('body');
-
-            //    // Removed because it did not work in IE8. Not sure if it was needed for something else.
-            //    /*.append(
-			//	$('<html />').append(
-			//		$('<head />').append('<meta http-equiv="X-UA-Compatible" content="IE=9">')
-			//	)
-			//);*/
-
-            //    var form = $(document.createElement('form')).css({
-            //        display: 'none'
-            //    }).appendTo('body');
-
-            //    // TODO: Add track ID.
-            //    form.attr("action", options.url);
-            //    form.attr("method", "POST");
-            //    form.attr("enctype", "multipart/form-data");
-            //    form.attr("encoding", "application/x-www-form-urlencoded");
-            //    form.attr("target", "guid" + _guid++);
-            //    $.each(options.data, function (key, value) {
-            //        form.append($('<input name="' + key + '" />').val(value));
-            //    });
-
-            //    form.submit();
-            //    form.remove();
-
-            //    return $.insmFramework('track', {
-            //        trackId: trackingId,
-            //        data: callbacks,
-            //        iframe: iframe
+            //if (!callbacks.success || !callbacks.denied) {
+            //    //throw new Error('Required callbacks not defined');
+            //    $.insmNotification({
+            //        type: "warning",
+            //        message: 'Required callbacks not defined',
+            //        text: 'Required callbacks not defined'
             //    });
             //}
-            //else {
-                var timedOut = false;
-                var timeoutHandle = setTimeout(function () {
-                    timedOut = true;
-                    callbacks.retry('The request took too long. Please check your connection.');
-                }, 300000);
 
+            var timedOut = false;
+            var timeoutHandle = setTimeout(function () {
+                timedOut = true;
+                callbacks.retry('The request took too long. Please check your connection.');
+            }, 300000);
+            if (options.type == 'POST') {
                 return $.ajax({
-                    type: 'GET',
-                    dataType: 'jsonp',
+                    type: options.type,
                     url: options.url,
-                    data: options.data,
+                    contentType: "application/json; charset=utf-8",
+                    data: options.data.data,
                     success: function (data) {
-                        _plugin.data.timestamp = data.Timestamp;
+                        //_plugin.data.timestamp = data.Timestamp;
                         if (!timedOut) {
                             clearTimeout(timeoutHandle);
                             $.insmFramework('callback', {
@@ -249,6 +307,18 @@
                         }
                     },
                     error: function (data) {
+                        var asda = 'error'
+                    }
+                });
+            }
+            else {
+                return $.ajax({
+                    type: options.type,
+                    url: options.url,
+                    contentType: "application/json; charset=utf-8",
+                    data: options.data,
+                    success: function (data) {
+                        //_plugin.data.timestamp = data.Timestamp;
                         if (!timedOut) {
                             clearTimeout(timeoutHandle);
                             $.insmFramework('callback', {
@@ -257,42 +327,14 @@
                                 url: options.url
                             });
                         }
+                    },
+                    error: function (data) {
+                        var asda = 'error'
                     }
                 });
-            //}
-        },
-        ajax: function (options) {
-            var $this = $('html').eq(0);
-            var _plugin = $this.data('insmFramework');
-            var restartOptions = $.extend(true, {}, options);
-
-            var callbacks = {
-                success: options.data.success,
-                denied: options.data.denied,
-                invalid: options.data.invalid,
-                warning: options.data.warning,
-                unauthorized: options.data.unauthorized,
-                error: options.data.error
-            };
-
-            if (!callbacks.success || !callbacks.denied) {
-                //throw new Error('Required callbacks not defined');
-                $.insmNotification({
-                    type: "warning",
-                    message: 'Required callbacks not defined',
-                    text: 'Required callbacks not defined'
-                });
             }
-
-            var timedOut = false;
-            var timeoutHandle = setTimeout(function () {
-                timedOut = true;
-                callbacks.retry('The request took too long. Please check your connection.');
-            }, 300000);
-
             return $.ajax({
-                type: 'GET',
-                //dataType: 'jsonp',
+                type: options.type,
                 url: options.url,
                 contentType: "application/json; charset=utf-8",
                 data: options.data,
@@ -308,14 +350,7 @@
                     }
                 },
                 error: function (data) {
-                    //if (!timedOut) {
-                    //    clearTimeout(timeoutHandle);
-                    //    $.insmFramework('callback', {
-                    //        result: data,
-                    //        params: callbacks,
-                    //        url: options.url
-                    //    });
-                    //}
+                    var asda = 'asdfad'
                 }
             });
             //$.ajax({
@@ -363,6 +398,7 @@
                     //_plugin.data.versionId = options.result.VersionId;
                 }
                 options.params.success(options.result);
+                //options.params.success(options.result.Result);
                 //if (typeof options.result.StatusCode === 'number' && options.result.StatusCode % 1 == 0) {
                 //    switch (options.result.StatusCode) {
                 //        case 0: // Status OK
@@ -494,6 +530,71 @@
             var _plugin = $this.data('insmFramework');
 
             return _plugin.settings.user;
+        },
+        creatGroup: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var newGroup = {
+                create: function () {
+                    GroupName: "";
+                    GroupParentID: '';
+                    ActiveFlag: '';
+                    OnlineFlag: '';
+                    //displayUnits: '';
+                    Comments: '';
+                    return newGroup;
+                }
+            }
+            newGroup.GroupName = options.newGroupName;
+            newGroup.GroupParentID = options.newGroupNameParentID;
+            newGroup.ActiveFlag = options.active;
+            newGroup.OnlineFlag = options.onlineUnits;
+            //newGroup.displayUnits = options.displayUnits;
+            newGroup.Comments = options.note;
+
+            var data = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/GroupMasters',
+                format: 'json',
+                data: JSON.stringify(newGroup),
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                }
+            };
+            return $.insmFramework('ajax', {
+                url: data.url,
+                type:data.type,
+                data: data,
+            });
+        },
+        deleteGroup: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var data = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/GroupMasters' + "/" + options.deleteGroupId,
+                format: 'json',
+                data: '',
+                contentType: "application/json; charset=utf-8",
+                type: "DELETE",
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                }
+            };
+            return $.insmFramework('ajax', {
+                url: data.url,
+                type: data.type,
+                data: data.data
+            });
         },
         login: function (options) {
             // Global vars
