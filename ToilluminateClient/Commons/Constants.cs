@@ -252,37 +252,15 @@ namespace ToilluminateClient
     /// </summary>
     public static class TimeOut
     {
-        // データコール
-        public static int Data_Call = 5;
-        // データ更新
-        public static int Data_Execute = 60;
-        // プロシージャ
-        public static int Data_StoredProcedure = 5;
+        // 下载
+        public static int Upload = 5;
+        // 提交
+        public static int Commit = 60;
+        // 执行
+        public static int Execting = 5;
     }
     #endregion
 
-    #region 操作モード
-    /// <summary>
-    /// 操作モード
-    /// </summary>
-    public enum OperationMode : int
-    {
-        /// <summary>
-        /// 既存データを追加 
-        /// </summary>
-        New = 0,
-
-        /// <summary>
-        /// 改修 - 既存データを削除してから保存
-        /// </summary>
-        Edit = 1,
-
-        /// <summary>
-        /// 参照 - 既存データを削除してから保存
-        /// </summary>
-        Reference = 2,
-    }
-    #endregion
 
     #region ComboItem対象
     public class ComboItem
@@ -322,140 +300,157 @@ namespace ToilluminateClient
     }
     #endregion
 
-    #region 認証結果列挙型
+    #region 認証結果
     /// <summary>
-    /// 認証結果列挙型
+    /// 認証結果列挙
     /// </summary>
-    public enum LoginAuthenticateResult
+    public enum LoginResult
     {
         /// <summary>
         /// 認証成功
         /// </summary>
         Succeed,
         /// <summary>
-        /// パスワード期限切れ
-        /// </summary>
-        ExpirePassword,
-        /// <summary>
         /// 認証失敗
         /// </summary>
         Failed,
         /// <summary>
-        /// 認証失敗
+        /// 認証Err
         /// </summary>
         Error,
     }
     #endregion
-
-    #region 写真列挙型
+    
+    #region 填充模式
     /// <summary>
-    /// 写真列挙型
+    /// 填充模式
     /// </summary>
-    public enum PhotoType : int
+    /// <remarks></remarks>
+    public enum FillMode
     {
         /// <summary>
-        /// JPEG
+        /// 平铺
         /// </summary>
-        [EnumDescription("jpg")]
-        JPG = 0,
+        [EnumDescription("平铺")]
+        Fill = 0,
         /// <summary>
-        /// BMP
+        /// 居中
         /// </summary>
-        [EnumDescription("bmp")]
-        BMP = 1,
+        [EnumDescription("居中")]
+        Center = 1,
+        /// <summary>
+        /// 缩放
+        /// </summary>
+        [EnumDescription("缩放")]
+        Zoom = 2,
+    }
+
+    #endregion
+
+    #region 显示模式
+
+    /// <summary>
+    /// 显示模式
+    /// </summary>
+    public enum ImageShowStyle
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// 
+        /// </summary>
+        TopToDown = 1,
+        /// <summary>
+        /// 
+        /// </summary>
+        DownToTop = 2,
+        /// <summary>
+        /// 
+        /// </summary>
+        LeftToRight = 3,
+        /// <summary>
+        /// 
+        /// </summary>
+        RightToLeft = 4,
+        /// <summary>
+        /// 
+        /// </summary>
+        SmallToLarge = 5,
+        /// <summary>
+        /// 
+        /// </summary>
+        Gradient = 6,
+        /// <summary>
+        /// 
+        /// </summary>
+        Flip_LR = 7,
+        /// <summary>
+        /// 
+        /// </summary>
+        Flip_TD = 8,
+        /// <summary>
+        /// 
+        /// </summary>
+        Docking_LR = 9,
+        /// <summary>
+        /// 
+        /// </summary>
+        Docking_TD = 10,
+        /// <summary>
+        /// 
+        /// </summary>
+        Rotate = 11,
+        /// <summary>
+        /// 
+        /// </summary>
+        Fade = 12,
+        /// <summary>
+        /// 
+        /// </summary>
+        Block = 13,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Special = 99,
+
     }
     #endregion
 
-    #region 画像列挙型
+    #region 特效模式
     /// <summary>
-    /// 画像列挙型
+    /// 特效模式
     /// </summary>
-    public enum PictureType : int
+    public enum BitmapSpecialStyle
     {
         /// <summary>
-        /// Null
+        /// 
         /// </summary>
-        [EnumDescription("")]
-        Null = 0,
+        None = 0,
         /// <summary>
-        /// JPEG
+        /// 上下反转
         /// </summary>
-        [EnumDescription("jpg")]
-        JPG = 1,
+        TopDown = 1,
         /// <summary>
-        /// BMP
+        /// 左右反转
         /// </summary>
-        [EnumDescription("bmp")]
-        BMP = 2,
+        LeftRight = 2,
         /// <summary>
-        /// PNG
+        /// 黑白剪影特效
         /// </summary>
-        [EnumDescription("png")]
-        PNG = 3,
+        Sketch = 3,
         /// <summary>
-        /// SWF
+        /// 
         /// </summary>
-        [EnumDescription("swf")]
-        SWF = 4,
+        //Docking_TD = 13,
         /// <summary>
-        /// GIF
+        /// 
         /// </summary>
-        [EnumDescription("gif")]
-        GIF = 5,
-    }
-    #endregion
+        //Docking_DT = 14,
 
-    #region ビデオ列挙型
-    /// <summary>
-    /// ビデオ列挙型
-    /// </summary>
-    public enum VideoType : int
-    {
-        /// <summary>
-        /// MP4
-        /// </summary>
-        [EnumDescription("mp4")]
-        MP4 = 0,
     }
-    #endregion
-
-    #region 性別は種別
-    /// <summary>
-    /// 性別は種別
-    /// </summary>
-    public enum SexType : int
-    {
-        /// <summary>
-        /// 男
-        /// </summary>
-        [EnumDescription("男")]
-        male = 0, 
-        /// <summary>
-        /// 女
-        /// </summary>
-        [EnumDescription("女")]
-        female = 1, 
-    }
-    #endregion
-
-    #region ビデオ列挙型
-    /// <summary>
-    /// ビデオ列挙型
-    /// </summary>
-    public enum CertificateType : int
-    {
-        /// <summary>
-        /// 軍人証
-        /// </summary>
-        [EnumDescription("軍人証")]
-        officerID = 0,
-        /// <summary>
-        /// 身分証
-        /// </summary>
-        [EnumDescription("市民証")]
-        ID = 1,
-    }
-
     #endregion
 }
 

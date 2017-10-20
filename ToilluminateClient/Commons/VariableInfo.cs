@@ -14,6 +14,7 @@ namespace ToilluminateClient
         /// client path
         /// </summary>
         private static string clientPath = string.Empty;
+        private static string tempPath = string.Empty;
 
         /// <summary>
         /// システムのファイル
@@ -83,6 +84,14 @@ namespace ToilluminateClient
             }
         }
 
+        public static string TempPath
+        {
+            get
+            {
+                return tempPath;
+            }
+        }
+        
         #endregion
 
         #region publicメソッド
@@ -99,6 +108,7 @@ namespace ToilluminateClient
 #endif
             iniFile = clientPath + "\\" + Constants.INI_NAME;
 
+            tempPath = Utility.GetFullFileName(clientPath, "temp");
         }
 
         #endregion
