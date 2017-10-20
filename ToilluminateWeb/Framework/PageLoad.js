@@ -98,97 +98,103 @@
         window.__anim21278907124 = setTimeout(chart.update.bind(chart), 15000);
     });
 }
+var GroupTreedata = [];
+var GroupData;
+var jstreeData = {
+    "core": {
+        "themes": {
+            "responsive": true
+        },
+        // so that create works
+        "check_callback": true,
+        'data': GroupTreedata
+    },
+    "types": {
+        "default": {
+            "icon": "fa fa-sitemap m--font-success"
+        },
+        "file": {
+            "icon": "fa fa-sitemap  m--font-success"
+        }
+    },
+    "state": { "key": "demo2" },
+    "plugins": ["dnd", "state", "types"]
+};
+
+function scanRoot(groupTreedata, usegroupdata) {
+    $.each(groupTreedata, function (index, item) {
+        if (item.GroupParentID == null) {
+            var item = {
+                text: item.GroupName,
+                icon: "fa fa-folder m--font-success",
+                GroupID: item.GroupID,
+                id: item.GroupID,
+                GroupParentID: item.GroupParentID,
+                click: function (node) {
+                    return { 'id': node.id };
+                },
+                children: []
+            };
+            GroupTreedata.push(item);
+            return true
+        }
+        if (item.GroupParentID) {
+            var childrenitem = {
+                text: item.GroupName,
+                icon: "fa fa-folder m--font-success",
+                GroupID: item.GroupID,
+                GroupParentID: item.GroupParentID,
+                click: function (node) {
+                    return { 'id': node.id };
+                },
+                children: []
+            };
+
+            $.each(GroupTreedata, function (index, rootitem) {
+                if (rootitem.GroupID == item.GroupParentID) {
+                    rootitem.children.push(childrenitem);
+                } else if (rootitem.children && rootitem.children.length > 0) {
+                    if (scansubRoot(rootitem.children, childrenitem, item.GroupParentID)) {
+                        rootitem.children.push(scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
+                    }
+                }
+            })
+        }
+    });
+    //return usegroupdata;
+}
+
+function scansubRoot(childrendata, childrengroupdata, groupParentID) {
+    if (childrendata.length > 0) {
+        $.each(childrendata, function (index, subFolder) {
+            if (subFolder.GroupID == groupParentID) {
+                subFolder.children.push(childrengroupdata);
+                return childrendata;
+            } else {
+                if (subFolder.children && subFolder.children.length > 0) {
+                    scansubRoot(subFolder.children, childrengroupdata, groupParentID)
+                }
+            }
+        });
+    }
+}
 
 var initGroupTree = function () {
     //var userGroup = $.insmFramework('user').group;
     //var group = userGroup;
-    var GroupTreedata = [];
-    var jstreeData = {
-        "core": {
-            "themes": {
-                "responsive": true
-            },
-            // so that create works
-            "check_callback": true,
-            'data': GroupTreedata
-        },
-        "types": {
-            "default": {
-                "icon": "fa fa-sitemap m--font-success"
-            },
-            "file": {
-                "icon": "fa fa-sitemap  m--font-success"
-            }
-        },
-        "state": { "key": "demo2" },
-        "plugins": ["dnd", "state", "types"]
-    };
     $.insmFramework('getGroupTreeData', {
         success: function (tempdataGroupTreeData) {
-            if (tempdataGroupTreeData) { 
-                function scanRoot(groupTreedata, usegroupdata) {
-                    $.each(groupTreedata, function (index, item) {
-                        if (item.GroupParentID == null) {
-                            var item = {
-                                text: item.GroupName,
-                                icon: "fa fa-folder m--font-success",
-                                GroupID: item.GroupID,
-                                id: item.GroupID,
-                                GroupParentID: item.GroupParentID,
-                                click : function (node) {
-                                    return { 'id': node.id };
-                                },
-                                children:[]
-                            };
-                            GroupTreedata.push(item);
-                            return true
-                        }
-                        if (item.GroupParentID) {
-                            var childrenitem = {
-                                text: item.GroupName,
-                                icon: "fa fa-folder m--font-success",
-                                GroupID: item.GroupID,
-                                GroupParentID: item.GroupParentID,
-                                click: function (node) {
-                                    return { 'id': node.id };
-                                },
-                                children: []
-                            };
-
-                            $.each(GroupTreedata, function (index, rootitem) {
-                                if (rootitem.GroupID == item.GroupParentID) {
-                                    rootitem.children.push(childrenitem);
-                                } else if (rootitem.children && rootitem.children.length > 0) {
-                                    if (scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
-                                    {
-                                        rootitem.children.push(scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
-                                    }
-                                }
-                            })
-                        }
-                    });
-                    //return usegroupdata;
-                }
-                function scansubRoot(childrendata, childrengroupdata, groupParentID) {
-                    if (childrendata.length > 0) {
-                        $.each(childrendata, function (index, subFolder) {
-                            if (subFolder.GroupID == groupParentID) {
-                                subFolder.children.push(childrengroupdata);
-                                return childrendata;
-                            } else {
-                                if (subFolder.children && subFolder.children.length > 0) {
-                                    scansubRoot(subFolder.children, childrengroupdata, groupParentID)
-                                }
-                            }
-                        });
-                    }
-                }
+            if (tempdataGroupTreeData) {
+                GroupData = tempdataGroupTreeData;
+                GroupTreedata = [];
                 scanRoot(tempdataGroupTreeData, GroupTreedata);
 
                 jstreeData.core.data = GroupTreedata;
                 
                 $('#groupTree').jstree(jstreeData);
                 $('#groupTreeForPlayerEdit').jstree(jstreeData);
+
+                $("#groupTree").jstree().refresh(true);
 
                 $("#groupTreeForPlayerEdit").on("changed.jstree", function (e, data) {
                     //存储当前选中的区域的名称
@@ -226,7 +232,10 @@ var initGroupTree = function () {
         },
         invalid: function () {
             invalid = true;
-        }
+        },
+        error: function () {
+            options.error();
+        },
     });
 
 }
@@ -243,98 +252,19 @@ var addNewGroup = function () {
         newGroupNameParentID: $.data(document, "selectedGroupID"),
         success: function (data) {
             $("#div_1").show();
-            if (data) {
-                
-
-                //$.insmFramework('getGroupTreeData', {
-                //    success: function (tempdataGroupTreeData) {
-                //        if (tempdataGroupTreeData) {
-                //            function scanRoot(groupTreedata, usegroupdata) {
-                //                $.each(groupTreedata, function (index, item) {
-                //                    if (item.GroupParentID == null) {
-                //                        var item = {
-                //                            text: item.GroupName,
-                //                            icon: "fa fa-folder m--font-success",
-                //                            GroupID: item.GroupID,
-                //                            id: item.GroupID,
-                //                            GroupParentID: item.GroupParentID,
-                //                            click: function (node) {
-                //                                return { 'id': node.id };
-                //                            },
-                //                            children: []
-                //                        };
-                //                        GroupTreedata.push(item);
-                //                        return true
-                //                    }
-                //                    if (item.GroupParentID) {
-                //                        var childrenitem = {
-                //                            text: item.GroupName,
-                //                            icon: "fa fa-folder m--font-success",
-                //                            GroupID: item.GroupID,
-                //                            GroupParentID: item.GroupParentID,
-                //                            click: function (node) {
-                //                                return { 'id': node.id };
-                //                            },
-                //                            children: []
-                //                        };
-
-                //                        $.each(GroupTreedata, function (index, rootitem) {
-                //                            if (rootitem.GroupID == item.GroupParentID) {
-                //                                rootitem.children.push(childrenitem);
-                //                            } else if (rootitem.children && rootitem.children.length > 0) {
-                //                                if (scansubRoot(rootitem.children, childrenitem, item.GroupParentID)) {
-                //                                    rootitem.children.push(scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
-                //                                }
-                //                            }
-                //                        })
-                //                    }
-                //                });
-                //                //return usegroupdata;
-                //            }
-                //            function scansubRoot(childrendata, childrengroupdata, groupParentID) {
-                //                if (childrendata.length > 0) {
-                //                    $.each(childrendata, function (index, subFolder) {
-                //                        if (subFolder.GroupID == groupParentID) {
-                //                            subFolder.children.push(childrengroupdata);
-                //                            return childrendata;
-                //                        } else {
-                //                            if (subFolder.children && subFolder.children.length > 0) {
-                //                                scansubRoot(subFolder.children, childrengroupdata, groupParentID)
-                //                            }
-                //                        }
-                //                    });
-                //                }
-                //            }
-                //            scanRoot(tempdataGroupTreeData, GroupTreedata);
-
-                //            jstreeData.core.data = GroupTreedata;
-
-                //            $("#groupTree").jstree().settings.core.data = GroupTreedata;
-                //            $("#groupTreeForPlayerEdit").jstree().settings.core.data = GroupTreedata;
-
-                //            $("#groupTree").jstree().refresh(true);
-                //            $("#groupTreeForPlayerEdit").jstree().refresh(true);
-                //        }
-                //    },
-                //    invalid: function () {
-                //        invalid = true;
-                //    }
-                //});
-            }
-            
-            
+            initGroupTree();
         }
         
     }) 
 }
 //var openAll = function () {
     $("#expandAll").click(function () {
-        $('#jstree').jstree('open_all');
+        $('#groupTree').jstree('open_all');
     });   
 //}
 //var closeAll = function () {
     $("#collapseAll").click(function () {
-        $('#jstree').jstree('close_all');
+        $('#groupTree').jstree('close_all');
     });
 //}
 var DatatableResponsiveColumnsDemo = function () {
