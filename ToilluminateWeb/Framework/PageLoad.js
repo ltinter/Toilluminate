@@ -189,33 +189,24 @@ var initGroupTree = function () {
                 GroupTreedata = [];
                 scanRoot(tempdataGroupTreeData, GroupTreedata);
 
-                //jstreeData()core.data = GroupTreedata;
-                
-                $('#groupTree').jstree(jstreeData);
-                $('#groupTree').jstree(true).settings.core.data=GroupTreedata;
+                var tree = $('.tree-demo');
+                tree.jstree(jstreeData);
+                $.each(tree, function (key, item) {
+                    $(item).jstree(true).settings.core.data = GroupTreedata;
+                    $(item).jstree(true).refresh();
+                });
 
-                $('#groupTreeForPlayerEdit').jstree(jstreeData);
-                $('#groupTreeForPlayerEdit').jstree(true).settings.core.data=GroupTreedata;
-
-                $("#groupTree").jstree(true).refresh();
-                $("#groupTreeForPlayerEdit").jstree(true).refresh();
-
-                $("#groupTreeForPlayerEdit").on("changed.jstree", function (e, data) {
+                tree.on("changed.jstree", function (e, data) {
                     //存储当前选中的区域的名称
                     if (data.node && data.node.original) {
                         $.data(document, "selectedGroupID", data.node.original.GroupID);
                     } 
-                    console.log("The selected nodes are:");
-                    console.log(data.selected);
-                    //alert('node.text is:' + data.node.text);
-                    console.log(data);
                 });
-                $("#groupTree").on("changed.jstree", function (e, data) {
-                    //存储当前选中的区域的名称
-                    if (data.node && data.node.original) {
-                        $.data(document, "deleteGroupID", data.node.original.GroupID);
-                    }
-
+                tree.on("click.jstree", function (e, data) {
+                    var a = "";
+                });
+                tree.on("move_node.jstree", function (e, data) {
+                    var a = "";
                 });
                 $("#newgroup").click(function (e) {
                     $("#div_1").hide();

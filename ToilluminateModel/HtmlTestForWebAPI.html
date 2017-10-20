@@ -83,6 +83,10 @@
             <div id="rst2" />
         </div>
         <div>
+            <input type="button" value="EDIT GROUPID" onclick="EditGroup();" />
+            <div id="rst2" />
+        </div>
+        <div>
             <input type="button" value="GET PLAYLIST BY PLAYERID" onclick="GetPlayListByPlayerID();" />
             <div id="rst2" />
         </div>
@@ -114,6 +118,7 @@
         }
         var GroupMaster = {
             create: function () {
+                GroupID: "";
                 GroupName: "";
                 GroupParentID: "";
                 return GroupMaster;
@@ -228,7 +233,7 @@
         }
 
         function AddNewGroup() {
-            var newGroup = GroupMaster.create();  
+            var newGroup = GroupMaster.create();
             newGroup.GroupName = "tsx_test_01";   
             newGroup.GroupParentID = "3";
             $.ajax({
@@ -236,6 +241,25 @@
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 data:JSON.stringify(newGroup),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+
+        function EditGroup() {
+            var newGroup = GroupMaster.create();
+            newGroup.GroupID = 63;
+            newGroup.GroupName = "333333";
+            newGroup.GroupParentID = "2";
+            $.ajax({
+                url: 'api/GroupMasters/63',
+                type: "PUT",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(newGroup),
                 success: function (data) {
                     var aa = data;
                 },

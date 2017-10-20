@@ -127,9 +127,6 @@
     <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.eot" />
     <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.ttf" />
     <Content Include="Framework\assets\vendors\base\fonts\summernote\summernote.woff" />
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Framework\assets\vendors\base\fonts\flaticon\Flaticon.eot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
