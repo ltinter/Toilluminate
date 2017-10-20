@@ -888,8 +888,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </div>
                                     <div class="m-portlet__head-tools">
                                         <ul class="m-portlet__nav">
-                                            <li class="m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push" data-dropdown-toggle="hover" aria-expanded="true">
-                                                <a href="#" class="m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand">
+                                            <li  class="m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push" data-dropdown-toggle="hover" aria-expanded="true">
+                                                <a id='editgroup' class="m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand">
                                                     Edit
                                                 </a>
                                                 <div class="m-dropdown__wrapper">
@@ -907,7 +907,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                         </a>
                                                                     </li>
                                                                     <li class="m-nav__item" id='deletegroup'>
-                                                                        <a href="" class="m-nav__link">
+                                                                        <a  class="m-nav__link">
                                                                             <i class="m-nav__link-icon fa fa-minus"></i>
                                                                             <span class="m-nav__link-text">
                                                                                 Delete Group
@@ -1001,7 +1001,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <!--end:: Widgets/Activity-->
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="div_2">
                         <div class="col-xl-12">
                             <div class="m-portlet m-portlet--success m-portlet--head-solid-bg m-portlet--rounded">
                                 <div class="m-portlet__head">
@@ -1022,7 +1022,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     Save
                                                 </a>
                                             </li>
-                                            <li class="m-portlet__nav-item">
+                                            <li class="m-portlet__nav-item" id="button_back">
                                                 <a class="m-portlet__nav-link m-dropdown__toggle btn btn-light m-btn m-btn--pill m-btn--air">
                                                     Back
                                                 </a>
@@ -1040,15 +1040,15 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <div class="col-9">
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning active">
-                                                            <input type="radio" name="options" id="option1" autocomplete="off" checked="">
+                                                            <input type="radio" name="radio_Active" id="radio_Active_1"  value="null" autocomplete="off" checked="">
                                                             Inherited
                                                         </label>
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning">
-                                                            <input type="radio" name="options" id="option2" autocomplete="off">
+                                                            <input type="radio" name="radio_Active" id="radio_Active_2" value="1" autocomplete="off" >
                                                             On
                                                         </label>
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning">
-                                                            <input type="radio" name="options" id="option3" autocomplete="off">
+                                                            <input type="radio" name="radio_Active" id="radio_Active_3" value="0" autocomplete="off">
                                                             Off
                                                         </label>
                                                     </div>
@@ -1061,15 +1061,15 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <div class="col-9">
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning active">
-                                                            <input type="radio" name="options" id="option1" autocomplete="off" checked="">
+                                                            <input type="radio" name="radio_Online" id="radio_Online_1" value="null" autocomplete="off" checked="">
                                                             Inherited
                                                         </label>
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning">
-                                                            <input type="radio" name="options" id="option2" autocomplete="off">
+                                                            <input type="radio" name="radio_Online" id="radio_Online_2" value="1" autocomplete="off">
                                                             On
                                                         </label>
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning">
-                                                            <input type="radio" name="options" id="option3" autocomplete="off">
+                                                            <input type="radio" name="radio_Online" id="radio_Online_3" value="0" autocomplete="off">
                                                             Off
                                                         </label>
                                                     </div>
@@ -1118,7 +1118,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <label>
                                                     Note:
                                                 </label>
-                                                <textarea id'text_note',class="form-control m-input m-input--air" rows="3"></textarea>
+                                                <textarea id="text_note",class="form-control m-input m-input--air" rows="3"></textarea>
                                             </div>
                                             <div class="m-form__group form-group row">
                                                 <div class="m-portlet__body">

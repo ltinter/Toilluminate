@@ -189,12 +189,16 @@ var initGroupTree = function () {
                 GroupTreedata = [];
                 scanRoot(tempdataGroupTreeData, GroupTreedata);
 
-                jstreeData.core.data = GroupTreedata;
+                //jstreeData()core.data = GroupTreedata;
                 
                 $('#groupTree').jstree(jstreeData);
-                $('#groupTreeForPlayerEdit').jstree(jstreeData);
+                $('#groupTree').jstree(true).settings.core.data=GroupTreedata;
 
-                $("#groupTree").jstree().refresh(true);
+                $('#groupTreeForPlayerEdit').jstree(jstreeData);
+                $('#groupTreeForPlayerEdit').jstree(true).settings.core.data=GroupTreedata;
+
+                $("#groupTree").jstree(true).refresh();
+                $("#groupTreeForPlayerEdit").jstree(true).refresh();
 
                 $("#groupTreeForPlayerEdit").on("changed.jstree", function (e, data) {
                     //存储当前选中的区域的名称
@@ -215,16 +219,10 @@ var initGroupTree = function () {
                 });
                 $("#newgroup").click(function (e) {
                     $("#div_1").hide();
+                    $("#div_2").show();
                     return;
                 })
-                $("#deletegroup").click(function (e) {
-                    var newGroupdata = $.insmFramework('deleteGroup', {
-                        deleteGroupId: $.data(document, "deleteGroupID"),
-                        success: function (resultdata) {
-                            initGroupTree();
-                        }
-                    })
-                })
+                
                 $("#button_save").click(function (e) {
                     addNewGroup();
                 })
@@ -239,34 +237,64 @@ var initGroupTree = function () {
     });
 
 }
+
 var addNewGroup = function () {
     if ($.trim($("#groupname").val()) == '') {
         alert('Group name is empty!');
     }
     var newGroupdata = $.insmFramework('creatGroup', {
+        groupID:$.data(document, "editGroupID"),
         newGroupName: $("#groupname").val(),
-        active: 'On',
-        onlineUnits: 'Off',
+        active: $("input[name='radio_Active']").val(),
+        onlineUnits: $("input[name='radio_Online']").val(),
         //displayUnits: '',
         note: $("#text_note").val(),
         newGroupNameParentID: $.data(document, "selectedGroupID"),
         success: function (data) {
             $("#div_1").show();
+            $("#div_2").hide();
             initGroupTree();
+            $.data(document, "editGroupID", undefined)
         }
         
     }) 
 }
-//var openAll = function () {
-    $("#expandAll").click(function () {
-        $('#groupTree').jstree('open_all');
-    });   
-//}
-//var closeAll = function () {
-    $("#collapseAll").click(function () {
-        $('#groupTree').jstree('close_all');
-    });
-//}
+$("#deletegroup").click(function (e) {
+    var newGroupdata = $.insmFramework('deleteGroup', {
+        deleteGroupId: $.data(document, "deleteGroupID"),
+        success: function (resultdata) {
+            $("#div_1").show();
+            $("#div_2").hide();
+            initGroupTree();
+        }
+    })
+})
+$("#expandAll").click(function () {
+    $('#groupTree').jstree('open_all');
+});   
+$("#collapseAll").click(function () {
+    $('#groupTree').jstree('close_all');
+});
+$("#editgroup").click(function () {
+    $("#div_1").hide();
+    $("#div_2").show();
+    $.insmFramework('getGroupTreeData', {
+        groupID: $.data(document, "deleteGroupID"),
+        success: function (userGroupData) {
+            if (userGroupData) {
+                $("input[name='radio_Active'][value='" + userGroupData.ActiveFlag + "]").click();
+                $("input[name='radio_Online'][value='" + userGroupData.OnlineFlag + "]").click();
+                $("#groupname").val(userGroupData.GroupName);
+                $("#text_note").val(userGroupData.Comments);
+                $.data(document, "editGroupID", $.data(document, "deleteGroupID"));
+            }
+        }
+    })
+});
+$("#button_back").click(function () {
+    $("#div_1").show();
+    $("#div_2").hide();
+});
 var DatatableResponsiveColumnsDemo = function () {
     var datatable = $('.m_datatable').mDatatable({
         // datasource definition
@@ -381,6 +409,7 @@ var DatatableResponsiveColumnsDemo = function () {
 
 $(document).ready(function ()
 {
+    $("#div_2").hide();
     playerStatusShare();
     initGroupTree();
     DatatableResponsiveColumnsDemo();
