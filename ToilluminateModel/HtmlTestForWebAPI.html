@@ -90,7 +90,17 @@
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script>
-        var uri = 'api/FileMasters';
+        var url = 'api/FileMasters';
+        var Settings = {
+            create: function () {
+                url:"";
+                type:"";
+                contentType: "application/json; charset=utf-8";
+                success: "";
+                error: "";
+                return Settings;
+            }
+        }
         var FileMaster = {
             create: function () {
                 FileName: "";
@@ -119,21 +129,19 @@
             $('<input type="button" value = "Delete" onclick="deleteFile(this,' + item.FileID + ')">').width('50px')).appendTo(player);
         }
         function pageInit() {
-
-            $.ajax({
-                url: 'api/GroupMasters',
-                type: "GET",
-                contentType: "application/json; charset=utf-8",
-                success: function (data) {
-                    $('#players').empty();
-                    $.each(data, function (key, item) {
-                        addElementToPlayer(item);
-                    });
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
-                }
-            });
+            var newSettings = Settings.create();
+            newSettings.url = url;
+            newSettings.type = "GET";
+            newSettings.success = function (data) {
+                $('#players').empty();
+                $.each(data, function (key, item) {
+                    addElementToPlayer(item);
+                });
+            };
+            newSettings.error = function () {
+                alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+            }
+            ajax(newSettings);
         }
         function formatItem(item) {
             return item.FileName;
@@ -142,7 +150,7 @@
 
         function find() {
             var id = $('#prodId').val();
-            $.getJSON(uri + '/' + id)
+            $.getJSON(url + '/' + id)
                 .done(function (data) {
                     $('#player').text(formatItem(data));
                 })
@@ -159,14 +167,15 @@
                 formData.append("FolderID", 1);
 
                 $.ajax({
-                    url: uri + '/UploadFile',
+                    url: url + '/UploadFile',
                     type: "POST",
                     //contentType: "application/json; charset=utf-8",
                     processData: false,
                     contentType: false,
                     data: formData,
                     success: function (data) {
-                        addElementToPlayer(data);
+                        pageInit();
+                        //addElementToPlayer(data);
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         alert("请求失败，消息：" + textStatus + "  " + errorThrown);
@@ -178,7 +187,7 @@
         function deleteFile(obj,fileID){
 
             $.ajax({
-                url: uri+"/"+fileID,
+                url: url + "/" + fileID,
                 type: "DELETE",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
@@ -247,6 +256,16 @@
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert("请求失败，消息：" + textStatus + "  " + errorThrown);
                 }
+            });
+        }
+        function ajax(settings) {
+            $.ajax({
+                url: settings.url,
+                type: settings.type,
+                contentType: settings.contentType,
+                data:settings.data,
+                success: settings.success,
+                error: settings.error
             });
         }
     </script>
