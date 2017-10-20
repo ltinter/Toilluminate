@@ -14,6 +14,7 @@ using System.Drawing.Text;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using System.Net;
 
 namespace ToilluminateClient
 {
@@ -24,9 +25,49 @@ namespace ToilluminateClient
         /// </summary>
         public static Color BackClearColor = Color.Gray;
 
-        #region " "
+        #region " 获得网络图片 "
         /// <summary>
-        /// 
+        /// 获得网络图片
+        /// </summary>
+        /// <param name="picUrl"></param>
+        /// <returns></returns>
+        public static string GetPictureFromUrl(string picUrl)
+        {
+            picUrl = picUrl.Replace("&amp;", "&");
+            string picFile = Utility.GetRandomFileName(VariableInfo.TempPath, "jpg");
+            try
+            {
+                System.Net.WebRequest webreq = System.Net.WebRequest.Create(picUrl);
+
+
+                CredentialCache myCache = new CredentialCache();
+                myCache.Add(new Uri(picUrl), "Basic", new NetworkCredential("",""));
+                webreq.Credentials = myCache;
+                webreq.Headers["Authorization"] = "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes(string.Format("{0}:{1}","","")));
+
+                System.Net.WebResponse webres = webreq.GetResponse();
+
+                using (System.IO.Stream stream = webres.GetResponseStream())
+                {
+                    System.Drawing.Image image = System.Drawing.Image.FromStream(stream);
+                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(image);
+                    bitmap.Save(picFile, System.Drawing.Imaging.ImageFormat.Jpeg);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return string.Empty;
+            }
+
+            return picFile;
+        }
+
+        #endregion
+
+        #region " 画像サイズを調整する "
+        /// <summary>
+        /// 画像サイズを調整する
         /// </summary>
         /// <param name="sourceBmp"></param>
         /// <param name="size"></param>
@@ -150,6 +191,8 @@ namespace ToilluminateClient
                 }
             }
         }
+
+        #region " 显示图像 "
 
         #region " private "
 
@@ -765,9 +808,9 @@ namespace ToilluminateClient
         #endregion " private "
 
         /// <summary>
-        /// 
+        /// 显示图像
         /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
+        /// <param name="bmpSource">Bitmap 对象</param>
         /// <param name="picBox">PictureBox 对象</param>
         public static void ShowBitmap(Bitmap bmpSource, PictureBox picBox, ImageShowStyle imgShowStyle)
         {
@@ -869,6 +912,9 @@ namespace ToilluminateClient
             }
         }
 
+        #endregion
+
+        #region " 图像特效 "
         /// <summary>
         /// 图像特效
         /// </summary>
@@ -956,131 +1002,8 @@ namespace ToilluminateClient
                 }
             }
         }
+        #endregion
     }
 
 
-    /// <summary>
-    /// 填充模式
-    /// </summary>
-    /// <remarks></remarks>
-    public enum FillMode
-    {
-        /// <summary>
-        /// 平铺
-        /// </summary>
-        /// <remarks></remarks>
-        Fill = 0,
-        /// <summary>
-        /// 居中
-        /// </summary>
-        /// <remarks></remarks>
-        Center = 1,
-        /// <summary>
-        /// 缩放
-        /// </summary>
-        /// <remarks></remarks>
-        Zoom = 2,
-    }
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public enum ImageShowStyle
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        None = 0,
-        /// <summary>
-        /// 
-        /// </summary>
-        TopToDown = 1,
-        /// <summary>
-        /// 
-        /// </summary>
-        DownToTop = 2,
-        /// <summary>
-        /// 
-        /// </summary>
-        LeftToRight = 3,
-        /// <summary>
-        /// 
-        /// </summary>
-        RightToLeft = 4,
-        /// <summary>
-        /// 
-        /// </summary>
-        SmallToLarge = 5,
-        /// <summary>
-        /// 
-        /// </summary>
-        Gradient = 6,
-        /// <summary>
-        /// 
-        /// </summary>
-        Flip_LR = 7,
-        /// <summary>
-        /// 
-        /// </summary>
-        Flip_TD = 8,
-        /// <summary>
-        /// 
-        /// </summary>
-        Docking_LR = 9,
-        /// <summary>
-        /// 
-        /// </summary>
-        Docking_TD = 10,
-        /// <summary>
-        /// 
-        /// </summary>
-        Rotate = 11,
-        /// <summary>
-        /// 
-        /// </summary>
-        Fade = 12,
-        /// <summary>
-        /// 
-        /// </summary>
-        Block = 13,
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        Special = 99,
-
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public enum BitmapSpecialStyle
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        None = 0,
-        /// <summary>
-        /// 上下反转
-        /// </summary>
-        TopDown = 1,
-        /// <summary>
-        /// 左右反转
-        /// </summary>
-        LeftRight = 2,
-        /// <summary>
-        /// 黑白剪影特效
-        /// </summary>
-        Sketch = 3,
-        /// <summary>
-        /// 
-        /// </summary>
-        //Docking_TD = 13,
-        /// <summary>
-        /// 
-        /// </summary>
-        //Docking_DT = 14,
-
-    }
 }

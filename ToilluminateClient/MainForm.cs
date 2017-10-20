@@ -42,10 +42,7 @@ namespace ToilluminateClient
         private int imageOpacity = 0;
 
         private ImageShowStyle imageShowStyle = ImageShowStyle.None;
-
-        private PictureBox nowPicture;
-        private PictureBox nextPicture;
-
+        
         private List<string> imageFileList = new List<string>();
 
         private List<Image> imageList = new List<Image>();
@@ -247,20 +244,7 @@ namespace ToilluminateClient
             try
             {
                 this.tmrImage.Stop();
-
-                nowPicture = picImage2;
-                nextPicture = picImage1;
-                //if (this.picImage1.Visible)
-                //{
-                //    nowPicture = picImage1;
-                //    nextPicture = picImage2;
-                //}
-                //else
-                //{
-                //    nowPicture = picImage2;
-                //    nextPicture = picImage1;
-                //}
-
+                              
 
                 if (imageShowStyle == ImageShowStyle.None)
                 {
@@ -271,31 +255,11 @@ namespace ToilluminateClient
                         {
                             imageIndex = 0;
                         }
-
-                        nextPicture.Visible = true;
-
+                        
                         ShowImage(this.imageFileList[imageIndex]);
-
-                        nextPicture.SendToBack();
-
-                        nowPicture.Visible = false;
-                        if (nowPicture.Image != null)
-                        {
-                            nowPicture.Image.Dispose();
-                        }
                     }
                 }
-
-                //imageOpacity += 1;
-                //this.Opacity = ((double)imageOpacity) / 10;
-
-                //if (this.Opacity == 10)
-                //{
-                //    tmrImage.Enabled = false;
-                //}
-
-                //            picImage1.
-
+                
 
                 this.tmrImage.Start();
             }
@@ -460,16 +424,10 @@ namespace ToilluminateClient
 
 #endif
 
-                this.picImage1.Location = new System.Drawing.Point(0, 0);
-                this.picImage1.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
-                this.picImage2.Location = new System.Drawing.Point(0, 0);
-                this.picImage2.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
-                nextPicture = this.picImage1;
-                nowPicture = this.picImage2;
+                this.picImage.Location = new System.Drawing.Point(0, 0);
+                this.picImage.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
                 //是图片的大小适应控件PictureBox的大小 
-                picImage1.SizeMode = PictureBoxSizeMode.StretchImage;
-                //是图片的大小适应控件PictureBox的大小 
-                picImage2.SizeMode = PictureBoxSizeMode.StretchImage;
+                picImage.SizeMode = PictureBoxSizeMode.StretchImage;
 
                 this.axWMP.Location = new System.Drawing.Point(0, 0);
                 this.axWMP.Size = new System.Drawing.Size(pnlShowMediaWMP.Width, pnlShowMediaWMP.Height);
@@ -498,13 +456,9 @@ namespace ToilluminateClient
             try
             {
                 this.tmrImage.Stop();
-                if (this.picImage1.Image != null)
+                if (this.picImage.Image != null)
                 {
-                    this.picImage1.Image.Dispose();
-                }
-                if (this.picImage2.Image != null)
-                {
-                    this.picImage2.Image.Dispose();
+                    this.picImage.Image.Dispose();
                 }
             }
             catch (Exception ex)
@@ -541,26 +495,21 @@ namespace ToilluminateClient
         {
             try
             {
-                if (nextPicture.Image != null)
+                if (picImage.Image != null)
                 {
-                    nextPicture.Image.Dispose();
+                    picImage.Image.Dispose();
                 }
                 //动态添加图片 
                 Image nowImageFile = Image.FromFile(imageFile);
-
-
-                //Image nowImageFile = Image.FromFile(imageFile);
-
+                
                 Bitmap nowBitmap = new Bitmap(nowImageFile);
+                
+                nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size);
 
-                //nextPicture.Image = Image.FromFile(imageFile);
-                //nextPicture.ImageLocation = "";
-                nowBitmap = ImageApp.ResizeBitmap(nowBitmap, nextPicture.Size);
+                ImageApp.ShowBitmap(nowBitmap, picImage, ImageShowStyle.Fade);
+                //ImageApp.DanRu(nowBitmap, picImage);
 
-                ImageApp.ShowBitmap(nowBitmap, nextPicture, ImageShowStyle.Fade);
-                //ImageApp.DanRu(nowBitmap, nextPicture);
-
-                tipBox.SetToolTip(nextPicture, "这是一张图片");  //当鼠标在图片上的时候，显示图片的信息  
+                tipBox.SetToolTip(picImage, "这是一张图片");  //当鼠标在图片上的时候，显示图片的信息  
             }
             catch (Exception ex)
             {
@@ -576,17 +525,17 @@ namespace ToilluminateClient
         {
             try
             {
-                if (nextPicture.Image != null)
+                if (picImage.Image != null)
                 {
-                    nextPicture.Image.Dispose();
+                    picImage.Image.Dispose();
                 }
 
                 //显示网络图片
-                nextPicture.Image = null;
-                nextPicture.ImageLocation = imageUrl;
+                picImage.Image = null;
+                picImage.ImageLocation = imageUrl;
 
                 
-                tipBox.SetToolTip(nextPicture, "这是一张图片");  //当鼠标在图片上的时候，显示图片的信息  
+                tipBox.SetToolTip(picImage, "这是一张图片");  //当鼠标在图片上的时候，显示图片的信息  
             }
             catch (Exception ex)
             {

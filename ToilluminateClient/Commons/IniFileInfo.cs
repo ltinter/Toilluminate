@@ -80,15 +80,6 @@ namespace ToilluminateClient
             set;
         }
 
-         /// <summary>
-        /// 抓图
-        /// </summary>
-        public static PhotoType Capture
-        {
-            get;
-            set;
-        }
-
         /// <summary>
         /// logが出力することが
         /// </summary>
@@ -210,18 +201,7 @@ namespace ToilluminateClient
             
 
             string captureTypeValue = GetIniFileString("MAINTE", "CaptureType", file);
-
-            Capture = PhotoType.JPG;
-
-            foreach (PhotoType type in Enum.GetValues(typeof(PhotoType)))
-            {
-                if (captureTypeValue == EnumHelper.GetDescription(type)
-                     || captureTypeValue==type.ToString())
-                {
-                    Capture = type;
-                    break;
-                }
-            }
+            
             
         }
 
@@ -270,8 +250,7 @@ namespace ToilluminateClient
                     WriteIniFileNotesString("MAINTE", "DeviceIP", "設備設置", file);
                 }
 
-
-                WriteIniFileString("MAINTE", "CaptureType", EnumHelper.GetDescription(Capture), file);
+                
             }
             catch (Exception ex)
             {
