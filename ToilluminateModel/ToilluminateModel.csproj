@@ -132,7 +132,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="FileResource\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -193,6 +192,7 @@
     <Compile Include="GroupMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\JSTreeDataModel.cs" />
     <Compile Include="PlayerMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>

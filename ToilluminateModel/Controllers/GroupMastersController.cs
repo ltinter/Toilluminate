@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using ToilluminateModel;
+using ToilluminateModel.Models;
 
 namespace ToilluminateModel.Controllers
 {
@@ -102,6 +103,21 @@ namespace ToilluminateModel.Controllers
             return Ok(groupMaster);
         }
 
+        
+        [HttpGet, Route("api/GroupMasters/GetJSTreeData")]
+        public IList<JSTreeDataModel> GetJSTreeData()
+        {
+            List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
+            JSTreeDataModel jdm;
+            foreach (GroupMaster gm in db.GroupMaster) {
+                jdm = new JSTreeDataModel();
+                jdm.id = gm.GroupID.ToString();
+                jdm.text = gm.GroupName;
+                jdm.parent = gm.GroupParentID == null?"#":gm.GroupParentID.ToString();
+                jdmList.Add(jdm);
+            }
+            return jdmList;
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
