@@ -75,7 +75,7 @@
             <div id="rst1"/>
         </div>
         <div>
-            <input type="button" value="GET INHERITFORCED PLAYLIST BY GROUPID" onclick="GetInheritForcedPlayListByGroupID();" />
+            <input type="button" value="GET INHERITFORCED PLAYLIST BY GROUPID" onclick="GetPlayListWithInheritForcedByGroupID();" />
             <div id="rst2" />
         </div>
         <div>
@@ -218,10 +218,10 @@
                 }
             });
         }
-        function GetInheritForcedPlayListByGroupID() {
+        function GetPlayListWithInheritForcedByGroupID() {
             $.ajax({
-                url: 'api/PlayListMasters/GetInheritForcedPlayListByGroupID/' + 14,
-                type: "POST",
+                url: 'api/PlayListMasters/GetPlayListWithInheritForcedByGroupID/' + 260,
+                type: "GET",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     var aa = data;
