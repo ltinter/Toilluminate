@@ -98,38 +98,44 @@
         window.__anim21278907124 = setTimeout(chart.update.bind(chart), 15000);
     });
 }
-var GroupTreedata = [];
-var GroupData;
-var jstreeData = {
-    "core": {
-        "themes": {
-            "responsive": true
+    var GroupTreedata = [];
+    var GroupData;
+    var jstreeData = {
+        "core": {
+            "themes": {
+                "responsive": true
+            },
+            // so that create works
+            "check_callback": true,
+            'data': GroupTreedata
         },
-        // so that create works
-        "check_callback": true,
-        'data': GroupTreedata
-    },
-    "types": {
-        "default": {
-            "icon": "fa fa-sitemap m--font-success"
+        "types": {
+            "default": {
+                "icon": "fa fa-sitemap m--font-success"
+            },
+            "file": {
+                "icon": "fa fa-sitemap  m--font-success"
+            }
         },
-        "file": {
-            "icon": "fa fa-sitemap  m--font-success"
-        }
-    },
-    "state": { "key": "demo2" },
-    "plugins": ["dnd", "state", "types"]
-};
-
-function scanRoot(groupTreedata, usegroupdata) {
-    $.each(groupTreedata, function (index, item) {
+        "state": { "key": "demo2" },
+        "plugins": ["dnd", "state", "types"]
+    };
+    var editGroupID;
+    var selectedGroupID = null;
+    var groupTreeForPlayerEditID = null;
+    var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
+    function scanRoot(groupTreedata, usegroupdata) {
+        $.each(groupTreedata, function (index, item) {
         if (item.GroupParentID == null) {
             var item = {
                 text: item.GroupName,
                 icon: "fa fa-folder m--font-success",
                 GroupID: item.GroupID,
                 id: item.GroupID,
+                active: item.ActiveFlag,
+                onlineUnits: item.OnlineFlag,
                 GroupParentID: item.GroupParentID,
+                comments: item.Comments,
                 click: function (node) {
                     return { 'id': node.id };
                 },
@@ -143,7 +149,11 @@ function scanRoot(groupTreedata, usegroupdata) {
                 text: item.GroupName,
                 icon: "fa fa-folder m--font-success",
                 GroupID: item.GroupID,
+                id: item.GroupID,
+                active: item.ActiveFlag,
+                onlineUnits: item.OnlineFlag,
                 GroupParentID: item.GroupParentID,
+                comments:item.Comments,
                 click: function (node) {
                     return { 'id': node.id };
                 },
@@ -160,12 +170,11 @@ function scanRoot(groupTreedata, usegroupdata) {
                 }
             })
         }
-    });
-    //return usegroupdata;
-}
+        });
+    }
 
-function scansubRoot(childrendata, childrengroupdata, groupParentID) {
-    if (childrendata.length > 0) {
+    function scansubRoot(childrendata, childrengroupdata, groupParentID) {
+        if (childrendata.length > 0) {
         $.each(childrendata, function (index, subFolder) {
             if (subFolder.GroupID == groupParentID) {
                 subFolder.children.push(childrengroupdata);
@@ -175,20 +184,18 @@ function scansubRoot(childrendata, childrengroupdata, groupParentID) {
                     scansubRoot(subFolder.children, childrengroupdata, groupParentID)
                 }
             }
-        });
+            });
+        }
     }
-}
 
-var initGroupTree = function () {
-    //var userGroup = $.insmFramework('user').group;
-    //var group = userGroup;
-    $.insmFramework('getGroupTreeData', {
-        success: function (tempdataGroupTreeData) {
+    var initGroupTree = function () {
+        $.insmFramework('getGroupTreeData', {
+            success: function (tempdataGroupTreeData) {
             if (tempdataGroupTreeData) {
                 GroupData = tempdataGroupTreeData;
                 GroupTreedata = [];
                 scanRoot(tempdataGroupTreeData, GroupTreedata);
-
+     
                 var tree = $('.tree-demo');
                 tree.jstree(jstreeData);
                 $.each(tree, function (key, item) {
@@ -199,93 +206,142 @@ var initGroupTree = function () {
                 tree.on("changed.jstree", function (e, data) {
                     //存储当前选中的区域的名称
                     if (data.node && data.node.original) {
-                        $.data(document, "selectedGroupID", data.node.original.GroupID);
+                        selectedGroupID = data.node.original.GroupID;
                     } 
                 });
-                tree.on("click.jstree", function (e, data) {
-                    var a = "";
+
+                $(div_groupTreeForPlayerEdit).on("changed.jstree", function (e, data) {
+                    //存储当前选中的区域的名称
+                    if(data.node && data.node.original) {
+                        groupTreeForPlayerEditID = data.node.original.GroupID;
+                    }
                 });
                 tree.on("move_node.jstree", function (e, data) {
-                    var a = "";
-                });
-                $("#newgroup").click(function (e) {
-                    $("#div_1").hide();
-                    $("#div_2").show();
-                    return;
-                })
-                
-                $("#button_save").click(function (e) {
-                    addNewGroup();
-                })
-            } 
-        },
-        invalid: function () {
-            invalid = true;
-        },
-        error: function () {
-            options.error();
-        },
-    });
-
-}
-
-var addNewGroup = function () {
-    if ($.trim($("#groupname").val()) == '') {
-        alert('Group name is empty!');
+                    var node = data.node;
+                    if (node) {
+                        editgroup({
+                            groupID: node.id,
+                            newGroupNameParentID: node.parent,
+                            newGroupName: node.text,
+                            ActiveFlag: node.original.active,
+                            OnlineFlag: node.original.onlineUnits,
+                            Comments: node.original.comments
+                    })
+                    }
+                    });
+                } 
+            },
+            invalid: function () {
+                invalid = true;
+            },
+            error: function () {
+                options.error();
+            },
+        });
     }
-    var newGroupdata = $.insmFramework('creatGroup', {
-        groupID:$.data(document, "editGroupID"),
-        newGroupName: $("#groupname").val(),
-        active: $("input[name='radio_Active']").val(),
-        onlineUnits: $("input[name='radio_Online']").val(),
-        //displayUnits: '',
-        note: $("#text_note").val(),
-        newGroupNameParentID: $.data(document, "selectedGroupID"),
-        success: function (data) {
-            $("#div_1").show();
-            $("#div_2").hide();
-            initGroupTree();
-            $.data(document, "editGroupID", undefined)
-        }
-        
-    }) 
-}
-$("#deletegroup").click(function (e) {
-    var newGroupdata = $.insmFramework('deleteGroup', {
-        deleteGroupId: $.data(document, "deleteGroupID"),
-        success: function (resultdata) {
-            $("#div_1").show();
-            $("#div_2").hide();
-            initGroupTree();
-        }
+    $("#newgroup").click(function (e) {
+        $("#div_1").hide();
+        $("#div_2").show();
+        defaultDataSet();
+        editGroupID = undefined;
     })
-})
-$("#expandAll").click(function () {
-    $('#groupTree').jstree('open_all');
-});   
-$("#collapseAll").click(function () {
-    $('#groupTree').jstree('close_all');
-});
-$("#editgroup").click(function () {
-    $("#div_1").hide();
-    $("#div_2").show();
-    $.insmFramework('getGroupTreeData', {
-        groupID: $.data(document, "deleteGroupID"),
-        success: function (userGroupData) {
-            if (userGroupData) {
-                $("input[name='radio_Active'][value='" + userGroupData.ActiveFlag + "]").click();
-                $("input[name='radio_Online'][value='" + userGroupData.OnlineFlag + "]").click();
-                $("#groupname").val(userGroupData.GroupName);
-                $("#text_note").val(userGroupData.Comments);
-                $.data(document, "editGroupID", $.data(document, "deleteGroupID"));
+
+    $("#button_save").click(function (e) {
+            addNewGroup();
+            editGroupID = undefined;
+    })
+    var editgroup = function (options) {
+        var newGroupdata = $.insmFramework('creatGroup', {
+            groupID: options.groupID,
+            newGroupName: options.newGroupName,
+            active: options.ActiveFlag,
+            onlineUnits: options.OnlineFlag,
+            note: options.Comments,
+            newGroupNameParentID: options.newGroupNameParentID,
+            success: function (data) {
+                initGroupTree();
+                editGroupID = undefined;
             }
+        })
+    }
+    var maingroup = function (options) {
+        $.insmFramework('getGroupTreeData', {
+                success: function(tempdataGroupTreeData) {
+                    if (tempdataGroupTreeData) {
+                        GroupData = tempdataGroupTreeData;
+                        GroupTreedata =[];
+                        scanRoot(tempdataGroupTreeData, GroupTreedata);
+        
+                        var tree = $(options.treeID);
+                        tree.jstree(jstreeData);
+                        tree.jstree(true).settings.core.data = GroupTreedata;
+                        tree.jstree(true).refresh();
+                    }
+                },
+                invalid: function() {
+                    invalid = true;
+                },
+                error : function () {
+                    options.error();
+                },
+        });
+    }
+        var addNewGroup = function () {
+            if($.trim($("#groupname").val()) == '') {
+                alert('Group name is empty!');
+                return;
+            }
+            var newGroupdata = $.insmFramework('creatGroup', {
+                groupID: editGroupID,
+                    newGroupName: $("#groupname").val(),
+                    active: $("input[name='radio_Active']").val(),
+                    onlineUnits: $("input[name='radio_Online']").val(),
+                    note: $("#text_note").val(),
+                        newGroupNameParentID: groupTreeForPlayerEditID,
+                    success: function (data) {
+                        $("#div_1").show();
+                        $("#div_2").hide();
+                        initGroupTree();
+                        editGroupID = undefined;
+                    }
+            }) 
         }
+    $("#deletegroup").click(function (e) {
+        var newGroupdata = $.insmFramework('deleteGroup', {
+            deleteGroupId: selectedGroupID,
+            success: function (resultdata) {
+                $("#div_1").show();
+                $("#div_2").hide();
+                initGroupTree();
+            }
+        })
     })
-});
-$("#button_back").click(function () {
-    $("#div_1").show();
-    $("#div_2").hide();
-});
+    $("#expandAll").click(function () {
+        $('#groupTree').jstree('open_all');
+    });   
+    $("#collapseAll").click(function () {
+        $('#groupTree').jstree('close_all');
+    });
+    $("#editgroup").click(function () {
+        $("#div_1").hide();
+        $("#div_2").show();
+        $.insmFramework('getGroupTreeData', {
+            groupID: selectedGroupID,
+            success: function (userGroupData) {
+                if (userGroupData) {
+                    $("input[name='radio_Active'][value='" + userGroupData.ActiveFlag + "]").click();
+                    $("input[name='radio_Online'][value='" + userGroupData.OnlineFlag + "]").click();
+                    $("#groupname").val(userGroupData.GroupName);
+                    $("#text_note").val(userGroupData.Comments);
+                    editGroupID = selectedGroupID;
+                }
+            }
+        })
+    });
+    $("#button_back").click(function () {
+        $("#div_1").show();
+        $("#div_2").hide();
+    });
 var DatatableResponsiveColumnsDemo = function () {
     var datatable = $('.m_datatable').mDatatable({
         // datasource definition
@@ -397,6 +453,12 @@ var DatatableResponsiveColumnsDemo = function () {
 
     $('#m_form_status, #m_form_type').selectpicker();
 }
+var defaultDataSet = function () {
+    $("input[name='radio_Active'][value='null]").click();
+    $("input[name='radio_Online'][value='null]").click();
+    $("#groupname").val('');
+    $("#text_note").val('');
+}
 
 $(document).ready(function ()
 {
@@ -404,4 +466,5 @@ $(document).ready(function ()
     playerStatusShare();
     initGroupTree();
     DatatableResponsiveColumnsDemo();
+    defaultDataSet();
 });
