@@ -12,6 +12,7 @@ namespace ToilluminateModel.Models
         public string text { get; set; }
         public string icon { get; set; }
         public StateForJsonModel state { get; set; }
+        public GroupMaster groupMaster { get; set; }
         public object li_attr { get; set; }
         public object a_attr { get; set; }
     }
