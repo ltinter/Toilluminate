@@ -104,23 +104,6 @@ namespace ToilluminateModel.Controllers
             return Ok(groupMaster);
         }
 
-        //[HttpGet, Route("api/GroupMasters/MoveTreeNode/{GroupID}/{GroupParentID}")]
-        //public IList<JSTreeDataModel> MoveTreeNode(int GroupID,int GroupParentID)
-        //{
-        //    List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
-        //    JSTreeDataModel jdm;
-        //    foreach (GroupMaster gm in db.GroupMaster)
-        //    {
-        //        jdm = new JSTreeDataModel();
-        //        jdm.id = gm.GroupID.ToString();
-        //        jdm.text = gm.GroupName;
-        //        jdm.parent = gm.GroupParentID == null ? "#" : gm.GroupParentID.ToString();
-        //        jdm.groupMaster = gm;
-        //        jdmList.Add(jdm);
-        //    }
-        //    return jdmList;
-        //}
-
         [HttpGet, Route("api/GroupMasters/GetJSTreeData")]
         public IList<JSTreeDataModel> GetJSTreeData()
         {
@@ -131,7 +114,7 @@ namespace ToilluminateModel.Controllers
                 jdm.id = gm.GroupID.ToString();
                 jdm.text = gm.GroupName;
                 jdm.parent = gm.GroupParentID == null?"#":gm.GroupParentID.ToString();
-                jdm.groupMaster = gm;
+                jdm.li_attr = gm;
                 jdmList.Add(jdm);
             }
             return jdmList;
