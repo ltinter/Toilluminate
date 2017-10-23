@@ -206,7 +206,7 @@
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
 
-            var data = {
+            var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
                 },
@@ -218,11 +218,7 @@
                 denied: function () {
                 }
             };
-            return $.insmFramework('ajax', {
-                url: data.url,
-                type: data.type,
-                data: data.data
-            });
+            return $.insmFramework('ajax', ajaxOptions);
         },
         login: function (options) {
 

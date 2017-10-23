@@ -129,7 +129,10 @@ function scanRoot(groupTreedata, usegroupdata) {
                 icon: "fa fa-folder m--font-success",
                 GroupID: item.GroupID,
                 id: item.GroupID,
+                active: item.ActiveFlag,
+                onlineUnits: item.OnlineFlag,
                 GroupParentID: item.GroupParentID,
+                comments: item.Comments,
                 click: function (node) {
                     return { 'id': node.id };
                 },
@@ -143,7 +146,11 @@ function scanRoot(groupTreedata, usegroupdata) {
                 text: item.GroupName,
                 icon: "fa fa-folder m--font-success",
                 GroupID: item.GroupID,
+                id: item.GroupID,
+                active: item.ActiveFlag,
+                onlineUnits: item.OnlineFlag,
                 GroupParentID: item.GroupParentID,
+                comments:item.Comments,
                 click: function (node) {
                     return { 'id': node.id };
                 },
@@ -202,11 +209,18 @@ var initGroupTree = function () {
                         $.data(document, "selectedGroupID", data.node.original.GroupID);
                     } 
                 });
-                tree.on("click.jstree", function (e, data) {
-                    var a = "";
-                });
                 tree.on("move_node.jstree", function (e, data) {
-                    var a = "";
+                    var node = data.node;
+                    if (node) {
+                        editgroup({
+                            groupID: node.id,
+                            newGroupNameParentID: node.parent,
+                            newGroupName: node.text,
+                            ActiveFlag: node.original.active,
+                            OnlineFlag: node.original.onlineUnits,
+                            Comments: node.original.comments
+                    })
+                    }
                 });
                 $("#newgroup").click(function (e) {
                     $("#div_1").hide();
@@ -228,7 +242,20 @@ var initGroupTree = function () {
     });
 
 }
-
+var editgroup = function (options) {
+    var newGroupdata = $.insmFramework('creatGroup', {
+        groupID: options.groupID,
+        newGroupName: options.newGroupName,
+        active: options.ActiveFlag,
+        onlineUnits: options.OnlineFlag,
+        note: options.Comments,
+        newGroupNameParentID: options.newGroupNameParentID,
+        success: function (data) {
+            initGroupTree();
+            $.data(document, "editGroupID", undefined)
+        }
+    })
+}
 var addNewGroup = function () {
     if ($.trim($("#groupname").val()) == '') {
         alert('Group name is empty!');
@@ -246,8 +273,7 @@ var addNewGroup = function () {
             $("#div_2").hide();
             initGroupTree();
             $.data(document, "editGroupID", undefined)
-        }
-        
+        } 
     }) 
 }
 $("#deletegroup").click(function (e) {
