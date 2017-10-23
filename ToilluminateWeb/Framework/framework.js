@@ -118,8 +118,7 @@
                 data: data
             });
             return $this;
-        },
-       
+        }, 
         ajax: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -134,14 +133,14 @@
                 error: options.error
             });
         },
-        getGroupTreeData: function (options) {
+        editGroup: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
                 },
-                url: options.groupID == undefined ? 'api/GroupMasters' : 'api/GroupMasters' + "/" + options.groupID,
+                url: 'api/GroupMasters' + "/" + options.groupID,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
@@ -151,6 +150,24 @@
                     options.error();
                 },
             };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        getGroupTreeData: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/GroupMasters/GetJSTreeData',
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
             return $.insmFramework('ajax', ajaxOptions);
         },
         getUser: function (options) {
@@ -192,6 +209,49 @@
                 data: JSON.stringify(newGroup),
                 contentType: "application/json; charset=utf-8",
                 type: options.groupID == undefined ? 'POST' : 'PUT',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        creatGroup: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var GroupMaster = {
+                create: function () {
+                    GroupName: "";
+                    GroupParentID: '';
+                    ActiveFlag: '';
+                    OnlineFlag: '';
+                    //displayUnits: '';
+                    Comments: '';
+                    return GroupMaster;
+                }
+            }
+            var newGroup = GroupMaster.create();
+            if (options.groupID != undefined) {
+                newGroup.GroupID = options.groupID;
+            }
+            newGroup.GroupName = options.newGroupName;
+            newGroup.GroupParentID = options.newGroupNameParentID;
+            newGroup.ActiveFlag = options.active;
+            newGroup.OnlineFlag = options.onlineUnits;
+            newGroup.Comments = options.note;
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: options.groupID == undefined ? 'api/GroupMasters': 'api/GroupMasters' + "/" +options.groupID,
+                format: 'json',
+                data: JSON.stringify(newGroup),
+                contentType: "application/json; charset=utf-8",
+                type: options.groupID == undefined ? 'POST': 'PUT',
                 denied: function () {
                     // Just do it again and we should land in the success callback next time
                     //$.insmFramework('getUsers', options);
@@ -255,7 +315,26 @@
         });
 
         return logoutDeferred;
-    },
+        },
+        getPlayers: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayerMasters',
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        }
+
     }
     $.insmFramework = function (method) {
         if (methods[method]) {

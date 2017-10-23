@@ -100,6 +100,78 @@
 }
     var GroupTreedata = [];
     var GroupData;
+
+    var editGroupID;
+    var selectedGroupID = null;
+    var groupTreeForPlayerEditID = null;
+    var div_main = $("#div_main");
+    var div_edit = $("#div_edit");
+    var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
+    //function scanRoot(groupTreedata, usegroupdata) {
+    //    $.each(groupTreedata, function (index, item) {
+    //    if (item.GroupParentID == null) {
+    //        var item = {
+    //            text: item.GroupName,
+    //            icon: "fa fa-folder m--font-success",
+    //            GroupID: item.GroupID,
+    //            id: item.GroupID,
+    //            active: item.ActiveFlag,
+    //            onlineUnits: item.OnlineFlag,
+    //            GroupParentID: item.GroupParentID,
+    //            comments: item.Comments,
+    //            click: function (node) {
+    //                return { 'id': node.id };
+    //            },
+    //            children: []
+    //        };
+    //        GroupTreedata.push(item);
+    //        return true
+    //    }
+    //    if (item.GroupParentID) {
+    //        var childrenitem = {
+    //            text: item.GroupName,
+    //            icon: "fa fa-folder m--font-success",
+    //            GroupID: item.GroupID,
+    //            id: item.GroupID,
+    //            active: item.ActiveFlag,
+    //            onlineUnits: item.OnlineFlag,
+    //            GroupParentID: item.GroupParentID,
+    //            comments:item.Comments,
+    //            click: function (node) {
+    //                return { 'id': node.id };
+    //            },
+    //            children: []
+    //        };
+
+    //        $.each(GroupTreedata, function (index, rootitem) {
+    //            if (rootitem.GroupID == item.GroupParentID) {
+    //                rootitem.children.push(childrenitem);
+    //            } else if (rootitem.children && rootitem.children.length > 0) {
+    //                if (scansubRoot(rootitem.children, childrenitem, item.GroupParentID)) {
+    //                    rootitem.children.push(scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
+    //                }
+    //            }
+    //        })
+    //    }
+    //    });
+    //}
+
+    //function scansubRoot(childrendata, childrengroupdata, groupParentID) {
+    //    if (childrendata.length > 0) {
+    //    $.each(childrendata, function (index, subFolder) {
+    //        if (subFolder.GroupID == groupParentID) {
+    //            subFolder.children.push(childrengroupdata);
+    //            return childrendata;
+    //        } else {
+    //            if (subFolder.children && subFolder.children.length > 0) {
+    //                scansubRoot(subFolder.children, childrengroupdata, groupParentID)
+    //            }
+    //        }
+    //        });
+    //    }
+    //}
+
+
     var jstreeData = {
         "core": {
             "themes": {
@@ -117,103 +189,39 @@
                 "icon": "fa fa-sitemap  m--font-success"
             }
         },
-        "state": { "key": "demo2" },
+        "state": {
+            "key": "demo2"
+        },
         "plugins": ["dnd", "state", "types"]
+
     };
-    var editGroupID;
-    var selectedGroupID = null;
-    var groupTreeForPlayerEditID = null;
-    var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
-    function scanRoot(groupTreedata, usegroupdata) {
-        $.each(groupTreedata, function (index, item) {
-        if (item.GroupParentID == null) {
-            var item = {
-                text: item.GroupName,
-                icon: "fa fa-folder m--font-success",
-                GroupID: item.GroupID,
-                id: item.GroupID,
-                active: item.ActiveFlag,
-                onlineUnits: item.OnlineFlag,
-                GroupParentID: item.GroupParentID,
-                comments: item.Comments,
-                click: function (node) {
-                    return { 'id': node.id };
-                },
-                children: []
-            };
-            GroupTreedata.push(item);
-            return true
-        }
-        if (item.GroupParentID) {
-            var childrenitem = {
-                text: item.GroupName,
-                icon: "fa fa-folder m--font-success",
-                GroupID: item.GroupID,
-                id: item.GroupID,
-                active: item.ActiveFlag,
-                onlineUnits: item.OnlineFlag,
-                GroupParentID: item.GroupParentID,
-                comments:item.Comments,
-                click: function (node) {
-                    return { 'id': node.id };
-                },
-                children: []
-            };
-
-            $.each(GroupTreedata, function (index, rootitem) {
-                if (rootitem.GroupID == item.GroupParentID) {
-                    rootitem.children.push(childrenitem);
-                } else if (rootitem.children && rootitem.children.length > 0) {
-                    if (scansubRoot(rootitem.children, childrenitem, item.GroupParentID)) {
-                        rootitem.children.push(scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
-                    }
-                }
-            })
-        }
-        });
-    }
-
-    function scansubRoot(childrendata, childrengroupdata, groupParentID) {
-        if (childrendata.length > 0) {
-        $.each(childrendata, function (index, subFolder) {
-            if (subFolder.GroupID == groupParentID) {
-                subFolder.children.push(childrengroupdata);
-                return childrendata;
-            } else {
-                if (subFolder.children && subFolder.children.length > 0) {
-                    scansubRoot(subFolder.children, childrengroupdata, groupParentID)
-                }
-            }
-            });
-        }
-    }
-
     var initGroupTree = function () {
         $.insmFramework('getGroupTreeData', {
             success: function (tempdataGroupTreeData) {
             if (tempdataGroupTreeData) {
-                GroupData = tempdataGroupTreeData;
-                GroupTreedata = [];
-                scanRoot(tempdataGroupTreeData, GroupTreedata);
+                //GroupData = tempdataGroupTreeData;
+                //GroupTreedata = [];
+                //scanRoot(tempdataGroupTreeData, GroupTreedata);
      
                 var tree = $('.tree-demo');
+                //jstreeData.core.data = tempdataGroupTreeData;
                 tree.jstree(jstreeData);
                 $.each(tree, function (key, item) {
-                    $(item).jstree(true).settings.core.data = GroupTreedata;
+                    $(item).jstree(true).settings.core.data = tempdataGroupTreeData;
                     $(item).jstree(true).refresh();
                 });
 
                 tree.on("changed.jstree", function (e, data) {
                     //存储当前选中的区域的名称
-                    if (data.node && data.node.original) {
-                        selectedGroupID = data.node.original.GroupID;
+                    if (data.node) {
+                        selectedGroupID = data.node.id;
                     } 
                 });
 
                 $(div_groupTreeForPlayerEdit).on("changed.jstree", function (e, data) {
                     //存储当前选中的区域的名称
-                    if(data.node && data.node.original) {
-                        groupTreeForPlayerEditID = data.node.original.GroupID;
+                    if(data.node) {
+                        groupTreeForPlayerEditID = data.node.id;
                     }
                 });
                 tree.on("move_node.jstree", function (e, data) {
@@ -223,9 +231,9 @@
                             groupID: node.id,
                             newGroupNameParentID: node.parent,
                             newGroupName: node.text,
-                            ActiveFlag: node.original.active,
-                            OnlineFlag: node.original.onlineUnits,
-                            Comments: node.original.comments
+                            ActiveFlag: node.li_attr.ActiveFlag,
+                            OnlineFlag: node.li_attr.OnlineFlag,
+                            Comments: node.li_attr.Comments
                     })
                     }
                     });
@@ -239,17 +247,6 @@
             },
         });
     }
-    $("#newgroup").click(function (e) {
-        $("#div_1").hide();
-        $("#div_2").show();
-        defaultDataSet();
-        editGroupID = undefined;
-    })
-
-    $("#button_save").click(function (e) {
-            addNewGroup();
-            editGroupID = undefined;
-    })
     var editgroup = function (options) {
         var newGroupdata = $.insmFramework('creatGroup', {
             groupID: options.groupID,
@@ -264,54 +261,40 @@
             }
         })
     }
-    var maingroup = function (options) {
-        $.insmFramework('getGroupTreeData', {
-                success: function(tempdataGroupTreeData) {
-                    if (tempdataGroupTreeData) {
-                        GroupData = tempdataGroupTreeData;
-                        GroupTreedata =[];
-                        scanRoot(tempdataGroupTreeData, GroupTreedata);
-        
-                        var tree = $(options.treeID);
-                        tree.jstree(jstreeData);
-                        tree.jstree(true).settings.core.data = GroupTreedata;
-                        tree.jstree(true).refresh();
-                    }
-                },
-                invalid: function() {
-                    invalid = true;
-                },
-                error : function () {
-                    options.error();
-                },
-        });
-    }
-        var addNewGroup = function () {
-            if($.trim($("#groupname").val()) == '') {
-                alert('Group name is empty!');
-                return;
-            }
-            var newGroupdata = $.insmFramework('creatGroup', {
-                groupID: editGroupID,
-                    newGroupName: $("#groupname").val(),
-                    active: $("input[name='radio_Active']").val(),
-                    onlineUnits: $("input[name='radio_Online']").val(),
-                    note: $("#text_note").val(),
-                        newGroupNameParentID: groupTreeForPlayerEditID,
-                    success: function (data) {
-                        $("#div_1").show();
-                        $("#div_2").hide();
-                        initGroupTree();
-                        editGroupID = undefined;
-                    }
-            }) 
+    var addNewGroup = function () {
+        if ($.trim($("#groupname").val()) == '') {
+            alert('Group name is empty!');
+            return;
         }
+        var newGroupdata = $.insmFramework('creatGroup', {
+            groupID: editGroupID,
+            newGroupName: $("#groupname").val(),
+            active: $("input[name='radio_Active']:checked").val(),
+            onlineUnits: $("input[name='radio_Online']:checked").val(),
+            //resolution:$("#select_resolution").find("option:selected").text(),
+            note: $("#text_note").val(),
+            newGroupNameParentID: groupTreeForPlayerEditID,
+            success: function (data) {
+                div_main.show();
+                div_edit.hide();
+                initGroupTree();
+                editGroupID = undefined;
+            }
+        })
+    }
+
+    $("#newgroup").click(function (e) {
+        div_main.hide();
+        div_edit.show();
+        defaultDataSet();
+        editGroupID = undefined;
+    })   
     $("#deletegroup").click(function (e) {
         var newGroupdata = $.insmFramework('deleteGroup', {
             deleteGroupId: selectedGroupID,
             success: function (resultdata) {
-                $("#div_1").show();
-                $("#div_2").hide();
+                div_main.show();
+                div_edit.hide();
                 initGroupTree();
             }
         })
@@ -323,9 +306,9 @@
         $('#groupTree').jstree('close_all');
     });
     $("#editgroup").click(function () {
-        $("#div_1").hide();
-        $("#div_2").show();
-        $.insmFramework('getGroupTreeData', {
+        div_main.hide();
+        div_edit.show();
+        $.insmFramework('editGroup', {
             groupID: selectedGroupID,
             success: function (userGroupData) {
                 if (userGroupData) {
@@ -338,9 +321,18 @@
             }
         })
     });
+    $("#button_save").click(function(e) {
+                addNewGroup();
+                editGroupID = undefined;
+        })
     $("#button_back").click(function () {
-        $("#div_1").show();
-        $("#div_2").hide();
+        div_main.show();
+        div_edit.hide();
+    });
+
+    $("#add_player").click(function () {
+        div_main.show();
+        div_edit.hide();
     });
 var DatatableResponsiveColumnsDemo = function () {
     var datatable = $('.m_datatable').mDatatable({
@@ -462,7 +454,7 @@ var defaultDataSet = function () {
 
 $(document).ready(function ()
 {
-    $("#div_2").hide();
+    div_edit.hide();
     playerStatusShare();
     initGroupTree();
     DatatableResponsiveColumnsDemo();
