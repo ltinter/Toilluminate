@@ -215,6 +215,7 @@
                     //存储当前选中的区域的名称
                     if (data.node) {
                         selectedGroupID = data.node.id;
+                        showPlayerDetail({ GroupID: selectedGroupID });
                     } 
                 });
 
@@ -329,134 +330,156 @@
         div_main.show();
         div_edit.hide();
     });
-
+    var testdata
     $("#add_player").click(function () {
+        div_main.hide();
+        div_edit.show();
+        $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
+        $("#button_save").css('display', 'none');
+        //var newGroupdata = 
+    });
+    $("#button_save_Player").click(function () {
         div_main.show();
         div_edit.hide();
-    });
-var DatatableResponsiveColumnsDemo = function () {
-    var datatable = $('.m_datatable').mDatatable({
-        // datasource definition
-        data: {
-            type: 'remote',
-            source: {
-                read: {
-                    url: 'http://keenthemes.com/metronic/preview/inc/api/datatables/demos/default.php'
-                }
-            },
-            pageSize: 10,
-            saveState: {
-                cookie: true,
-                webstorage: true
-            },
-            serverPaging: true,
-            serverFiltering: true,
-            serverSorting: true
-        },
-
-        // layout definition
-        layout: {
-            theme: 'default', // datatable theme
-            class: '', // custom wrapper class
-            scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
-            height: 550, // datatable's body's fixed height
-            footer: false // display/hide footer
-        },
-
-        // column sorting
-        sortable: true,
-
-        // column based filtering
-        filterable: false,
-
-        pagination: true,
-
-        // columns definition
-        columns: [{
-            field: "RecordID",
-            title: "#",
-            sortable: false, // disable sort for this column
-            width: 40,
-            textAlign: 'center',
-            selector: { class: 'm-checkbox--solid m-checkbox--brand' }
-        }, {
-            field: "OrderID",
-            title: "Order ID",
-            filterable: false, // disable or enable filtering
-            width: 150
-        }, {
-            field: "ShipCity",
-            title: "Ship City",
-            responsive: { visible: 'lg' }
-        }, {
-            field: "Website",
-            title: "Website",
-            width: 200,
-            responsive: { visible: 'lg' }
-        }, {
-            field: "Department",
-            title: "Department",
-            responsive: { visible: 'lg' }
-        }, {
-            field: "ShipDate",
-            title: "Ship Date",
-            responsive: { visible: 'lg' }
-        }, {
-            field: "Actions",
-            width: 110,
-            title: "Actions",
-            sortable: false,
-            overflow: 'visible',
-            template: function (row) {
-                var dropup = (row.getDatatable().getPageSize() - row.getIndex()) <= 4 ? 'dropup' : '';
-
-                return '\
-						<div class="dropdown '+ dropup + '">\
-							<a href="#" class="btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" data-toggle="dropdown">\
-                                <i class="la la-ellipsis-h"></i>\
-                            </a>\
-						  	<div class="dropdown-menu dropdown-menu-right">\
-						    	<a class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>\
-						    	<a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>\
-						    	<a class="dropdown-item" href="#"><i class="la la-print"></i> Generate Report</a>\
-						  	</div>\
-						</div>\
-						<a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit details">\
-							<i class="la la-edit"></i>\
-						</a>\
-						<a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">\
-							<i class="la la-trash"></i>\
-						</a>\
-					';
+        if ($.trim($("#groupname").val()) == '') {
+            alert('Group name is empty!');
+            return;
+        }
+        var newGroupdata = $.insmFramework('creatPlayer', {
+            groupID: editGroupID,
+            newGroupName: $("#groupname").val(),
+            active: $("input[name='radio_Active']:checked").val(),
+            onlineUnits: $("input[name='radio_Online']:checked").val(),
+            //resolution:$("#select_resolution").find("option:selected").text(),
+            note: $("#text_note").val(),
+            newGroupNameParentID: groupTreeForPlayerEditID,
+            success: function (data) {
+                div_main.show();
+                div_edit.hide();
+                initGroupTree();
+                editGroupID = undefined;
             }
-        }]
+        })
     });
+    var DatatableResponsiveColumnsDemo = function (options) {
+        var datatable = $('#base_responsive_columns').mDatatable({
+            // datasource definition
+            data: {
+                type: 'local',
+                source: {
+                    "meta": {
+                        "page": 1,
+                        "pages": 1,
+                        "perpage": -1,
+                        "total": 350,
+                        "sort": "asc",
+                        "field": "RecordID"
+                    },
+                    "data": options.PlayersData
+                },
+                pageSize: 10,
+                saveState: {
+                    cookie: true,
+                    webstorage: true
+                },
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
 
-    var query = datatable.getDataSourceQuery();
+            // layout definition
+            layout: {
+                theme: 'default', // datatable theme
+                class: '', // custom wrapper class
+                scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
+                height: 550, // datatable's body's fixed height
+                footer: false // display/hide footer
+            },
 
-    $('#m_form_search').on('keyup', function (e) {
-        // shortcode to datatable.getDataSourceParam('query');
+            // column sorting
+            sortable: true,
+
+            // column based filtering
+            filterable: false,
+
+            pagination: true,
+
+            // columns definition
+            columns: [{
+                field: "RecordID",
+                title: "#",
+                sortable: false, // disable sort for this column
+                width: 40,
+                textAlign: 'center',
+                selector: { class: 'm-checkbox--solid m-checkbox--brand' }
+            }, {
+                field: "PlayerID",
+                title: "PlayerID",
+                filterable: false, // disable or enable filtering
+                width: 150
+            }, {
+                field: "PlayerName",
+                title: "PlayerName",
+                responsive: { visible: 'lg' }
+            }, {
+                field: "GroupName",
+                title: "GroupName",
+                width: 200,
+                responsive: { visible: 'lg' }
+            }, {
+                field: "GreatDate",
+                title: "GreatDate",
+                responsive: { visible: 'lg' }
+            }, {
+                field: "Online",
+                title: "Online",
+                responsive: { visible: 'lg' }
+            }]
+        });
+
         var query = datatable.getDataSourceQuery();
-        query.generalSearch = $(this).val().toLowerCase();
-        // shortcode to datatable.setDataSourceParam('query', query);
-        datatable.setDataSourceQuery(query);
-        datatable.load();
-    }).val(query.generalSearch);
 
-    $('#m_form_status, #m_form_type').selectpicker();
-}
+        $('#m_form_search').on('keyup', function (e) {
+            // shortcode to datatable.getDataSourceParam('query');
+            var query = datatable.getDataSourceQuery();
+            query.generalSearch = $(this).val().toLowerCase();
+            // shortcode to datatable.setDataSourceParam('query', query);
+            datatable.setDataSourceQuery(query);
+            datatable.load();
+        }).val(query.generalSearch);
+
+        $('#m_form_status, #m_form_type').selectpicker();
+    }
 var defaultDataSet = function () {
     $("input[name='radio_Active'][value='null]").click();
     $("input[name='radio_Online'][value='null]").click();
     $("#groupname").val('');
     $("#text_note").val('');
 }
-
+var showPlayerDetail = function (options) {
+    $("#PlayerDetail").css('display', 'block');
+    $.insmFramework('getGroupPlayers', {
+        GroupID: options.GroupID,
+        newGroupName: $("#groupname").val(),
+        active: $("input[name='radio_Active']:checked").val(),
+        onlineUnits: $("input[name='radio_Online']:checked").val(),
+        //resolution:$("#select_resolution").find("option:selected").text(),
+        note: $("#text_note").val(),
+        newGroupNameParentID: groupTreeForPlayerEditID,
+        success: function (data) {
+            div_main.show();
+            div_edit.hide();
+            //testdata = data;
+            DatatableResponsiveColumnsDemo({ PlayersData: data });
+        }
+    })
+}
 $(document).ready(function ()
 {
     div_edit.hide();
     playerStatusShare();
     initGroupTree();
-    DatatableResponsiveColumnsDemo();
+    //DatatableResponsiveColumnsDemo();
     defaultDataSet();
+    $("#PlayerDetail").css('display', 'none');
 });

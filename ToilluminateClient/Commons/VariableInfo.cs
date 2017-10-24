@@ -91,7 +91,7 @@ namespace ToilluminateClient
                 return tempPath;
             }
         }
-        
+
         #endregion
 
         #region publicメソッド
@@ -111,6 +111,22 @@ namespace ToilluminateClient
             tempPath = Utility.GetFullFileName(clientPath, "temp");
         }
 
+
+
+        /// <summary>
+        /// 共通変数が初期化
+        /// </summary>
+        public static void RefreshPlayListInfo()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("", "", ex);
+            }
+        }
         #endregion
     }
 

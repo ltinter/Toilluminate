@@ -219,49 +219,49 @@
             };
             return $.insmFramework('ajax', ajaxOptions);
         },
-        creatGroup: function (options) {
-            var $this = $('html').eq(0);
-            var _plugin = $this.data('insmFramework');
-            var GroupMaster = {
-                create: function () {
-                    GroupName: "";
-                    GroupParentID: '';
-                    ActiveFlag: '';
-                    OnlineFlag: '';
-                    //displayUnits: '';
-                    Comments: '';
-                    return GroupMaster;
-                }
-            }
-            var newGroup = GroupMaster.create();
-            if (options.groupID != undefined) {
-                newGroup.GroupID = options.groupID;
-            }
-            newGroup.GroupName = options.newGroupName;
-            newGroup.GroupParentID = options.newGroupNameParentID;
-            newGroup.ActiveFlag = options.active;
-            newGroup.OnlineFlag = options.onlineUnits;
-            newGroup.Comments = options.note;
+        //creatGroup: function (options) {
+        //    var $this = $('html').eq(0);
+        //    var _plugin = $this.data('insmFramework');
+        //    var GroupMaster = {
+        //        create: function () {
+        //            GroupName: "";
+        //            GroupParentID: '';
+        //            ActiveFlag: '';
+        //            OnlineFlag: '';
+        //            //displayUnits: '';
+        //            Comments: '';
+        //            return GroupMaster;
+        //        }
+        //    }
+        //    var newGroup = GroupMaster.create();
+        //    if (options.groupID != undefined) {
+        //        newGroup.GroupID = options.groupID;
+        //    }
+        //    newGroup.GroupName = options.newGroupName;
+        //    newGroup.GroupParentID = options.newGroupNameParentID;
+        //    newGroup.ActiveFlag = options.active;
+        //    newGroup.OnlineFlag = options.onlineUnits;
+        //    newGroup.Comments = options.note;
 
-            var ajaxOptions = {
-                success: function (result) {
-                    options.success(result);
-                },
-                url: options.groupID == undefined ? 'api/GroupMasters': 'api/GroupMasters' + "/" +options.groupID,
-                format: 'json',
-                data: JSON.stringify(newGroup),
-                contentType: "application/json; charset=utf-8",
-                type: options.groupID == undefined ? 'POST': 'PUT',
-                denied: function () {
-                    // Just do it again and we should land in the success callback next time
-                    //$.insmFramework('getUsers', options);
-                },
-                error: function () {
-                    options.error();
-                },
-            };
-            return $.insmFramework('ajax', ajaxOptions);
-        },
+        //    var ajaxOptions = {
+        //        success: function (result) {
+        //            options.success(result);
+        //        },
+        //        url: options.groupID == undefined ? 'api/GroupMasters': 'api/GroupMasters' + "/" +options.groupID,
+        //        format: 'json',
+        //        data: JSON.stringify(newGroup),
+        //        contentType: "application/json; charset=utf-8",
+        //        type: options.groupID == undefined ? 'POST': 'PUT',
+        //        denied: function () {
+        //            // Just do it again and we should land in the success callback next time
+        //            //$.insmFramework('getUsers', options);
+        //        },
+        //        error: function () {
+        //            options.error();
+        //        },
+        //    };
+        //    return $.insmFramework('ajax', ajaxOptions);
+        //},
         deleteGroup: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -316,25 +316,68 @@
 
         return logoutDeferred;
         },
-        getPlayers: function (options) {
+        getGroupPlayers: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/PlayerMasters',
+                url: 'api/PlayerMasters/GetPlayerByGroupID/' + options.GroupID,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
-                type: "GET",
+                type: "POST",
                 denied: function () { },
                 error: function () {
                     options.error();
                 },
             }
             return $.insmFramework('ajax', ajaxOptions);
-        }
+        },
+        creatPlayer: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var PlayerMaster = {
+                create: function () {
+                    GroupID: '';
+                    PlayerName: '';
+                    PlayerAddress: '';
+                    Comments: '';
+                    ActiveFlag: '';
+                    OnlineFlag: '';
+                    Settings: '';
+                    return PlayerMaster;
+                }
+            }
+            var newPlayer = PlayerMaster.create();
+            if (options.groupID != undefined) {
+                newPlayer.GroupID = options.groupID;
+            }
+            newPlayer.PlayerName = options.newGroupName;
+            newPlayer.Comments = options.newGroupNameParentID;
+            newPlayer.ActiveFlag = options.active;
+            newPlayer.OnlineFlag = options.onlineUnits;
+            newPlayer.GroupID = 1;
 
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayerMasters',
+                format: 'json',
+                data: JSON.stringify(newPlayer),
+                contentType: "application/json; charset=utf-8",
+                type: options.groupID == undefined ? 'POST' : 'PUT',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
     }
     $.insmFramework = function (method) {
         if (methods[method]) {

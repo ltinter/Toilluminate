@@ -97,23 +97,20 @@ namespace ToilluminateClient
         /// エラーログを出力します。
         /// </summary>
         /// <param name="className">クラス名</param>
-        /// <param name="errorKey">エラー番号</param>
-        /// <param name="errorMessage">エラー内容</param>
-        /// <param name="userID">ユーザーID</param>
-        public static void OutputErrorLog(string className, string methodName, string errorKey, string errorDescription)
+        /// <param name="methodName">エラー番号</param>
+        /// <param name="exception">エラー内容</param>
+        public static void OutputErrorLog(string className, string methodName, Exception exception)
         {
             try
             {
                 //・日時（秒単位）：yyyy/mm/dd hh:mm:ss
                 //・発生箇所：ﾓｼﾞｭｰﾙ名
-                //・ｴﾗｰ番号：Err.Number
-                //・ｴﾗｰ内容：Err.Description
+                //・ｴﾗｰ内容：exception.Description
                 string text = string.Format(
                     "{0}\t{1}\t{2}\t{3}",
                     DateTime.Now.ToString(),
                     className + "." + methodName + "()",
-                    errorKey,
-                    errorDescription
+                    exception.Message
                 );
 
                 WriteLogFile(text, ErrorLogFIleFullPath);

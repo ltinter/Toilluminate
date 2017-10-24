@@ -37,7 +37,6 @@
             this.pnlShowMediaWMP = new System.Windows.Forms.Panel();
             this.axWMP = new AxWMPLib.AxWindowsMediaPlayer();
             this.pnlShowMediaVLC = new System.Windows.Forms.Panel();
-            this.axVLC = new AxAXVLC.AxVLCPlugin2();
             this.pnlShowWeb = new System.Windows.Forms.Panel();
             this.wbsBox = new System.Windows.Forms.WebBrowser();
             this.pnlShowPDF = new System.Windows.Forms.Panel();
@@ -53,8 +52,6 @@
             this.pnlShowMessage.SuspendLayout();
             this.pnlShowMediaWMP.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWMP)).BeginInit();
-            this.pnlShowMediaVLC.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.axVLC)).BeginInit();
             this.pnlShowWeb.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -116,22 +113,12 @@
             // 
             // pnlShowMediaVLC
             // 
-            this.pnlShowMediaVLC.Controls.Add(this.axVLC);
             this.pnlShowMediaVLC.Location = new System.Drawing.Point(0, 240);
             this.pnlShowMediaVLC.Margin = new System.Windows.Forms.Padding(0);
             this.pnlShowMediaVLC.Name = "pnlShowMediaVLC";
             this.pnlShowMediaVLC.Size = new System.Drawing.Size(320, 240);
             this.pnlShowMediaVLC.TabIndex = 3;
             this.pnlShowMediaVLC.DoubleClick += new System.EventHandler(this.panle_DoubleClick);
-            // 
-            // axVLC
-            // 
-            this.axVLC.Enabled = true;
-            this.axVLC.Location = new System.Drawing.Point(12, 16);
-            this.axVLC.Name = "axVLC";
-            this.axVLC.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axVLC.OcxState")));
-            this.axVLC.Size = new System.Drawing.Size(259, 159);
-            this.axVLC.TabIndex = 0;
             // 
             // pnlShowWeb
             // 
@@ -211,8 +198,6 @@
             this.pnlShowMessage.ResumeLayout(false);
             this.pnlShowMediaWMP.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.axWMP)).EndInit();
-            this.pnlShowMediaVLC.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.axVLC)).EndInit();
             this.pnlShowWeb.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -232,7 +217,6 @@
         private System.Windows.Forms.Timer tmrAll;
         private System.Windows.Forms.WebBrowser wbsBox;
         private AxWMPLib.AxWindowsMediaPlayer axWMP;
-        private AxAXVLC.AxVLCPlugin2 axVLC;
         private System.Windows.Forms.Timer tmrMedia;
         private System.Windows.Forms.Timer tmrMessage;
         private System.Windows.Forms.Timer tmrWeb;
