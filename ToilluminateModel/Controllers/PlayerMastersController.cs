@@ -110,20 +110,34 @@ namespace ToilluminateModel.Controllers
             PublicMethods.GetChildGroupIDs(GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
             //Expression<Func<PlayListMaster, bool>> filter = a => groupIDs.Contains((int)a.GroupID);
-            var jsonList = db.PlayerMaster.Where(a => groupIDs.Contains((int)a.GroupID))
-                .GroupJoin(db.GroupMaster,
-                pm => pm.GroupID,
-                groupInfo => groupInfo.GroupID,
-                (pm, groupInfo) => new
-                {
-                    pm.GroupID,
-                    pm.PlayerID,
-                    pm.PlayerName,
-                    pm.PlayerAddress,
-                    pm.ActiveFlag,
-                    pm.OnlineFlag,
-                    groupInfo
-                }).Select(o => o).ToList();
+            //var jsonList = db.PlayerMaster.Where(a => groupIDs.Contains((int)a.GroupID))
+            //    .GroupJoin(db.GroupMaster,
+            //    pm => pm.GroupID,
+            //    groupInfo => groupInfo.GroupID,
+            //    (pm, groupInfo) => new
+            //    {
+            //        pm.GroupID,
+            //        pm.PlayerID,
+            //        pm.PlayerName,
+            //        pm.PlayerAddress,
+            //        pm.ActiveFlag,
+            //        pm.OnlineFlag,
+            //        groupInfo
+            //    }).Select(o => o).ToList();
+
+            var jsonList = (from pm in db.PlayerMaster
+                           join gm in db.GroupMaster on pm.GroupID equals gm.GroupID into ProjectV
+                           from pv in ProjectV.DefaultIfEmpty()
+                           where groupIDs.Contains((int)pm.GroupID)
+                           select new { pm.PlayerID,
+                           pm.PlayerName,
+                           pm.PlayerAddress,
+                           pm.Settings,
+                           pm.OnlineFlag,
+                           pm.ActiveFlag,
+                           pm.UpdateDate,
+                           pv.GroupName,
+                           pv.GroupID}).ToList();
 
 
             return Json(jsonList);
