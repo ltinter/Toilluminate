@@ -1,4 +1,5 @@
 ﻿var GroupTreedata = [];
+var FolderTreedata = [];
 var GroupData;
 var selectPlayerdata;
 
@@ -112,7 +113,7 @@ var playerStatusShare = function () {
         });
     }
 
-    var jstreeData = {
+var groupJstreeData = {
         "core": {
             "themes": {
                 "responsive": true
@@ -192,7 +193,7 @@ var playerStatusShare = function () {
                         //存储当前选中的区域的名称
                         if (data.node) {
                             selectedGroupID = data.node.id;
-                            initFolderTree(data.node.id);
+                            //initFolderTree(data.node.id);
                         }
                     });
                     tree.on("move_node.jstree", function (e, data) {
