@@ -102,21 +102,37 @@ namespace ToilluminateModel.Controllers
 
             return Ok(playerMaster);
         }
+        [HttpGet, Route("api/PlayerMasters/GetPlayerWithChildByGroupID/{GroupID}")]
+        public async Task<IHttpActionResult> GetPlayerWithChildByGroupID(int GroupID)
+        {
+            List<int> GroupIDList = new List<int>();
+            GroupIDList.Add(GroupID);
+            PublicMethods.GetChildGroupIDs(GroupID, ref GroupIDList, db);
+            int[] groupIDs = GroupIDList.ToArray<int>();
+            //Expression<Func<PlayListMaster, bool>> filter = a => groupIDs.Contains((int)a.GroupID);
+            var jsonList = db.PlayerMaster.Where(a => groupIDs.Contains((int)a.GroupID))
+                .GroupJoin(db.GroupMaster,
+                pm => pm.GroupID,
+                groupInfo => groupInfo.GroupID,
+                (pm, groupInfo) => new
+                {
+                    pm.GroupID,
+                    pm.PlayerID,
+                    pm.PlayerName,
+                    pm.PlayerAddress,
+                    pm.ActiveFlag,
+                    pm.OnlineFlag,
+                    groupInfo
+                }).Select(o => o).ToList();
+
+
+            return Json(jsonList);
+        }
 
         [HttpPost, Route("api/PlayerMasters/GetPlayerByGroupID/{GroupID}")]
         public async Task<IQueryable<PlayerMaster>> GetPlayerByGroupID(int GroupID)
         {
             return db.PlayerMaster.Where(a => a.GroupID == GroupID);
-        }
-
-        [HttpPost, Route("api/PlayerMasters/GetPlayListByPlayerID/{PlayerID}")]
-        public async Task<IQueryable<PlayListMaster>> GetPlayListByPlayerID(int PlayerID)
-        {
-            //int?[] playListIDs = (from ppl in db.PlayerPlayListLinkTable where ppl.PlayerID == PlayerID select ppl.PlayListID).ToArray<int?>();
-            //return db.PlayListMaster.Where(a=> playListIDs.Contains(a.PlayListID));
-            return db.PlayListMaster
-                    .Where(q => db.PlayerPlayListLinkTable
-                    .Where(s => s.PlayListID == q.PlayListID && s.PlayerID == PlayerID).Count() > 0);
         }
 
         protected override void Dispose(bool disposing)
