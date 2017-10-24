@@ -688,7 +688,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <li class="m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light" data-dropdown-toggle="click">
                                         <a href="#" class="m-nav__link m-dropdown__toggle">
                                             <span class="m-topbar__userpic">
-                                                <img src="assets/app/media/img/users/user4.jpg" class="m--img-rounded m--marginless m--img-centered" alt="" />
+                                                <img src="Framework/assets/app/media/img/users/user4.jpg" class="m--img-rounded m--marginless m--img-centered" alt="" />
                                             </span>
                                             <span class="m-topbar__username m--hide">
                                                 Nick
@@ -948,7 +948,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         <div class="col-xl-8">
                             <!--begin:: Widgets/Activity-->
                             <div class="m-portlet m-portlet--bordered-semi m-portlet--widget-fit m-portlet--full-height m-portlet--skin-light">
-                                <div class="m-portlet__body">
+                                <div class="m-portlet__body" id="PlayerDetail">
                                     <!--begin: Search Form -->
                                     <div class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
                                         <div class="row align-items-center">
@@ -978,7 +978,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     </label>
                                                 </div>
                                                 <div class="btn-group m-btn-group m-btn-group--pill" role="group" aria-label="...">
-                                                    <button type="button" class="m-btn btn btn-primary">
+                                                    <button type="button" class="m-btn btn btn-primary" id="add_player">
                                                         Add
                                                     </button>
                                                     <button type="button" class="m-btn btn btn-primary">
@@ -1020,6 +1020,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <li class="m-portlet__nav-item" id="button_save">
                                                 <a class="m-portlet__nav-link btn btn-light m-btn m-btn--pill m-btn--air">
                                                     Save
+                                                </a>
+                                            </li>
+                                            <li class="m-portlet__nav-item" >
+                                                <a id="button_save_Player" class="m-portlet__nav-link btn btn-light m-btn m-btn--pill m-btn--air">
+                                                    Save1
                                                 </a>
                                             </li>
                                             <li class="m-portlet__nav-item" id="button_back">
