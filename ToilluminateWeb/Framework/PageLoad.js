@@ -1,178 +1,116 @@
-﻿var playerStatusShare = function ()
-{
-    if ($('#m_chart_player_status_share').length == 0)
-    {
-        return;
-    }
+﻿var GroupTreedata = [];
+var GroupData;
+var selectPlayerdata;
 
-    var chart = new Chartist.Pie('#m_chart_player_status_share', {
-        series: [{
+var editGroupID;
+var selectedGroupID = null;
+var groupTreeForPlayerEditID = null;
+var div_main = $("#div_main");
+var div_edit = $("#div_edit");
+var div_groupTree = $("#groupTree");
+var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
+var player_Alldata;
+
+var ActivechangeFlg = false;
+var OnlinechangeFlg = false;
+var DisplayNamechangeFlg = false;
+var NotechangeFlg = false;
+
+
+
+var playerStatusShare = function () {
+        if ($('#m_chart_player_status_share').length == 0) {
+            return;
+        }
+
+        var chart = new Chartist.Pie('#m_chart_player_status_share', {
+            series: [{
                 value: 46,
                 className: 'custom',
                 meta: {
                     color: mUtil.getColor('success')
                 }
             },
-            {
-                value: 4,
-                className: 'custom',
-                meta: {
-                    color: mUtil.getColor('danger')
+                {
+                    value: 4,
+                    className: 'custom',
+                    meta: {
+                        color: mUtil.getColor('danger')
+                    }
+                },
+                {
+                    value: 2,
+                    className: 'custom',
+                    meta: {
+                        color: mUtil.getColor('warning')
+                    }
+                },
+                {
+                    value: 15,
+                    className: 'custom',
+                    meta: {
+                        color: mUtil.getColor('metal')
+                    }
                 }
-            },
-            {
-                value: 2,
-                className: 'custom',
-                meta: {
-                    color: mUtil.getColor('warning')
+            ],
+            labels: [1, 2, 3]
+        }, {
+            donut: true,
+            donutWidth: 17,
+            showLabel: false
+        });
+
+        chart.on('draw', function (data) {
+            if (data.type === 'slice') {
+                // Get the total path length in order to use for dash array animation
+                var pathLength = data.element._node.getTotalLength();
+
+                // Set a dasharray that matches the path length as prerequisite to animate dashoffset
+                data.element.attr({
+                    'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+                });
+
+                // Create animation definition while also assigning an ID to the animation for later sync usage
+                var animationDefinition = {
+                    'stroke-dashoffset': {
+                        id: 'anim' + data.index,
+                        dur: 1000,
+                        from: -pathLength + 'px',
+                        to: '0px',
+                        easing: Chartist.Svg.Easing.easeOutQuint,
+                        // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
+                        fill: 'freeze',
+                        'stroke': data.meta.color
+                    }
+                };
+
+                // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
+                if (data.index !== 0) {
+                    animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
                 }
-            },
-            {
-                value: 15,
-                className: 'custom',
-                meta: {
-                    color: mUtil.getColor('metal')
-                }
-            }
-        ],
-        labels: [1, 2, 3]
-    }, {
-        donut: true,
-        donutWidth: 17,
-        showLabel: false
-    });
 
-    chart.on('draw', function (data)
-    {
-        if (data.type === 'slice')
-        {
-            // Get the total path length in order to use for dash array animation
-            var pathLength = data.element._node.getTotalLength();
+                // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
 
-            // Set a dasharray that matches the path length as prerequisite to animate dashoffset
-            data.element.attr({
-                'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
-            });
-
-            // Create animation definition while also assigning an ID to the animation for later sync usage
-            var animationDefinition = {
-                'stroke-dashoffset': {
-                    id: 'anim' + data.index,
-                    dur: 1000,
-                    from: -pathLength + 'px',
-                    to: '0px',
-                    easing: Chartist.Svg.Easing.easeOutQuint,
-                    // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
-                    fill: 'freeze',
+                data.element.attr({
+                    'stroke-dashoffset': -pathLength + 'px',
                     'stroke': data.meta.color
-                }
-            };
+                });
 
-            // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
-            if (data.index !== 0)
-            {
-                animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
+                // We can't use guided mode as the animations need to rely on setting begin manually
+                // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
+                data.element.animate(animationDefinition, false);
             }
+        });
 
-            // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
-
-            data.element.attr({
-                'stroke-dashoffset': -pathLength + 'px',
-                'stroke': data.meta.color
-            });
-
-            // We can't use guided mode as the animations need to rely on setting begin manually
-            // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
-            data.element.animate(animationDefinition, false);
-        }
-    });
-
-    // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
-    chart.on('created', function ()
-    {
-        if (window.__anim21278907124)
-        {
-            clearTimeout(window.__anim21278907124);
-            window.__anim21278907124 = null;
-        }
-        window.__anim21278907124 = setTimeout(chart.update.bind(chart), 15000);
-    });
-}
-    var GroupTreedata = [];
-    var GroupData;
-
-    var editGroupID;
-    var selectedGroupID = null;
-    var groupTreeForPlayerEditID = null;
-    var div_main = $("#div_main");
-    var div_edit = $("#div_edit");
-    var div_groupTree = $("#groupTree");
-    var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
-    var player_Alldata;
-    //function scanRoot(groupTreedata, usegroupdata) {
-    //    $.each(groupTreedata, function (index, item) {
-    //    if (item.GroupParentID == null) {
-    //        var item = {
-    //            text: item.GroupName,
-    //            icon: "fa fa-folder m--font-success",
-    //            GroupID: item.GroupID,
-    //            id: item.GroupID,
-    //            active: item.ActiveFlag,
-    //            onlineUnits: item.OnlineFlag,
-    //            GroupParentID: item.GroupParentID,
-    //            comments: item.Comments,
-    //            click: function (node) {
-    //                return { 'id': node.id };
-    //            },
-    //            children: []
-    //        };
-    //        GroupTreedata.push(item);
-    //        return true
-    //    }
-    //    if (item.GroupParentID) {
-    //        var childrenitem = {
-    //            text: item.GroupName,
-    //            icon: "fa fa-folder m--font-success",
-    //            GroupID: item.GroupID,
-    //            id: item.GroupID,
-    //            active: item.ActiveFlag,
-    //            onlineUnits: item.OnlineFlag,
-    //            GroupParentID: item.GroupParentID,
-    //            comments:item.Comments,
-    //            click: function (node) {
-    //                return { 'id': node.id };
-    //            },
-    //            children: []
-    //        };
-
-    //        $.each(GroupTreedata, function (index, rootitem) {
-    //            if (rootitem.GroupID == item.GroupParentID) {
-    //                rootitem.children.push(childrenitem);
-    //            } else if (rootitem.children && rootitem.children.length > 0) {
-    //                if (scansubRoot(rootitem.children, childrenitem, item.GroupParentID)) {
-    //                    rootitem.children.push(scansubRoot(rootitem.children, childrenitem, item.GroupParentID))
-    //                }
-    //            }
-    //        })
-    //    }
-    //    });
-    //}
-
-    //function scansubRoot(childrendata, childrengroupdata, groupParentID) {
-    //    if (childrendata.length > 0) {
-    //    $.each(childrendata, function (index, subFolder) {
-    //        if (subFolder.GroupID == groupParentID) {
-    //            subFolder.children.push(childrengroupdata);
-    //            return childrendata;
-    //        } else {
-    //            if (subFolder.children && subFolder.children.length > 0) {
-    //                scansubRoot(subFolder.children, childrengroupdata, groupParentID)
-    //            }
-    //        }
-    //        });
-    //    }
-    //}
-
+        // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
+        chart.on('created', function () {
+            if (window.__anim21278907124) {
+                clearTimeout(window.__anim21278907124);
+                window.__anim21278907124 = null;
+            }
+            window.__anim21278907124 = setTimeout(chart.update.bind(chart), 15000);
+        });
+    }
 
     var jstreeData = {
         "core": {
@@ -332,7 +270,7 @@
         div_main.show();
         div_edit.hide();
     });
-    var testdata
+
     $("#add_player").click(function () {
         div_main.hide();
         div_edit.show();
@@ -354,6 +292,10 @@
             //resolution:$("#select_resolution").find("option:selected").text(),
             note: $("#text_note").val(),
             newGroupNameParentID: groupTreeForPlayerEditID,
+            ActivechangeFlg: ActivechangeFlg,
+            OnlinechangeFlg: OnlinechangeFlg,
+            DisplayNamechangeFlg: DisplayNamechangeFlg,
+            NotechangeFlg: DisplayNamechangeFlg,
             success: function (data) {
                 div_main.show();
                 div_edit.hide();
@@ -362,6 +304,7 @@
             }
         })
     });
+
     var DatatableResponsiveColumnsDemo = function (options) {
         $('#base_responsive_columns').prop("outerHTML", "<div class='m_datatable' id='base_responsive_columns'></div>");
         var datatable = $('#base_responsive_columns').mDatatable({
@@ -444,8 +387,11 @@
                 responsive: { visible: 'lg' }
             }]
         });
-
-        //var query = datatable.getDataSourceQuery();
+        datatable.on('m-datatable--on-check', function (e, args) {
+            var selected = datatable.setSelectedRecords().getSelectedRecords();
+            selectPlayerdata = selected;
+        })
+           
 
         $('#m_form_search').on('keyup', function (e) {
             //// shortcode to datatable.getDataSourceParam('query');
@@ -459,13 +405,13 @@
 
         $('#m_form_status, #m_form_type').selectpicker();
     }
-var defaultDataSet = function () {
+    var defaultDataSet = function () {
     $("input[name='radio_Active'][value='null]").click();
     $("input[name='radio_Online'][value='null]").click();
     $("#groupname").val('');
     $("#text_note").val('');
 }
-var showPlayerDetail = function (options) {
+    var showPlayerDetail = function (options) {
     $("#PlayerDetail").css('display', 'block');
     $.insmFramework('getGroupPlayers', {
         GroupID: options.GroupID,
@@ -484,10 +430,10 @@ var showPlayerDetail = function (options) {
     })
 }
 
-$("#radio_All").click(function () {
+    $("#radio_All").click(function () {
     DatatableResponsiveColumnsDemo({ PlayersData: player_Alldata });
 })
-$("#radio_Current").click(function () {
+    $("#radio_Current").click(function () {
     var Current_data = [];
     $.each(player_Alldata, function (key, item) {
         if (item.GroupID == selectedGroupID) {
@@ -496,6 +442,44 @@ $("#radio_Current").click(function () {
     });
     DatatableResponsiveColumnsDemo({ PlayersData: Current_data });
 })
+    $("#edit_player").click(function () {
+    div_main.hide();
+    div_edit.show();
+    $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
+    $("#button_save").css('display', 'none');
+    //var editPlayer = [];
+    $.each(selectPlayerdata, function (index, item) {
+        //editPlayer.push((selectPlayerdata[index]).data().obj);
+        //$("input[name='radio_Active'][value='null]").click();
+        //$("input[name='radio_Online'][value='null]").click();
+        
+        if (index != 0) {
+            if ($("#groupname").val() != $(selectPlayerdata[index]).data().obj.PlayerName) {
+                $("#groupname").val('');
+            }
+            if ($("#groupname").val() != $(selectPlayerdata[index]).data().obj.PlayerName) {
+                $("#text_note").val('');
+            }
+        } else {
+            $("#groupname").val($(selectPlayerdata[index]).data().obj.PlayerName);
+            $("#text_note").val($(selectPlayerdata[index]).data().obj.Comments);
+        } 
+    });
+
+})
+    
+    $("#groupname").change(function () {
+        DisplayNamechangeFlg = true;
+        $.each(selectPlayerdata, function (index, item) {
+            $(selectPlayerdata[index]).data().obj.PlayerName = $("#groupname").val();
+        });
+    })
+    $("#text_note").change(function () {
+        NotechangeFlg = true;
+        $.each(selectPlayerdata, function (index, item) {
+            $(selectPlayerdata[index]).data().obj.Comments = $("#text_note").val();
+        });
+    })
 $(document).ready(function ()
 {
     div_edit.hide();
