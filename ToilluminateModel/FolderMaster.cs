@@ -18,9 +18,9 @@ namespace ToilluminateModel
         public Nullable<int> GroupID { get; set; }
         public string FolderName { get; set; }
         public Nullable<int> FolderParentID { get; set; }
+        public string Settings { get; set; }
         public string Comments { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
-        public string Settings { get; set; }
     }
 }

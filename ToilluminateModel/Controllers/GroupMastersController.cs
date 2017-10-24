@@ -51,7 +51,7 @@ namespace ToilluminateModel.Controllers
             {
                 return BadRequest();
             }
-
+            groupMaster.UpdateDate = DateTime.Now;
             db.Entry(groupMaster).State = EntityState.Modified;
 
             try
@@ -82,6 +82,8 @@ namespace ToilluminateModel.Controllers
                 return BadRequest(ModelState);
             }
 
+            groupMaster.UpdateDate = DateTime.Now;
+            groupMaster.InsertDate = DateTime.Now;
             db.GroupMaster.Add(groupMaster);
             await db.SaveChangesAsync();
 

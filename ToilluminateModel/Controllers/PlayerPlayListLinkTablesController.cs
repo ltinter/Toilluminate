@@ -50,6 +50,7 @@ namespace ToilluminateModel.Controllers
                 return BadRequest();
             }
 
+            playerPlayListLinkTable.UpdateDate = DateTime.Now;
             db.Entry(playerPlayListLinkTable).State = EntityState.Modified;
 
             try
@@ -80,6 +81,8 @@ namespace ToilluminateModel.Controllers
                 return BadRequest(ModelState);
             }
 
+            playerPlayListLinkTable.UpdateDate = DateTime.Now;
+            playerPlayListLinkTable.InsertDate = DateTime.Now;
             db.PlayerPlayListLinkTable.Add(playerPlayListLinkTable);
             await db.SaveChangesAsync();
 

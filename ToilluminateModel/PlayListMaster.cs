@@ -17,10 +17,10 @@ namespace ToilluminateModel
         public int PlayListID { get; set; }
         public Nullable<int> GroupID { get; set; }
         public string PlayListName { get; set; }
+        public string InheritForced { get; set; }
+        public string Settings { get; set; }
         public string Comments { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
-        public string InheritForced { get; set; }
-        public string Settings { get; set; }
     }
 }

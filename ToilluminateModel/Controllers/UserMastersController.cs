@@ -50,6 +50,7 @@ namespace ToilluminateModel.Controllers
                 return BadRequest();
             }
 
+            userMaster.UpdateDate = DateTime.Now;
             db.Entry(userMaster).State = EntityState.Modified;
 
             try
@@ -80,6 +81,8 @@ namespace ToilluminateModel.Controllers
                 return BadRequest(ModelState);
             }
 
+            userMaster.UpdateDate = DateTime.Now;
+            userMaster.InsertDate = DateTime.Now;
             db.UserMaster.Add(userMaster);
             await db.SaveChangesAsync();
 
