@@ -347,7 +347,7 @@ var FolderTreedata = [];
         });
     }
 
-    function demo_create() {
+    $("#btn_craete").click(function(){
         var ref = div_groupTreeForFileManager.jstree(true),
             sel = ref.get_selected();
         if (!sel.length) { return false; }
@@ -356,7 +356,7 @@ var FolderTreedata = [];
         if (sel) {
             ref.edit(sel);
         }
-    };
+    });
     function demo_rename() {
         var ref = div_groupTreeForFileManager.jstree(true),
             sel = ref.get_selected();

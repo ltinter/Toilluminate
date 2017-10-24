@@ -117,7 +117,14 @@ namespace ToilluminateModel.Controllers
                            join gm in db.GroupMaster on pm.GroupID equals gm.GroupID into ProjectV
                            from pv in ProjectV.DefaultIfEmpty()
                            where groupIDs.Contains((int)pm.GroupID)
-                           select new { pm,
+                           select new { pm.PlayerID,
+                           pm.PlayerName,
+                           pm.PlayerAddress,
+                           pm.Settings,
+                           pm.OnlineFlag,
+                           pm.ActiveFlag,
+                           pm.Comments,
+                           pm.UpdateDate,
                            pv.GroupName,
                            pv.GroupID}).ToList();
 
