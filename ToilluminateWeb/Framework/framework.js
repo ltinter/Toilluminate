@@ -323,10 +323,10 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/PlayerMasters/GetPlayerByGroupID/' + options.GroupID,
+                url: 'api/PlayerMasters/GetPlayerWithChildByGroupID/' + options.GroupID,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
-                type: "POST",
+                type: "GET",
                 denied: function () { },
                 error: function () {
                     options.error();

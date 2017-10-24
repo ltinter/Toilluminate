@@ -106,7 +106,9 @@
     var groupTreeForPlayerEditID = null;
     var div_main = $("#div_main");
     var div_edit = $("#div_edit");
+    var div_groupTree = $("#groupTree");
     var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
+    var player_Alldata;
     //function scanRoot(groupTreedata, usegroupdata) {
     //    $.each(groupTreedata, function (index, item) {
     //    if (item.GroupParentID == null) {
@@ -198,47 +200,47 @@
     var initGroupTree = function () {
         $.insmFramework('getGroupTreeData', {
             success: function (tempdataGroupTreeData) {
-            if (tempdataGroupTreeData) {
-                //GroupData = tempdataGroupTreeData;
-                //GroupTreedata = [];
-                //scanRoot(tempdataGroupTreeData, GroupTreedata);
-     
-                var tree = $('.tree-demo');
-                //jstreeData.core.data = tempdataGroupTreeData;
-                tree.jstree(jstreeData);
-                $.each(tree, function (key, item) {
-                    $(item).jstree(true).settings.core.data = tempdataGroupTreeData;
-                    $(item).jstree(true).refresh();
-                });
+                if (tempdataGroupTreeData) {
+                    //GroupData = tempdataGroupTreeData;
+                    //GroupTreedata = [];
+                    //scanRoot(tempdataGroupTreeData, GroupTreedata);
 
-                tree.on("changed.jstree", function (e, data) {
-                    //存储当前选中的区域的名称
-                    if (data.node) {
-                        selectedGroupID = data.node.id;
-                        showPlayerDetail({ GroupID: selectedGroupID });
-                    } 
-                });
-
-                $(div_groupTreeForPlayerEdit).on("changed.jstree", function (e, data) {
-                    //存储当前选中的区域的名称
-                    if(data.node) {
-                        groupTreeForPlayerEditID = data.node.id;
-                    }
-                });
-                tree.on("move_node.jstree", function (e, data) {
-                    var node = data.node;
-                    if (node) {
-                        editgroup({
-                            groupID: node.id,
-                            newGroupNameParentID: node.parent,
-                            newGroupName: node.text,
-                            ActiveFlag: node.li_attr.ActiveFlag,
-                            OnlineFlag: node.li_attr.OnlineFlag,
-                            Comments: node.li_attr.Comments
-                    })
-                    }
+                    var tree = $('.tree-demo');
+                    //jstreeData.core.data = tempdataGroupTreeData;
+                    tree.jstree(jstreeData);
+                    $.each(tree, function (key, item) {
+                        $(item).jstree(true).settings.core.data = tempdataGroupTreeData;
+                        $(item).jstree(true).refresh();
                     });
-                } 
+
+                    div_groupTree.on("changed.jstree", function (e, data) {
+                        //存储当前选中的区域的名称
+                        if (data.node) {
+                            selectedGroupID = data.node.id;
+                            showPlayerDetail({ GroupID: selectedGroupID });
+                        }
+                    });
+
+                    $(div_groupTreeForPlayerEdit).on("changed.jstree", function (e, data) {
+                        //存储当前选中的区域的名称
+                        if (data.node) {
+                            groupTreeForPlayerEditID = data.node.id;
+                        }
+                    });
+                    tree.on("move_node.jstree", function (e, data) {
+                        var node = data.node;
+                        if (node) {
+                            editgroup({
+                                groupID: node.id,
+                                newGroupNameParentID: node.parent,
+                                newGroupName: node.text,
+                                ActiveFlag: node.li_attr.ActiveFlag,
+                                OnlineFlag: node.li_attr.OnlineFlag,
+                                Comments: node.li_attr.Comments
+                            })
+                        }
+                    });
+                }
             },
             invalid: function () {
                 invalid = true;
@@ -336,7 +338,6 @@
         div_edit.show();
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
-        //var newGroupdata = 
     });
     $("#button_save_Player").click(function () {
         div_main.show();
@@ -362,6 +363,7 @@
         })
     });
     var DatatableResponsiveColumnsDemo = function (options) {
+        $('#base_responsive_columns').prop("outerHTML", "<div class='m_datatable' id='base_responsive_columns'></div>");
         var datatable = $('#base_responsive_columns').mDatatable({
             // datasource definition
             data: {
@@ -427,8 +429,8 @@
                 width: 200,
                 responsive: { visible: 'lg' }
             }, {
-                field: "GreatDate",
-                title: "GreatDate",
+                field: "UpdateDate",
+                title: "UpdateDate",
                 responsive: { visible: 'lg' }
             }, {
                 field: "Online",
@@ -469,17 +471,29 @@ var showPlayerDetail = function (options) {
         success: function (data) {
             div_main.show();
             div_edit.hide();
-            //testdata = data;
+            player_Alldata = data;
             DatatableResponsiveColumnsDemo({ PlayersData: data });
         }
     })
 }
+
+$("#radio_All").click(function () {
+    DatatableResponsiveColumnsDemo({ PlayersData: player_Alldata });
+})
+$("#radio_Current").click(function () {
+    var Current_data = [];
+    $.each(player_Alldata, function (key, item) {
+        if (item.GroupID == selectedGroupID) {
+            Current_data.push(item)
+        }
+    });
+    DatatableResponsiveColumnsDemo({ PlayersData: Current_data });
+})
 $(document).ready(function ()
 {
     div_edit.hide();
     playerStatusShare();
     initGroupTree();
-    //DatatableResponsiveColumnsDemo();
     defaultDataSet();
     $("#PlayerDetail").css('display', 'none');
 });
