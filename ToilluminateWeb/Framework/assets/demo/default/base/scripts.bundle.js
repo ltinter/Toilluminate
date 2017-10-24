@@ -2690,7 +2690,7 @@ jQuery.fn.extend({
 
 					var matched = 0;
 					$.each(args, function (m_key, m_value) {
-						if (to_match.hasOwnProperty(m_key) && m_value == to_match[m_key]) {
+					    if (to_match.hasOwnProperty(m_key) && to_match[m_key].toLowerCase().indexOf(m_value) != -1) {
 							matched++;
 						}
 					});
