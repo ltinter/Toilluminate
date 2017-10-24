@@ -85,7 +85,9 @@
                 $this.data('insmGroup', _plugin);
             }
             $.insmGroup('initGroupTree');
-            
+            div_edit.hide();
+            $.insmGroup('defaultDataSet');
+            $("#PlayerDetail").css('display', 'none');
             return $this;
         },
         editgroup: function (options) {
@@ -118,7 +120,7 @@
                             //存储当前选中的区域的名称
                             if (data.node) {
                                 selectedGroupID = data.node.id;
-                                showPlayerDetail({ GroupID: selectedGroupID });
+                                $.insmGroup('showPlayerDetail', { GroupID: selectedGroupID });
                             }
                         });
 
@@ -129,13 +131,6 @@
                             }
                         });
 
-                        $(div_groupTreeForFileManager).on("changed.jstree", function (e, data) {
-                            //存储当前选中的区域的名称
-                            if (data.node) {
-                                selectedGroupID = data.node.id;
-                                //initFolderTree(data.node.id);
-                            }
-                        });
                         tree.on("move_node.jstree", function (e, data) {
                             var node = data.node;
                             if (node) {
@@ -179,7 +174,7 @@
                     div_main.show();
                     div_edit.hide();
                     player_Alldata = data;
-                    DatatableResponsiveColumnsDemo({ PlayersData: data });
+                    $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: data });
                 }
             })
         },
@@ -312,6 +307,8 @@
     $("#newgroup").click(function (e) {
         div_main.hide();
         div_edit.show();
+        $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
+        $("#button_save_Player").css('display', 'none');
         defaultDataSet();
         editGroupID = undefined;
     })
@@ -334,6 +331,8 @@
     $("#editgroup").click(function () {
         div_main.hide();
         div_edit.show();
+        $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
+        $("#button_save_Player").css('display', 'none');
         $.insmFramework('editGroup', {
             groupID: selectedGroupID,
             success: function (userGroupData) {
@@ -400,7 +399,7 @@
         })
     });
     $("#radio_All").click(function () {
-        DatatableResponsiveColumnsDemo({ PlayersData: player_Alldata });
+        $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: player_Alldata });
     })
     $("#radio_Current").click(function () {
         var Current_data = [];
@@ -409,7 +408,7 @@
                 Current_data.push(item)
             }
         });
-        DatatableResponsiveColumnsDemo({ PlayersData: Current_data });
+        $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: Current_data });
     })
     $("#edit_player").click(function () {
         div_main.hide();
