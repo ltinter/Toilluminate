@@ -18,11 +18,11 @@ namespace ToilluminateModel
         public Nullable<int> GroupID { get; set; }
         public string PlayerName { get; set; }
         public string PlayerAddress { get; set; }
-        public string Comments { get; set; }
-        public Nullable<System.DateTime> UpdateDate { get; set; }
-        public Nullable<System.DateTime> InsertDate { get; set; }
         public string ActiveFlag { get; set; }
         public string OnlineFlag { get; set; }
         public string Settings { get; set; }
+        public string Comments { get; set; }
+        public Nullable<System.DateTime> UpdateDate { get; set; }
+        public Nullable<System.DateTime> InsertDate { get; set; }
     }
 }

@@ -15,10 +15,10 @@ namespace ToilluminateModel
     public partial class TempleFileLinkTable
     {
         public int ID { get; set; }
+        public Nullable<int> Index { get; set; }
         public Nullable<int> TempletID { get; set; }
         public Nullable<int> FileID { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
-        public Nullable<int> Index { get; set; }
     }
 }

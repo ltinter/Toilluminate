@@ -50,6 +50,7 @@ namespace ToilluminateModel.Controllers
                 return BadRequest();
             }
 
+            templetMaster.UpdateDate = DateTime.Now;
             db.Entry(templetMaster).State = EntityState.Modified;
 
             try
@@ -80,6 +81,8 @@ namespace ToilluminateModel.Controllers
                 return BadRequest(ModelState);
             }
 
+            templetMaster.UpdateDate = DateTime.Now;
+            templetMaster.InsertDate = DateTime.Now;
             db.TempletMaster.Add(templetMaster);
             await db.SaveChangesAsync();
 

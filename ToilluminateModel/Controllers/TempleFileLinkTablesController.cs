@@ -50,6 +50,7 @@ namespace ToilluminateModel.Controllers
                 return BadRequest();
             }
 
+            templeFileLinkTable.UpdateDate = DateTime.Now;
             db.Entry(templeFileLinkTable).State = EntityState.Modified;
 
             try
@@ -80,6 +81,8 @@ namespace ToilluminateModel.Controllers
                 return BadRequest(ModelState);
             }
 
+            templeFileLinkTable.UpdateDate = DateTime.Now;
+            templeFileLinkTable.InsertDate = DateTime.Now;
             db.TempleFileLinkTable.Add(templeFileLinkTable);
             await db.SaveChangesAsync();
 

@@ -56,6 +56,7 @@ namespace ToilluminateModel.Controllers
                 return BadRequest();
             }
 
+            fileMaster.UpdateDate = DateTime.Now;
             db.Entry(fileMaster).State = EntityState.Modified;
 
             try
@@ -86,6 +87,8 @@ namespace ToilluminateModel.Controllers
                 return BadRequest(ModelState);
             }
 
+            fileMaster.UpdateDate = DateTime.Now;
+            fileMaster.InsertDate = DateTime.Now;
             db.FileMaster.Add(fileMaster);
             await db.SaveChangesAsync();
 
@@ -154,6 +157,8 @@ namespace ToilluminateModel.Controllers
                 fileMaster.FileName = fileName;
                 fileMaster.FileUrl = FORLDER + "/" + fileName;
                 fileMaster.FileThumbnailUrl = THUMBNAILFORLDER + "/" + fileName;
+                fileMaster.UpdateDate = DateTime.Now;
+                fileMaster.InsertDate = DateTime.Now;
                 db.FileMaster.Add(fileMaster);
                 await db.SaveChangesAsync();
 

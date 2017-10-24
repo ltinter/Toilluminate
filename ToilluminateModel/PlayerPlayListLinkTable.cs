@@ -15,10 +15,10 @@ namespace ToilluminateModel
     public partial class PlayerPlayListLinkTable
     {
         public int ID { get; set; }
+        public Nullable<int> Index { get; set; }
         public Nullable<int> PlayerID { get; set; }
         public Nullable<int> PlayListID { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
-        public Nullable<int> Index { get; set; }
     }
 }

@@ -50,6 +50,7 @@ namespace ToilluminateModel.Controllers
                 return BadRequest();
             }
 
+            folderMaster.UpdateDate = DateTime.Now;
             db.Entry(folderMaster).State = EntityState.Modified;
 
             try
@@ -80,6 +81,8 @@ namespace ToilluminateModel.Controllers
                 return BadRequest(ModelState);
             }
 
+            folderMaster.UpdateDate = DateTime.Now;
+            folderMaster.InsertDate = DateTime.Now;
             db.FolderMaster.Add(folderMaster);
             await db.SaveChangesAsync();
 
