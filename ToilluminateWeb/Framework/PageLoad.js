@@ -362,6 +362,7 @@
         })
     });
     var DatatableResponsiveColumnsDemo = function (options) {
+        $('#base_responsive_columns').prop("outerHTML", "<div class='m_datatable' id='base_responsive_columns'></div>");
         var datatable = $('#base_responsive_columns').mDatatable({
             // datasource definition
             data: {
@@ -373,18 +374,18 @@
                         "perpage": -1,
                         "total": 350,
                         "sort": "asc",
-                        "field": "RecordID"
+                        "field": "PlayerID"
                     },
                     "data": options.PlayersData
                 },
                 pageSize: 10,
                 saveState: {
-                    cookie: true,
-                    webstorage: true
+                    cookie: false,
+                    webstorage: false
                 },
-                serverPaging: true,
-                serverFiltering: true,
-                serverSorting: true
+                serverPaging: false,
+                serverFiltering: false,
+                serverSorting: false
             },
 
             // layout definition
@@ -400,7 +401,7 @@
             sortable: true,
 
             // column based filtering
-            filterable: false,
+            filterable: true,
 
             pagination: true,
 
@@ -411,6 +412,7 @@
                 sortable: false, // disable sort for this column
                 width: 40,
                 textAlign: 'center',
+                filterable: false,
                 selector: { class: 'm-checkbox--solid m-checkbox--brand' }
             }, {
                 field: "PlayerID",
@@ -425,28 +427,32 @@
                 field: "GroupName",
                 title: "GroupName",
                 width: 200,
+                filterable: false,
                 responsive: { visible: 'lg' }
             }, {
                 field: "GreatDate",
                 title: "GreatDate",
+                filterable: false,
                 responsive: { visible: 'lg' }
             }, {
                 field: "Online",
                 title: "Online",
+                filterable: false,
                 responsive: { visible: 'lg' }
             }]
         });
 
-        var query = datatable.getDataSourceQuery();
+        //var query = datatable.getDataSourceQuery();
 
         $('#m_form_search').on('keyup', function (e) {
-            // shortcode to datatable.getDataSourceParam('query');
-            var query = datatable.getDataSourceQuery();
-            query.generalSearch = $(this).val().toLowerCase();
-            // shortcode to datatable.setDataSourceParam('query', query);
-            datatable.setDataSourceQuery(query);
-            datatable.load();
-        }).val(query.generalSearch);
+            //// shortcode to datatable.getDataSourceParam('query');
+            //var query = datatable.getDataSourceQuery();
+            //query.generalSearch = $(this).val().toLowerCase();
+            //// shortcode to datatable.setDataSourceParam('query', query);
+            //datatable.setDataSourceQuery(query);
+            //datatable.load();
+            datatable.search($(this).val().toLowerCase(), "PlayerName");
+        });//.val(query.generalSearch);
 
         $('#m_form_status, #m_form_type').selectpicker();
     }
