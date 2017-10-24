@@ -123,6 +123,7 @@ namespace ToilluminateModel.Controllers
                            pm.Settings,
                            pm.OnlineFlag,
                            pm.ActiveFlag,
+                           pm.Comments,
                            pm.UpdateDate,
                            pv.GroupName,
                            pv.GroupID}).ToList();

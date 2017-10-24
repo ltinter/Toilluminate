@@ -170,6 +170,24 @@
             }
             return $.insmFramework('ajax', ajaxOptions);
         },
+        getFolderTreeData: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FolderMasters/GetJSTreeData/'+options.groupID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
         getUser: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');

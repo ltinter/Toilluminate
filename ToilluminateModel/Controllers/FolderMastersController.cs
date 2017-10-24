@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using ToilluminateModel;
+using ToilluminateModel.Models;
 
 namespace ToilluminateModel.Controllers
 {
@@ -105,6 +106,22 @@ namespace ToilluminateModel.Controllers
             return Ok(folderMaster);
         }
 
+        [HttpGet, Route("api/FolderMasters/GetJSTreeData/{GroupID}")]
+        public IList<JSTreeDataModel> GetJSTreeData(int GroupID)
+        {
+            List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
+            JSTreeDataModel jdm;
+            foreach (FolderMaster fm in db.FolderMaster.Where(a=>a.GroupID == GroupID))
+            {
+                jdm = new JSTreeDataModel();
+                jdm.id = fm.FolderID.ToString();
+                jdm.text = fm.FolderName;
+                jdm.parent = fm.FolderParentID == null ? "#" : fm.FolderParentID.ToString();
+                //jdm.li_attr = fm;
+                jdmList.Add(jdm);
+            }
+            return jdmList;
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

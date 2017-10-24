@@ -135,17 +135,39 @@ var playerStatusShare = function () {
         "plugins": ["dnd", "state", "types"]
 
     };
+
+
+    var folderJstreeData = {
+        "core": {
+            "themes": {
+                "responsive": true
+            },
+            // so that create works
+            "check_callback": true,
+            'data': FolderTreedata
+        },
+        "types": {
+            "default": {
+                "icon": "fa fa-sitemap m--font-success"
+            },
+            "file": {
+                "icon": "fa fa-sitemap  m--font-success"
+            }
+        },
+        "state": {
+            "key": "demo2"
+        },
+        "plugins": ["dnd", "state", "types"]
+
+    };
+
     var initGroupTree = function () {
         $.insmFramework('getGroupTreeData', {
             success: function (tempdataGroupTreeData) {
                 if (tempdataGroupTreeData) {
-                    //GroupData = tempdataGroupTreeData;
-                    //GroupTreedata = [];
-                    //scanRoot(tempdataGroupTreeData, GroupTreedata);
 
-                    var tree = $('.tree-demo');
-                    //jstreeData.core.data = tempdataGroupTreeData;
-                    tree.jstree(jstreeData);
+                    var tree = $('.tree-demo.groupTree');
+                    tree.jstree(groupJstreeData);
                     $.each(tree, function (key, item) {
                         $(item).jstree(true).settings.core.data = tempdataGroupTreeData;
                         $(item).jstree(true).refresh();
@@ -163,6 +185,14 @@ var playerStatusShare = function () {
                         //存储当前选中的区域的名称
                         if (data.node) {
                             groupTreeForPlayerEditID = data.node.id;
+                        }
+                    });
+
+                    $(div_groupTreeForFileManager).on("changed.jstree", function (e, data) {
+                        //存储当前选中的区域的名称
+                        if (data.node) {
+                            selectedGroupID = data.node.id;
+                            initFolderTree(data.node.id);
                         }
                     });
                     tree.on("move_node.jstree", function (e, data) {
@@ -202,6 +232,97 @@ var playerStatusShare = function () {
             }
         })
     }
+//folder tree
+    var initFolderTree = function (selectedGroupID) {
+        $.insmFramework('getFolderTreeData', {
+            groupID: selectedGroupID,
+            success: function (tempdataFolderTreeData) {
+                if (tempdataFolderTreeData) {
+                    var tree = $('.tree-demo.folderTree');
+                    tree.jstree(folderJstreeData);
+                    $.each(tree, function (key, item) {
+                        $(item).jstree(true).settings.core.data = tempdataFolderTreeData;
+                        $(item).jstree(true).refresh();
+                    });
+
+                    //div_groupTree.on("changed.jstree", function (e, data) {
+                    //    //存储当前选中的区域的名称
+                    //    if (data.node) {
+                    //        selectedGroupID = data.node.id;
+                    //        showPlayerDetail({ GroupID: selectedGroupID });
+                    //    }
+                    //});
+
+                    //$(div_groupTreeForPlayerEdit).on("changed.jstree", function (e, data) {
+                    //    //存储当前选中的区域的名称
+                    //    if (data.node) {
+                    //        groupTreeForPlayerEditID = data.node.id;
+                    //    }
+                    //});
+                    //tree.on("move_node.jstree", function (e, data) {
+                    //    var node = data.node;
+                    //    if (node) {
+                    //        editgroup({
+                    //            groupID: node.id,
+                    //            newGroupNameParentID: node.parent,
+                    //            newGroupName: node.text,
+                    //            ActiveFlag: node.li_attr.ActiveFlag,
+                    //            OnlineFlag: node.li_attr.OnlineFlag,
+                    //            Comments: node.li_attr.Comments
+                    //        })
+                    //    }
+                    //});
+                }
+            },
+            invalid: function () {
+                invalid = true;
+            },
+            error: function () {
+                options.error();
+            },
+        });
+    }
+
+    $("#btn_craete").click(function(){
+        var ref = div_groupTreeForFileManager.jstree(true),
+            sel = ref.get_selected();
+        if (!sel.length) { return false; }
+        sel = sel[0];
+        sel = ref.create_node(sel, { "type": "file" });
+        if (sel) {
+            ref.edit(sel);
+        }
+    });
+    function demo_rename() {
+        var ref = div_groupTreeForFileManager.jstree(true),
+            sel = ref.get_selected();
+        if (!sel.length) { return false; }
+        sel = sel[0];
+        ref.edit(sel);
+    };
+    function demo_delete() {
+        var ref = div_groupTreeForFileManager.jstree(true),
+            sel = ref.get_selected();
+        if (!sel.length) { return false; }
+        ref.delete_node(sel);
+    };
+
+    //var createFolderForGroup = $.insmFramework('creatFolder', {
+    //    groupID: selectedGroupID,
+    //    newGroupName: $("#groupname").val(),
+    //    active: $("input[name='radio_Active']:checked").val(),
+    //    onlineUnits: $("input[name='radio_Online']:checked").val(),
+    //    //resolution:$("#select_resolution").find("option:selected").text(),
+    //    note: $("#text_note").val(),
+    //    newGroupNameParentID: groupTreeForPlayerEditID,
+    //    success: function (data) {
+    //        div_main.show();
+    //        div_edit.hide();
+    //        initGroupTree();
+    //        editGroupID = undefined;
+    //    }
+    //})
+
     var addNewGroup = function () {
         if ($.trim($("#groupname").val()) == '') {
             alert('Group name is empty!');
