@@ -274,29 +274,6 @@
             };
             return $.insmFramework('ajax', ajaxOptions);
         },
-        //creatGroup: function (options) {
-        //    var $this = $('html').eq(0);
-        //    var _plugin = $this.data('insmFramework');
-        //    var GroupMaster = {
-        //        create: function () {
-        //            GroupName: "";
-        //            GroupParentID: '';
-        //            ActiveFlag: '';
-        //            OnlineFlag: '';
-        //            //displayUnits: '';
-        //            Comments: '';
-        //            return GroupMaster;
-        //        }
-        //    }
-        //    var newGroup = GroupMaster.create();
-        //    if (options.groupID != undefined) {
-        //        newGroup.GroupID = options.groupID;
-        //    }
-        //    newGroup.GroupName = options.newGroupName;
-        //    newGroup.GroupParentID = options.newGroupNameParentID;
-        //    newGroup.ActiveFlag = options.active;
-        //    newGroup.OnlineFlag = options.onlineUnits;
-        //    newGroup.Comments = options.note;
 
         deleteGroup: function (options) {
             var $this = $('html').eq(0);

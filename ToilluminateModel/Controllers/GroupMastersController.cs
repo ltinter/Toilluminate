@@ -111,11 +111,14 @@ namespace ToilluminateModel.Controllers
         {
             List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
             JSTreeDataModel jdm;
+            StateForJsonModel sfjm = new StateForJsonModel();
+            sfjm.opened = true;
             foreach (GroupMaster gm in db.GroupMaster) {
                 jdm = new JSTreeDataModel();
                 jdm.id = gm.GroupID.ToString();
                 jdm.text = gm.GroupName;
                 jdm.parent = gm.GroupParentID == null?"#":gm.GroupParentID.ToString();
+                jdm.state = sfjm;
                 jdm.li_attr = gm;
                 jdmList.Add(jdm);
             }
