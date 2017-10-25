@@ -100,6 +100,9 @@
     <Content Include="Framework\HeaderTopBar\headerTopBar.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Framework\Group\group.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="loginload.html" />
     <Content Include="Framework\Login\login.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

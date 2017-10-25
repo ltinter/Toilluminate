@@ -298,25 +298,6 @@
         //    newGroup.OnlineFlag = options.onlineUnits;
         //    newGroup.Comments = options.note;
 
-        //    var ajaxOptions = {
-        //        success: function (result) {
-        //            options.success(result);
-        //        },
-        //        url: options.groupID == undefined ? 'api/GroupMasters': 'api/GroupMasters' + "/" +options.groupID,
-        //        format: 'json',
-        //        data: JSON.stringify(newGroup),
-        //        contentType: "application/json; charset=utf-8",
-        //        type: options.groupID == undefined ? 'POST': 'PUT',
-        //        denied: function () {
-        //            // Just do it again and we should land in the success callback next time
-        //            //$.insmFramework('getUsers', options);
-        //        },
-        //        error: function () {
-        //            options.error();
-        //        },
-        //    };
-        //    return $.insmFramework('ajax', ajaxOptions);
-        //},
         deleteGroup: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -405,14 +386,11 @@
                 }
             }
             var newPlayer = PlayerMaster.create();
-            if (options.groupID != undefined) {
-                newPlayer.GroupID = options.groupID;
-            }
+            newPlayer.GroupID = options.GroupID;
             newPlayer.PlayerName = options.newGroupName;
-            newPlayer.Comments = options.newGroupNameParentID;
+            newPlayer.Comments = options.note;
             newPlayer.ActiveFlag = options.active;
             newPlayer.OnlineFlag = options.onlineUnits;
-            newPlayer.GroupID = 1;
 
             var ajaxOptions = {
                 success: function (result) {
@@ -432,6 +410,57 @@
                 },
             };
             return $.insmFramework('ajax', ajaxOptions);
+        },
+        editGroupPlayers: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var editPlayers = [];
+            var PlayerMaster = {
+                create: function () {
+                    GroupID: '';
+                    PlayerName: '';
+                    PlayerAddress: '';
+                    Comments: '';
+                    ActiveFlag: '';
+                    OnlineFlag: '';
+                    Settings: '';
+                    return PlayerMaster;
+                }
+            }
+            $.each(options.Playerdata, function (index, item) {
+                var Player = $(options.Playerdata[index]).data().obj;
+                var newPlayer = PlayerMaster.create();
+                if (Player.groupID != undefined) {
+                    newPlayer.GroupID = Player.groupID;
+                }
+                newPlayer.PlayerID = Player.PlayerID;
+                newPlayer.PlayerName = Player.newGroupName;
+                newPlayer.Comments = Player.newGroupNameParentID;
+                newPlayer.ActiveFlag = Player.active;
+                newPlayer.OnlineFlag = Player.onlineUnits;
+                newPlayer.GroupID = Player.GroupID;
+                editPlayers.push(newPlayer)
+
+                var ajaxOptions = {
+                    success: function (result) {
+                        options.success(result);
+                    },
+                    url: 'api/PlayerMasters',
+                    format: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(editPlayers),
+                    type: "PUT",
+                    denied: function () { },
+                    error: function () {
+                        options.error();
+                    },
+                }
+                if (index == options.Playerdata.length()-1) {
+                    return $.insmFramework('ajax', ajaxOptions);
+                }
+            });     
+            
+            
         },
     }
     $.insmFramework = function (method) {
