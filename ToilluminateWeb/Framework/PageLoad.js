@@ -122,7 +122,10 @@ var playerStatusShare = function () {
         "plugins": ["dnd", "state", "types"]
 
     };
-
+    var selectedGroupID = null;
+    var selectedFolderID = null;
+    var div_groupTreeForFileManager = $("#groupTreeForFileManager");
+    var div_folderTreeForFileManager = $("#folderTreeForFileManager");
     //folder tree
     var initFolderTree = function (selectedGroupID) {
         $.insmFramework('getFolderTreeData', {
@@ -212,22 +215,6 @@ var playerStatusShare = function () {
         if (!sel.length) { return false; }
         ref.delete_node(sel);
     };
-
-    //var createFolderForGroup = $.insmFramework('creatFolder', {
-    //    groupID: selectedGroupID,
-    //    newGroupName: $("#groupname").val(),
-    //    active: $("input[name='radio_Active']:checked").val(),
-    //    onlineUnits: $("input[name='radio_Online']:checked").val(),
-    //    //resolution:$("#select_resolution").find("option:selected").text(),
-    //    note: $("#text_note").val(),
-    //    newGroupNameParentID: groupTreeForPlayerEditID,
-    //    success: function (data) {
-    //        div_main.show();
-    //        div_edit.hide();
-    //        initGroupTree();
-    //        editGroupID = undefined;
-    //    }
-    //})
 
 
 $(document).ready(function ()
