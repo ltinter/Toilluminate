@@ -99,7 +99,7 @@
                 note: options.Comments,
                 newGroupNameParentID: options.newGroupNameParentID,
                 success: function (data) {
-                    initGroupTree();
+                    $.insmGroup('initGroupTree');
                     editGroupID = undefined;
                 }
             })
@@ -122,6 +122,7 @@
                                 selectedGroupID = data.node.id;
                                 $.insmGroup('showPlayerDetail', { GroupID: selectedGroupID });
                             }
+                            $("#radio_All").click();
                         });
 
                         $(div_groupTreeForPlayerEdit).on("changed.jstree", function (e, data) {
@@ -134,14 +135,14 @@
                         tree.on("move_node.jstree", function (e, data) {
                             var node = data.node;
                             if (node) {
-                                editgroup({
+                                $.insmGroup('editgroup', {
                                     groupID: node.id,
                                     newGroupNameParentID: node.parent,
                                     newGroupName: node.text,
                                     ActiveFlag: node.li_attr.ActiveFlag,
                                     OnlineFlag: node.li_attr.OnlineFlag,
                                     Comments: node.li_attr.Comments
-                                })
+                                });
                             }
                         });
                     }
@@ -155,8 +156,8 @@
             });
         },
         defaultDataSet : function () {
-            $("input[name='radio_Active'][value='null]").click();
-            $("input[name='radio_Online'][value='null]").click();
+            $("#label_Active_null").click();
+            $("#label_Online_null").click();
             $("#groupname").val('');
             $("#text_note").val('');
         },
@@ -266,7 +267,7 @@
             })
 
 
-            $('#m_form_search').on('keyup', function (e) {
+            $('#m_form_search_Player').on('keyup', function (e) {
                 datatable.search($(this).val().toLowerCase(), "PlayerName");
             });
 
@@ -288,7 +289,7 @@
                 success: function (data) {
                     div_main.show();
                     div_edit.hide();
-                    initGroupTree();
+                    $.insmGroup('initGroupTree');
                     editGroupID = undefined;
                 }
             })
@@ -309,7 +310,7 @@
         div_edit.show();
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
-        defaultDataSet();
+        $.insmGroup('defaultDataSet');
         editGroupID = undefined;
     })
     $("#deletegroup").click(function (e) {
@@ -318,7 +319,7 @@
             success: function (resultdata) {
                 div_main.show();
                 div_edit.hide();
-                initGroupTree();
+                $.insmGroup('initGroupTree');
             }
         })
     })
@@ -331,14 +332,15 @@
     $("#editgroup").click(function () {
         div_main.hide();
         div_edit.show();
+        $.insmGroup('defaultDataSet');
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
         $.insmFramework('editGroup', {
             groupID: selectedGroupID,
             success: function (userGroupData) {
                 if (userGroupData) {
-                    $("input[name='radio_Active'][value='" + userGroupData.ActiveFlag + "]").click();
-                    $("input[name='radio_Online'][value='" + userGroupData.OnlineFlag + "]").click();
+                    $("#label_Active_" + userGroupData.ActiveFlag).click();
+                    $("#label_Online_" + userGroupData.OnlineFlag).click();
                     $("#groupname").val(userGroupData.GroupName);
                     $("#text_note").val(userGroupData.Comments);
                     editGroupID = selectedGroupID;
@@ -347,7 +349,7 @@
         })
     });
     $("#button_save").click(function (e) {
-        addNewGroup();
+        $.insmGroup('addNewGroup');
         editGroupID = undefined;
     })
     $("#button_back").click(function () {
@@ -358,50 +360,59 @@
     $("#add_player").click(function () {
         div_main.hide();
         div_edit.show();
+        $.insmGroup('defaultDataSet');
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
-    });
-    $("#btn_craete").click(function () {
-        var ref = div_groupTreeForFileManager.jstree(true),
-            sel = ref.get_selected();
-        if (!sel.length) { return false; }
-        sel = sel[0];
-        sel = ref.create_node(sel, { "type": "file" });
-        if (sel) {
-            ref.edit(sel);
-        }
     });
     $("#button_save_Player").click(function () {
         div_main.show();
         div_edit.hide();
-        if ($.trim($("#groupname").val()) == '') {
-            alert('Group name is empty!');
-            return;
+        //if ($.trim($("#groupname").val()) == '') {
+        //    alert('Player name is empty!');
+        //    return;
+        //}
+        if (1==1) {
+            $.insmFramework('creatPlayer', {
+                GroupID: groupTreeForPlayerEditID,
+                newGroupName: $("#groupname").val(),
+                active: $("input[name='radio_Active']:checked").val(),
+                onlineUnits: $("input[name='radio_Online']:checked").val(),
+                //resolution:$("#select_resolution").find("option:selected").text(),
+                note: $("#text_note").val(),
+                ActivechangeFlg: ActivechangeFlg,
+                OnlinechangeFlg: OnlinechangeFlg,
+                DisplayNamechangeFlg: DisplayNamechangeFlg,
+                NotechangeFlg: DisplayNamechangeFlg,
+                success: function (data) {
+                    div_main.show();
+                    div_edit.hide();
+                    $.insmGroup('initGroupTree');
+                    editGroupID = undefined;
+                }
+            })
+        } else {
+            $.insmFramework('editGroupPlayers', {
+                Playerdata: selectPlayerdata,
+                ActivechangeFlg: ActivechangeFlg,
+                OnlinechangeFlg: OnlinechangeFlg,
+                DisplayNamechangeFlg: DisplayNamechangeFlg,
+                NotechangeFlg: DisplayNamechangeFlg,
+                success: function (data) {
+                    div_main.show();
+                    div_edit.hide();
+                    $.insmGroup('initGroupTree');
+                    editGroupID = undefined;
+                }
+            })
         }
-        var newGroupdata = $.insmFramework('creatPlayer', {
-            groupID: editGroupID,
-            newGroupName: $("#groupname").val(),
-            active: $("input[name='radio_Active']:checked").val(),
-            onlineUnits: $("input[name='radio_Online']:checked").val(),
-            //resolution:$("#select_resolution").find("option:selected").text(),
-            note: $("#text_note").val(),
-            newGroupNameParentID: groupTreeForPlayerEditID,
-            ActivechangeFlg: ActivechangeFlg,
-            OnlinechangeFlg: OnlinechangeFlg,
-            DisplayNamechangeFlg: DisplayNamechangeFlg,
-            NotechangeFlg: DisplayNamechangeFlg,
-            success: function (data) {
-                div_main.show();
-                div_edit.hide();
-                initGroupTree();
-                editGroupID = undefined;
-            }
-        })
+        
     });
     $("#radio_All").click(function () {
+        $('#m_form_search_Player').val('');
         $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: player_Alldata });
     })
     $("#radio_Current").click(function () {
+        $('#m_form_search_Player').val('');
         var Current_data = [];
         $.each(player_Alldata, function (key, item) {
             if (item.GroupID == selectedGroupID) {
@@ -411,15 +422,13 @@
         $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: Current_data });
     })
     $("#edit_player").click(function () {
+        if (!selectPlayerdata) { return; }
         div_main.hide();
         div_edit.show();
+        $.insmGroup('defaultDataSet');
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
-        //var editPlayer = [];
         $.each(selectPlayerdata, function (index, item) {
-            //editPlayer.push((selectPlayerdata[index]).data().obj);
-            //$("input[name='radio_Active'][value='null]").click();
-            //$("input[name='radio_Online'][value='null]").click();
 
             if (index != 0) {
                 if ($("#groupname").val() != $(selectPlayerdata[index]).data().obj.PlayerName) {
@@ -431,6 +440,9 @@
             } else {
                 $("#groupname").val($(selectPlayerdata[index]).data().obj.PlayerName);
                 $("#text_note").val($(selectPlayerdata[index]).data().obj.Comments);
+
+                $("#label_Active_" + $(selectPlayerdata[index]).data().obj.ActiveFlag).click();
+                $("#label_Online_" + $(selectPlayerdata[index]).data().obj.OnlineFlag).click();
             }
         });
 
