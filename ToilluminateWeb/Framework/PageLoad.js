@@ -104,12 +104,14 @@ var FolderTreedata = [];
 
     var editGroupID;
     var selectedGroupID = null;
+    var selectedFolderID = null;
     var groupTreeForPlayerEditID = null;
     var div_main = $("#div_main");
     var div_edit = $("#div_edit");
     var div_groupTree = $("#groupTree");
     var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
     var div_groupTreeForFileManager = $("#groupTreeForFileManager");
+    var div_folderTreeForFileManager = $("#folderTreeForFileManager");
     var player_Alldata;
     //function scanRoot(groupTreedata, usegroupdata) {
     //    $.each(groupTreedata, function (index, item) {
@@ -212,10 +214,10 @@ var FolderTreedata = [];
         },
         "types": {
             "default": {
-                "icon": "fa fa-sitemap m--font-success"
+                "icon": "fa fa-folder m--font-success"
             },
-            "file": {
-                "icon": "fa fa-sitemap  m--font-success"
+            "folder": {
+                "icon": "fa fa-folder  m--font-success"
             }
         },
         "state": {
@@ -304,18 +306,15 @@ var FolderTreedata = [];
                 if (tempdataFolderTreeData) {
                     var tree = $('.tree-demo.folderTree');
                     tree.jstree(folderJstreeData);
-                    $.each(tree, function (key, item) {
-                        $(item).jstree(true).settings.core.data = tempdataFolderTreeData;
-                        $(item).jstree(true).refresh();
-                    });
+                    tree.jstree(true).settings.core.data = tempdataFolderTreeData;
+                    tree.jstree(true).refresh();
 
-                    //div_groupTree.on("changed.jstree", function (e, data) {
-                    //    //存储当前选中的区域的名称
-                    //    if (data.node) {
-                    //        selectedGroupID = data.node.id;
-                    //        showPlayerDetail({ GroupID: selectedGroupID });
-                    //    }
-                    //});
+                    tree.on("changed.jstree", function (e, data) {
+                        if (data.node) {
+                            selectedFolderID = data.node.id;
+                            //showFolderFiles({ FolderID: selectedFolderID });
+                        }
+                    });
 
                     //$(div_groupTreeForPlayerEdit).on("changed.jstree", function (e, data) {
                     //    //存储当前选中的区域的名称
@@ -347,15 +346,33 @@ var FolderTreedata = [];
         });
     }
 
-    $("#btn_craete").click(function(){
-        var ref = div_groupTreeForFileManager.jstree(true),
-            sel = ref.get_selected();
-        if (!sel.length) { return false; }
-        sel = sel[0];
-        sel = ref.create_node(sel, { "type": "file" });
-        if (sel) {
-            ref.edit(sel);
+    $("#btn_create").click(function () {
+        var groupRef = div_groupTreeForFileManager.jstree(true),
+            groupSel = groupRef.get_selected();
+        if (!groupSel.length) { return false; }// no group selected
+        var folderRef = div_folderTreeForFileManager.jstree(true),
+            folderSef = folderRef.get_selected();
+        if (!folderSef.length) {
+            folderSef = folderRef.create_node(null, { "type": "folder" });//create root
+        } else {
+            folderSef = folderRef.create_node(folderSef, { "type": "folder" });
         }
+        if (folderSef) {
+            folderRef.edit(folderSef);
+        }
+        //$.insmFramework('creatFolder', {
+        //    groupID: selectedGroupID,
+        //    folderName: "New Folder",
+        //    folderParentID: selectedFolderID,
+        //    success: function (data) {
+        //        var a = 1;
+        //        //sel = sel[0];
+        //        //sel = ref.create_node(sel, { "type": "file" });
+        //        //if (sel) {
+        //        //    ref.edit(sel);
+        //        //}
+        //    }
+        //});
     });
     function demo_rename() {
         var ref = div_groupTreeForFileManager.jstree(true),
@@ -370,22 +387,6 @@ var FolderTreedata = [];
         if (!sel.length) { return false; }
         ref.delete_node(sel);
     };
-
-    //var createFolderForGroup = $.insmFramework('creatFolder', {
-    //    groupID: selectedGroupID,
-    //    newGroupName: $("#groupname").val(),
-    //    active: $("input[name='radio_Active']:checked").val(),
-    //    onlineUnits: $("input[name='radio_Online']:checked").val(),
-    //    //resolution:$("#select_resolution").find("option:selected").text(),
-    //    note: $("#text_note").val(),
-    //    newGroupNameParentID: groupTreeForPlayerEditID,
-    //    success: function (data) {
-    //        div_main.show();
-    //        div_edit.hide();
-    //        initGroupTree();
-    //        editGroupID = undefined;
-    //    }
-    //})
 
     var addNewGroup = function () {
         if ($.trim($("#groupname").val()) == '') {

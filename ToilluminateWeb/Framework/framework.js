@@ -237,6 +237,43 @@
             };
             return $.insmFramework('ajax', ajaxOptions);
         },
+        creatFolder: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var FolderMaster = {
+                create: function () {
+                    FolderID: "";
+                    GroupID: "";
+                    FolderName: '';
+                    FolderParentID: '';
+                    Settings: '';
+                    Comments: '';
+                    return FolderMaster;
+                }
+            }
+            var newFolder = FolderMaster.create();
+            newFolder.GroupID = options.groupID;
+            newFolder.FolderName = options.folderName;
+            newFolder.FolderParentID = options.folderParentID;
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FolderMasters',
+                format: 'json',
+                data: JSON.stringify(newFolder),
+                contentType: "application/json; charset=utf-8",
+                type: 'POST',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
         //creatGroup: function (options) {
         //    var $this = $('html').eq(0);
         //    var _plugin = $this.data('insmFramework');
