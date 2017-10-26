@@ -39,16 +39,11 @@ namespace ToilluminateModel.Controllers
 
         // PUT: api/PlayerMasters/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutPlayerMaster(int id, PlayerMaster playerMaster)
+        public async Task<IHttpActionResult> PutPlayerMaster(PlayerMaster playerMaster)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            if (id != playerMaster.PlayerID)
-            {
-                return BadRequest();
             }
 
             playerMaster.UpdateDate = DateTime.Now;
@@ -60,7 +55,7 @@ namespace ToilluminateModel.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PlayerMasterExists(id))
+                if (!PlayerMasterExists(playerMaster.PlayerID))
                 {
                     return NotFound();
                 }

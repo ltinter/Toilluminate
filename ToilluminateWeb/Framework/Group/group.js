@@ -174,7 +174,6 @@
             $("#label_Online_null").click();
             $("#groupname").val('');
             $("#text_note").val('');
-            selectPlayerdata = null;
         },
         showPlayerDetail : function (options) {
             $("#PlayerDetail").css('display', 'block');
@@ -405,7 +404,7 @@
     $("#button_save_Player").click(function () {
         div_main.show();
         div_edit.hide();
-        if (!editPlayerFlg && selectPlayerdata.length > 1) {
+        if (!editPlayerFlg) {
             if ($.trim($("#groupname").val()) == '') {
                 alert('Player name is empty!');
                 return;
