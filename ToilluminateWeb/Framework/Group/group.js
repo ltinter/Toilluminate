@@ -174,7 +174,6 @@
             $("#label_Online_null").click();
             $("#groupname").val('');
             $("#text_note").val('');
-            selectPlayerdata = null;
         },
         showPlayerDetail : function (options) {
             $("#PlayerDetail").css('display', 'block');
@@ -367,6 +366,10 @@
         $('#groupTree').jstree('close_all');
     });
     $("#editgroup").click(function () {
+        if (!selectedGroupID) {
+            toastr.warning("Select Group first!");
+            return;
+        }
         div_main.hide();
         div_edit.show();
         editGroupFlg = true;
@@ -405,13 +408,12 @@
     $("#button_save_Player").click(function () {
         div_main.show();
         div_edit.hide();
-        if (!editPlayerFlg && selectPlayerdata.length > 1) {
+
+        if (!editPlayerFlg) {
             if ($.trim($("#groupname").val()) == '') {
                 alert('Player name is empty!');
                 return;
             }
-        }
-        if (!editPlayerFlg) {
             $.insmFramework('creatPlayer', {
                 GroupID: groupTreeForPlayerEditID,
                 PlayerName: $("#groupname").val(),
