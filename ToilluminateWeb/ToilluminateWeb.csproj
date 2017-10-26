@@ -103,10 +103,9 @@
     <Content Include="Framework\Group\group.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Framework\PlaylistEditor\playlistEditor.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Framework\plugins\FolderManager\folder.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Framework\Reports\reports.js" />
     <Content Include="loginload.html" />
     <Content Include="Framework\Login\login.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

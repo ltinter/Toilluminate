@@ -12,6 +12,7 @@
     var div_edit = $("#div_edit");
     var div_groupTree = $("#groupTree");
     var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
+    var div_groupTreeForFileManager = $("#groupTreeForFileManager");
     var player_Alldata;
 
     var ActivechangeFlg = false;
@@ -132,6 +133,15 @@
                             //存储当前选中的区域的名称
                             if (data.node) {
                                 groupTreeForPlayerEditID = data.node.id;
+                            }
+                        });
+
+                        $(div_groupTreeForFileManager).on("changed.jstree", function (e, data) {
+                            //存储当前选中的区域的名称
+                            if (data.node) {
+                                $.folder('init',{
+                                    selectedGroupID : data.node.id
+                                });
                             }
                         });
 
