@@ -205,9 +205,15 @@ var playerStatusShare = function () {
     //    }
     //})
 
-
+    var changeTab = function (tabDivId) {
+        $(".mainPageTabDiv").hide();
+        $("#" + tabDivId).show();
+        $("#m_ver_menu").find("li.m-menu__item").removeClass("m-menu__item--active");
+        $(event.currentTarget).parent("li").addClass("m-menu__item--active");
+    }
 $(document).ready(function ()
 {
     playerStatusShare();
     $.insmGroup({});
+    $("#span_success").text(100);
 });

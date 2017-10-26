@@ -327,7 +327,7 @@
             }
             var newPlayer = PlayerMaster.create();
             newPlayer.GroupID = options.GroupID;
-            newPlayer.PlayerName = options.newGroupName;
+            newPlayer.PlayerName = options.PlayerName;
             newPlayer.Comments = options.note;
             newPlayer.ActiveFlag = options.active;
             newPlayer.OnlineFlag = options.onlineUnits;
@@ -370,16 +370,13 @@
             $.each(options.Playerdata, function (index, item) {
                 var Player = $(options.Playerdata[index]).data().obj;
                 var newPlayer = PlayerMaster.create();
-                if (Player.groupID != undefined) {
-                    newPlayer.GroupID = Player.groupID;
-                }
+
                 newPlayer.PlayerID = Player.PlayerID;
-                newPlayer.PlayerName = Player.newGroupName;
-                newPlayer.Comments = Player.newGroupNameParentID;
-                newPlayer.ActiveFlag = Player.active;
-                newPlayer.OnlineFlag = Player.onlineUnits;
-                newPlayer.GroupID = Player.GroupID;
-                editPlayers.push(newPlayer)
+                newPlayer.PlayerName = Player.PlayerName;
+                newPlayer.Comments = Player.Comments;
+                newPlayer.ActiveFlag = Player.ActiveFlag;
+                newPlayer.OnlineFlag = Player.OnlineFlag;
+                newPlayer.GroupID = options.newGroupID;
 
                 var ajaxOptions = {
                     success: function (result) {
@@ -388,19 +385,43 @@
                     url: 'api/PlayerMasters',
                     format: 'json',
                     contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(editPlayers),
+                    data: JSON.stringify(newPlayer),
                     type: "PUT",
                     denied: function () { },
                     error: function () {
                         options.error();
                     },
                 }
-                if (index == options.Playerdata.length()-1) {
+                if (index == options.Playerdata.length-1) {
                     return $.insmFramework('ajax', ajaxOptions);
                 }
             });     
             
             
+        },
+        getPlayerStaus: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayerMasters',
+                format: 'json',
+                data: JSON.stringify(newPlayer),
+                contentType: "application/json; charset=utf-8",
+                type: options.groupID == undefined ? 'POST' : 'PUT',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
         },
     }
     $.insmFramework = function (method) {

@@ -19,6 +19,9 @@
     var DisplayNamechangeFlg = false;
     var NotechangeFlg = false;
 
+    var editPlayerFlg = false;
+    var editGroupFlg = false;
+
     
     var groupJstreeData = {
         "core": {
@@ -34,7 +37,7 @@
                 "icon": "fa fa-sitemap m--font-success"
             },
             "file": {
-                "icon": "fa fa-sitemap  m--font-success"
+                "icon": "fa fa-sitemap m--font-success"
             }
         },
         "state": {
@@ -91,7 +94,7 @@
             return $this;
         },
         editgroup: function (options) {
-            var newGroupdata = $.insmFramework('creatGroup', {
+            $.insmFramework('creatGroup', {
                 groupID: options.groupID,
                 newGroupName: options.newGroupName,
                 active: options.ActiveFlag,
@@ -154,12 +157,14 @@
                     options.error();
                 },
             });
+            $("#PlayerDetail").css('display', 'none');
         },
         defaultDataSet : function () {
             $("#label_Active_null").click();
             $("#label_Online_null").click();
             $("#groupname").val('');
             $("#text_note").val('');
+            selectPlayerdata = null;
         },
         showPlayerDetail : function (options) {
             $("#PlayerDetail").css('display', 'block');
@@ -231,12 +236,12 @@
                     width: 40,
                     textAlign: 'center',
                     filterable: false,
-                    selector: { class: 'm-checkbox--solid m-checkbox--brand' }
+                    selector: { class: 'm-checkbox--solid m-checkbox--brand' },
                 }, {
                     field: "PlayerID",
                     title: "PlayerID",
                     filterable: false, // disable or enable filtering
-                    width: 150
+                    width: 80
                 }, {
                     field: "PlayerName",
                     title: "PlayerName",
@@ -244,15 +249,17 @@
                 }, {
                     field: "GroupName",
                     title: "GroupName",
-                    width: 200,
+                    width: 150,
                     filterable: false,
                     responsive: { visible: 'lg' }
                 }, {
-                    field: "UpdateDate",
-                    title: "UpdateDate",
                     field: "GreatDate",
                     title: "GreatDate",
+                    field: "UpdateDate",
+                    title: "UpdateDate",
                     filterable: false,
+                    textAlign: 'center',
+                    datetype: "yyyy-MM-dd HH:mm",
                     responsive: { visible: 'lg' }
                 }, {
                     field: "Online",
@@ -275,7 +282,11 @@
         },
         addNewGroup : function () {
             if ($.trim($("#groupname").val()) == '') {
-                alert('Group name is empty!');
+                toastr.warning("Group name is empty!");
+                return;
+            }
+            if (editGroupID == groupTreeForPlayerEditID) {
+                toastr.warning("Group ID have same ID!");
                 return;
             }
             var newGroupdata = $.insmFramework('creatGroup', {
@@ -293,6 +304,22 @@
                     editGroupID = undefined;
                 }
             })
+        },
+        activechange:function(){
+            ActivechangeFlg = true;
+            if(selectPlayerdata){
+                $.each(selectPlayerdata, function (index, item) {
+                    $(selectPlayerdata[index]).data().obj.ActiveFlag =  $("input[name='radio_Active']:checked").val()
+                });
+            }
+        },
+        onlinechange:function(){
+            OnlinechangeFlg = true;
+            if(selectPlayerdata){
+                $.each(selectPlayerdata, function (index, item) {
+                    $(selectPlayerdata[index]).data().obj.OnlineFlag =  $("input[name='radio_Online']:checked").val()
+                });
+            }
         }
     }
     $.insmGroup = function (method) {
@@ -332,6 +359,7 @@
     $("#editgroup").click(function () {
         div_main.hide();
         div_edit.show();
+        editGroupFlg = true;
         $.insmGroup('defaultDataSet');
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
@@ -367,14 +395,16 @@
     $("#button_save_Player").click(function () {
         div_main.show();
         div_edit.hide();
-        //if ($.trim($("#groupname").val()) == '') {
-        //    alert('Player name is empty!');
-        //    return;
-        //}
-        if (1==1) {
+        if (!editPlayerFlg && selectPlayerdata.length > 1) {
+            if ($.trim($("#groupname").val()) == '') {
+                alert('Player name is empty!');
+                return;
+            }
+        }
+        if (!editPlayerFlg) {
             $.insmFramework('creatPlayer', {
                 GroupID: groupTreeForPlayerEditID,
-                newGroupName: $("#groupname").val(),
+                PlayerName: $("#groupname").val(),
                 active: $("input[name='radio_Active']:checked").val(),
                 onlineUnits: $("input[name='radio_Online']:checked").val(),
                 //resolution:$("#select_resolution").find("option:selected").text(),
@@ -397,6 +427,7 @@
                 OnlinechangeFlg: OnlinechangeFlg,
                 DisplayNamechangeFlg: DisplayNamechangeFlg,
                 NotechangeFlg: DisplayNamechangeFlg,
+                newGroupID: groupTreeForPlayerEditID,
                 success: function (data) {
                     div_main.show();
                     div_edit.hide();
@@ -425,11 +456,11 @@
         if (!selectPlayerdata) { return; }
         div_main.hide();
         div_edit.show();
+        editPlayerFlg = true;
         $.insmGroup('defaultDataSet');
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
         $.each(selectPlayerdata, function (index, item) {
-
             if (index != 0) {
                 if ($("#groupname").val() != $(selectPlayerdata[index]).data().obj.PlayerName) {
                     $("#groupname").val('');
@@ -448,6 +479,26 @@
 
     })
 
+    $("#label_Active_null").click(function () {
+        if (editPlayerFlg) { $.insmGroup('activechange'); }
+    })
+    $("#label_Active_1").click(function () {
+        if (editPlayerFlg) { $.insmGroup('activechange'); }
+    })
+    $("#label_Active_0").click(function () {
+        if (editPlayerFlg) { $.insmGroup('activechange'); }
+    })
+
+    $("#label_Onlinenull").click(function () {
+        if (editPlayerFlg) { $.insmGroup('onlinechange'); }
+    })
+    $("#label_Online_1").click(function () {
+        if (editPlayerFlg) { $.insmGroup('onlinechange'); }
+    })
+    $("#label_Online_0").click(function () {
+        if (editPlayerFlg) { $.insmGroup('onlinechange'); }
+    })
+
     $("#groupname").change(function () {
         DisplayNamechangeFlg = true;
         $.each(selectPlayerdata, function (index, item) {
@@ -460,4 +511,25 @@
             $(selectPlayerdata[index]).data().obj.Comments = $("#text_note").val();
         });
     })
+
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+    
+
 })(jQuery);

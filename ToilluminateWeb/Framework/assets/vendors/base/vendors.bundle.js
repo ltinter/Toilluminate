@@ -61806,12 +61806,12 @@ $.notifyDefaults({
 			for(i in this._model.data) {
 				if(this._model.data.hasOwnProperty(i)) {
 					if(i !== $.jstree.root) {
-						if(this._model.data[i].state.opened) {
-							state.core.open.push(i);
-						}
-						if(this._model.data[i].state.selected) {
-							state.core.selected.push(i);
-						}
+						//if(this._model.data[i].state.opened) {
+						//	state.core.open.push(i);
+						//}
+						//if(this._model.data[i].state.selected) {
+						//	state.core.selected.push(i);
+						//}
 					}
 				}
 			}
