@@ -13,6 +13,7 @@
     var div_groupTree = $("#groupTree");
     var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
     var div_groupTreeForFileManager = $("#groupTreeForFileManager");
+    var div_groupTreeForPlaylistEditor = $("#groupTreeForPlaylistEditor");
     var player_Alldata;
 
     var ActivechangeFlg = false;
@@ -141,6 +142,15 @@
                             if (data.node) {
                                 $.folder('init',{
                                     selectedGroupID : data.node.id
+                                });
+                            }
+                        });
+
+                        $(div_groupTreeForPlaylistEditor).on("changed.jstree", function (e, data) {
+                            //存储当前选中的区域的名称
+                            if (data.node) {
+                                $.playlistEditor('init', {
+                                    selectedGroupID: data.node.id
                                 });
                             }
                         });
@@ -448,6 +458,7 @@
                 }
             })
         }
+        $("#PlayerDetail").css('display', 'none');
         
     });
     $("#radio_All").click(function () {

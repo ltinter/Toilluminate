@@ -431,6 +431,8 @@
                 }
                 if (index == options.Playerdata.length-1) {
                     return $.insmFramework('ajax', ajaxOptions);
+                } else {
+                    $.insmFramework('ajax', ajaxOptions);
                 }
             });     
             
