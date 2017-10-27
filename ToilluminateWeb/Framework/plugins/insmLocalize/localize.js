@@ -8,7 +8,7 @@
             if (!_plugin) {
                 _plugin = {
                     settings: $.extend({
-                        language: "sv"
+                        language: "jap"
                     }, options)
                 };
 

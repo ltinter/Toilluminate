@@ -1,7 +1,9 @@
 ﻿(function ($) {
     var _guid = 0;    
     var methods = {
-        init: function (options) {}
+        init: function (options) {
+            return;
+        }
     }
     $.playlistManger = function (method) {
         if (methods[method]) {

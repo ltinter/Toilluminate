@@ -738,10 +738,18 @@
     <Content Include="Framework\plugins\FileUpload\fileUpload.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Framework\plugins\insmLocalize\Languages\chn.js" />
-    <Content Include="Framework\plugins\insmLocalize\Languages\eng.js" />
-    <Content Include="Framework\plugins\insmLocalize\Languages\jap.js" />
-    <Content Include="Framework\plugins\insmLocalize\localize.js" />
+    <Content Include="Framework\plugins\insmLocalize\Languages\chn.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\plugins\insmLocalize\Languages\eng.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\plugins\insmLocalize\Languages\jap.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Framework\plugins\insmLocalize\localize.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Framework\SelectionHistory\selectionHistory.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

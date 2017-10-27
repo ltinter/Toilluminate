@@ -93,6 +93,8 @@
             div_edit.hide();
             $.insmGroup('defaultDataSet');
             $("#PlayerDetail").css('display', 'none');
+            
+            $("#button_save").text($.localize('translate', "Save"));
             return $this;
         },
         editgroup: function (options) {
