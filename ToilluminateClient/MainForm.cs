@@ -25,11 +25,7 @@ namespace ToilluminateClient
 
 
         private List<string> playList = new List<string>();
-
-        private int playIndex = -1;
-
-        private string playItem = string.Empty;
-
+        
 
         /// <summary>
         /// s
@@ -43,21 +39,11 @@ namespace ToilluminateClient
 
         private ImageShowStyle imageShowStyle = ImageShowStyle.None;
         
-        private List<string> imageFileList = new List<string>();
-
+        
         private List<Image> imageList = new List<Image>();
-
-        private int imageIndex = -1;
-
+                
         #endregion
-
-        #region " media "
-
-        private List<string> mediaFileList = new List<string>();
-
-        private int mediaIndex = -1;
-
-        #endregion
+        
         #endregion
 
         #region " propert "
@@ -65,21 +51,34 @@ namespace ToilluminateClient
 
         public MainForm()
         {
-            this.playList.Add("image");
-            this.playList.Add("message");
-            this.playList.Add("media");
-            //this.playList.Add("web");
-            //this.playList.Add("pdf");
+#if DEBUG
+            #region " DEBUG DATA"
+            PlayApp.Clear();
+            PlayItem pItem1 = new PlayItem(ShowPlayType.Image);
+            PlayApp.PlayItemList.Add(pItem1);
 
-            imageFileList.Add(@"C:\C_Works\Images\AAA.jpg");
-            imageFileList.Add(@"C:\C_Works\Images\BBB.jpg");
-            imageFileList.Add(@"C:\C_Works\Images\CCC.jpg");
 
-            mediaFileList.Add(@"C:\C_Works\Medias\mp01.mp4");
-            mediaFileList.Add(@"C:\C_Works\Medias\mp02.mp4");
-            mediaFileList.Add(@"C:\C_Works\Medias\mp03.mp4");
-            mediaFileList.Add(@"C:\C_Works\Medias\mp04.mp4");
+            pItem1.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Images\AAA.jpg", ""));
+            pItem1.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Images\BBB.jpg", ""));
+            pItem1.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Images\CCC.jpg", ""));
 
+
+            PlayItem pItem2 = new PlayItem(ShowPlayType.Message);
+            PlayApp.PlayItemList.Add(pItem2);
+
+            pItem2.TempleteItemList.Add(new TempleteItem("", "hello world"));
+            pItem2.TempleteItemList.Add(new TempleteItem("", "今日は明日の全国に雨が降る。"));
+
+
+            PlayItem pItem3 = new PlayItem(ShowPlayType.Media);
+            PlayApp.PlayItemList.Add(pItem3);
+
+            pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp01.mp4", ""));
+            pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp02.mp4", ""));
+            pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp03.mp4", ""));
+            pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp04.mp4", ""));
+            #endregion
+#endif
             InitializeComponent();
 
             this.ControlsInit();
@@ -138,16 +137,16 @@ namespace ToilluminateClient
                 this.tmrAll.Stop();
                 playStartTime++;
 
-                if (this.playList.Count > 0)
+                if (PlayApp.PlayItemList.Count > 0)
                 {
-                    playIndex++;
-                    if (playIndex >= this.playList.Count)
+                    PlayApp.CurrentIndex++;
+                    if (PlayApp.CurrentIndex >= PlayApp.PlayItemList.Count)
                     {
-                        playIndex = 0;
+                        PlayApp.CurrentIndex = 0;
                     }
-                    playItem = this.playList[playIndex];
-
-                    if (playItem == "image" && playStartTime < playMediaStartTime)
+                    PlayItem pItem = PlayApp.CurrentPlayItem();
+                    if (pItem.PlayType == ShowPlayType.Image
+                        && playStartTime < playMediaStartTime)
                     {
                         pnlImageVisible = true;
                         this.tmrImage_Tick(null, null);
@@ -160,8 +159,8 @@ namespace ToilluminateClient
                          pnlPDFVisible = false;
                     }
 
-                    if (playStartTime >= playMediaStartTime
-                        && playItem == "media")
+                    if (pItem.PlayType == ShowPlayType.Media
+                        && playStartTime >= playMediaStartTime)
                     {
                         pnlMediaWMPVisible = true;
                         this.tmrMedia_Tick(null, null);
@@ -248,15 +247,16 @@ namespace ToilluminateClient
 
                 if (imageShowStyle == ImageShowStyle.None)
                 {
-                    if (this.imageFileList.Count > 0)
+                    PlayItem pItem = PlayApp.CurrentPlayItem();
+                    if (pItem.TempleteItemList.Count > 0)
                     {
-                        imageIndex++;
-                        if (imageIndex >= this.imageFileList.Count)
+                        pItem.CurrentTempleteIndex++;
+                        if (pItem.CurrentTempleteIndex >= pItem.TempleteItemList.Count)
                         {
-                            imageIndex = 0;
+                            pItem.CurrentTempleteIndex = 0;
                         }
                         
-                        ShowImage(this.imageFileList[imageIndex]);
+                        ShowImage(pItem.CurrentTempleteItem.File);
                     }
                 }
                 
@@ -276,16 +276,19 @@ namespace ToilluminateClient
             {
                 this.tmrMedia.Stop();
                 
-                if (this.mediaFileList.Count > 0 && mediaIsReady())
+                if (mediaIsReady())
                 {
-                    mediaIndex++;
-                    if (mediaIndex >= this.mediaFileList.Count)
+                    PlayItem pItem = PlayApp.CurrentPlayItem();
+                    if (pItem.TempleteItemList.Count > 0)
                     {
-                        mediaIndex = 0;
+                        pItem.CurrentTempleteIndex++;
+                        if (pItem.CurrentTempleteIndex >= pItem.TempleteItemList.Count)
+                        {
+                            pItem.CurrentTempleteIndex = 0;
+                        }
+
+                        ShowMediaWMP(pItem.CurrentTempleteItem.File);
                     }
-
-                    ShowMediaWMP(this.mediaFileList[mediaIndex]);
-
                 }
 
                 this.tmrMedia.Start();

@@ -70,6 +70,7 @@
     <Compile Include="Commons\ImageApp.cs" />
     <Compile Include="Commons\IniFileInfo.cs" />
     <Compile Include="Commons\LogApp.cs" />
+    <Compile Include="Commons\PlayApp.cs" />
     <Compile Include="Commons\Utility.cs" />
     <Compile Include="Commons\VariableInfo.cs" />
     <Compile Include="FileMaster.cs">
