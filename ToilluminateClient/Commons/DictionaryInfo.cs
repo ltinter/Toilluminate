@@ -48,7 +48,7 @@ namespace ToilluminateClient
                 }
                 multilingualDictionaryList.Clear();
 
-                string dictTypeDescription = EnumHelper.GetDescription(dictType);
+                string dictTypeHeader = dictType.ToString();
 
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(dictFile);
@@ -61,7 +61,7 @@ namespace ToilluminateClient
                     string dictKey = dictionaryNode.Attributes["Key"].Value;
                     string dictValue = dictionaryNode.InnerText.Trim().Replace("\\r", "\r").Replace("\\n", "\n");
 
-                    string multiDictKey = string.Format("{0}_{1}", dictTypeDescription, dictKey);
+                    string multiDictKey = string.Format("{0}_{1}", dictTypeHeader, dictKey);
                     if (multilingualDictionaryList.ContainsKey(multiDictKey) == false)
                     {
                         multilingualDictionaryList.Add(multiDictKey, new MultilingualDictionary(multiDictKey, dictValue));
@@ -93,7 +93,7 @@ namespace ToilluminateClient
 
                 multilingualDictionaryList.Clear();
 
-                string dictTypeDescription = EnumHelper.GetDescription(dictType);
+                string dictTypeHeader = dictType.ToString();
 
 
                 foreach (List<string> dictionaryNode in dictList)
@@ -101,7 +101,7 @@ namespace ToilluminateClient
                     string dictKey = dictionaryNode[0];
                     string dictValue = dictionaryNode[1];
 
-                    string multiDictKey = string.Format("{0}_{1}", dictTypeDescription, dictKey);
+                    string multiDictKey = string.Format("{0}_{1}", dictTypeHeader, dictKey);
                     if (multilingualDictionaryList.ContainsKey(multiDictKey) == false)
                     {
                         multilingualDictionaryList.Add(multiDictKey, new MultilingualDictionary(multiDictKey, dictValue));
@@ -132,8 +132,8 @@ namespace ToilluminateClient
             try
             {
                 string reDictionary = string.Empty;
-                string dictTypeDescription = EnumHelper.GetDescription(dictType);
-                string multiDictKey = string.Format("{0}_{1}", dictTypeDescription, dictKey);
+                string dictTypeHeader = dictType.ToString();
+                string multiDictKey = string.Format("{0}_{1}", dictTypeHeader, dictKey);
                 if (multilingualDictionaryList.ContainsKey(multiDictKey))
                 {
                     reDictionary = (multilingualDictionaryList[multiDictKey] as MultilingualDictionary).DictValue;
@@ -159,8 +159,8 @@ namespace ToilluminateClient
 
             //言語辞書ファイル
             string dictFile = string.Empty;
-            string dictTypeDescription = EnumHelper.GetDescription(IniFileInfo.MultiDictType);
-            dictFile = Utility.GetFullFileName(Utility.GetFullFileName(IniFileInfo.IniFileDir, Constants.MultiDictDir), string.Format("MessageMultilingualDictionary_{0}.xml", dictTypeDescription));
+            string dictTypeHeader = IniFileInfo.MultiDictType.ToString();
+            dictFile = Utility.GetFullFileName(Utility.GetFullFileName(IniFileInfo.IniFileDir, Constants.MultiDictDir), string.Format("MessageMultilingualDictionary_{0}.xml", dictTypeHeader));
 
             if (File.Exists(dictFile))
             {
@@ -176,8 +176,8 @@ namespace ToilluminateClient
 
             //言語辞書ファイル
             string dictFile = string.Empty;
-            string dictTypeDescription = EnumHelper.GetDescription(IniFileInfo.MultiDictType);
-            dictFile = Utility.GetFullFileName(Utility.GetFullFileName(IniFileInfo.IniFileDir, Constants.MultiDictDir), string.Format("ClientMultilingualDictionary_{0}.xml", dictTypeDescription));
+            string dictTypeHeader = IniFileInfo.MultiDictType.ToString();
+            dictFile = Utility.GetFullFileName(Utility.GetFullFileName(IniFileInfo.IniFileDir, Constants.MultiDictDir), string.Format("ClientMultilingualDictionary_{0}.xml", dictTypeHeader));
 
             if (File.Exists(dictFile))
             {
@@ -195,8 +195,8 @@ namespace ToilluminateClient
 
             //言語辞書ファイル
             string dictFile = string.Empty;
-            string dictTypeDescription = EnumHelper.GetDescription(IniFileInfo.MultiDictType);
-            dictFile = Utility.GetFullFileName(Utility.GetFullFileName(IniFileInfo.IniFileDir, Constants.MultiDictDir), string.Format("EnmuMultilingualDictionary_{0}.xml", dictTypeDescription));
+            string dictTypeHeader = IniFileInfo.MultiDictType.ToString();
+            dictFile = Utility.GetFullFileName(Utility.GetFullFileName(IniFileInfo.IniFileDir, Constants.MultiDictDir), string.Format("EnmuMultilingualDictionary_{0}.xml", dictTypeHeader));
 
             if (File.Exists(dictFile))
             {
@@ -217,6 +217,12 @@ namespace ToilluminateClient
             {
                 reValue = GetDictValueForDictKey(IniFileInfo.defaultClientMultilingualDictionaryList, dictKey, IniFileInfo.MultiDictType);
             }
+#if !DEBUG
+            if (string.IsNullOrEmpty(reValue))
+            {
+                reValue = dictKey;
+            }
+#endif
             return reValue;
         }
         public static string GetDictValueForDictKeyForMessage(string dictKey)
@@ -226,6 +232,12 @@ namespace ToilluminateClient
             {
                 reValue = GetDictValueForDictKey(IniFileInfo.defaultMessageMultilingualDictionaryList, dictKey, IniFileInfo.MultiDictType);
             }
+#if !DEBUG
+            if (string.IsNullOrEmpty(reValue))
+            {
+                reValue = dictKey;
+            }
+#endif
             return reValue;
         }
         public static string GetDictValueForDictKeyForEnum(string dictKey)
@@ -235,6 +247,12 @@ namespace ToilluminateClient
             {
                 reValue = GetDictValueForDictKey(IniFileInfo.defaultEnumMultilingualDictionaryList, dictKey, IniFileInfo.MultiDictType);
             }
+#if !DEBUG
+            if (string.IsNullOrEmpty(reValue))
+            {
+                reValue = dictKey;
+            }
+#endif
             return reValue;
         }
 
@@ -340,8 +358,8 @@ namespace ToilluminateClient
             }
             else
             {
-                string dictTypeDescription = GetDescription(dictType);
-                string dictTypeKey = string.Format("{0}_Enum.{1}.{2}", dictTypeDescription, value.GetType().ToString(), value.ToString());
+                string dictTypeHeader = dictType.ToString();
+                string dictTypeKey = string.Format("{0}_{1}.{2}", dictTypeHeader, value.GetType().ToString(), value.ToString());
                 return DictionaryInfo.GetDictValueForDictKeyForEnum(dictTypeKey);
             }
         }

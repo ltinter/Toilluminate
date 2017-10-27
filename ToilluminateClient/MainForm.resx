@@ -144,9 +144,9 @@
     <value>395, 19</value>
   </metadata>
   <metadata name="tmrWeb.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>486, 19</value>
+    <value>531, 20</value>
   </metadata>
   <metadata name="tmrPDF.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>577, 19</value>
+    <value>650, 25</value>
   </metadata>
 </root>
