@@ -6,13 +6,13 @@
     var div_head_title = $('<div/>').addClass("m-portlet__head-title");
     var spantitle = $("<span />").addClass('m-portlet__head-icon');
     var span_i = '<i class="fa fa-file-text"></i>';
-    var head_text = $('<h3 />').addClass('m-portlet__head-text').text('asdad');
+    var head_text = $('<h3 />').addClass('m-portlet__head-text').text('Playlist1');
 
     var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
     var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
     var div_li = $('<li />').addClass('m-portlet__nav-item');
     var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
-    var href_i = $('<i />').addClass("fa fa-calendar").text('2017-10-19 13:35');
+    var href_i = $('<i />').addClass("fa fa-calendar").text('2017-11-01 13:35');
 
     var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push");
     div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded','true');
@@ -80,7 +80,7 @@
             div_head.append(div_head_caption)
             
 
-            ul_li_href_span.text('tset111');
+            ul_li_href_span.text('playlistItem1');
             ul_li_href.append(ul_li_a, ul_li_href_span);
             ul_li.append(ul_li_href);
             ul.append(ul_li);
