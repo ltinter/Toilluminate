@@ -107,7 +107,7 @@ namespace ToilluminateModel.Controllers
         }
 
         [HttpGet, Route("api/FolderMasters/GetJSTreeData/{GroupID}")]
-        public IList<JSTreeDataModel> GetJSTreeData(int GroupID)
+        public async Task<IList<JSTreeDataModel>> GetJSTreeData(int GroupID)
         {
             List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
             JSTreeDataModel jdm;
@@ -117,10 +117,48 @@ namespace ToilluminateModel.Controllers
                 jdm.id = fm.FolderID.ToString();
                 jdm.text = fm.FolderName;
                 jdm.parent = fm.FolderParentID == null ? "#" : fm.FolderParentID.ToString();
-                //jdm.li_attr = fm;
+                jdm.li_attr = fm;
                 jdmList.Add(jdm);
             }
             return jdmList;
+        }
+
+        [HttpPost, Route("api/FolderMasters/GetJSTreeNodeDataByCreate")]
+        public async Task<JSTreeDataModel> GetJSTreeNodeDataByCreate(FolderMaster folderMaster)
+        {
+
+            folderMaster.UpdateDate = DateTime.Now;
+            folderMaster.InsertDate = DateTime.Now;
+            db.FolderMaster.Add(folderMaster);
+            await db.SaveChangesAsync();
+            JSTreeDataModel jdm = new JSTreeDataModel();
+            jdm.id = folderMaster.FolderID.ToString();
+            jdm.text = folderMaster.FolderName;
+            jdm.parent = folderMaster.FolderParentID == null ? "#" : folderMaster.FolderParentID.ToString();
+            //jdm.li_attr = fm;
+            return jdm;
+        }
+        [HttpPost, Route("api/FolderMasters/EditTreeNodeFolder")]
+        public async Task<JSTreeDataModel> EditTreeNodeFolder(FolderMaster folderMaster)
+        {
+
+            folderMaster.UpdateDate = DateTime.Now;
+            db.Entry(folderMaster).State = EntityState.Modified;
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            JSTreeDataModel jdm = new JSTreeDataModel();
+            jdm.id = folderMaster.FolderID.ToString();
+            jdm.text = folderMaster.FolderName;
+            jdm.parent = folderMaster.FolderParentID == null ? "#" : folderMaster.FolderParentID.ToString();
+            //jdm.li_attr = fm;
+            return jdm;
         }
         protected override void Dispose(bool disposing)
         {

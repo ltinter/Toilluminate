@@ -20,8 +20,33 @@
         "state": {
             "key": "demo2"
         },
-        "plugins": ["dnd", "state", "types"]
+        "plugins": ["contextmenu", "dnd", "state", "types", "search"],
+        "contextmenu": {
+            "items": {
+                "Create": {
+                    "label": "Create",
+                    "action": function (obj) {
+                        $.folder('createFolder');
+                    }
+                },
+                "Rename": {
+                    "label": "Rename",
+                    "action": function (obj) {
+                        var inst = jQuery.jstree.reference(obj.reference);
+                        var clickedNode = inst.get_node(obj.reference);
+                        inst.edit(obj.reference, clickedNode.val, function (obj, tmp, nv, cancel) {
+                            $.folder('editFolder', obj);
+                        });
+                    }
+                },
+                //"Remove": {
+                //    "label": "Remove",
+                //    "action": function (obj) {
 
+                //    }
+                //}
+            }
+        }
     };
     var selectedGroupID = null;
     var selectedFolderID = null;
@@ -31,6 +56,7 @@
     
     var methods = {
         init: function (options) {
+            selectedGroupID = options.selectedGroupID;
             $.insmFramework('getFolderTreeData', {
                 groupID: options.selectedGroupID,
                 success: function (tempdataFolderTreeData) {
@@ -46,26 +72,12 @@
                                 //showFolderFiles({ FolderID: selectedFolderID });
                             }
                         });
-
-                        //$(div_groupTreeForPlayerEdit).on("changed.jstree", function (e, data) {
-                        //    //存储当前选中的区域的名称
-                        //    if (data.node) {
-                        //        groupTreeForPlayerEditID = data.node.id;
-                        //    }
-                        //});
-                        //tree.on("move_node.jstree", function (e, data) {
-                        //    var node = data.node;
-                        //    if (node) {
-                        //        editgroup({
-                        //            groupID: node.id,
-                        //            newGroupNameParentID: node.parent,
-                        //            newGroupName: node.text,
-                        //            ActiveFlag: node.li_attr.ActiveFlag,
-                        //            OnlineFlag: node.li_attr.OnlineFlag,
-                        //            Comments: node.li_attr.Comments
-                        //        })
-                        //    }
-                        //});
+                        tree.on("move_node.jstree", function (e, data) {
+                            var node = data.node;
+                            if (node) {
+                                $.folder('editFolder', node);
+                            }
+                        });
                     }
                 },
                 invalid: function () {
@@ -75,36 +87,48 @@
                     options.error();
                 },
             });
+        },
+        createFolder: function () {
+            var groupRef = div_groupTreeForFileManager.jstree(true),
+            groupSel = groupRef.get_selected();
+            if (!groupSel.length) { return false; }// no group selected
+            var folderRef = div_folderTreeForFileManager.jstree(true),
+                folderSef = folderRef.get_selected();
+
+            $.insmFramework('createFolder', {
+                groupID: selectedGroupID,
+                folderName: "New Folder",
+                folderParentID: folderSef[0],
+                success: function (data) {
+                    if (!folderSef.length) {
+                        folderSef = folderRef.create_node(null, data, "last", false, true);//create root
+                    } else {
+                        folderSef = folderRef.create_node(folderSef, data, "last", false, true);
+                    }
+                    if (folderSef) {
+                        folderRef.edit(folderSef, folderSef.text, function (obj, tmp, nv, cancel) {
+                            $.folder('editFolder',obj);
+                        });
+                    }
+                }
+            });
+        },
+        editFolder: function (node) {
+            $.insmFramework('editFolder', {
+                groupID: selectedGroupID,
+                folderID: node.id,
+                folderName: node.text,
+                folderParentID: node.parent,
+                success: function (data) {
+                }
+            });
         }
+        
     };
     $("#btn_create").click(function () {
-        var groupRef = div_groupTreeForFileManager.jstree(true),
-            groupSel = groupRef.get_selected();
-        if (!groupSel.length) { return false; }// no group selected
-        var folderRef = div_folderTreeForFileManager.jstree(true),
-            folderSef = folderRef.get_selected();
-        if (!folderSef.length) {
-            folderSef = folderRef.create_node(null, { "type": "folder" });//create root
-        } else {
-            folderSef = folderRef.create_node(folderSef, { "type": "folder" });
-        }
-        if (folderSef) {
-            folderRef.edit(folderSef);
-        }
-        //$.insmFramework('creatFolder', {
-        //    groupID: selectedGroupID,
-        //    folderName: "New Folder",
-        //    folderParentID: selectedFolderID,
-        //    success: function (data) {
-        //        var a = 1;
-        //        //sel = sel[0];
-        //        //sel = ref.create_node(sel, { "type": "file" });
-        //        //if (sel) {
-        //        //    ref.edit(sel);
-        //        //}
-        //    }
-        //});
+        $.folder('createFolder');
     });
+
     function demo_rename() {
         var ref = div_groupTreeForFileManager.jstree(true),
             sel = ref.get_selected();

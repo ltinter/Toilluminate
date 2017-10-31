@@ -170,24 +170,6 @@
             }
             return $.insmFramework('ajax', ajaxOptions);
         },
-        getFolderTreeData: function (options) {
-            var $this = $('html').eq(0);
-            var _plugin = $this.data('insmFramework');
-            var ajaxOptions = {
-                success: function (result) {
-                    options.success(result);
-                },
-                url: 'api/FolderMasters/GetJSTreeData/'+options.groupID,
-                format: 'json',
-                contentType: "application/json; charset=utf-8",
-                type: "GET",
-                denied: function () { },
-                error: function () {
-                    options.error();
-                },
-            }
-            return $.insmFramework('ajax', ajaxOptions);
-        },
         getUser: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -227,43 +209,6 @@
                 data: JSON.stringify(newGroup),
                 contentType: "application/json; charset=utf-8",
                 type: options.groupID == undefined ? 'POST' : 'PUT',
-                denied: function () {
-                    // Just do it again and we should land in the success callback next time
-                    //$.insmFramework('getUsers', options);
-                },
-                error: function () {
-                    options.error();
-                },
-            };
-            return $.insmFramework('ajax', ajaxOptions);
-        },
-        creatFolder: function (options) {
-            var $this = $('html').eq(0);
-            var _plugin = $this.data('insmFramework');
-            var FolderMaster = {
-                create: function () {
-                    FolderID: "";
-                    GroupID: "";
-                    FolderName: '';
-                    FolderParentID: '';
-                    Settings: '';
-                    Comments: '';
-                    return FolderMaster;
-                }
-            }
-            var newFolder = FolderMaster.create();
-            newFolder.GroupID = options.groupID;
-            newFolder.FolderName = options.folderName;
-            newFolder.FolderParentID = options.folderParentID;
-            var ajaxOptions = {
-                success: function (result) {
-                    options.success(result);
-                },
-                url: 'api/FolderMasters',
-                format: 'json',
-                data: JSON.stringify(newFolder),
-                contentType: "application/json; charset=utf-8",
-                type: 'POST',
                 denied: function () {
                     // Just do it again and we should land in the success callback next time
                     //$.insmFramework('getUsers', options);
@@ -462,6 +407,101 @@
             };
             return $.insmFramework('ajax', ajaxOptions);
         },
+        //Folder Start
+        createFolder: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var FolderMaster = {
+                create: function () {
+                    FolderID: "";
+                    GroupID: "";
+                    FolderName: '';
+                    FolderParentID: '';
+                    Settings: '';
+                    Comments: '';
+                    return FolderMaster;
+                }
+            }
+            var newFolder = FolderMaster.create();
+            newFolder.GroupID = options.groupID;
+            newFolder.FolderName = options.folderName;
+            newFolder.FolderParentID = options.folderParentID;
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FolderMasters/GetJSTreeNodeDataByCreate',
+                format: 'json',
+                data: JSON.stringify(newFolder),
+                contentType: "application/json; charset=utf-8",
+                type: 'POST',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        editFolder: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var FolderMaster = {
+                create: function () {
+                    FolderID: "";
+                    GroupID: "";
+                    FolderName: '';
+                    FolderParentID: '';
+                    Settings: '';
+                    Comments: '';
+                    return FolderMaster;
+                }
+            }
+            var newFolder = FolderMaster.create();
+            newFolder.FolderID = options.folderID;
+            newFolder.GroupID = options.groupID;
+            newFolder.FolderName = options.folderName;
+            newFolder.FolderParentID = options.folderParentID;
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FolderMasters/EditTreeNodeFolder',
+                format: 'json',
+                data: JSON.stringify(newFolder),
+                contentType: "application/json; charset=utf-8",
+                type: 'POST',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        getFolderTreeData: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FolderMasters/GetJSTreeData/' + options.groupID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        //Folder End
     }
     $.insmFramework = function (method) {
         if (methods[method]) {
