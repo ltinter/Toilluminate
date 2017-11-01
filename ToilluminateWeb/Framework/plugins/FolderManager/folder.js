@@ -1,5 +1,4 @@
 ﻿(function ($) {
-    var FolderTreedata = [];
     var folderJstreeData = {
         "core": {
             "themes": {
@@ -7,7 +6,7 @@
             },
             // so that create works
             "check_callback": true,
-            'data': FolderTreedata
+            'data': {}
         },
         "types": {
             "default": {
@@ -62,14 +61,17 @@
                 success: function (tempdataFolderTreeData) {
                     if (tempdataFolderTreeData) {
                         var tree = $('.tree-demo.folderTree');
+                        folderJstreeData.core.data = tempdataFolderTreeData;
+                        tree.jstree("destroy");
                         tree.jstree(folderJstreeData);
-                        tree.jstree(true).settings.core.data = tempdataFolderTreeData;
                         tree.jstree(true).refresh();
 
                         tree.on("changed.jstree", function (e, data) {
                             if (data.node) {
                                 selectedFolderID = data.node.id;
-                                //showFolderFiles({ FolderID: selectedFolderID });
+                                $.file('init', {
+                                    selectedFolderID : selectedFolderID
+                                });
                             }
                         });
                         tree.on("move_node.jstree", function (e, data) {
@@ -122,6 +124,9 @@
                 success: function (data) {
                 }
             });
+        },
+        getSelectedFolderID: function () {
+            return selectedFolderID;
         }
         
     };
@@ -129,19 +134,6 @@
         $.folder('createFolder');
     });
 
-    function demo_rename() {
-        var ref = div_groupTreeForFileManager.jstree(true),
-            sel = ref.get_selected();
-        if (!sel.length) { return false; }
-        sel = sel[0];
-        ref.edit(sel);
-    };
-    function demo_delete() {
-        var ref = div_groupTreeForFileManager.jstree(true),
-            sel = ref.get_selected();
-        if (!sel.length) { return false; }
-        ref.delete_node(sel);
-    };
     $.folder = function (method) {
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));

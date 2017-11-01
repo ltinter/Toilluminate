@@ -2209,7 +2209,9 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <div id="folderTreeForFileManager" class="tree-demo  folderTree"></div>
                                         </div>
                                         <div class="col-xl-8">
-
+                                            <!--begin: Datatable -->
+                                            <div class="m_datatable" id="datatable_file"></div>
+                                            <!--end: Datatable -->
                                         </div>
                                     </div>
                                 </div>
@@ -2734,9 +2736,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="m-dropzone dropzone m-dropzone--primary" action="inc/api/dropzone/upload.php" id="m-dropzone-two">
-                                <div class="m-dropzone__msg dz-message needsclick">
-                                    <h3 class="m-dropzone__msg-title">
+                            <div class="m-dropzone dropzone m-dropzone--primary" action="api/FileMasters/UploadFile" params= id="m-dropzone-two">
                                         Drop files here or click to upload.
                                     </h3>
                                     <span class="m-dropzone__msg-desc">
@@ -2767,6 +2767,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <script src="Framework/Login/login.js" type="text/javascript"></script>
     <script src="Framework/Group/group.js" type="text/javascript"></script>
     <script src="Framework/plugins/FolderManager/folder.js" type="text/javascript"></script>
+    <script src="Framework/plugins/FileManager/file.js" type="text/javascript"></script>
     <script src="Framework/framework.js" type="text/javascript"></script>
     <script src="Framework/PlaylistEditor/playlistEditor.js" type="text/javascript"></script>
     <script src="Framework/plugins/insmLocalize/localize.js" type="text/javascript"></script>

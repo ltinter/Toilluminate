@@ -502,6 +502,27 @@
             return $.insmFramework('ajax', ajaxOptions);
         },
         //Folder End
+
+        //File Start
+        getFilesByFolder: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FileMasters/GetFilesByFolderID/' + options.FolderID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        //File End 
     }
     $.insmFramework = function (method) {
         if (methods[method]) {

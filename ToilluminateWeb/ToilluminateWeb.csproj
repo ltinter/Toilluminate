@@ -106,6 +106,9 @@
     <Content Include="Framework\PlaylistEditor\playlistEditor.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Framework\plugins\FileManager\file.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Framework\plugins\FolderManager\folder.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
