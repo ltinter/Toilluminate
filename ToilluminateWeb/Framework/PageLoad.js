@@ -101,6 +101,21 @@ var changeTab = function (tabDivId) {
     $("#m_ver_menu").find("li.m-menu__item").removeClass("m-menu__item--active");
     $(event.currentTarget).parent("li").addClass("m-menu__item--active");
 }
+
+var initTimeOptionsInPlayerEdit = function () {
+    $(".player-editor-timeoptions-hidden-input").each(function () {
+        $(this).ionRangeSlider({
+            type: "double",
+            min: 0,
+            max: 24,
+            from: 0,
+            to: 24,
+            postfix: " o'clock",
+            decorate_both: true,
+            grid: true,
+        });
+    })
+}
 $(document).ready(function ()
 {
     playerStatusShare();
@@ -112,8 +127,10 @@ $(document).ready(function ()
         obj.innerHTML = $.localize('translate', $.trim(obj.innerHTML));
     });
     var buttontext = $(".labeltext");
-    $.each(buttontext, function (index, obj) {
-        obj.html($.localize('translate', $.trim(obj.innerText)));
-    });
+    //$.each(buttontext, function (index, obj) {
+    //    obj.html($.localize('translate', $.trim(obj.innerText)));
+    //});
+    initTimeOptionsInPlayerEdit();
     
+    $("#monday_value").data("ionRangeSlider").update({ from: 10 ,to:22});
 });

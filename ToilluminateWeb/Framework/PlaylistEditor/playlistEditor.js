@@ -36,7 +36,7 @@
         init: function (options) {
             // Global vars
             var $this = $('html').eq(0);
-            var _plugin = $this.data('reports');
+            var _plugin = $this.data('playlistEditor');
 
             // If the plugin hasn't been initialized yet
             if (!_plugin) {
@@ -72,35 +72,38 @@
                     }
                 };
                 $this.data('playlistEditor', _plugin);
+
+
+                spantitle.append(span_i);
+                div_head_title.append(spantitle);
+                div_head_title.append(head_text);
+                div_head_caption.append(div_head_title);
+                div_head.append(div_head_caption)
+
+
+                ul_li_href_span.text('playlistItem1');
+                ul_li_href.append(ul_li_a, ul_li_href_span);
+                ul_li.append(ul_li_href);
+                ul.append(ul_li);
+                div_m_dropdown_content.append(ul);
+                div_m_dropdown_bodyr.append(div_m_dropdown_content);
+                div_m_dropdown_inner.append(div_m_dropdown_bodyr);
+
+                div_m_dropdown_wrapper.append(wrappe_spantitle);
+                div_m_dropdown_wrapper.append(div_m_dropdown_inner);
+                div_li_a_toggle.append(div_li_i);
+                div_li_list.append(div_li_a_toggle, div_m_dropdown_wrapper)
+
+                href.append(href_i);
+                div_li.append(href);
+                div_portlet_nav.append(div_li);
+                div_portlet_nav.append(div_li_list);
+                div_head_tools.append(div_portlet_nav);
+
+                div_head.append(div_head_tools);
+                div_PlaylistEditorContent.append(div_PlaylistEditor.append(div_head));
             }
-            spantitle.append(span_i);
-            div_head_title.append(spantitle);
-            div_head_title.append(head_text);
-            div_head_caption.append(div_head_title);
-            div_head.append(div_head_caption)
             
-
-            ul_li_href_span.text('playlistItem1');
-            ul_li_href.append(ul_li_a, ul_li_href_span);
-            ul_li.append(ul_li_href);
-            ul.append(ul_li);
-            div_m_dropdown_content.append(ul);
-            div_m_dropdown_bodyr.append(div_m_dropdown_content);
-            div_m_dropdown_inner.append(div_m_dropdown_bodyr);
-
-            div_m_dropdown_wrapper.append(wrappe_spantitle);
-            div_m_dropdown_wrapper.append(div_m_dropdown_inner);
-            div_li_a_toggle.append(div_li_i);
-            div_li_list.append(div_li_a_toggle, div_m_dropdown_wrapper)
-
-            href.append(href_i);
-            div_li.append(href);
-            div_portlet_nav.append(div_li);
-            div_portlet_nav.append(div_li_list);
-            div_head_tools.append(div_portlet_nav);
-
-            div_head.append(div_head_tools);
-            div_PlaylistEditorContent.append(div_PlaylistEditor.append(div_head));
             return $this;
         },
         short: function (options) {
