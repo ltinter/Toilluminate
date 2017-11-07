@@ -169,6 +169,12 @@
                     return false;
                 }
             });
+        },
+        destroyFileTableData: function () {
+            selectedFolderID = null;
+            if ($("#datatable_file").data("datatable")) {
+                $("#datatable_file").data("datatable").destroy();
+            }
         }
         
     };
