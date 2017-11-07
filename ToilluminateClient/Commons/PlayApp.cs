@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ToilluminateClient
 {
@@ -41,6 +43,13 @@ namespace ToilluminateClient
 
         private int currentTempleteItemIndex = -1;
 
+        private int nowTempleteItemIndex = -1;
+
+
+        /// <summary>
+        /// 时间
+        /// </summary>
+        private DateTime dtNowValue = DateTime.Now;
 
         /// <summary>
         /// 开始时间
@@ -104,6 +113,17 @@ namespace ToilluminateClient
                 currentTempleteItemIndex = value;
             }
         }
+        public int NowTempleteIndex
+        {
+            get
+            {
+                return nowTempleteItemIndex;
+            }
+            set
+            {
+                nowTempleteItemIndex = value;
+            }
+        }
         public TempleteItem CurrentTempleteItem
         {
             get
@@ -118,13 +138,55 @@ namespace ToilluminateClient
                 }
             }
         }
+        public TempleteItem NextTempleteItem
+        {
+            get
+            {
+                if (currentTempleteItemIndex >= -1 && currentTempleteItemIndex < templeteItemListValue.Count - 1)
+                {
+                    return templeteItemListValue[currentTempleteItemIndex + 1];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
+        public TempleteItem LastTempleteItem
+        {
+            get
+            {
+                if (templeteItemListValue.Count > 0)
+                {
+                    return templeteItemListValue[templeteItemListValue.Count - 1];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
+        /// <summary>
+        /// 时间
+        /// </summary>
+        public DateTime NowDateTime
+        {
+            get
+            {
+                return dtNowValue;
+            }
+            set
+            {
+                dtNowValue = value;
+            }
+        }
 
         /// <summary>
         /// 开始时间
         /// </summary>
-        public DateTime DateTimeStart
+        public DateTime StartDateTime
         {
             get
             {
@@ -133,13 +195,15 @@ namespace ToilluminateClient
             set
             {
                 dtStartValue = value;
+                dtNowValue = dtStartValue;
             }
         }
+
 
         /// <summary>
         /// 结束时间
         /// </summary>
-        public DateTime DateTimeEnd
+        public DateTime EndDateTime
         {
             get
             {
@@ -226,27 +290,41 @@ namespace ToilluminateClient
         {
             playTypeValue = playType;
         }
-
-        public PlayItem(ShowPlayType playType, string dtStart, string dtEnd, int cycleTotalNumber)
+        
+        public PlayItem(ShowPlayType playType, DateTime dtStart, DateTime dtEnd, int cycleTotalNumber)
         {
             playTypeValue = playType;
-            Utility.IsDateTime(dtStart, out dtStartValue);
-            
-            if (Utility.IsDateTime(dtEnd, out dtEndValue))
-            {
-                this.endDateTimeValidValue = true;
-            }
-            else
-            {
-                this.endDateTimeValidValue = false;
-            }
+
+            dtStartValue = dtStart;
+            dtEndValue = dtEnd;
+            this.endDateTimeValidValue = true;
 
 
             cycleTotalNumberValue = cycleTotalNumber;
             if (cycleTotalNumberValue > 0)
             {
                 this.cycleTotalNumberValidValue = true;
-            }else
+            }
+            else
+            {
+                this.cycleTotalNumberValidValue = false;
+            }
+        }
+
+        public PlayItem(ShowPlayType playType, DateTime dtStart, int cycleTotalNumber)
+        {
+            playTypeValue = playType;
+
+            dtStartValue = dtStart;
+            this.endDateTimeValidValue = false;
+            
+
+            cycleTotalNumberValue = cycleTotalNumber;
+            if (cycleTotalNumberValue > 0)
+            {
+                this.cycleTotalNumberValidValue = true;
+            }
+            else
             {
                 this.cycleTotalNumberValidValue = false;
             }
@@ -255,6 +333,67 @@ namespace ToilluminateClient
 
         #region " void and function "
 
+        /// <summary>
+        /// 右左
+        /// </summary>
+        public ShowPlayStateType PlayState
+        {
+           get
+            {
+                try
+                {
+                    DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
+                    
+                    if (this.dtStartValue> nowTime)
+                    {
+                        return ShowPlayStateType.Stop;
+                    }
+
+                    if (this.endDateTimeValidValue
+                       && this.dtEndValue <= nowTime)
+                    {
+                        return ShowPlayStateType.Stop;
+                    }
+
+                    if (this.cycleTotalNumberValidValue
+                       && this.cycleNumberValue>= cycleTotalNumberValue)
+                    {
+                        return ShowPlayStateType.Stop;
+                    }
+                    return ShowPlayStateType.Show;
+                }
+                catch (Exception ex)
+                {
+                    return ShowPlayStateType.Stop;
+                }
+            }
+        }
+
+        public void ShowNowTemplete(PictureBox picImage)
+        {
+            try
+            {
+                this.nowTempleteItemIndex = this.currentTempleteItemIndex;
+
+
+                if (picImage.Image != null)
+                {
+                    picImage.Image.Dispose();
+                }
+                //动态添加图片 
+                Image nowImageFile = Image.FromFile(this.CurrentTempleteItem.File);
+
+                Bitmap nowBitmap = new Bitmap(nowImageFile);
+
+                nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size);
+
+                ImageApp.ShowBitmap(nowBitmap, picImage, this.CurrentTempleteItem.ImageStyle);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         #endregion
     }
 
@@ -267,6 +406,25 @@ namespace ToilluminateClient
         private string fileValue = string.Empty;
 
         private string messageValue = string.Empty;
+
+        private ImageShowStyle imageStyleValue = ImageShowStyle.None;
+
+        private MediaShowStyle mediaStyleValue = MediaShowStyle.None;
+
+        private MessageShowStyle messageStyleValue = MessageShowStyle.None;
+
+
+        /// <summary>
+        /// 几秒后开始
+        /// </summary>
+        private int startSecondValue = 0;
+
+        /// <summary>
+        /// 持续时间(秒)
+        /// </summary>
+        private int durationSecondValue = 0;
+        
+
         #endregion
 
 
@@ -278,10 +436,6 @@ namespace ToilluminateClient
             {
                 return fileValue;
             }
-            set
-            {
-                fileValue = value;
-            }
         }
 
         public string Message
@@ -290,20 +444,117 @@ namespace ToilluminateClient
             {
                 return messageValue;
             }
-            set
+        }
+        public ImageShowStyle ImageStyle
+        {
+            get
             {
-                messageValue = value;
+                return imageStyleValue;
+            }
+        }
+        public MessageShowStyle MessageStyle
+        {
+            get
+            {
+                return messageStyleValue;
+            }
+        }
+        public MediaShowStyle MediaStyle
+        {
+            get
+            {
+                return mediaStyleValue;
+            }
+        }
+
+        /// <summary>
+        /// 几秒后开始
+        /// </summary>
+        public int StartSecond
+        {
+            get
+            {
+                return startSecondValue;
+            }
+        }
+        /// <summary>
+        /// 几秒后结束
+        /// </summary>
+        public int EndSecond
+        {
+            get
+            {
+                return startSecondValue + durationSecondValue;
+            }
+        }
+
+        /// <summary>
+        /// 结束时间可用
+        /// </summary>
+        public bool EndSecondValid
+        {
+            get
+            {
+                return durationSecondValue>0;
+            }
+        }
+        
+        /// <summary>
+        /// 持续时间(秒)
+        /// </summary>
+        public int DurationSecond
+        {
+            get
+            {
+                return durationSecondValue;
             }
         }
         #endregion
 
 
-        public TempleteItem(string file ,string message)
+        public TempleteItem(string file, MediaShowStyle mediaStyle, int startSecond, int durationSecond)
         {
-            fileValue = file;
-            messageValue = message;
+            this.fileValue = file;
+            this.mediaStyleValue = mediaStyle;
+            this.startSecondValue = startSecond;
+            this.durationSecondValue = durationSecond;
+        }
+        public TempleteItem(string file, MediaShowStyle mediaStyle)
+        {
+            this.fileValue = file;
+            this.mediaStyleValue = mediaStyle;
+            this.startSecondValue = 0;
+            this.durationSecondValue=0;
         }
 
+        public TempleteItem(string file, ImageShowStyle imageStyle, int startSecond, int durationSecond)
+        {
+            this.fileValue = file;
+            this.imageStyleValue = imageStyle;
+            this.startSecondValue = startSecond;
+            this.durationSecondValue = durationSecond;
+        }
+        public TempleteItem(string file, ImageShowStyle imageStyle)
+        {
+            this.fileValue = file;
+            this.imageStyleValue = imageStyle;
+            this.startSecondValue = 0;
+            this.durationSecondValue = 0;
+        }
+        public TempleteItem(string message, MessageShowStyle messageStyle, int startSecond, int durationSecond)
+        {
+            this.messageValue = message;
+            this.messageStyleValue = messageStyle;
+            this.startSecondValue = startSecond;
+            this.durationSecondValue = durationSecond;
+        }
+        public TempleteItem(string message, MessageShowStyle messageStyle)
+        {
+            this.messageValue = message;
+            this.messageStyleValue = messageStyle;
+            this.startSecondValue = 0;
+            this.durationSecondValue = 0;
+        }
 
         #region " void and function "
 
@@ -336,6 +587,27 @@ namespace ToilluminateClient
 
     #endregion
 
+
+    #region play状态类型
+    /// <summary>
+    /// play状态类型
+    /// </summary>
+    /// <remarks></remarks>
+    public enum ShowPlayStateType
+    {
+        /// <summary>
+        /// 停止
+        /// </summary>
+        [EnumDescription("停止")]
+        Stop = 0,
+        /// <summary>
+        /// 播放
+        /// </summary>
+        [EnumDescription("放送")]
+        Show = 1,
+    }
+
+    #endregion
 
     #region 模板类型
     /// <summary>
