@@ -45023,7 +45023,15 @@ return /******/ (function(modules) { // webpackBootstrap
     for (j = 0, len = dropzones.length; j < len; j++) {
       dropzone = dropzones[j];
       if (Dropzone.optionsForElement(dropzone) !== false) {
-        results.push(new Dropzone(dropzone));
+          var myDropzone = new Dropzone(dropzone);
+          myDropzone.on('sending', function(file, xhr, formData){
+            formData.append('UserID', 1);
+            formData.append('FolderID', $.folder('getSelectedFolderID'));
+          });
+          myDropzone.on("success",function(file,data){
+            $.file('insertDataToTable',data);
+          });
+        results.push(myDropzone);
       } else {
         results.push(void 0);
       }
@@ -61806,12 +61814,12 @@ $.notifyDefaults({
 			for(i in this._model.data) {
 				if(this._model.data.hasOwnProperty(i)) {
 					if(i !== $.jstree.root) {
-						if(this._model.data[i].state.opened) {
-							state.core.open.push(i);
-						}
-						if(this._model.data[i].state.selected) {
-							state.core.selected.push(i);
-						}
+						//if(this._model.data[i].state.opened) {
+						//	state.core.open.push(i);
+						//}
+						//if(this._model.data[i].state.selected) {
+						//	state.core.selected.push(i);
+						//}
 					}
 				}
 			}

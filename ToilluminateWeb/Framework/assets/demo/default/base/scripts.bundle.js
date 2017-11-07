@@ -1611,7 +1611,13 @@ jQuery.fn.extend({
 					// keep data object to row
 					var tr = $('<tr/>').attr('data-row', i).data('obj', row);
 					$.each(options.columns, function (x, column) {
-						var td = $('<td/>').append(row[column.field])
+					    var columnvalue
+					    if (typeof column.datetype !== 'undefined') {
+					        columnvalue = new Date(row[column.field]).toLocaleDateString();
+					    } else {
+					        columnvalue = row[column.field];
+					    }	    
+					    var td = $('<td/>').append(columnvalue)
 							.attr('data-field', column.field) // required for subtable
 							.data(column)
 							.appendTo(tr);

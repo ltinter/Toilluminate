@@ -16,9 +16,9 @@ namespace ToilluminateModel
     {
         public int TempletTypeID { get; set; }
         public string TempletTypeName { get; set; }
+        public string Settings { get; set; }
         public string Comments { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
-        public string Settings { get; set; }
     }
 }

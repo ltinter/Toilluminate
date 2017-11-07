@@ -53,6 +53,7 @@ namespace ToilluminateModel.Controllers
                 return BadRequest();
             }
 
+            playListMaster.UpdateDate = DateTime.Now;
             db.Entry(playListMaster).State = EntityState.Modified;
 
             try
@@ -83,6 +84,8 @@ namespace ToilluminateModel.Controllers
                 return BadRequest(ModelState);
             }
 
+            playListMaster.UpdateDate = DateTime.Now;
+            playListMaster.InsertDate = DateTime.Now;
             db.PlayListMaster.Add(playListMaster);
             await db.SaveChangesAsync();
 
@@ -115,8 +118,6 @@ namespace ToilluminateModel.Controllers
         [HttpPost, Route("api/PlayListMasters/GetPlayListByPlayerID/{PlayerID}")]
         public async Task<IQueryable<PlayListMaster>> GetPlayListByPlayerID(int PlayerID)
         {
-            //int?[] playListIDs = (from ppl in db.PlayerPlayListLinkTable where ppl.PlayerID == PlayerID select ppl.PlayListID).ToArray<int?>();
-            //return db.PlayListMaster.Where(a=> playListIDs.Contains(a.PlayListID));
             return db.PlayListMaster
                     .Where(q => db.PlayerPlayListLinkTable
                     .Where(s => s.PlayListID == q.PlayListID && s.PlayerID == PlayerID).Count() > 0);
@@ -129,19 +130,6 @@ namespace ToilluminateModel.Controllers
             GroupIDList.Add(GroupID);
             PublicMethods.GetParentGroupIDs(GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
-            //var jsonList = db.PlayListMaster.Where(a => groupIDs.Contains((int)a.GroupID))
-            //    .GroupJoin(db.GroupMaster,
-            //    pm => pm.GroupID,
-            //    groupInfo => groupInfo.GroupID,
-            //    (pm, groupInfo) => new
-            //    {
-            //        pm.GroupID,
-            //        pm.PlayListID,
-            //        pm.PlayListName,
-            //        groupInfo
-            //    }).Select(o => o).ToList();
-
-
             var jsonList = (from plm in db.PlayListMaster
                             join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                             from pv in ProjectV.DefaultIfEmpty()

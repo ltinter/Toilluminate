@@ -1264,6 +1264,21 @@ namespace ToilluminateClient
 
         #endregion
 
+        #region 日時変換
+
+        /// <summary>
+        /// 取得日期
+        /// </summary>
+        /// <param name="srcTime">日時</param>
+        /// <returns></returns>
+        public static DateTime GetPlayDateTime(DateTime srcTime)
+        {
+            DateTime reTime = DateTime.Parse(srcTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            return reTime;
+        }
+
+        #endregion
+
         #region 生成長指定の任意文字列
         /// <summary>
         /// 生成長指定の任意文字列

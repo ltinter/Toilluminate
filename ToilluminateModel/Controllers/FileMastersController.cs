@@ -56,6 +56,7 @@ namespace ToilluminateModel.Controllers
                 return BadRequest();
             }
 
+            fileMaster.UpdateDate = DateTime.Now;
             db.Entry(fileMaster).State = EntityState.Modified;
 
             try
@@ -86,6 +87,8 @@ namespace ToilluminateModel.Controllers
                 return BadRequest(ModelState);
             }
 
+            fileMaster.UpdateDate = DateTime.Now;
+            fileMaster.InsertDate = DateTime.Now;
             db.FileMaster.Add(fileMaster);
             await db.SaveChangesAsync();
 
@@ -110,53 +113,117 @@ namespace ToilluminateModel.Controllers
             return Ok(fileMaster);
         }
 
-        [HttpPost, Route("api/FileMasters/UploadFile")]
-        public async Task<IHttpActionResult> UploadFile()
+        [HttpGet, Route("api/FileMasters/GetFilesByFolderID/{FolderID}")]
+        public async Task<IQueryable<FileMaster>> GetFilesByFolderID(int FolderID)
+        {
+            return db.FileMaster.Where(a => a.FolderID == FolderID);
+        }
+
+        [HttpPost, Route("api/FileMasters/CutFile/{folderID}")]
+        public async Task<IHttpActionResult> CutFile(int folderID, FileMaster fileMaster)
         {
             try
             {
-                var provider = new MultipartMemoryStreamProvider();
-                await Request.Content.ReadAsMultipartAsync(provider);
+                fileMaster.FolderID = folderID;
+                fileMaster.UpdateDate = DateTime.Now;
+                db.Entry(fileMaster).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+                return Ok(fileMaster);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
 
-                // extract file name and file contents
-                var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
-                    .FirstOrDefault(p => p.Name.ToLower() == "filename");
-                string fileName = (fileNameParam == null) ? "" : (DateTime.Now.ToString("yyyyMMddHHmmssffff") + fileNameParam.Value.Trim('"'));
-                byte[] file = await provider.Contents[0].ReadAsByteArrayAsync();
-                Image originalImg = ImageHelper.BytesToImage(file);
-                Image thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, originalImg.Width / 10, originalImg.Height / 10);
-                byte[] thumbnailFile = ImageHelper.ImageToBytes(thumbnailImg);
-
-                string[] fileNameSplit = fileName.Split('.');
-
+        [HttpPost, Route("api/FileMasters/CopyFile/{folderID}")]
+        public async Task<IHttpActionResult> CopyFile(int folderID,FileMaster fileMaster)
+        {
+            try
+            {
                 // save original file path
                 string dirFilePath = Path.Combine(ROOT_PATH + FORLDER);
                 if (!Directory.Exists(dirFilePath))
                 {
                     Directory.CreateDirectory(dirFilePath);
                 }
-                string filePath = Path.Combine(dirFilePath, fileName);
-                File.WriteAllBytes(filePath, file);
+
                 //save thumbnail file path
                 string dirThumbnailFilePath = Path.Combine(ROOT_PATH + THUMBNAILFORLDER);
                 if (!Directory.Exists(dirThumbnailFilePath))
                 {
                     Directory.CreateDirectory(dirThumbnailFilePath);
                 }
-                string thumbnailFilePath = Path.Combine(dirThumbnailFilePath, fileName);
-                File.WriteAllBytes(thumbnailFilePath, thumbnailFile);
 
+                string fileNameKey = DateTime.Now.ToString("yyyyMMddHHmmssffff") + fileMaster.FileName;
+
+                File.Copy(Path.Combine(ROOT_PATH + fileMaster.FileUrl), Path.Combine(dirFilePath, fileNameKey), true);
+                File.Copy(Path.Combine(ROOT_PATH + fileMaster.FileThumbnailUrl), Path.Combine(dirThumbnailFilePath, fileNameKey), true);
+
+                FileMaster newFile = new FileMaster();
+                newFile.FolderID = folderID;
+                newFile.UserID = fileMaster.UserID;
+                newFile.FileType = fileMaster.FileType;
+                newFile.FileName = fileMaster.FileName;
+                newFile.FileUrl = FORLDER + "/" + fileNameKey;
+                newFile.FileThumbnailUrl = THUMBNAILFORLDER + "/" + fileNameKey;
+                newFile.UpdateDate = DateTime.Now;
+                newFile.InsertDate = DateTime.Now;
+                db.FileMaster.Add(newFile);
+                await db.SaveChangesAsync();
+
+                return Ok(newFile);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost, Route("api/FileMasters/UploadFile")]
+        public async Task<IHttpActionResult> UploadFile()
+        {
+            try
+            {
+                // save original file path
+                string dirFilePath = Path.Combine(ROOT_PATH + FORLDER);
+                if (!Directory.Exists(dirFilePath))
+                {
+                    Directory.CreateDirectory(dirFilePath);
+                }
+
+                //save thumbnail file path
+                string dirThumbnailFilePath = Path.Combine(ROOT_PATH + THUMBNAILFORLDER);
+                if (!Directory.Exists(dirThumbnailFilePath))
+                {
+                    Directory.CreateDirectory(dirThumbnailFilePath);
+                }
+
+                List<FileMaster> fileReturnList = new List<FileMaster>();
+                int fileCount = HttpContext.Current.Request.Files.Count;
+                HttpFileCollection fileUploadData = HttpContext.Current.Request.Files;
+                HttpPostedFile file = fileUploadData[0];
+                string fileName = file.FileName.Trim('"');
+                string fileNameKey = DateTime.Now.ToString("yyyyMMddHHmmssffff") + file.FileName.Trim('"');
+                Image originalImg = Image.FromStream(file.InputStream);
+                Image thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, originalImg.Width / 10, originalImg.Height / 10);
+                string[] fileNameSplit = fileName.Split('.');
+                string filePath = Path.Combine(dirFilePath, fileNameKey);
+                string thumbnailFilePath = Path.Combine(dirThumbnailFilePath, fileNameKey);
+                originalImg.Save(filePath);
+                thumbnailImg.Save(thumbnailFilePath);
 
                 FileMaster fileMaster = new FileMaster();
                 fileMaster.FolderID = int.Parse(HttpContext.Current.Request["FolderID"]);
                 fileMaster.UserID = int.Parse(HttpContext.Current.Request["UserID"]);
                 fileMaster.FileType = fileNameSplit.Length > 0 ? fileNameSplit[fileNameSplit.Length - 1] : "";
                 fileMaster.FileName = fileName;
-                fileMaster.FileUrl = FORLDER + "/" + fileName;
-                fileMaster.FileThumbnailUrl = THUMBNAILFORLDER + "/" + fileName;
+                fileMaster.FileUrl = FORLDER + "/" + fileNameKey;
+                fileMaster.FileThumbnailUrl = THUMBNAILFORLDER + "/" + fileNameKey;
+                fileMaster.UpdateDate = DateTime.Now;
+                fileMaster.InsertDate = DateTime.Now;
                 db.FileMaster.Add(fileMaster);
                 await db.SaveChangesAsync();
-
                 return Ok(fileMaster);
             }
             catch

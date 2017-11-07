@@ -347,10 +347,10 @@ namespace ToilluminateClient
 
     #endregion
 
-    #region 显示模式
+    #region 图片显示模式
 
     /// <summary>
-    /// 显示模式
+    /// 图片显示模式
     /// </summary>
     public enum ImageShowStyle
     {
@@ -450,6 +450,36 @@ namespace ToilluminateClient
         /// </summary>
         //Docking_DT = 14,
 
+    }
+    #endregion
+
+
+    #region 信息显示模式
+
+    /// <summary>
+    /// 信息显示模式
+    /// </summary>
+    public enum MessageShowStyle
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        None = 0,
+    }
+    #endregion
+
+
+    #region 视频显示模式
+
+    /// <summary>
+    /// 视频显示模式
+    /// </summary>
+    public enum MediaShowStyle
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        None = 0,
     }
     #endregion
 }
