@@ -165,6 +165,30 @@ namespace ToilluminateModel.Controllers
             //jdm.li_attr = fm;
             return jdm;
         }
+
+        [HttpGet, Route("api/FolderMasters/GetFolderWithInheritForcedByGroupID/{GroupID}")]
+        public async Task<IHttpActionResult> GetFolderWithInheritForcedByGroupID(int GroupID)
+        {
+            List<int> GroupIDList = new List<int>();
+            GroupIDList.Add(GroupID);
+            PublicMethods.GetParentGroupIDs(GroupID, ref GroupIDList, db);
+            int[] groupIDs = GroupIDList.ToArray<int>();
+            var jsonList = (from fm in db.FolderMaster
+                            join gm in db.GroupMaster on fm.GroupID equals gm.GroupID into ProjectV
+                            from pv in ProjectV.DefaultIfEmpty()
+                            where groupIDs.Contains((int)fm.GroupID)
+                            select new
+                            {
+                                fm.FolderName,
+                                fm.FolderParentID,
+                                fm.Settings,
+                                fm.UpdateDate,
+                                pv.GroupName,
+                                pv.GroupID
+                            }).ToList();
+            return Json(jsonList);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
