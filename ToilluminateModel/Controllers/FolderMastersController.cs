@@ -94,6 +94,11 @@ namespace ToilluminateModel.Controllers
         [ResponseType(typeof(FolderMaster))]
         public async Task<IHttpActionResult> DeleteFolderMaster(int id)
         {
+            if (db.FolderMaster.Where(a => a.FolderParentID == id).Count() > 0)
+                return BadRequest("Can not delete folder with child.");
+            if (db.FileMaster.Where(a => a.FolderID == id).Count() > 0)
+                return BadRequest("Can not delete folder with files.");
+
             FolderMaster folderMaster = await db.FolderMaster.FindAsync(id);
             if (folderMaster == null)
             {
