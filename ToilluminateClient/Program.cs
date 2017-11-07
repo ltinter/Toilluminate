@@ -54,14 +54,14 @@ namespace ToilluminateClient
             IniFileInfo.GetIniInfo(VariableInfo.IniFile);
             DictionaryInfo.InitMultilingualDictionaryForClient();
 
-            // ログイン認証
-            using (LoginForm loginFormInstance = new LoginForm())
-            {
-                if (DialogResult.OK != loginFormInstance.ShowDialog())
-                {
-                    return;
-                }
-            }
+            //// ログイン認証
+            //using (LoginForm loginFormInstance = new LoginForm())
+            //{
+            //    if (DialogResult.OK != loginFormInstance.ShowDialog())
+            //    {
+            //        return;
+            //    }
+            //}
 
             // メイン画面起動
             MainForm mainFormInstance = new MainForm();

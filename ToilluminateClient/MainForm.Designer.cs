@@ -150,32 +150,32 @@
             // 
             // tmrImage
             // 
-            this.tmrImage.Interval = 3000;
+            this.tmrImage.Interval = 500;
             this.tmrImage.Tick += new System.EventHandler(this.tmrImage_Tick);
             // 
             // tmrAll
             // 
-            this.tmrAll.Interval = 1000;
+            this.tmrAll.Interval = 500;
             this.tmrAll.Tick += new System.EventHandler(this.tmrAll_Tick);
             // 
             // tmrMedia
             // 
-            this.tmrMedia.Interval = 1000;
+            this.tmrMedia.Interval = 500;
             this.tmrMedia.Tick += new System.EventHandler(this.tmrMedia_Tick);
             // 
             // tmrMessage
             // 
-            this.tmrMessage.Interval = 1000;
+            this.tmrMessage.Interval = 500;
             this.tmrMessage.Tick += new System.EventHandler(this.tmrMessage_Tick);
             // 
             // tmrWeb
             // 
-            this.tmrWeb.Interval = 1000;
+            this.tmrWeb.Interval = 500;
             this.tmrWeb.Tick += new System.EventHandler(this.tmrWeb_Tick);
             // 
             // tmrPDF
             // 
-            this.tmrPDF.Interval = 1000;
+            this.tmrPDF.Interval = 500;
             this.tmrPDF.Tick += new System.EventHandler(this.tmrPDF_Tick);
             // 
             // MainForm
