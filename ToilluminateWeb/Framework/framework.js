@@ -501,6 +501,26 @@
             }
             return $.insmFramework('ajax', ajaxOptions);
         },
+        deleteFolder: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FolderMasters' + "/" + options.folderID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "DELETE",
+                denied: function () {
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    options.error(XMLHttpRequest, textStatus, errorThrown);
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
         //Folder End
 
         //File Start
@@ -520,6 +540,67 @@
                     options.error();
                 },
             }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        copyFile: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FileMasters/CopyFile/' + options.newFolderID,
+                format: 'json',
+                data: JSON.stringify(options.sourceFile),
+                contentType: "application/json; charset=utf-8",
+                type: 'POST',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        cutFile: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FileMasters/CutFile/' + options.newFolderID,
+                format: 'json',
+                data: JSON.stringify(options.sourceFile),
+                contentType: "application/json; charset=utf-8",
+                type: 'POST',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        deleteFile: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FileMasters' + "/" + options.fileID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "DELETE",
+                denied: function () {
+                }
+            };
             return $.insmFramework('ajax', ajaxOptions);
         },
         //File End 
