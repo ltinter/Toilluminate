@@ -38,12 +38,12 @@
                         });
                     }
                 },
-                //"Remove": {
-                //    "label": "Remove",
-                //    "action": function (obj) {
-
-                //    }
-                //}
+                "Remove": {
+                    "label": "Delete",
+                    "action": function (obj) {
+                        $.folder('deleteFolder');
+                    }
+                }
             }
         }
     };
@@ -56,6 +56,7 @@
     var methods = {
         init: function (options) {
             selectedGroupID = options.selectedGroupID;
+            $.file('destroyFileTableData');
             $.insmFramework('getFolderTreeData', {
                 groupID: options.selectedGroupID,
                 success: function (tempdataFolderTreeData) {
@@ -125,10 +126,27 @@
                 }
             });
         },
+        deleteFolder: function () {
+            var folderRef = div_folderTreeForFileManager.jstree(true),
+                folderSef = folderRef.get_selected();
+            if (!folderSef.length) { return };
+            $.insmFramework("deleteFolder", {
+                folderID: selectedFolderID,
+                success: function (data) {
+                    folderRef.delete_node(folderSef);
+                    $.file('destroyFileTableData');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    toastr.warning(XMLHttpRequest.responseJSON.Message);
+                }
+            });
+        },
         getSelectedFolderID: function () {
             return selectedFolderID;
+        },
+        getSelectedGroupID: function () {
+            return selectedGroupID;
         }
-        
     };
     $("#btn_create").click(function () {
         $.folder('createFolder');

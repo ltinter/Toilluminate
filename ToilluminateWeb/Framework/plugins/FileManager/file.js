@@ -34,7 +34,7 @@
         },
 
         // column sorting
-        sortable: true,
+        //sortable: true,
 
         // column based filtering
         filterable: true,
@@ -55,71 +55,149 @@
             title: "IMG",
             filterable: false, // disable or enable filtering
             width: 200,
+            sortable: true,
             // basic templating support for column rendering,
-            template: '<img src="{{FileThumbnailUrl}}" width = "200px"/>'
+            template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" max-width = "200px" max-height="160px"/></a>'
         }, {
             field: "FileName",
             title: "File Name",
+            sortable: true,
             responsive: { visible: 'lg' }
         }, {
             field: "InsertDate",
             title: "Great Date",
+            sortable: true,
             filterable: false,
             textAlign: 'center',
             datetype: "yyyy-MM-dd HH:mm",
             responsive: { visible: 'lg' }
         }]
     };
+    var selectedFileData = {};
+    var selectedFolderID = null;
+    var actionEnum = { "cut": "cutFile", "copy": "copyFile" };
+    var action = "";
     var methods = {
         init: function (options) {
+            selectedFolderID = options.selectedFolderID;
             $('#datatable_file').prop("outerHTML", "<div class='m_datatable' id='datatable_file'></div>");
             $.insmFramework('getFilesByFolder', {
-                FolderID: options.selectedFolderID,
+                FolderID: selectedFolderID,
                 success: function (fileData) {
                     tableData.data.source.data = fileData;
                     $("#datatable_file").data("datatable", $('#datatable_file').mDatatable(tableData));
                 },
-                invalid: function () {
-                    invalid = true;
-                },
                 error: function () {
-                    options.error();
+                    //options.error();
                 },
             });
         },
         uploadFile: function () {
+            if (!selectedFolderID) {
+                return false;
+            }
         },
         editFile: function (node) {
 
         },
-        removeFile: function (node) {
-
+        remove: function () {
+            var datatable = $("#datatable_file").data("datatable");
+            if (datatable && datatable.setSelectedRecords().getSelectedRecords().length > 0) {
+                //remove selected files
+                $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
+                    $.insmFramework("deleteFile", {
+                        fileID: $(item).data().obj.FileID,
+                        success: function (fileData) {
+                            $.file('removeDataFromTable', item, fileData);
+                        },
+                        error: function () {
+                            //invalid = true;
+                        }
+                    });
+                });
+            } else {
+                //remove selected folder
+                $.folder("deleteFolder");
+            }
+        },
+        cutFile: function () {
+            if ($("#datatable_file").data("datatable")) {
+                var datatable = $("#datatable_file").data("datatable");
+                selectedFileData = datatable.setSelectedRecords().getSelectedRecords();
+                action = actionEnum.cut;
+            }
+        },
+        copyFile: function () {
+            if ($("#datatable_file").data("datatable")) {
+                var datatable = $("#datatable_file").data("datatable");
+                selectedFileData = datatable.setSelectedRecords().getSelectedRecords();
+                action = actionEnum.copy;
+            }
+            
+        },
+        pasteFile: function () {
+            if (selectedFolderID && selectedFileData.length > 0 && $("#datatable_file").data("datatable")) {
+                $.each(selectedFileData, function (index, item) {
+                    if($(item).data().obj != undefined){
+                        $.insmFramework(action, {
+                            sourceFile: $(item).data().obj,
+                            newFolderID: selectedFolderID,
+                            success: function (fileData) {
+                                $.file('insertDataToTable', fileData);
+                            },
+                            error: function () {
+                                //invalid = true;
+                            }
+                        });
+                    }
+                });
+            }
+            selectedFileData = {};
         },
         insertDataToTable: function (data) {
-            tableData.data.source.data[tableData.data.source.data.length] = data[0];
+            tableData.data.source.data[tableData.data.source.data.length] = data;
             $("#datatable_file").data("datatable").fullJsonData = tableData.data.source.data;
             $("#datatable_file").data("datatable").reload();
+        },
+        removeDataFromTable: function (obj, data) {
+            $.each(tableData.data.source.data, function (key, item) {
+                if (item.FileID === data.FileID) {
+                    tableData.data.source.data.splice(key, 1);
+                    $(obj).fadeOut(500, function () {
+                        $(obj).remove();
+                    });
+                    return false;
+                }
+            });
+        },
+        destroyFileTableData: function () {
+            selectedFolderID = null;
+            if ($("#datatable_file").data("datatable")) {
+                $("#datatable_file").data("datatable").destroy();
+            }
         }
         
     };
     $("#btn_uploadfile").click(function () {
-
+        return $.file('uploadFile');
     });
 
     $("#btn_delete").click(function () {
-
+        $.file('remove');
     });
 
     $("#btn_paste").click(function () {
-
+        $.file('pasteFile');
     });
 
     $("#btn_copy").click(function () {
-
+        $.file('copyFile');
     });
 
     $("#btn_cut").click(function () {
-
+        $.file('cutFile');
+    });
+    $(".file-img").click(function (obj) {
     });
 
     $.file = function (method) {

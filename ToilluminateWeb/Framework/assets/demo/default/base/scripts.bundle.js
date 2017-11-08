@@ -1307,12 +1307,13 @@ jQuery.fn.extend({
 							var chk = $('<label/>').addClass('m-checkbox m-checkbox--single m-checkbox--all')
 								.append($('<input/>')
 									.attr('type', 'checkbox')
-									.on('click', function () {
+									.on('click', function (e) {
 										if ($(this).is(':checked')) {
 											API.setActiveAll(true);
 										} else {
 											API.setActiveAll(false);
 										}
+										e.stopPropagation();
 									}))
 								.append($('<span/>'));
 
@@ -2582,7 +2583,10 @@ jQuery.fn.extend({
 						dt.spinnerCallback(true);
 
 						// sort is disabled for this column
-						if (typeof column.sortable !== 'undefined' && column.sortable === false) return;
+						if (typeof column.sortable !== 'undefined' && column.sortable === false) {
+						    dt.spinnerCallback(false);
+						    return;
+						}
 
 						var sort = 'desc';
 						if (meta.field === field) {

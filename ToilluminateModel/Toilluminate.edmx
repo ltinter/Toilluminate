@@ -10,6 +10,7 @@
             <PropertyRef Name="FileID" />
           </Key>
           <Property Name="FileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupID" Type="int" />
           <Property Name="FolderID" Type="int" />
           <Property Name="UserID" Type="int" />
           <Property Name="FileType" Type="nvarchar" MaxLength="50" />
@@ -178,6 +179,7 @@
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
+          <Property Name="GroupID" Type="Int32" />
         </EntityType>
         <EntityType Name="FolderMaster">
           <Key>
@@ -302,6 +304,7 @@
           <EntitySetMapping Name="FileMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.FileMaster">
               <MappingFragment StoreEntitySet="FileMaster">
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />

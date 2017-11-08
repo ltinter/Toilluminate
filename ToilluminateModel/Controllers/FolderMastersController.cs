@@ -94,6 +94,11 @@ namespace ToilluminateModel.Controllers
         [ResponseType(typeof(FolderMaster))]
         public async Task<IHttpActionResult> DeleteFolderMaster(int id)
         {
+            if (db.FolderMaster.Where(a => a.FolderParentID == id).Count() > 0)
+                return BadRequest("Can not delete folder with child.");
+            if (db.FileMaster.Where(a => a.FolderID == id).Count() > 0)
+                return BadRequest("Can not delete folder with files.");
+
             FolderMaster folderMaster = await db.FolderMaster.FindAsync(id);
             if (folderMaster == null)
             {
@@ -160,6 +165,40 @@ namespace ToilluminateModel.Controllers
             //jdm.li_attr = fm;
             return jdm;
         }
+
+        [HttpGet, Route("api/FolderMasters/GetFolderJSTreeNodeWithInheritForcedByGroupID/{GroupID}")]
+        public async Task<IList<JSTreeDataModel>> GetFolderJSTreeNodeWithInheritForcedByGroupID(int GroupID)
+        {
+            List<int> GroupIDList = new List<int>();
+            GroupIDList.Add(GroupID);
+            PublicMethods.GetParentGroupIDs(GroupID, ref GroupIDList, db);
+            int[] groupIDs = GroupIDList.ToArray<int>();
+            var jsonList = (from fm in db.FolderMaster
+                            join gm in db.GroupMaster on fm.GroupID equals gm.GroupID into ProjectV
+                            from pv in ProjectV.DefaultIfEmpty()
+                            where groupIDs.Contains((int)fm.GroupID)
+                            select new
+                            {
+                                fm,
+                                pv.GroupName,
+                                pv.GroupID
+                            }).ToList();
+
+
+            List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
+            JSTreeDataModel jdm;
+            foreach (var item in jsonList)
+            {
+                jdm = new JSTreeDataModel();
+                jdm.id = item.fm.FolderID.ToString();
+                jdm.text = item.fm.FolderName;
+                jdm.parent = item.fm.FolderParentID == null ? "#" : item.fm.FolderParentID.ToString();
+                jdm.li_attr = item;
+                jdmList.Add(jdm);
+            }
+            return jdmList;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

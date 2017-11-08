@@ -43568,7 +43568,7 @@ return /******/ (function(modules) { // webpackBootstrap
       headers: null,
       clickable: true,
       ignoreHiddenFiles: true,
-      acceptedFiles: null,
+      acceptedFiles: ".jpg,.gif,.png,.mp4",
       acceptedMimeTypes: null,
       autoProcessQueue: true,
       autoQueue: true,
@@ -45024,12 +45024,46 @@ return /******/ (function(modules) { // webpackBootstrap
       dropzone = dropzones[j];
       if (Dropzone.optionsForElement(dropzone) !== false) {
           var myDropzone = new Dropzone(dropzone);
-          myDropzone.on('sending', function(file, xhr, formData){
+          myDropzone.on('sending', function (file, xhr, formData) {
+            var quickFileuploadProgress = $('<li class="m-menu__item " data-redirect="true" aria-haspopup="true">\
+                                                <div class="col-xl-12">\
+                                                    <i class="m-menu__link-icon fa fa-file-text-o"></i>\
+                                                    <span class="m-menu__link-text">'
+                                                        + file.name +
+                                                    '</span>\
+                                                    <div class="progress">\
+                                                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">\
+                                                            0%\
+                                                        </div>\
+                                                    </div>\
+                                                </div>\
+                                                <div class="m--space-10"></div>\
+                                            </li>');
+            file.quickFileuploadProgressLi = quickFileuploadProgress;
+            file.uploadStartTime = new Date();
+            file.lastProgressInBytes = 0;
+            $("#FileUploadProgresses").append(file.quickFileuploadProgressLi)
             formData.append('UserID', 1);
             formData.append('FolderID', $.folder('getSelectedFolderID'));
+            formData.append('GroupID', $.folder('getSelectedGroupID'));
+          });
+          myDropzone.on("uploadprogress",function(file,progress,bytesSent){
+              var bytesSentDiff = bytesSent - file.lastProgressInBytes;
+              file.lastProgressInBytes = bytesSent;
+              var timeFromLastSend = (new Date()) - file.uploadStartTime;
+              file.uploadStartTime = new Date();
+              var kilobytesPerSecond = (bytesSentDiff / timeFromLastSend).toFixed(2);
+              file.quickFileuploadProgressLi.find(".progress-bar").css("width", parseInt(progress) + "%").text(parseInt(progress) + "% (" + kilobytesPerSecond + "KB/Sec)");
           });
           myDropzone.on("success",function(file,data){
             $.file('insertDataToTable',data);
+            file.quickFileuploadProgressLi.remove();
+          });
+          myDropzone.on("complete",function(file,data){
+            file.quickFileuploadProgressLi.remove();
+          });
+          myDropzone.on("canceled",function(file,data){
+            file.quickFileuploadProgressLi.remove();
           });
         results.push(myDropzone);
       } else {
