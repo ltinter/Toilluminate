@@ -15,8 +15,8 @@
                 if ($.localize.en) {
                     _plugin["en"] = $.localize.en();
                 }
-                if ($.localize.jap) {
-                    _plugin["jap"] = $.localize.jap();
+                if (localize_jap) {
+                    _plugin["jap"] = localize_jap;
                 }
                 if ($.localize.jap) {
                     _plugin["chn"] = $.localize.chn();

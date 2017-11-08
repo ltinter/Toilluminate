@@ -14,7 +14,7 @@
                 },
                 "data": {}
             },
-            pageSize: 10,
+            //pageSize: 10,
             saveState: {
                 cookie: false,
                 webstorage: false
@@ -34,12 +34,12 @@
         },
 
         // column sorting
-        //sortable: true,
+        sortable: true,
 
         // column based filtering
         filterable: true,
 
-        pagination: true,
+        pagination: false,
 
         // columns definition
         columns: [{
@@ -52,7 +52,7 @@
             selector: { class: 'm-checkbox--solid m-checkbox--brand' },
         }, {
             field: "FileThumbnailUrl",
-            title: "IMG",
+            title: "サムネイル",
             filterable: false, // disable or enable filtering
             width: 200,
             sortable: true,
@@ -60,12 +60,12 @@
             template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" max-width = "200px" max-height="160px"/></a>'
         }, {
             field: "FileName",
-            title: "File Name",
+            title: "ファイル名",
             sortable: true,
             responsive: { visible: 'lg' }
         }, {
             field: "InsertDate",
-            title: "Great Date",
+            title: "登録日時",
             sortable: true,
             filterable: false,
             textAlign: 'center',

@@ -222,7 +222,7 @@
                         },
                         "data": options.PlayersData
                     },
-                    pageSize: 10,
+                    //pageSize: 10,
                     saveState: {
                         cookie: false,
                         webstorage: false
@@ -247,7 +247,7 @@
                 // column based filtering
                 filterable: true,
 
-                pagination: true,
+                pagination: false,
 
                 // columns definition
                 columns: [{
@@ -260,31 +260,31 @@
                     selector: { class: 'm-checkbox--solid m-checkbox--brand' },
                 }, {
                     field: "PlayerID",
-                    title: "PlayerID",
+                    title: "モニターＩＤ",
                     filterable: false, // disable or enable filtering
                     width: 80
                 }, {
                     field: "PlayerName",
-                    title: "PlayerName",
+                    title: "モニター名",
                     responsive: { visible: 'lg' }
                 }, {
                     field: "GroupName",
-                    title: "GroupName",
+                    title: "グループ名",
                     width: 150,
                     filterable: false,
                     responsive: { visible: 'lg' }
                 }, {
                     field: "GreatDate",
-                    title: "GreatDate",
+                    title: "登録日時",
                     field: "UpdateDate",
-                    title: "UpdateDate",
+                    title: "更新日時",
                     filterable: false,
                     textAlign: 'center',
                     datetype: "yyyy-MM-dd HH:mm",
                     responsive: { visible: 'lg' }
                 }, {
                     field: "Online",
-                    title: "Online",
+                    title: "オンライン",
                     filterable: false,
                     responsive: { visible: 'lg' }
                 }]

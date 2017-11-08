@@ -136,6 +136,7 @@ namespace ToilluminateModel.Controllers
                             where groupIDs.Contains((int)plm.GroupID)
                             select new
                             {
+                                plm.PlayListID,
                                 plm.PlayListName,
                                 plm.Settings,
                                 plm.UpdateDate,

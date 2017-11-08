@@ -94,6 +94,10 @@
             <input type="button" value="GET FILES BY FOLDER IDS" onclick="getFilesByFolders();" />
             <div id="rst2" />
         </div>
+        <div>
+            <input type="button" value="CREATE PLAYLIST" onclick="createPlayList();" />
+            <div id="rst2" />
+        </div>
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
@@ -126,6 +130,14 @@
                 GroupName: "";
                 GroupParentID: "";
                 return GroupMaster;
+            }
+        }
+        var PlayListMaster = {
+            create: function () {
+                GroupID: "";
+                PlayListName: "";
+                Settings: "";
+                return PlayListMaster;
             }
         }
         $(document).ready(function () {
@@ -211,7 +223,7 @@
         }
         function GetPlayListByGroupID() {
             $.ajax({
-                url: 'api/PlayListMasters/GetPlayListByGroupID/'+1,
+                url: 'api/PlayListMasters/GetPlayListByGroupID/'+267,
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
@@ -293,6 +305,25 @@
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(arr),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function createPlayList() {
+
+            var newPL = PlayListMaster.create();
+            newPL.GroupID = 63;
+            newPL.PlayListName = "2333333";
+            newPL.Settings = JSON.stringify([{ 0: "61" }, { 1: "69" }]);
+            $.ajax({
+                url: 'api/PlayListMasters',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(newPL),
                 success: function (data) {
                     var aa = data;
                 },
