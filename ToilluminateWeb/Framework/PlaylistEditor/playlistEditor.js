@@ -1,4 +1,128 @@
 ﻿(function ($) {
+    var folderJstreeData = {
+        "core": {
+            "themes": {
+                "responsive": true
+            },
+            // so that create works
+            "check_callback": true,
+            'data': {}
+        },
+        "types": {
+            "default": {
+                "icon": "fa fa-folder m--font-success"
+            },
+            "folder": {
+                "icon": "fa fa-folder  m--font-success"
+            }
+        },
+        "state": {
+            "key": "demo2"
+        },
+        "plugins": ["contextmenu", "dnd", "state", "types", "search"],
+        "contextmenu": {
+            "items": {
+                "Create": {
+                    "label": "Create",
+                    "action": function (obj) {
+                        $.folder('createFolder');
+                    }
+                },
+                "Rename": {
+                    "label": "Rename",
+                    "action": function (obj) {
+                        var inst = jQuery.jstree.reference(obj.reference);
+                        var clickedNode = inst.get_node(obj.reference);
+                        inst.edit(obj.reference, clickedNode.val, function (obj, tmp, nv, cancel) {
+                            $.folder('editFolder', obj);
+                        });
+                    }
+                },
+                "Remove": {
+                    "label": "Delete",
+                    "action": function (obj) {
+                        $.folder('deleteFolder');
+                    }
+                }
+            }
+        }
+    };
+    var tableData = {
+        // datasource definition
+        data: {
+            type: 'local',
+            source: {
+                "meta": {
+                    "page": 1,
+                    "pages": 1,
+                    "perpage": -1,
+                    "total": 350,
+                    "sort": "asc",
+                    "field": "FileID"
+                },
+                "data": {}
+            },
+            pageSize: 10,
+            saveState: {
+                cookie: false,
+                webstorage: false
+            },
+            serverPaging: false,
+            serverFiltering: false,
+            serverSorting: false
+        },
+
+        // layout definition
+        layout: {
+            theme: 'default', // datatable theme
+            class: '', // custom wrapper class
+            scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
+            height: 550, // datatable's body's fixed height
+            footer: false // display/hide footer
+        },
+
+        // column sorting
+        //sortable: true,
+
+        // column based filtering
+        filterable: true,
+
+        pagination: true,
+
+        // columns definition
+        columns: [{
+            field: "FileID",
+            title: "",
+            sortable: false, // disable sort for this column
+            width: 40,
+            textAlign: 'center',
+            filterable: false,
+            selector: { class: 'm-checkbox--solid m-checkbox--brand' },
+        }, {
+            field: "FileThumbnailUrl",
+            title: "IMG",
+            filterable: false, // disable or enable filtering
+            width: 120,
+            height:80,
+            sortable: true,
+            // basic templating support for column rendering,
+            template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" width = "120px" height= "80px"/></a>'
+        }, {
+            field: "FileName",
+            title: "File Name",
+            sortable: true,
+            responsive: { visible: 'lg' }
+        }, {
+            field: "InsertDate",
+            title: "Great Date",
+            sortable: true,
+            filterable: false,
+            textAlign: 'center',
+            datetype: "yyyy-MM-dd HH:mm",
+            responsive: { visible: 'lg' }
+        }]
+    };
+    var playlist_groupID;
     var div_PlaylistEditorContent = $('#div_PlaylistEditorContent');
     var div_PlaylistEditor = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
     var div_head = $('<div/>').addClass('m-portlet__head');
@@ -102,12 +226,85 @@
 
                 div_head.append(div_head_tools);
                 div_PlaylistEditorContent.append(div_PlaylistEditor.append(div_head));
+
             }
-            
+            playlist_groupID = options.selectedGroupID;
             return $this;
         },
         short: function (options) {
-        }
+        },
+        fileDataTableDestroy: function () {
+            if ($("#datatable_file1").data("datatable")) {
+                $("#datatable_file1").data("datatable").destroy();
+            }
+        },
+        setfolder: function (options) {
+            selectedGroupID = options.selectedGroupID;
+            $.playlistEditor('fileDataTableDestroy');
+            $.insmFramework('getFolderTreeData', {
+                groupID: options.selectedGroupID,
+                success: function (tempdataFolderTreeData) {
+                    if (tempdataFolderTreeData) {
+                        var tree = $('.tree-demo.folderTreePlaylist');
+                        folderJstreeData.core.data = tempdataFolderTreeData;
+                        tree.jstree("destroy");
+                        tree.jstree(folderJstreeData);
+                        tree.jstree(true).refresh();
+
+                        tree.on("changed.jstree", function (e, data) {
+                            if (data.node) {
+                                selectedFolderID = data.node.id;
+                                $.playlistEditor('setfile', {
+                                    selectedFolderID: selectedFolderID
+                                });
+                            }
+                        });
+                        //tree.on("move_node.jstree", function (e, data) {
+                        //    var node = data.node;
+                        //    if (node) {
+                        //        $.folder('editFolder', node);
+                        //    }
+                        //});
+                    }
+                },
+                invalid: function () {
+                    invalid = true;
+                },
+                error: function () {
+                    options.error();
+                },
+            });
+        },
+        setfile: function (options) {
+            selectedFolderID = options.selectedFolderID;
+            $('#datatable_file1').prop("outerHTML", "<div class='m_datatable' id='datatable_file1'></div>");
+            $.insmFramework('getFilesByFolder', {
+                FolderID: selectedFolderID,
+                success: function (fileData) {
+                    tableData.data.source.data = fileData;
+                    $("#datatable_file1").data("datatable", $('#datatable_file1').mDatatable(tableData));
+                },
+                error: function () {
+                    //options.error();
+                },
+            });
+        },
+        selectfile: function () {
+            var datatable = $("#datatable_file1").data("datatable");
+            if (datatable && datatable.setSelectedRecords().getSelectedRecords().length > 0) {
+                //remove selected files
+                $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
+                    var screenshot = new Image();
+                    screenshot.src =$(item).data().obj.FileThumbnailUrl;
+
+                    $('#select_file').append(screenshot);
+
+                });
+            } else {
+                //remove selected folder
+                $.folder("deleteFolder");
+            }
+        },
     }
     $.playlistEditor = function (method) {
         if (methods[method]) {
@@ -119,11 +316,39 @@
         }
         return null;
     };
-
+    $("#save_change").click(function () {
+        $.playlistEditor('selectfile');
+    });
+    $("#add_playlist").click(function () {
+        $.playlistEditor('setfolder', { selectedGroupID: playlist_groupID });
+    });
     $("#playlist_expandAll").click(function () {
         $('#groupTreeForPlaylistEditor').jstree('open_all');
     });
     $("#playlist_collapseAll").click(function () {
         $('#groupTreeForPlaylistEditor').jstree('close_all');
+    });
+
+    $("#playlist_save").click(function () {
+        $.insmFramework('creatPlaylist', {
+            GroupID: playlist_groupID,
+            PlayListName: '11',
+            InheritForced: '',
+            Settings: '11112222',
+            Comments: '333333',
+            success: function (playlistData) {
+                if (playlistData) {
+                    alert('1')
+                }
+            }
+        })
+    });
+
+    $("#playlist_delete").click(function () {
+        
+    });
+
+    $("#playlist_back").click(function () {
+        
     });
 })(jQuery);

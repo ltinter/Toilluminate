@@ -116,6 +116,31 @@ var initTimeOptionsInPlayerEdit = function () {
         });
     })
 }
+
+var initSlideEffectDropdown = function () {
+    $('#m_select2_3').select2({
+        placeholder: "Select dildeshow effects"
+    });
+}
+var EnableTouchSpin = function () {
+    $('#m_touchspin_1,#m_touchspin_4').TouchSpin({
+        buttondown_class: 'btn btn-secondary',
+        buttonup_class: 'btn btn-secondary',
+        verticalbuttons: true,
+        verticalupclass: 'la la-angle-up',
+        verticaldownclass: 'la la-angle-down',
+        min: 0
+    });
+    $('#m_touchspin_2, #m_touchspin_3').TouchSpin({
+        buttondown_class: 'btn btn-secondary',
+        buttonup_class: 'btn btn-secondary',
+        verticalbuttons: true,
+        verticalupclass: 'la la-angle-up',
+        verticaldownclass: 'la la-angle-down',
+        min: 0,
+        max: 60
+    });
+}
 $(document).ready(function ()
 {
     playerStatusShare();
@@ -132,5 +157,7 @@ $(document).ready(function ()
     //});
     initTimeOptionsInPlayerEdit();
     
-    $("#monday_value").data("ionRangeSlider").update({ from: 10 ,to:22});
+    $("#monday_value").data("ionRangeSlider").update({ from: 10, to: 22 });
+    initSlideEffectDropdown();
+    EnableTouchSpin();
 });
