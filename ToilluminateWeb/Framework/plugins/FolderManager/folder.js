@@ -56,7 +56,7 @@
     var methods = {
         init: function (options) {
             selectedGroupID = options.selectedGroupID;
-            $.folder('fileDataTableDestroy');
+            $.file('destroyFileTableData');
             $.insmFramework('getFolderTreeData', {
                 groupID: options.selectedGroupID,
                 success: function (tempdataFolderTreeData) {
@@ -134,7 +134,7 @@
                 folderID: selectedFolderID,
                 success: function (data) {
                     folderRef.delete_node(folderSef);
-                    $.folder('fileDataTableDestroy');
+                    $.file('destroyFileTableData');
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     toastr.warning(XMLHttpRequest.responseJSON.Message);
@@ -144,12 +144,9 @@
         getSelectedFolderID: function () {
             return selectedFolderID;
         },
-        fileDataTableDestroy: function () {
-            if ($("#datatable_file").data("datatable")) {
-                $("#datatable_file").data("datatable").destroy();
-            }
+        getSelectedGroupID: function () {
+            return selectedGroupID;
         }
-        
     };
     $("#btn_create").click(function () {
         $.folder('createFolder');

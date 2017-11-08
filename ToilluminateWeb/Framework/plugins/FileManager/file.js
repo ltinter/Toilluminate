@@ -57,7 +57,7 @@
             width: 200,
             sortable: true,
             // basic templating support for column rendering,
-            template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" width = "200px"/></a>'
+            template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" max-width = "200px" max-height="160px"/></a>'
         }, {
             field: "FileName",
             title: "File Name",
@@ -93,6 +93,9 @@
             });
         },
         uploadFile: function () {
+            if (!selectedFolderID) {
+                return false;
+            }
         },
         editFile: function (node) {
 
@@ -105,7 +108,7 @@
                     $.insmFramework("deleteFile", {
                         fileID: $(item).data().obj.FileID,
                         success: function (fileData) {
-                            $.file('removeDataFromTable', item);
+                            $.file('removeDataFromTable', item, fileData);
                         },
                         error: function () {
                             //invalid = true;
@@ -156,15 +159,27 @@
             $("#datatable_file").data("datatable").fullJsonData = tableData.data.source.data;
             $("#datatable_file").data("datatable").reload();
         },
-        removeDataFromTable: function (obj) {
-            $(obj).fadeOut(500, function () {
-                $(obj).remove();
+        removeDataFromTable: function (obj, data) {
+            $.each(tableData.data.source.data, function (key, item) {
+                if (item.FileID === data.FileID) {
+                    tableData.data.source.data.splice(key, 1);
+                    $(obj).fadeOut(500, function () {
+                        $(obj).remove();
+                    });
+                    return false;
+                }
             });
+        },
+        destroyFileTableData: function () {
+            selectedFolderID = null;
+            if ($("#datatable_file").data("datatable")) {
+                $("#datatable_file").data("datatable").destroy();
+            }
         }
         
     };
     $("#btn_uploadfile").click(function () {
-
+        return $.file('uploadFile');
     });
 
     $("#btn_delete").click(function () {

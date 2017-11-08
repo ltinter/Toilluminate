@@ -43568,7 +43568,7 @@ return /******/ (function(modules) { // webpackBootstrap
       headers: null,
       clickable: true,
       ignoreHiddenFiles: true,
-      acceptedFiles: null,
+      acceptedFiles: ".jpg,.gif,.png,.mp4",
       acceptedMimeTypes: null,
       autoProcessQueue: true,
       autoQueue: true,
@@ -45045,6 +45045,7 @@ return /******/ (function(modules) { // webpackBootstrap
             $("#FileUploadProgresses").append(file.quickFileuploadProgressLi)
             formData.append('UserID', 1);
             formData.append('FolderID', $.folder('getSelectedFolderID'));
+            formData.append('GroupID', $.folder('getSelectedGroupID'));
           });
           myDropzone.on("uploadprogress",function(file,progress,bytesSent){
               var bytesSentDiff = bytesSent - file.lastProgressInBytes;
