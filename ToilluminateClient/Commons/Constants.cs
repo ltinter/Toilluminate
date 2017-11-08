@@ -359,23 +359,23 @@ namespace ToilluminateClient
         /// </summary>
         None = 0,
         /// <summary>
-        /// 
+        /// 上下 覆盖
         /// </summary>
         TopToDown = 1,
         /// <summary>
-        /// 
+        /// 下上 覆盖
         /// </summary>
         DownToTop = 2,
         /// <summary>
-        /// 
+        /// 左右 覆盖
         /// </summary>
         LeftToRight = 3,
         /// <summary>
-        /// 
+        /// 右左 覆盖
         /// </summary>
         RightToLeft = 4,
         /// <summary>
-        /// 
+        /// 小大 扩散
         /// </summary>
         SmallToLarge = 5,
         /// <summary>
@@ -383,38 +383,44 @@ namespace ToilluminateClient
         /// </summary>
         Gradient = 6,
         /// <summary>
-        /// 
+        /// 左右 翻转
         /// </summary>
         Flip_LR = 7,
         /// <summary>
-        /// 
+        /// 上下 翻转
         /// </summary>
         Flip_TD = 8,
         /// <summary>
-        /// 
+        /// 左右 对接
         /// </summary>
         Docking_LR = 9,
         /// <summary>
-        /// 
+        /// 上下 对接
         /// </summary>
         Docking_TD = 10,
         /// <summary>
-        /// 
+        /// 左上旋转
         /// </summary>
         Rotate = 11,
         /// <summary>
-        /// 
+        /// 淡入效果
         /// </summary>
         Fade = 12,
         /// <summary>
-        /// 
+        /// 分块显示
         /// </summary>
         Block = 13,
 
+
         /// <summary>
-        /// 
+        /// 马赛克效果
         /// </summary>
-        Special = 99,
+        Special = 14,
+
+        /// <summary>
+        /// 随机
+        /// </summary>
+        Random = 99,
 
     }
     #endregion

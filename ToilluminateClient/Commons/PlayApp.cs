@@ -10,34 +10,53 @@ namespace ToilluminateClient
 {
     public static class PlayApp
     {
-        public static List<PlayItem> PlayItemList = new List<PlayItem>();
+        public static List<PlayList> PlayListArray = new List<PlayList>();
 
         public static int CurrentIndex = -1;
 
+        public static PlayList NowPlayList = null;
+
         public static void Clear()
         {
-            PlayItemList.Clear();
+            PlayListArray.Clear();
             CurrentIndex = -1;
         }
 
-        public static PlayItem CurrentPlayItem()
+
+        public static bool ExecutePlayList()
         {
-            if (CurrentIndex >= 0)
+            if (NowPlayList != CurrentPlayList())
             {
-                return PlayItemList[CurrentIndex];
+                NowPlayList = CurrentPlayList();
+                NowPlayList.PlayStart();
+                return true;
             }
-            else
+            return false;
+        }
+
+        public static PlayList CurrentPlayList()
+        {
+            if (PlayListArray.Count > 0 && CurrentIndex >= 0 && CurrentIndex < PlayListArray.Count)
             {
-                return null;
+                return PlayListArray[CurrentIndex];
             }
+            return null;
+        }
+
+        public static bool CurrentPlayValid()
+        {
+            if (PlayListArray.Count > 0 && CurrentIndex >= 0 && CurrentIndex < PlayListArray.Count)
+            {
+                return true;
+            }
+            return false;
         }
     }
 
-    public class PlayItem
+
+    public class PlayList
     {
         #region " variable "
-
-        private ShowPlayType playTypeValue = ShowPlayType.Image;
 
         private List<TempleteItem> templeteItemListValue = new List<TempleteItem>();
 
@@ -45,7 +64,7 @@ namespace ToilluminateClient
 
         private int nowTempleteItemIndex = -1;
 
-
+        private PlayListStateType playListStateValue = PlayListStateType.Wait;
         /// <summary>
         /// 时间
         /// </summary>
@@ -61,40 +80,22 @@ namespace ToilluminateClient
         /// </summary>
         private DateTime dtEndValue = DateTime.Now;
 
+        /// <summary>
+        /// 循环有效
+        /// </summary>
+        private bool loopPlayValidValue = true;
 
         /// <summary>
-        /// 循环次数
+        /// 持续时间(秒)
         /// </summary>
-        private int cycleNumberValue = 0;
-        /// <summary>
-        /// 循环总数
-        /// </summary>
-        private int cycleTotalNumberValue = 1;
+        private int intervalSecondValue = 0;
 
-        /// <summary>
-        /// 结束时间有效
-        /// </summary>
-        private bool endDateTimeValidValue = true;
-        /// <summary>
-        /// 循环总数有效
-        /// </summary>
-        private bool cycleTotalNumberValidValue = true;
         #endregion
 
 
         #region " propert "
 
-        public ShowPlayType PlayType
-        {
-            get
-            {
-                return playTypeValue;
-            }
-            set
-            {
-                playTypeValue = value;
-            }
-        }
+
         public List<TempleteItem> TempleteItemList
         {
             get
@@ -107,10 +108,6 @@ namespace ToilluminateClient
             get
             {
                 return currentTempleteItemIndex;
-            }
-            set
-            {
-                currentTempleteItemIndex = value;
             }
         }
         public int NowTempleteIndex
@@ -192,10 +189,180 @@ namespace ToilluminateClient
             {
                 return dtStartValue;
             }
+        }
+
+
+        /// <summary>
+        /// 结束时间
+        /// </summary>
+        public DateTime EndDateTime
+        {
+            get
+            {
+                return dtEndValue;
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// 循环有效
+        /// </summary>
+        public bool LoopPlayValid
+        {
+            get
+            {
+                return loopPlayValidValue;
+            }
             set
             {
-                dtStartValue = value;
-                dtNowValue = dtStartValue;
+                loopPlayValidValue = value;
+            }
+        }
+        #endregion
+
+
+        #region " Init "
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loopPlayValid">循环有效</param>
+        /// <param name="intervalSecond">持续时间(秒)</param>
+        public PlayList(bool loopPlayValid, DateTime dtStart, int intervalSecond)
+        {
+            loopPlayValidValue = loopPlayValid;
+            intervalSecondValue = intervalSecond;
+            dtStartValue = Utility.GetPlayDateTime(dtStart);
+            dtEndValue = dtStartValue.AddSeconds(this.intervalSecondValue);
+        }
+        #endregion
+
+        /// <summary>
+        /// 播放
+        /// </summary>
+        public void PlayStart()
+        {
+            this.dtNowValue = Utility.GetPlayDateTime(DateTime.Now);
+            playListStateValue = PlayListStateType.Execute;
+        }
+        public void PlayStop()
+        {
+            this.dtNowValue = Utility.GetPlayDateTime(DateTime.Now);
+            if (loopPlayValidValue == false)
+            {
+                dtEndValue = dtNowValue;
+                playListStateValue = PlayListStateType.Stop;
+            }
+        }
+        public void PlayRefreshTemplete()
+        {
+            this.currentTempleteItemIndex = 0;
+            foreach (TempleteItem titem in this.TempleteItemList)
+            {
+                titem.ExecuteRefresh();
+            }
+        }
+        public void PlayNextTemplete()
+        {
+            while (this.currentTempleteItemIndex < this.TempleteItemList.Count && this.CurrentTempleteItem.TempleteState == TempleteStateType.Stop)
+            {
+                this.currentTempleteItemIndex++;
+            }
+        }
+        #region " void and function "
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public PlayListStateType PlayListState
+        {
+            get
+            {
+                try
+                {
+                    DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
+
+                    if (playListStateValue == PlayListStateType.Wait)
+                    {
+                        if (this.dtStartValue <= nowTime && this.dtEndValue >= nowTime)
+                        {
+                            playListStateValue = PlayListStateType.Execute;
+                        }
+                    }
+
+                    if (playListStateValue != PlayListStateType.Stop)
+                    {
+                        if (this.dtEndValue <= nowTime)
+                        {
+                            playListStateValue = PlayListStateType.Stop;
+                        }
+                    }
+
+                    return playListStateValue;
+                }
+                catch (Exception ex)
+                {
+                    return PlayListStateType.Stop;
+                }
+            }
+        }
+        #endregion
+    }
+
+
+
+    public class TempleteItem
+    {
+
+        #region " variable "
+
+         protected List<string> fileOrMessageListValue = new List<string>() { };
+
+        protected List<ImageShowStyle> imageStyleListValue = new List<ImageShowStyle>() { };
+
+        protected int currentIndex = -1;
+
+        protected int currentShowStyleIndex = -1;
+
+        protected MediaShowStyle mediaStyleValue = MediaShowStyle.None;
+
+        protected MessageShowStyle messageStyleValue = MessageShowStyle.None;
+
+
+        protected TempleteType templeteTypeValue = TempleteType.Image;
+
+
+        protected TempleteStateType templeteStateValue  = TempleteStateType.Wait;
+
+        /// <summary>
+        /// 持续时间(秒)
+        /// </summary>
+        protected int intervalSecondValue = 5;
+
+
+        /// <summary>
+        /// 开始时间
+        /// </summary>
+        protected DateTime dtStartValue = DateTime.Now;
+
+        /// <summary>
+        /// 结束时间
+        /// </summary>
+        protected DateTime dtEndValue = DateTime.Now;
+        #endregion
+
+
+        #region " propert "
+
+        /// <summary>
+        /// 开始时间
+        /// </summary>
+        public DateTime StartDateTime
+        {
+            get
+            {
+                return dtStartValue;
             }
         }
 
@@ -209,296 +376,137 @@ namespace ToilluminateClient
             {
                 return dtEndValue;
             }
-            set
-            {
-                dtEndValue = value;
-            }
-        }
-
-
-        /// <summary>
-        /// 循环次数
-        /// </summary>
-        public int CycleNumber
-        {
-            get
-            {
-                return cycleNumberValue;
-            }
-            set
-            {
-                cycleNumberValue = value;
-            }
         }
 
         /// <summary>
-        /// 循环总数
+        /// 结束时间
         /// </summary>
-        public int CycleTotalNumber
+        public TempleteType TempleteType
         {
             get
             {
-                return cycleTotalNumberValue;
+                return templeteTypeValue;
             }
-            set
-            {
-                cycleTotalNumberValue = value;
+        }
+
+        public TempleteStateType TempleteState
+        {
+            get
+            {                
+                DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
+                if (templeteTypeValue == TempleteType.Image)
+                {
+                    if (this.fileOrMessageListValue.Count == 0)
+                    {
+                        templeteStateValue = TempleteStateType.Stop;
+                    }
+                    else
+                    {
+                        if (this.currentIndex > -1)
+                        {
+                            if (nowTime < dtStartValue)
+                            {
+                                templeteStateValue = TempleteStateType.Wait;
+                            }
+                            else
+                            {
+                                if (nowTime <= dtEndValue)
+                                {
+                                    templeteStateValue = TempleteStateType.Execute;
+                                }
+                                else
+                                {
+                                    templeteStateValue = TempleteStateType.Stop;
+                                }
+                            }
+                        }
+                    }
+                }
+                return templeteStateValue;
             }
         }
 
 
-        /// <summary>
-        /// 结束时间有效
-        /// </summary>
-        public bool EndDateTimeValid
-        {
-            get
-            {
-                return endDateTimeValidValue;
-            }
-            set
-            {
-                endDateTimeValidValue = value;
-            }
-        }
-
-
-        /// <summary>
-        /// 循环总数有效
-        /// </summary>
-        public bool CycleTotalNumberValid
-        {
-            get
-            {
-                return cycleTotalNumberValidValue;
-            }
-            set
-            {
-                cycleTotalNumberValidValue = value;
-            }
-        }
         #endregion
 
 
-        #region " Init "
-
-        public PlayItem()
+        public TempleteItem(string file, MediaShowStyle mediaStyle)
         {
-           
-        }
-        public PlayItem(ShowPlayType playType)
-        {
-            playTypeValue = playType;
-        }
-        
-        public PlayItem(ShowPlayType playType, DateTime dtStart, DateTime dtEnd, int cycleTotalNumber)
-        {
-            playTypeValue = playType;
-
-            dtStartValue = dtStart;
-            dtEndValue = dtEnd;
-            this.endDateTimeValidValue = true;
-
-
-            cycleTotalNumberValue = cycleTotalNumber;
-            if (cycleTotalNumberValue > 0)
-            {
-                this.cycleTotalNumberValidValue = true;
-            }
-            else
-            {
-                this.cycleTotalNumberValidValue = false;
-            }
+            templeteTypeValue = TempleteType.Media;
+            fileOrMessageListValue.Add(file);
+            this.mediaStyleValue = mediaStyle;
         }
 
-        public PlayItem(ShowPlayType playType, DateTime dtStart, int cycleTotalNumber)
+        public TempleteItem(List<string> fileList, List<ImageShowStyle> imageStyleList, int intervalSecond)
         {
-            playTypeValue = playType;
-
-            dtStartValue = dtStart;
-            this.endDateTimeValidValue = false;
-            
-
-            cycleTotalNumberValue = cycleTotalNumber;
-            if (cycleTotalNumberValue > 0)
+            templeteTypeValue = TempleteType.Image;
+            foreach (string file in fileList)
             {
-                this.cycleTotalNumberValidValue = true;
+                fileOrMessageListValue.Add(file);
             }
-            else
+            foreach (ImageShowStyle style in imageStyleList)
             {
-                this.cycleTotalNumberValidValue = false;
+                imageStyleListValue.Add(style);
             }
+            this.intervalSecondValue = intervalSecond;
         }
-        #endregion
+
+        public TempleteItem(List<string> messageList, MessageShowStyle messageStyle, int intervalSecond)
+        {
+            templeteTypeValue = TempleteType.Message;
+            foreach (string message in messageList)
+            {
+                fileOrMessageListValue.Add(message);
+            }
+            this.messageStyleValue = messageStyle;
+            this.intervalSecondValue = intervalSecond;
+        }
+
 
         #region " void and function "
-
-        /// <summary>
-        /// 右左
-        /// </summary>
-        public ShowPlayStateType PlayState
+        public void ExecuteRefresh()
         {
-           get
-            {
-                try
-                {
-                    DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
-                    
-                    if (this.dtStartValue> nowTime)
-                    {
-                        return ShowPlayStateType.Stop;
-                    }
+            dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
+            dtEndValue = dtStartValue;
 
-                    if (this.endDateTimeValidValue
-                       && this.dtEndValue <= nowTime)
-                    {
-                        return ShowPlayStateType.Stop;
-                    }
+            templeteStateValue = TempleteStateType.Wait;
 
-                    if (this.cycleTotalNumberValidValue
-                       && this.cycleNumberValue>= cycleTotalNumberValue)
-                    {
-                        return ShowPlayStateType.Stop;
-                    }
-                    return ShowPlayStateType.Show;
-                }
-                catch (Exception ex)
-                {
-                    return ShowPlayStateType.Stop;
-                }
-            }
+            this.currentIndex = -1;
+            this.currentShowStyleIndex = -1;
         }
-
-        public void ShowNowTemplete(PictureBox picImage)
-        {
-            try
-            {
-                this.nowTempleteItemIndex = this.currentTempleteItemIndex;
-
-
-                if (picImage.Image != null)
-                {
-                    picImage.Image.Dispose();
-                }
-                //动态添加图片 
-                Image nowImageFile = Image.FromFile(this.CurrentTempleteItem.File);
-
-                Bitmap nowBitmap = new Bitmap(nowImageFile);
-
-                nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size);
-
-                ImageApp.ShowBitmap(nowBitmap, picImage, this.CurrentTempleteItem.ImageStyle);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        
         #endregion
     }
 
 
-    public class TempleteItem
+
+    public class ImageTempleteItem : TempleteItem
     {
 
         #region " variable "
 
-        private string fileValue = string.Empty;
-
-        private string messageValue = string.Empty;
-
-        private ImageShowStyle imageStyleValue = ImageShowStyle.None;
-
-        private MediaShowStyle mediaStyleValue = MediaShowStyle.None;
-
-        private MessageShowStyle messageStyleValue = MessageShowStyle.None;
-
-
-        /// <summary>
-        /// 几秒后开始
-        /// </summary>
-        private int startSecondValue = 0;
-
-        /// <summary>
-        /// 持续时间(秒)
-        /// </summary>
-        private int durationSecondValue = 0;
         
-
         #endregion
 
 
         #region " propert "
 
-        public string File
+        public List<string> FileList
         {
             get
             {
-                return fileValue;
+                return fileOrMessageListValue;
             }
         }
 
-        public string Message
+        public List<ImageShowStyle> ImageStyleList
         {
             get
             {
-                return messageValue;
-            }
-        }
-        public ImageShowStyle ImageStyle
-        {
-            get
-            {
-                return imageStyleValue;
-            }
-        }
-        public MessageShowStyle MessageStyle
-        {
-            get
-            {
-                return messageStyleValue;
-            }
-        }
-        public MediaShowStyle MediaStyle
-        {
-            get
-            {
-                return mediaStyleValue;
+                return imageStyleListValue;
             }
         }
 
-        /// <summary>
-        /// 几秒后开始
-        /// </summary>
-        public int StartSecond
-        {
-            get
-            {
-                return startSecondValue;
-            }
-        }
-        /// <summary>
-        /// 几秒后结束
-        /// </summary>
-        public int EndSecond
-        {
-            get
-            {
-                return startSecondValue + durationSecondValue;
-            }
-        }
-
-        /// <summary>
-        /// 结束时间可用
-        /// </summary>
-        public bool EndSecondValid
-        {
-            get
-            {
-                return durationSecondValue>0;
-            }
-        }
-        
         /// <summary>
         /// 持续时间(秒)
         /// </summary>
@@ -506,86 +514,195 @@ namespace ToilluminateClient
         {
             get
             {
-                return durationSecondValue;
+                return intervalSecondValue * fileOrMessageListValue.Count;
             }
         }
+
+        /// <summary>
+        /// 间隔时间(秒)
+        /// </summary>
+        public int IntervalSecond
+        {
+            get
+            {
+                return intervalSecondValue;
+            }
+        }
+
+        public int CurrentIndex
+        {
+            get
+            {
+                return currentIndex;
+            }
+        }
+
+        public int CurrentShowStyleIndex
+        {
+            get
+            {
+                return currentShowStyleIndex;
+            }
+        }
+
+
+        public string CurrentFile
+        {
+            get
+            {
+                return this.FileList[this.currentIndex];
+            }
+        }
+
+        public ImageShowStyle CurrentShowStyle
+        {
+            get
+            {
+                return this.imageStyleListValue[this.currentShowStyleIndex];
+            }
+        }
+
         #endregion
 
-
-        public TempleteItem(string file, MediaShowStyle mediaStyle, int startSecond, int durationSecond)
+        public ImageTempleteItem(List<string> fileList, List<ImageShowStyle> imageStyleList, int intervalSecond) : base(fileList, imageStyleList, intervalSecond)
         {
-            this.fileValue = file;
-            this.mediaStyleValue = mediaStyle;
-            this.startSecondValue = startSecond;
-            this.durationSecondValue = durationSecond;
         }
-        public TempleteItem(string file, MediaShowStyle mediaStyle)
-        {
-            this.fileValue = file;
-            this.mediaStyleValue = mediaStyle;
-            this.startSecondValue = 0;
-            this.durationSecondValue=0;
-        }
-
-        public TempleteItem(string file, ImageShowStyle imageStyle, int startSecond, int durationSecond)
-        {
-            this.fileValue = file;
-            this.imageStyleValue = imageStyle;
-            this.startSecondValue = startSecond;
-            this.durationSecondValue = durationSecond;
-        }
-        public TempleteItem(string file, ImageShowStyle imageStyle)
-        {
-            this.fileValue = file;
-            this.imageStyleValue = imageStyle;
-            this.startSecondValue = 0;
-            this.durationSecondValue = 0;
-        }
-        public TempleteItem(string message, MessageShowStyle messageStyle, int startSecond, int durationSecond)
-        {
-            this.messageValue = message;
-            this.messageStyleValue = messageStyle;
-            this.startSecondValue = startSecond;
-            this.durationSecondValue = durationSecond;
-        }
-        public TempleteItem(string message, MessageShowStyle messageStyle)
-        {
-            this.messageValue = message;
-            this.messageStyleValue = messageStyle;
-            this.startSecondValue = 0;
-            this.durationSecondValue = 0;
-        }
-
         #region " void and function "
 
+   
+        /// <summary>
+        /// 播放
+        /// </summary>
+        public void ExecuteStart()
+        {
+            if (this.TempleteState != TempleteStateType.Execute)
+            {
+                dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
+                dtEndValue = dtStartValue.AddSeconds(this.intervalSecondValue * this.fileOrMessageListValue.Count);
+                this.currentIndex = -1;
+            }
+        }
+        public void ExecuteStop()
+        {
+            dtEndValue = Utility.GetPlayDateTime(DateTime.Now);
+            this.currentIndex = -1;
+            this.currentShowStyleIndex = -1;
+        }
+
+        public bool CurrentIsChanged()
+        {
+            try
+            {
+                if (this.FileList.Count > 0)
+                {
+                    DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
+
+                    if (nowTime >= this.dtStartValue && nowTime <= this.dtEndValue)
+                    {
+                        int nowIndex = this.currentIndex;
+                        if (nowIndex < 0) nowIndex = 0;
+                        while (nowIndex < this.fileOrMessageListValue.Count)
+                        {
+                            if (nowTime <= this.dtStartValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
+                            {
+                                break;
+                            }
+                            nowIndex++;
+                        }
+
+                        if (nowIndex >= this.fileOrMessageListValue.Count)
+                        {
+                            this.currentIndex = this.fileOrMessageListValue.Count - 1;
+                            return false;
+                        }
+                        if (nowIndex != this.currentIndex)
+                        {
+                            this.currentIndex = nowIndex;
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public void ShowCurrent(PictureBox picImage)
+        {
+            Image nowImageFile = null;
+                Bitmap nowBitmap = null;
+            try
+            {
+                if (this.currentIndex >= 0 && this.currentIndex < this.fileOrMessageListValue.Count)
+                {
+                    currentShowStyleIndex++;
+                    if (currentShowStyleIndex >= this.imageStyleListValue.Count)
+                    {
+                        currentShowStyleIndex = 0;
+                    }
+
+                    if (picImage.Image != null)
+                    {
+                        picImage.Image.Dispose();
+                    }
+                    try
+                    {
+                        //动态添加图片
+                        nowImageFile = Image.FromFile(this.CurrentFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    try
+                    {
+                        nowBitmap = new Bitmap(nowImageFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    try
+                    {
+                        nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    try
+                    {
+                        ImageApp.ShowBitmap(nowBitmap, picImage, this.CurrentShowStyle);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (nowBitmap != null)
+                {
+                    nowBitmap.Dispose();
+                }
+                if (nowImageFile != null)
+                {
+                    nowImageFile.Dispose();
+                }
+            }
+        }
+
         #endregion
     }
 
-    #region play类型
-    /// <summary>
-    /// play类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum ShowPlayType
-    {
-        /// <summary>
-        /// 图片
-        /// </summary>
-        [EnumDescription("写真")]
-        Image = 0,
-        /// <summary>
-        /// 文字消息
-        /// </summary>
-        [EnumDescription("文字")]
-        Message = 1,
-        /// <summary>
-        /// 视频
-        /// </summary>
-        [EnumDescription("映像")]
-        Media = 2,
-    }
-
-    #endregion
 
 
     #region play状态类型
@@ -593,18 +710,23 @@ namespace ToilluminateClient
     /// play状态类型
     /// </summary>
     /// <remarks></remarks>
-    public enum ShowPlayStateType
+    public enum PlayListStateType
     {
         /// <summary>
-        /// 停止
+        /// 等待
         /// </summary>
-        [EnumDescription("停止")]
-        Stop = 0,
+        [EnumDescription("等待")]
+        Wait = 0,
         /// <summary>
         /// 播放
         /// </summary>
         [EnumDescription("放送")]
-        Show = 1,
+        Execute = 1,
+        /// <summary>
+        /// 停止
+        /// </summary>
+        [EnumDescription("停止")]
+        Stop = 2,
     }
 
     #endregion
@@ -614,7 +736,7 @@ namespace ToilluminateClient
     /// 模板类型
     /// </summary>
     /// <remarks></remarks>
-    public enum ShowTempleteType
+    public enum TempleteType
     {
         /// <summary>
         /// 图片
@@ -635,4 +757,29 @@ namespace ToilluminateClient
 
     #endregion
 
+    #region templete状态类型
+    /// <summary>
+    /// templete状态类型
+    /// </summary>
+    /// <remarks></remarks>
+    public enum TempleteStateType
+    {
+        /// <summary>
+        /// 等待
+        /// </summary>
+        [EnumDescription("等待")]
+        Wait = 0,
+        /// <summary>
+        /// 播放
+        /// </summary>
+        [EnumDescription("放送")]
+        Execute = 1,
+        /// <summary>
+        /// 停止
+        /// </summary>
+        [EnumDescription("停止")]
+        Stop = 2,
+    }
+
+    #endregion
 }
