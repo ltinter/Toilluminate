@@ -143,6 +143,9 @@
         },
         getSelectedFolderID: function () {
             return selectedFolderID;
+        },
+        getSelectedGroupID: function () {
+            return selectedGroupID;
         }
     };
     $("#btn_create").click(function () {

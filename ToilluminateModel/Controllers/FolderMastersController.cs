@@ -166,8 +166,8 @@ namespace ToilluminateModel.Controllers
             return jdm;
         }
 
-        [HttpGet, Route("api/FolderMasters/GetFolderWithInheritForcedByGroupID/{GroupID}")]
-        public async Task<IHttpActionResult> GetFolderWithInheritForcedByGroupID(int GroupID)
+        [HttpGet, Route("api/FolderMasters/GetFolderJSTreeNodeWithInheritForcedByGroupID/{GroupID}")]
+        public async Task<IList<JSTreeDataModel>> GetFolderJSTreeNodeWithInheritForcedByGroupID(int GroupID)
         {
             List<int> GroupIDList = new List<int>();
             GroupIDList.Add(GroupID);
@@ -179,14 +179,24 @@ namespace ToilluminateModel.Controllers
                             where groupIDs.Contains((int)fm.GroupID)
                             select new
                             {
-                                fm.FolderName,
-                                fm.FolderParentID,
-                                fm.Settings,
-                                fm.UpdateDate,
+                                fm,
                                 pv.GroupName,
                                 pv.GroupID
                             }).ToList();
-            return Json(jsonList);
+
+
+            List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
+            JSTreeDataModel jdm;
+            foreach (var item in jsonList)
+            {
+                jdm = new JSTreeDataModel();
+                jdm.id = item.fm.FolderID.ToString();
+                jdm.text = item.fm.FolderName;
+                jdm.parent = item.fm.FolderParentID == null ? "#" : item.fm.FolderParentID.ToString();
+                jdm.li_attr = item;
+                jdmList.Add(jdm);
+            }
+            return jdmList;
         }
 
         protected override void Dispose(bool disposing)

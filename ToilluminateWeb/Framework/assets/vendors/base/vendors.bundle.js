@@ -45027,6 +45027,7 @@ return /******/ (function(modules) { // webpackBootstrap
           myDropzone.on('sending', function(file, xhr, formData){
             formData.append('UserID', 1);
             formData.append('FolderID', $.folder('getSelectedFolderID'));
+            formData.append('GroupID', $.folder('getSelectedGroupID'));
           });
           myDropzone.on("success",function(file,data){
             $.file('insertDataToTable',data);

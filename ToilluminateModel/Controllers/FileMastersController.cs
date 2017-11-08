@@ -118,6 +118,24 @@ namespace ToilluminateModel.Controllers
             return db.FileMaster.Where(a => a.FolderID == FolderID);
         }
 
+        [HttpGet, Route("api/FileMasters/GetFilesByFolderID/{folderIDs}")]
+        public async Task<IHttpActionResult> GetFilesByFolderIDArray(int [] folderIDs)
+        {
+
+
+            var jsonList = (from fm in db.FileMaster
+                            join gm in db.GroupMaster on fm.GroupID equals gm.GroupID into ProjectV
+                            from pv in ProjectV.DefaultIfEmpty()
+                            where folderIDs.Contains((int)fm.FolderID)
+                            select new
+                            {
+                                fm,
+                                pv.GroupName,
+                                pv.GroupID
+                            }).ToList();
+            return Json(jsonList);
+        }
+
         [HttpPost, Route("api/FileMasters/CutFile/{folderID}")]
         public async Task<IHttpActionResult> CutFile(int folderID, FileMaster fileMaster)
         {
@@ -164,6 +182,7 @@ namespace ToilluminateModel.Controllers
                 File.Copy(Path.Combine(ROOT_PATH + fileMaster.FileThumbnailUrl), Path.Combine(dirThumbnailFilePath, thumbnailFilePathName), true);
 
                 FileMaster newFile = new FileMaster();
+                newFile.GroupID = fileMaster.GroupID;
                 newFile.FolderID = folderID;
                 newFile.UserID = fileMaster.UserID;
                 newFile.FileType = fileMaster.FileType;
@@ -254,6 +273,7 @@ namespace ToilluminateModel.Controllers
                 }
 
                 FileMaster fileMaster = new FileMaster();
+                fileMaster.GroupID = int.Parse(HttpContext.Current.Request["GroupID"]);
                 fileMaster.FolderID = int.Parse(HttpContext.Current.Request["FolderID"]);
                 fileMaster.UserID = int.Parse(HttpContext.Current.Request["UserID"]);
                 fileMaster.FileType = fileType;
