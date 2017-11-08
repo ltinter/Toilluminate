@@ -603,6 +603,45 @@
             };
             return $.insmFramework('ajax', ajaxOptions);
         },
+        creatPlaylist: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var PlaylistMaster = {
+                create: function () {
+                    GroupID: "";
+                    PlayListName: '';
+                    InheritForced: '';
+                    Settings: '';
+                    Comments: '';
+                    return PlaylistMaster;
+                }
+            }
+            var newPlaylist = PlaylistMaster.create();
+            newPlaylist.GroupID = options.GroupID;
+            newPlaylist.PlayListName = options.PlayListName;
+            newPlaylist.InheritForced = options.InheritForced;
+            newPlaylist.Settings = options.Settings;
+            newPlaylist.Comments = options.Comments;
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayListMasters/GetPlayListByGroupID' + options.GroupID,
+                format: 'json',
+                data: JSON.stringify(PlaylistMaster),
+                contentType: "application/json; charset=utf-8",
+                type:'POST',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
         //File End 
     }
     $.insmFramework = function (method) {
