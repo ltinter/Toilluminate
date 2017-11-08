@@ -241,11 +241,46 @@
         setfolder: function (options) {
             selectedGroupID = options.selectedGroupID;
             $.playlistEditor('fileDataTableDestroy');
-            $.insmFramework('getFolderTreeData', {
+            $.insmFramework('getFolderTreeDataForPlaylist', {
                 groupID: options.selectedGroupID,
                 success: function (tempdataFolderTreeData) {
                     if (tempdataFolderTreeData) {
                         var tree = $('.tree-demo.folderTreePlaylist');
+
+                        //var moduleItem = [];
+                        //var resultdata = [];
+                        //var map = {};
+                        //var matchname = [];
+                        //var UniqueNameList = [];
+                        //if (tempdataFolderTreeData.length > 1) {
+                        //    $.each(tempdataFolderTreeData, function (index, item) {
+                        //        moduleItem = $.grep(matchname, function (matchnameitem, matchnameindex) {
+                        //            matchnameitem.text == item.text;
+                        //        });
+
+                        //        if (moduleItem.length == 0) {
+                        //            var namedata = {};
+                        //            namedata.parent = item.parent;
+                        //            namedata.text = item.text;
+                        //            namedata.id = item.id;
+
+                        //            matchname.push(namedata);
+                        //            resultdata.push(item);
+                        //        }
+                        //        else if (item.parent) {
+                        //            $.each(matchname, function (subindex, subitem) {
+                        //                if (subitem.parent == item.parent) {
+                        //                    subitem.id = subitem.id + ',' + item.id;
+                        //                } else if (1) {
+
+                        //                }
+                        //            })
+                        //        }
+                        //    });
+                        //}
+
+
+                        //$.extend(true, tempdataFolderTreeData, tempdataFolderTreeData);
                         folderJstreeData.core.data = tempdataFolderTreeData;
                         tree.jstree("destroy");
                         tree.jstree(folderJstreeData);
@@ -321,6 +356,14 @@
     });
     $("#add_playlist").click(function () {
         $.playlistEditor('setfolder', { selectedGroupID: playlist_groupID });
+
+        $("#playlist_monday_value").data("ionRangeSlider").update({ from: 1, to: 2 });
+        $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: 3, to: 4 });
+        $("#playlist_wednesday_value").data("ionRangeSlider").update({ from: 5, to: 6 });
+        $("#playlist_thursday_value").data("ionRangeSlider").update({ from: 7, to: 8 });
+        $("#playlist_friday_value").data("ionRangeSlider").update({ from: 10, to: 13 });
+        $("#playlist_saturday_value").data("ionRangeSlider").update({ from: 14, to: 20 });
+        $("#playlist_sunday_value").data("ionRangeSlider").update({ from: 20, to: 24 });
     });
     $("#playlist_expandAll").click(function () {
         $('#groupTreeForPlaylistEditor').jstree('open_all');
@@ -330,12 +373,30 @@
     });
 
     $("#playlist_save").click(function () {
+        var Settings = [];
+        Settings.Loop = $("input[name='playlist_loop']:checked").val();
+        Settings.Playtime = $("input[name='playlist_playtime']:checked").val();
+
+        Settings.PlayHours = $("#m_touchspin_1").val();
+        Settings.PlayMinites = $("#m_touchspin_2").val();
+        Settings.PlaySeconds = $("#m_touchspin_3").val();
+
+        Settings.Monday = $("#playlist_monday_value").val();
+        Settings.Tuesday = $("#playlist_tuesday_value").val();
+        Settings.Wednesday = $("#playlist_wednesday_value").val();
+        Settings.Thursday = $("#playlist_thursday_value").val();
+        Settings.Friday = $("#playlist_friday_value").val();
+        Settings.Saturday = $("#playlist_saturday_value").val();
+        Settings.Sunday = $("#playlist_sunday_value").val();
+
+        Settings.PlaylistItemName = 'aaa';
+
         $.insmFramework('creatPlaylist', {
             GroupID: playlist_groupID,
-            PlayListName: '11',
+            PlayListName: $("#playlist_name").val(),
             InheritForced: '',
-            Settings: '11112222',
-            Comments: '333333',
+            Settings: Settings,
+            Comments: $("#playlist_note").val(),
             success: function (playlistData) {
                 if (playlistData) {
                     alert('1')

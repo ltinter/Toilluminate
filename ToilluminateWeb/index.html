@@ -969,7 +969,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <div class="col-xl-8 order-1 order-xl-2 m--align-right">
                                                 <div class="btn-group" data-toggle="buttons">
                                                     <label class="btn m-btn--pill m-btn--air btn-warning active" id="radio_All">
-                                                        <input type="radio" name="radio_1"  autocomplete="off" checked="">
+                                                        <input type="radio" name="radio_1"  autocomplete="off" checked="checked">
                                                         All
                                                     </label>
                                                     <label class="btn m-btn--pill m-btn--air btn-warning" id="radio_Current">
@@ -1042,7 +1042,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <div class="col-9">
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning active labeltext" id="label_Active_null">
-                                                            <input type="radio" name="radio_Active" id="radio_Active_1"  value="null" autocomplete="off" checked="">
+                                                            <input type="radio" name="radio_Active" id="radio_Active_1"  value="null" autocomplete="off" checked="checked">
                                                             Inherited
                                                         </label>
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning labeltext" id="label_Active_1">
@@ -1137,7 +1137,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </div>
                                                 <div class="col-lg-8 col-md-8 col-sm-10">
                                                     <div class="m-ion-range-slider">
-                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24" id="monday_value">
+                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24" id="group_monday_value">
                                                     </div>
                                                 </div>
                                             </div>
@@ -2761,7 +2761,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <label for="exampleInputEmail1">
                                                     Playlist Name:
                                                 </label>
-                                                <input type="text" class="form-control m-input" placeholder="Display unit alias">
+                                                <input type="text" class="form-control m-input" placeholder="Display unit alias" id="playlist_name">
                                             </div>
                                             <div class="m-form__group form-group row">
                                                 <label class="col-3 col-form-label">
@@ -2770,11 +2770,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <div class="col-9">
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning">
-                                                            <input type="radio" name="options" id="option2" autocomplete="off">
+                                                            <input type="radio" name="playlist_loop" id="playlist_loop_On" autocomplete="off" value="1" >
                                                             On
                                                         </label>
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning">
-                                                            <input type="radio" name="options" id="option3" autocomplete="off">
+                                                            <input type="radio" name="playlist_loop" id="playlist_loop_Off" autocomplete="off" value="0" >
                                                             Off
                                                         </label>
                                                     </div>
@@ -2787,11 +2787,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <div class="col-9">
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning">
-                                                            <input type="radio" name="options" id="option2" autocomplete="off">
+                                                            <input type="radio" name="playlist_playtime" id="playlist_playtime_On" autocomplete="off" value="1" >
                                                             On
                                                         </label>
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning">
-                                                            <input type="radio" name="options" id="option3" autocomplete="off">
+                                                            <input type="radio" name="playlist_playtime" id="playlist_playtime_Off" autocomplete="off" value="0" >
                                                             Off
                                                         </label>
                                                     </div>
@@ -2823,7 +2823,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <label>
                                                     Note:
                                                 </label>
-                                                <textarea class="form-control m-input m-input--air" rows="3"></textarea>
+                                                <textarea class="form-control m-input m-input--air" rows="3" id="playlist_note"></textarea>
                                             </div>
                                             <div class="m-form__group form-group row">
                                                 <label for="exampleInputEmail1">
@@ -2841,7 +2841,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </div>
                                                 <div class="col-lg-8 col-md-8 col-sm-10">
                                                     <div class="m-ion-range-slider">
-                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24">
+                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24" id="playlist_monday_value">
                                                     </div>
                                                 </div>
                                             </div>
@@ -2856,7 +2856,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </div>
                                                 <div class="col-lg-8 col-md-8 col-sm-10">
                                                     <div class="m-ion-range-slider">
-                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24">
+                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24" id="playlist_tuesday_value">
                                                     </div>
                                                 </div>
                                             </div>
@@ -2871,7 +2871,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </div>
                                                 <div class="col-lg-8 col-md-8 col-sm-10">
                                                     <div class="m-ion-range-slider">
-                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24">
+                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24" id="playlist_wednesday_value">
                                                     </div>
                                                 </div>
                                             </div>
@@ -2886,7 +2886,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </div>
                                                 <div class="col-lg-8 col-md-8 col-sm-10">
                                                     <div class="m-ion-range-slider">
-                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24">
+                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24" id="playlist_thursday_value">
                                                     </div>
                                                 </div>
                                             </div>
@@ -2901,7 +2901,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </div>
                                                 <div class="col-lg-8 col-md-8 col-sm-10">
                                                     <div class="m-ion-range-slider">
-                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24">
+                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24" id="playlist_friday_value">
                                                     </div>
                                                 </div>
                                             </div>
@@ -2916,7 +2916,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </div>
                                                 <div class="col-lg-8 col-md-8 col-sm-10">
                                                     <div class="m-ion-range-slider">
-                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24">
+                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24" id="playlist_saturday_value">
                                                     </div>
                                                 </div>
                                             </div>
@@ -2931,7 +2931,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </div>
                                                 <div class="col-lg-8 col-md-8 col-sm-10">
                                                     <div class="m-ion-range-slider">
-                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24">
+                                                        <input type="hidden" class="irs-hidden-input player-editor-timeoptions-hidden-input" tabindex="-1" readonly="" value="0;24" id="playlist_sunday_value">
                                                     </div>
                                                 </div>
                                             </div>
@@ -3442,7 +3442,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">
                                 Close
                             </button>
-                            <button type="button" class="btn btn-primary" id="save_change">
+                            <button type="button" class="btn btn-primary" id="save_change" data-dismiss="modal">
                                 Save changes
                             </button>
                         </div>
