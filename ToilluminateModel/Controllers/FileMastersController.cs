@@ -118,21 +118,27 @@ namespace ToilluminateModel.Controllers
             return db.FileMaster.Where(a => a.FolderID == FolderID);
         }
 
-        [HttpGet, Route("api/FileMasters/GetFilesByFolderID/{folderIDs}")]
-        public async Task<IHttpActionResult> GetFilesByFolderIDArray(int [] folderIDs)
+        [HttpPost, Route("api/FileMasters/GetFilesByFolderIDArray")]
+        public async Task<IHttpActionResult> GetFilesByFolderIDArray(string [] folderIDs)
         {
-
 
             var jsonList = (from fm in db.FileMaster
                             join gm in db.GroupMaster on fm.GroupID equals gm.GroupID into ProjectV
                             from pv in ProjectV.DefaultIfEmpty()
-                            where folderIDs.Contains((int)fm.FolderID)
+                            where folderIDs.Contains(fm.FolderID.ToString())
                             select new
                             {
-                                fm,
+                                fm.FolderID,
+                                fm.FileName,
+                                fm.FileID,
+                                fm.FileType,
+                                fm.FileUrl,
+                                fm.FileThumbnailUrl,
+                                fm.Comments,
                                 pv.GroupName,
                                 pv.GroupID
                             }).ToList();
+
             return Json(jsonList);
         }
 

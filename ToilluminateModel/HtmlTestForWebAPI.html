@@ -90,6 +90,10 @@
             <input type="button" value="GET PLAYLIST BY PLAYERID" onclick="GetPlayListByPlayerID();" />
             <div id="rst2" />
         </div>
+        <div>
+            <input type="button" value="GET FILES BY FOLDER IDS" onclick="getFilesByFolders();" />
+            <div id="rst2" />
+        </div>
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
@@ -274,6 +278,21 @@
                 url: 'api/PlayerMasters/GetPlayListByPlayerID/1/2',
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function getFilesByFolders() {
+            var arr = ["61", "69"];
+            $.ajax({
+                url: 'api/FileMasters/GetFilesByFolderIDArray',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(arr),
                 success: function (data) {
                     var aa = data;
                 },
