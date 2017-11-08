@@ -43568,7 +43568,7 @@ return /******/ (function(modules) { // webpackBootstrap
       headers: null,
       clickable: true,
       ignoreHiddenFiles: true,
-      acceptedFiles: null,
+      acceptedFiles: ".jpg,.gif,.png,.mp4",
       acceptedMimeTypes: null,
       autoProcessQueue: true,
       autoQueue: true,
