@@ -23,6 +23,7 @@
 
     var editPlayerFlg = false;
     var editGroupFlg = false;
+    var datatable = null;
 
     
     var groupJstreeData = {
@@ -207,7 +208,7 @@
         },
         DatatableResponsiveColumnsDemo : function (options) {
             $('#base_responsive_columns').prop("outerHTML", "<div class='m_datatable' id='base_responsive_columns'></div>");
-            var datatable = $('#base_responsive_columns').mDatatable({
+            datatable = $('#base_responsive_columns').mDatatable({
                 // datasource definition
                 data: {
                     type: 'local',
@@ -542,32 +543,71 @@
         });
         $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: Current_data });
     })
-    $("#edit_player").click(function () {
-        if (!selectPlayerdata) { return; }
+
+    var edit_player_click = function (selectPlayer) {
         div_main.hide();
         div_edit.show();
+        var allPlayerNames = "";
+        $.each(selectPlayer, function (playerIndex, playerItem) {
+            allPlayerNames += ", " + $(playerItem).data().obj.PlayerName;
+        })
+        allPlayerNames = allPlayerNames.substr(2);
+        div_edit.find("H3:first").text(selectPlayer.length + " Display Units / (" + allPlayerNames + ")");
         editPlayerFlg = true;
         $.insmGroup('defaultDataSet');
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
-        $.each(selectPlayerdata, function (index, item) {
+        $.each(selectPlayer, function (index, item) {
             if (index != 0) {
-                if ($("#groupname").val() != $(selectPlayerdata[index]).data().obj.PlayerName) {
+                if ($("#groupname").val() != $(selectPlayer[index]).data().obj.PlayerName) {
                     $("#groupname").val('');
                 }
-                if ($("#groupname").val() != $(selectPlayerdata[index]).data().obj.PlayerName) {
+                if ($("#groupname").val() != $(selectPlayer[index]).data().obj.PlayerName) {
                     $("#text_note").val('');
                 }
             } else {
-                $("#groupname").val($(selectPlayerdata[index]).data().obj.PlayerName);
-                $("#text_note").val($(selectPlayerdata[index]).data().obj.Comments);
+                $("#groupname").val($(selectPlayer[index]).data().obj.PlayerName);
+                $("#text_note").val($(selectPlayer[index]).data().obj.Comments);
 
-                $("#label_Active_" + $(selectPlayerdata[index]).data().obj.ActiveFlag).click();
-                $("#label_Online_" + $(selectPlayerdata[index]).data().obj.OnlineFlag).click();
+                $("#label_Active_" + $(selectPlayer[index]).data().obj.ActiveFlag).click();
+                $("#label_Online_" + $(selectPlayer[index]).data().obj.OnlineFlag).click();
             }
         });
-
+    }
+    $("#edit_player").click(function () {
+        var selected = datatable.setSelectedRecords().getSelectedRecords();
+        selectPlayerdata = selected;
+        if (!selectPlayerdata) { return; }
+        var allPlayerNames = "";
+        $.each(selectPlayerdata, function (playerIndex,playerItem) {
+            allPlayerNames += ", " + $(playerItem).data().obj.PlayerName;
+        })
+        allPlayerNames = allPlayerNames.substr(2);
+        var playerSelectionLi = $('<li class="m-menu__item " data-redirect="true" aria-haspopup="true">\
+                                                <a class="m-menu__link" title="'+ allPlayerNames +'">\
+                                                    <span class="m-menu__link-title" style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">\
+                                                        <span class="m-menu__link-wrap">\
+                                                            <span class="m-menu__link-badge">\
+                                                                <span class="m-badge m-badge--success">'
+                                                                    + selectPlayerdata.length +
+                                                                '</span>\
+                                                            </span>\
+                                                            <span class="m-menu__link-text">'
+                                                                + allPlayerNames +
+                                                            '</span>\
+                                                        </span>\
+                                                    </span>\
+                                                </a>\
+                                            </li>');
+        playerSelectionLi.find("a").data("playersData", $.extend(true, {}, selectPlayerdata)).click(function () {
+            selectPlayerdata = $(this).data("playersData");
+            edit_player_click(selectPlayerdata);
+        });
+        $("#playerSelectionHistroyUl").prepend(playerSelectionLi);
+        edit_player_click(selectPlayerdata);
     })
+
+
 
     $("#label_Active_null").click(function () {
         if (editPlayerFlg) { $.insmGroup('activechange'); }

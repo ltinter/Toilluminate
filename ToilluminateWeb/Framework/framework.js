@@ -483,6 +483,24 @@
             };
             return $.insmFramework('ajax', ajaxOptions);
         },
+        getFolderTreeDataForPlaylist: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/FolderMasters/GetFolderJSTreeNodeWithInheritForcedByGroupID/' + options.groupID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
         getFolderTreeData: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -627,7 +645,7 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/PlayListMasters/GetPlayListByGroupID' + options.GroupID,
+                url: 'api/PlayListMasters',
                 format: 'json',
                 data: JSON.stringify(PlaylistMaster),
                 contentType: "application/json; charset=utf-8",

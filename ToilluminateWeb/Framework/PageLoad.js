@@ -157,7 +157,7 @@ $(document).ready(function ()
     ////});
     initTimeOptionsInPlayerEdit();
     
-    $("#monday_value").data("ionRangeSlider").update({ from: 10, to: 22 });
+    $("#group_monday_value").data("ionRangeSlider").update({ from: 10, to: 22 });
     initSlideEffectDropdown();
     EnableTouchSpin();
 });
