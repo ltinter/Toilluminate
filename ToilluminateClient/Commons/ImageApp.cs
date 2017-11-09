@@ -41,9 +41,9 @@ namespace ToilluminateClient
 
 
                 CredentialCache myCache = new CredentialCache();
-                myCache.Add(new Uri(picUrl), "Basic", new NetworkCredential("",""));
+                myCache.Add(new Uri(picUrl), "Basic", new NetworkCredential("", ""));
                 webreq.Credentials = myCache;
-                webreq.Headers["Authorization"] = "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes(string.Format("{0}:{1}","","")));
+                webreq.Headers["Authorization"] = "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes(string.Format("{0}:{1}", "", "")));
 
                 System.Net.WebResponse webres = webreq.GetResponse();
 
@@ -351,7 +351,7 @@ namespace ToilluminateClient
                 }
             }
         }
-        
+
         /// <summary>
         /// 左右对接
         /// </summary>
@@ -368,7 +368,7 @@ namespace ToilluminateClient
                 int left = (picBox.Size.Width - width) / 2; //图像宽度    
                 int top = (picBox.Size.Height - height) / 2; //图像高度
                 g = picBox.CreateGraphics();
-                
+
                 Bitmap bitmap = new Bitmap(width, height);
                 int x = 0;
                 while (x <= width / 2)
@@ -383,7 +383,7 @@ namespace ToilluminateClient
                         bmpSource.GetPixel(width - x - 1, i));
                     }
                     x++;
-                    
+
                     g.DrawImage(bitmap, 0, 0);
                     System.Threading.Thread.Sleep(10);
                 }
@@ -400,7 +400,7 @@ namespace ToilluminateClient
                 }
             }
         }
-        
+
         /// <summary>
         /// 上下对接
         /// </summary>
@@ -418,7 +418,7 @@ namespace ToilluminateClient
                 int left = (picBox.Size.Width - width) / 2; //图像宽度    
                 int top = (picBox.Size.Height - height) / 2; //图像高度
                 g = picBox.CreateGraphics();
-                
+
                 Bitmap bitmap = new Bitmap(width, height);
                 int y = 0;
                 while (y <= height / 2)
@@ -475,12 +475,12 @@ namespace ToilluminateClient
                 //转换成控件在屏幕上的坐标
                 var screenPoint = picBox.Parent.PointToScreen(picBox.Location);
                 gBmpOld.CopyFromScreen(screenPoint, new Point(0, 0), picBox.Size);
-                
+
                 Bitmap bmpOld_LR = GetBitmapSpecial(bmpOld, BitmapSpecialStyle.LeftRight);
 
                 for (int j = -height / 2; j < 0; j++)
                 {
-                    
+
                     int i = Convert.ToInt32(j * (Convert.ToSingle(width) / Convert.ToSingle(height)));
                     Rectangle DestRect = new Rectangle(width / 2 - i, 0, 2 * i, height);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpOld.Width, bmpOld.Height);
@@ -552,7 +552,7 @@ namespace ToilluminateClient
                 for (int j = -width / 2; j < 0; j++)
                 {
                     int i = Convert.ToInt32(j * (Convert.ToSingle(height) / Convert.ToSingle(width)));
-                    Rectangle DestRect = new Rectangle(0, height / 2 - i, width,  2 * i);
+                    Rectangle DestRect = new Rectangle(0, height / 2 - i, width, 2 * i);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpOld.Width, bmpOld.Height);
 
                     gBmpOld.Clear(BackClearColor); //初始为全灰色
@@ -591,7 +591,7 @@ namespace ToilluminateClient
                 }
             }
         }
-        
+
         /// <summary>
         /// 小到大 扩散
         /// </summary>
@@ -607,7 +607,7 @@ namespace ToilluminateClient
                 int left = (picBox.Size.Width - width) / 2; //图像宽度    
                 int top = (picBox.Size.Height - height) / 2; //图像高度
                 g = picBox.CreateGraphics();
-                
+
                 for (int i = 0; i <= width / 2; i++)
                 {
                     int j = Convert.ToInt32(i * (Convert.ToSingle(height) / Convert.ToSingle(width)));
@@ -650,7 +650,7 @@ namespace ToilluminateClient
                 int top = (picBox.Size.Height - height) / 2; //图像高度
 
                 g = picBox.CreateGraphics();
-                
+
 
                 for (int step = 0; step < height; step++)
                 {
@@ -693,7 +693,7 @@ namespace ToilluminateClient
                 int top = (picBox.Size.Height - height) / 2; //图像高度
 
                 g = picBox.CreateGraphics();
-                
+
 
                 for (int step = 1; step < height; step++)
                 {
@@ -736,7 +736,7 @@ namespace ToilluminateClient
                 int top = (picBox.Size.Height - height) / 2; //图像高度
 
                 g = picBox.CreateGraphics();
-                
+
 
                 for (int step = 0; step < width; step++)
                 {
@@ -779,7 +779,7 @@ namespace ToilluminateClient
                 int top = (picBox.Size.Height - height) / 2; //图像高度
 
                 g = picBox.CreateGraphics();
-                
+
 
                 for (int step = 1; step < width; step++)
                 {
@@ -880,13 +880,13 @@ namespace ToilluminateClient
                 {
                     ShowBitmap_Block(bmpSource, picBox);
                 }
-                
-                
+
+
                 else if (ImageShowStyle.Special == imgShowStyle)
                 {
                     ShowBitmap_Special(bmpSource, picBox);
                 }
-                
+
                 else
                 {
                     int width = bmpSource.Width; //图像宽度    
@@ -939,7 +939,7 @@ namespace ToilluminateClient
                 }
                 else if (BitmapSpecialStyle.TopDown == bmpSpecialStyle)
                 {
-                   // 上下反转
+                    // 上下反转
                     int i_TD = Convert.ToInt32(-width / 2 * (Convert.ToSingle(height) / Convert.ToSingle(width)));
                     Rectangle DestRect_TD = new Rectangle(0, height / 2 - i_TD, width, 2 * i_TD);
                     Rectangle SrcRect_TD = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
@@ -1003,6 +1003,47 @@ namespace ToilluminateClient
             }
         }
         #endregion
+
+
+        /// <summary>
+        /// 马赛克效果
+        /// </summary>
+        /// <param name="bmp">Bitmap 对象</param>
+        /// <param name="picBox">PictureBox 对象</param>
+        public static ImageShowStyle GetImageShowStyle(ImageShowStyle style)
+        {
+            ImageShowStyle reStyle = ImageShowStyle.None;
+            //以马赛克效果显示图像
+            try
+            {
+                if (style == ImageShowStyle.Random)
+                {
+                    List<string> enumList = new List<string>();
+                    int randomValue = ImageShowStyle.Random.GetHashCode();
+                    int[] enumValueList = EnumHelper.GetAllEnumValue(typeof(ImageShowStyle));
+                    foreach (int enumValue in enumValueList)
+                    {
+                        if (enumValue != randomValue)
+                        {
+                            enumList.Add(enumValue.ToString());
+                        }
+                    }
+
+                    reStyle = (ImageShowStyle)Utility.ToInt(Utility.GetRandomCode(enumList));
+                }
+                else
+                {
+                    reStyle = style;
+                }
+
+                return reStyle;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 
 

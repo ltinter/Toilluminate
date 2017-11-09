@@ -558,7 +558,7 @@ namespace ToilluminateClient
         {
             get
             {
-                return this.imageStyleListValue[this.currentShowStyleIndex];
+                return ImageApp.GetImageShowStyle(this.imageStyleListValue[this.currentShowStyleIndex]);
             }
         }
 
@@ -648,39 +648,15 @@ namespace ToilluminateClient
                     {
                         picImage.Image.Dispose();
                     }
-                    try
-                    {
-                        //动态添加图片
-                        nowImageFile = Image.FromFile(this.CurrentFile);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                    try
-                    {
-                        nowBitmap = new Bitmap(nowImageFile);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                    try
-                    {
-                        nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                    try
-                    {
-                        ImageApp.ShowBitmap(nowBitmap, picImage, this.CurrentShowStyle);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
+                    //动态添加图片
+                    nowImageFile = Image.FromFile(this.CurrentFile);
+
+                    nowBitmap = new Bitmap(nowImageFile);
+
+                    nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size);
+
+                    ImageApp.ShowBitmap(nowBitmap, picImage, this.CurrentShowStyle);
+
                 }
             }
             catch (Exception ex)
