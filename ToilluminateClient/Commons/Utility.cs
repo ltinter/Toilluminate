@@ -1340,15 +1340,26 @@ namespace ToilluminateClient
             return randomString.ToString();
         }
 
-        private static string GetRandomCode(string allChar)
+        
+        public static string GetRandomCode(string charList)
         {
-            if (string.IsNullOrEmpty(allChar))
+            if (string.IsNullOrEmpty(charList))
             {
                 return string.Empty;
             }
             Random rand = new Random();
-            int index = rand.Next(allChar.Length - 1);
-            return allChar[index].ToString();
+            int index = rand.Next(charList.Length - 1);
+            return charList[index].ToString();
+        }
+        public static string GetRandomCode(List<string> stringList)
+        {
+            if (stringList==null || stringList.Count ==0)
+            {
+                return string.Empty;
+            }
+            Random rand = new Random();
+            int index = rand.Next(stringList.Count - 1);
+            return stringList[index].ToString();
         }
         #endregion
 

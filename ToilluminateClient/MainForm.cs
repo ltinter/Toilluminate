@@ -47,9 +47,10 @@ namespace ToilluminateClient
             PlayList pList1 = new PlayList(true, Utility.GetPlayDateTime(DateTime.Now).AddSeconds(3), 500);
             PlayApp.PlayListArray.Add(pList1);
 
-            string[] fileList = new string[] { @"C:\C_Works\Images\AAA.jpg", @"C:\C_Works\Images\BBB.jpg", @"C:\C_Works\Images\CCC.jpg" };
+            string[] fileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg", @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg"
+                                            ,@"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg", @"C:\C_Works\Images\A09.jpg", @"C:\C_Works\Images\A10.jpg" };
 
-            ImageShowStyle[] styleList = new ImageShowStyle[] { ImageShowStyle.None, ImageShowStyle.Random, ImageShowStyle.TopToDown, ImageShowStyle.Flip_LR };
+            ImageShowStyle[] styleList = new ImageShowStyle[] { ImageShowStyle.Random, ImageShowStyle.TopToDown, ImageShowStyle.Random, ImageShowStyle.Flip_LR };
             ImageTempleteItem itItem = new ImageTempleteItem(fileList.ToList(), styleList.ToList(), 6);
 
 
