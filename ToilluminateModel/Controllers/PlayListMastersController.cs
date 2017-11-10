@@ -115,16 +115,48 @@ namespace ToilluminateModel.Controllers
             return db.PlayListMaster.Where(a=>a.GroupID == GroupID);
         }
         
-        [HttpPost, Route("api/PlayListMasters/GetPlayListByPlayerID/{PlayerID}")]
-        public async Task<IQueryable<PlayListMaster>> GetPlayListByPlayerID(int PlayerID)
+        [HttpPost, Route("api/PlayListMasters/GetOwnPlayListByPlayerID/{PlayerID}")]
+        public async Task<IQueryable<PlayListMaster>> GetOwnPlayListByPlayerID(int PlayerID)
         {
             return db.PlayListMaster
                     .Where(q => db.PlayerPlayListLinkTable
                     .Where(s => s.PlayListID == q.PlayListID && s.PlayerID == PlayerID).Count() > 0);
         }
 
-        [HttpGet, Route("api/PlayListMasters/GetPlayListWithInheritForcedByGroupID/{GroupID}")]
-        public async Task<IHttpActionResult> GetPlayListWithInheritForcedByGroupID(int GroupID)
+
+        [HttpPost, Route("api/PlayListMasters/GetForcedPlayListByGroupID/{GroupID}")]
+        public async Task<IQueryable<PlayListMaster>> GetForcedPlayListByGroupID(int GroupID)
+        {
+            List<int> GroupIDList = new List<int>();
+            GroupIDList.Add(GroupID);
+            PublicMethods.GetParentGroupIDs(GroupID, ref GroupIDList, db);
+            int[] groupIDs = GroupIDList.ToArray<int>();
+            return db.PlayListMaster
+                    .Where(q => db.GroupPlayListLinkTable
+                    .Where(s => s.PlayListID == q.PlayListID && groupIDs.Contains((int)s.GroupID)).Count() > 0);
+        }
+
+
+        [HttpPost, Route("api/PlayListMasters/GetTotalPlayListByPlayerID/{PlayerID}")]
+        public async Task<List<PlayListMaster>> GetTotalPlayListByPlayerID(int PlayerID)
+        {
+            PlayerMaster pm = db.PlayerMaster.Find(PlayerID);
+            List<PlayListMaster> pmList = db.PlayListMaster
+                    .Where(q => db.PlayerPlayListLinkTable
+                    .Where(s => s.PlayListID == q.PlayListID && s.PlayerID == PlayerID).Count() > 0).ToList();
+
+            List<int> GroupIDList = new List<int>();
+            GroupIDList.Add((int)pm.GroupID);
+            PublicMethods.GetParentGroupIDs((int)pm.GroupID, ref GroupIDList, db);
+            int[] groupIDs = GroupIDList.ToArray<int>();
+            pmList.AddRange(db.PlayListMaster
+                    .Where(q => db.GroupPlayListLinkTable
+                    .Where(s => s.PlayListID == q.PlayListID && groupIDs.Contains((int)s.GroupID)).Count() > 0).ToList());
+            return pmList;
+        }
+
+        [HttpGet, Route("api/PlayListMasters/GetOwnPlayListWithInheritByGroupID/{GroupID}")]
+        public async Task<IHttpActionResult> GetOwnPlayListWithInheritByGroupID(int GroupID)
         {
             List<int> GroupIDList = new List<int>();
             GroupIDList.Add(GroupID);

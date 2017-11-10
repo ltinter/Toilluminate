@@ -49,6 +49,17 @@
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="InsertDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="GroupPlayListLinkTable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Index" Type="int" />
+          <Property Name="GroupID" Type="int" />
+          <Property Name="PlayListID" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="InsertDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="PlayerMaster">
           <Key>
             <PropertyRef Name="PlayerID" />
@@ -142,6 +153,7 @@
           <EntitySet Name="FileMaster" EntityType="Self.FileMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FolderMaster" EntityType="Self.FolderMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupMaster" EntityType="Self.GroupMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupPlayListLinkTable" EntityType="Self.GroupPlayListLinkTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlayerMaster" EntityType="Self.PlayerMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlayerPlayListLinkTable" EntityType="Self.PlayerPlayListLinkTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlayListMaster" EntityType="Self.PlayListMaster" Schema="dbo" store:Type="Tables" />
@@ -165,6 +177,7 @@
           <EntitySet Name="TempleFileLinkTable" EntityType="ToilluminateModel.TempleFileLinkTable" />
           <EntitySet Name="TempletMaster" EntityType="ToilluminateModel.TempletMaster" />
           <EntitySet Name="UserMaster" EntityType="ToilluminateModel.UserMaster" />
+          <EntitySet Name="GroupPlayListLinkTable" EntityType="ToilluminateModel.GroupPlayListLinkTable" />
         </EntityContainer>
         <EntityType Name="FileMaster">
           <Key>
@@ -296,6 +309,17 @@
           <Property Name="EmailAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Settings" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="GroupPlayListLinkTable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Index" Type="Int32" />
+          <Property Name="GroupID" Type="Int32" />
+          <Property Name="PlayListID" Type="Int32" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
         </EntityType>
@@ -445,6 +469,18 @@
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="GroupID" ColumnName="GroupID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupPlayListLinkTable">
+            <EntityTypeMapping TypeName="ToilluminateModel.GroupPlayListLinkTable">
+              <MappingFragment StoreEntitySet="GroupPlayListLinkTable">
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="PlayListID" ColumnName="PlayListID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="Index" ColumnName="Index" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

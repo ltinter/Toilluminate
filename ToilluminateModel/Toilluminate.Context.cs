@@ -35,5 +35,6 @@ namespace ToilluminateModel
         public virtual DbSet<TempleFileLinkTable> TempleFileLinkTable { get; set; }
         public virtual DbSet<TempletMaster> TempletMaster { get; set; }
         public virtual DbSet<UserMaster> UserMaster { get; set; }
+        public virtual DbSet<GroupPlayListLinkTable> GroupPlayListLinkTable { get; set; }
     }
 }
