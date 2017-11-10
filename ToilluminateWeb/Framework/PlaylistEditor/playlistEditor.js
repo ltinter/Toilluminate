@@ -123,6 +123,7 @@
         }]
     };
     var playlist_groupID;
+    var selectFile;
     var div_PlaylistEditorContent = $('#div_PlaylistEditorContent');
     //var div_PlaylistEditor = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
     //var div_head = $('<div/>').addClass('m-portlet__head');
@@ -220,7 +221,7 @@
                             var href_i = $('<i />').addClass("fa fa-calendar");
 
                             var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push").click(function () {
-                                $.playlistEditor('editPlaylist', { playlistID: item.PlayListName });
+                                $.playlistEditor('editPlaylist', { playlistID: item.PlayListID });
                             });
                             div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
 
@@ -285,7 +286,27 @@
                     playlistID: options.playlistID,
                     success: function (playlistData) {
                         if (playlistData) {
-                            alert(1)
+                            var Settings = playlistData.Settings.replace(/\{/g, "").replace(/\}/g, "").split(',"')
+                            var Settingsdata=[];
+                            $.each(Settings, function (index, item) {
+                                Settingsdata.push(item.replace(/\"/g, ""));
+                            });
+                            var tempplaylistsettingsData = {};
+                            $.each(Settingsdata, function (index, item) {
+                                tempplaylistsettingsData[item.split(':')[0]] = item.split(':')[1]
+                            });
+                            
+                            $('#playlist_name').val(playlistData.PlayListName);
+                            $('#playlist_note').text(playlistData.Comments);
+
+                            $("#playlist_monday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Monday.split(';')[0], to: tempplaylistsettingsData.Monday.split(';')[1] });
+                            $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Tuesday.split(';')[0], to: tempplaylistsettingsData.Tuesday.split(';')[0] });
+                            $("#playlist_wednesday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Wednesday.split(';')[0], to: tempplaylistsettingsData.Wednesday.split(';')[0] });
+                            $("#playlist_thursday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Thursday.split(';')[0], to: tempplaylistsettingsData.Thursday.split(';')[0] });
+                            $("#playlist_friday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Friday.split(';')[0], to: tempplaylistsettingsData.Friday.split(';')[0] });
+                            $("#playlist_saturday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Saturday.split(';')[0], to: tempplaylistsettingsData.Saturday.split(';')[0] });
+                            $("#playlist_sunday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Sunday.split(';')[0], to: tempplaylistsettingsData.Sunday.split(';')[0] });
+
                         }
                     }
                 })
@@ -305,40 +326,6 @@
                     if (tempdataFolderTreeData) {
                         var tree = $('.tree-demo.folderTreePlaylist');
 
-                        //var moduleItem = [];
-                        //var resultdata = [];
-                        //var map = {};
-                        //var matchname = [];
-                        //var UniqueNameList = [];
-                        //if (tempdataFolderTreeData.length > 1) {
-                        //    $.each(tempdataFolderTreeData, function (index, item) {
-                        //        moduleItem = $.grep(matchname, function (matchnameitem, matchnameindex) {
-                        //            matchnameitem.text == item.text;
-                        //        });
-
-                        //        if (moduleItem.length == 0) {
-                        //            var namedata = {};
-                        //            namedata.parent = item.parent;
-                        //            namedata.text = item.text;
-                        //            namedata.id = item.id;
-
-                        //            matchname.push(namedata);
-                        //            resultdata.push(item);
-                        //        }
-                        //        else if (item.parent) {
-                        //            $.each(matchname, function (subindex, subitem) {
-                        //                if (subitem.parent == item.parent) {
-                        //                    subitem.id = subitem.id + ',' + item.id;
-                        //                } else if (1) {
-
-                        //                }
-                        //            })
-                        //        }
-                        //    });
-                        //}
-
-
-                        //$.extend(true, tempdataFolderTreeData, tempdataFolderTreeData);
                         folderJstreeData.core.data = tempdataFolderTreeData;
                         tree.jstree("destroy");
                         tree.jstree(folderJstreeData);
@@ -352,12 +339,6 @@
                                 });
                             }
                         });
-                        //tree.on("move_node.jstree", function (e, data) {
-                        //    var node = data.node;
-                        //    if (node) {
-                        //        $.folder('editFolder', node);
-                        //    }
-                        //});
                     }
                 },
                 invalid: function () {
@@ -390,7 +371,7 @@
                     var screenshot = new Image();
                     screenshot.src =$(item).data().obj.FileThumbnailUrl;
 
-                    $('#select_file').append(screenshot);
+                    selectFile.append(screenshot);
 
                 });
             } else {
@@ -398,6 +379,293 @@
                 $.folder("deleteFolder");
             }
         },
+        greateNewItemPicture: function (options) {
+            var div_head = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
+            var div_head_handle = $('<div/>').addClass('m-portlet__head ui-sortable-handle');
+            var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
+            var div_head_title = $('<div/>').addClass('m-portlet__head-title');
+            var span_head_title = $("<span />").addClass('m-portlet__head-icon');
+            var span_i = '<i class="fa fa-file-text"></i>';
+            var head_text = $('<h3 />').addClass('m-portlet__head-text');
+            var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
+            var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
+            var div_li = $('<li />').addClass('m-portlet__nav-item');
+            var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+            var href_i = $('<i />').addClass("la la-close");
+            span_head_title.append(span_i);
+            div_head_title.append(span_head_title,head_text.text('PlaylistItemPicture<br />(Picture)'));
+            div_head_caption.append(div_head_title);      
+            href.append(href_i)
+            div_li.append(href)
+            div_portlet_nav.append(div_li)
+            div_head_tools.append(div_portlet_nav)
+            div_head_handle.append(div_head_caption,div_head_tools)
+            var div_body = $('<div/>').addClass('m-portlet__body row').css('height','auto').css('overflow-y','auto');
+            var div_bodyMain = $('<div/>').addClass('col-xl-4');
+            var div_body_group = $('<div/>').addClass('form-group m-form__group');
+            var lable = $('<lable/>').text(' Playlist Item Name:');
+            var input = $("<input type='text'/>").addClass('form-control m-input');
+            div_body_group.append(lable,input);
+            div_bodyMain.append(div_body_group);
+
+            var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
+            div_col.append(lable1);
+            div_bodyMain.append(div_col);
+            
+            var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
+            var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name","demo1");
+            div_touchspin_brand.append(input1);
+            div_col1.append(div_touchspin_brand);
+            div_bodyMain.append(div_col1);
+
+            var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var lable2 = $('<lable/>').text('Sildeshow effects:');
+            div_col2.append(lable2);
+            div_bodyMain.append(div_col2);
+
+            var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var select_option = $('<select/>').addClass('form-control m-select2').attr("id","m_select2_3").attr("multiple","").attr("tabindex","-1").attr("aria-hidden","true");
+            div_col3.append(select_option);
+            div_bodyMain.append(div_col3);
+           
+
+            var div_col4 = $('<div/>').addClass('col-xl-8');
+            var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');  
+            div_col4.append(div_col4_main);
+
+            var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
+            var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
+                selectFile = div_col_image;
+            });
+            div_col4_main.append(button_Selectimages);
+            div_col4.append(div_col_image);
+            div_body.append(div_bodyMain,div_col4);
+            div_head.append(div_head_handle,div_body)
+
+            var div_AddnewItem = $("#playlistItem");
+            div_AddnewItem.append(div_head);
+                                                //<div class="">
+                                                    
+                                                //    <div class="m-portlet__body row" style="height:auto;overflow-y:auto;padding: 0px 0.2em 0px 0.2em;max-height:500px;padding:5px;">
+                                                //        <div class="col-xl-4">
+                                                //            //<div class="form-group m-form__group">
+                                                //            //    <label for="exampleInputEmail1">
+                                                //            //        Playlist Item Name:
+                                                //            //    </label>
+                                                //            //    <input type="text" class="form-control m-input">
+                                                //            //</div>
+                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
+                                                //            //    <label for="exampleInputEmail1" style="">
+                                                //            //        Display Inteval(Seconds):
+                                                //            //    </label>
+                                                //            //</div>
+                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
+                                                //            //    <div class="m-bootstrap-touchspin-brand">
+                                                //            //        <input id="m_touchspin_4" type="text" class="form-control bootstrap-touchspin-vertical-btn" value="" name="demo1" placeholder="0" type="text">
+                                                //            //    </div>
+                                                //            //</div>
+                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
+                                                //            //    <label for="exampleInputEmail1" style="">
+                                                //            //        Sildeshow effects:
+                                                //            //    </label>
+                                                //            //</div>
+                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
+                                                //            //    <select class="form-control m-select2" id="m_select2_3" multiple="" tabindex="-1" aria-hidden="true">
+                                                //            //        <option>Random</option>
+                                                //            //        <option>Left to Right</option>
+                                                //            //        <option>Right to Left</option>
+                                                //            //        <option>Top to Bottom</option>
+                                                //            //        <option>Bottom To Top</option>
+                                                //            //        <option>Grow</option>
+                                                //            //        <option>Fadein</option>
+                                                //            //        <option>Rotate horizontally</option>
+                                                //            //        <option>Rotate vertically</option>
+                                                //            //    </select>
+                                                //            //</div>
+
+                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
+                                                //            //    <label for="exampleInputEmail1" style="">
+                                                //            //        Background color:
+                                                //            //    </label>
+                                                //            //</div>
+
+                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
+                                                //            //    <input class="form-control m-input" type="color" value="#563d7c" id="example-color-input">
+                                                //            //</div>
+                                                //        </div>
+                                                //        <div class="col-xl-8">
+                                                //            <div class="col-lg-12 col-md-12 col-sm-12">
+                                                //                <button type="button" data-toggle="modal" data-target="#m_modal_1" class="btn m-btn--pill m-btn--air         btn-outline-info btn-block">
+                                                //                    Select images
+                                                //                </button>
+                                                //            </div>
+                                                //            <div class="col-lg-12 col-md-12 col-sm-12" style="overflow-y:auto;max-height:400px;margin-top:5px;" id="select_file">
+                                                //                <img style="max-height:100px;max-width:90%" src="/FileResource/20171107//Thumbnail//201711071834100332130796-106.jpg" alt="1">
+                                                //            </div>
+                                                //        </div>
+                                                //    </div>
+                                                //</div>
+
+        },
+        greateNewItemText: function (options) {
+            var div_head = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
+            var div_head_handle = $('<div/>').addClass('m-portlet__head ui-sortable-handle');
+            var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
+            var div_head_title = $('<div/>').addClass('m-portlet__head-title');
+            var span_head_title = $("<span />").addClass('m-portlet__head-icon');
+            var span_i = '<i class="fa fa-file-text"></i>';
+            var head_text = $('<h3 />').addClass('m-portlet__head-text');
+            var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
+            var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
+            var div_li = $('<li />').addClass('m-portlet__nav-item');
+            var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+            var href_i = $('<i />').addClass("la la-close");
+            span_head_title.append(span_i);
+            div_head_title.append(span_head_title, head_text.text('PlaylistItemText<br />(Picture)'));
+            div_head_caption.append(div_head_title);
+            href.append(href_i)
+            div_li.append(href)
+            div_portlet_nav.append(div_li)
+            div_head_tools.append(div_portlet_nav)
+            div_head_handle.append(div_head_caption, div_head_tools)
+            var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto');
+            var div_bodyMain = $('<div/>').addClass('col-xl-4');
+            var div_body_group = $('<div/>').addClass('form-group m-form__group');
+            var lable = $('<lable/>').text(' Playlist Item Name:');
+            var input = $("<input type='text'/>").addClass('form-control m-input');
+            div_body_group.append(lable, input);
+            div_bodyMain.append(div_body_group);
+
+            var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
+            div_col.append(lable1);
+            div_bodyMain.append(div_col);
+
+            var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
+            var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+            div_touchspin_brand.append(input1);
+            div_col1.append(div_touchspin_brand);
+            div_bodyMain.append(div_col1);
+
+            var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var lable1 = $('<lable/>').text('Sliding Speed:');
+            div_col.append(lable1);
+            div_bodyMain.append(div_col);
+
+            var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
+            var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+            div_touchspin_brand.append(input1);
+            div_col1.append(div_touchspin_brand);
+            div_bodyMain.append(div_col1);
+
+            var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var lable2 = $('<lable/>').text('Text Postion:');
+            div_col2.append(lable2);
+            div_bodyMain.append(div_col2);
+
+            //var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            //var select_option = $('<select/>').addClass('form-control m-select2').attr("id", "m_select2_3").attr("multiple", "").attr("tabindex", "-1").attr("aria-hidden", "true");
+            //div_col3.append(select_option);
+            //div_bodyMain.append(div_col3);
+
+
+
+
+            var div_col4 = $('<div/>').addClass('col-xl-8');
+            var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+
+            
+
+            div_col4.append(div_col4_main);
+
+           
+            div_body.append(div_bodyMain, div_col4);
+            div_head.append(div_head_handle, div_body)
+
+            var div_AddnewItem = $("#playlistItem");
+            div_AddnewItem.append(div_head);
+            div_col4_main.summernote({
+                height: 150,
+                toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize', 'fontname']],
+                ['color', ['color']],
+                ['Misc', ['undo', 'redo']]
+                ]
+            });
+        },
+        greateNewItemvideo: function (options) {
+            var div_head = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
+            var div_head_handle = $('<div/>').addClass('m-portlet__head ui-sortable-handle');
+            var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
+            var div_head_title = $('<div/>').addClass('m-portlet__head-title');
+            var span_head_title = $("<span />").addClass('m-portlet__head-icon');
+            var span_i = '<i class="fa fa-file-text"></i>';
+            var head_text = $('<h3 />').addClass('m-portlet__head-text');
+            var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
+            var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
+            var div_li = $('<li />').addClass('m-portlet__nav-item');
+            var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+            var href_i = $('<i />').addClass("la la-close");
+            span_head_title.append(span_i);
+            div_head_title.append(span_head_title, head_text.text('PlaylistItemText<br />(Picture)'));
+            div_head_caption.append(div_head_title);
+            href.append(href_i)
+            div_li.append(href)
+            div_portlet_nav.append(div_li)
+            div_head_tools.append(div_portlet_nav)
+            div_head_handle.append(div_head_caption, div_head_tools)
+            var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto');
+            var div_bodyMain = $('<div/>').addClass('col-xl-4');
+            var div_body_group = $('<div/>').addClass('form-group m-form__group');
+            var lable = $('<lable/>').text(' Playlist Item Name:');
+            var input = $("<input type='text'/>").addClass('form-control m-input');
+            div_body_group.append(lable, input);
+            var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
+            div_col.append(lable1);
+            div_body_group.append(div_col);
+
+            var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
+            var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+            div_touchspin_brand.append(input1);
+            div_col1.append(div_touchspin_brand);
+            div_body_group.append(div_col1);
+
+            var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var lable2 = $('<lable/>').text('Sildeshow effects:');
+            div_col2.append(lable2);
+            div_body_group.append(div_col2);
+
+            var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            var select_option = $('<select/>').addClass('form-control m-select2').attr("id", "m_select2_3").attr("multiple", "").attr("tabindex", "-1").attr("aria-hidden", "true");
+            div_col3.append(select_option);
+            div_body_group.append(div_col3);
+            div_bodyMain.append(div_body_group);
+
+            var div_col4 = $('<div/>').addClass('col-xl-8');
+            var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+            div_col4.append(div_col4_main);
+
+            var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
+            var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
+                selectFile = div_col_image;
+            });
+            div_col4_main.append(button_Selectimages);
+            div_col4.append(div_col_image);
+            div_body.append(div_bodyMain, div_col4);
+            div_head.append(div_head_handle, div_body)
+
+            var div_AddnewItem = $("#playlistItem");
+            div_AddnewItem.append(div_head);
+        }
     }
     $.playlistEditor = function (method) {
         if (methods[method]) {
@@ -415,13 +683,6 @@
     $("#add_playlist").click(function () {
         $.playlistEditor('setfolder', { selectedGroupID: playlist_groupID });
 
-        $("#playlist_monday_value").data("ionRangeSlider").update({ from: 1, to: 2 });
-        $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: 3, to: 4 });
-        $("#playlist_wednesday_value").data("ionRangeSlider").update({ from: 5, to: 6 });
-        $("#playlist_thursday_value").data("ionRangeSlider").update({ from: 7, to: 8 });
-        $("#playlist_friday_value").data("ionRangeSlider").update({ from: 10, to: 13 });
-        $("#playlist_saturday_value").data("ionRangeSlider").update({ from: 14, to: 20 });
-        $("#playlist_sunday_value").data("ionRangeSlider").update({ from: 20, to: 24 });
     });
     $("#playlist_expandAll").click(function () {
         $('#groupTreeForPlaylistEditor').jstree('open_all');
@@ -431,22 +692,33 @@
     });
 
     $("#playlist_save").click(function () {
-
+        var playlistItem = [];
+        var ItemData = {};
+        ItemData.PlaylistItemName = 'aaa';
+        ItemData.DisplayIntevalSeconds = 20;
+        ItemData.SildeshowEffects = 'Left to Right'
+        ItemData.type = 1;//images
+        var imagesdata = [];
+        var imageItem = {};
+        imageItem.name = 'imageItem111'
+        imageItem.imagespash = '/FileResource/20171107//Thumbnail//201711071834100332130796-106.jpg';
+        imagesdata.push(imageItem);
+        ItemData.data = imagesdata
+        playlistItem.push(ItemData);
         var Settings = {
             Loop: $("input[name='playlist_loop']:checked").val(),
             Playtime: $("input[name='playlist_playtime']:checked").val(),
-
             PlayHours: $("#m_touchspin_1").val(),
             PlayMinites: $("#m_touchspin_2").val(),
             PlaySeconds: $("#m_touchspin_3").val(),
-
             Monday: $("#playlist_monday_value").val(),
             Tuesday: $("#playlist_tuesday_value").val(),
             Wednesday: $("#playlist_wednesday_value").val(),
             Thursday: $("#playlist_thursday_value").val(),
             Friday: $("#playlist_friday_value").val(),
             Saturday: $("#playlist_saturday_value").val(),
-            Sunday: $("#playlist_sunday_value").val()
+            Sunday: $("#playlist_sunday_value").val(),
+            PlaylistItem: playlistItem
         }
 
         Settings.PlaylistItemName = 'aaa';
@@ -465,6 +737,13 @@
         })
     });
 
+    $("#addPicture").click(function () {
+        $.playlistEditor('greateNewItemPicture');
+        
+    });
+    $("#addText").click(function () {
+        $.playlistEditor('greateNewItemText');
+    });
     $("#playlist_delete").click(function () {
         
     });
@@ -472,4 +751,7 @@
     $("#playlist_back").click(function () {
         
     });
+
+
+    
 })(jQuery);
