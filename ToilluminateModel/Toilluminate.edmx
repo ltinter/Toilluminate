@@ -59,6 +59,8 @@
           <Property Name="PlayerAddress" Type="nvarchar(max)" />
           <Property Name="ActiveFlag" Type="varchar" MaxLength="50" />
           <Property Name="OnlineFlag" Type="varchar" MaxLength="50" />
+          <Property Name="ErrorFlag" Type="varchar" MaxLength="50" />
+          <Property Name="PlayerLog" Type="nvarchar(max)" />
           <Property Name="Settings" Type="nvarchar(max)" />
           <Property Name="Comments" Type="nvarchar(max)" />
           <Property Name="UpdateDate" Type="datetime" />
@@ -222,6 +224,8 @@
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
+          <Property Name="ErrorFlag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PlayerLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="PlayerPlayListLinkTable">
           <Key>
@@ -351,6 +355,8 @@
           <EntitySetMapping Name="PlayerMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.PlayerMaster">
               <MappingFragment StoreEntitySet="PlayerMaster">
+                <ScalarProperty Name="PlayerLog" ColumnName="PlayerLog" />
+                <ScalarProperty Name="ErrorFlag" ColumnName="ErrorFlag" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />

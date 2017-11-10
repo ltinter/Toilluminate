@@ -18,6 +18,15 @@ namespace ToilluminateModel
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            // add players to PlayerStatusDic
+            if (Application["playerHeartBeat"] == null)
+            {
+                Dictionary<int, string> playerHeartBeatDic = new Dictionary<int, string>();
+                Application.Add("playerHeartBeat", playerHeartBeatDic);
+            }
+        }
+        protected void Application_End() {
+
         }
     }
 }

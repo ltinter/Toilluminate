@@ -192,7 +192,7 @@
     <Compile Include="GroupMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\JSTreeDataModel.cs" />
+    <Compile Include="Models\DataModel.cs" />
     <Compile Include="PlayerMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace ToilluminateModel.Models
 {
-    public class JSTreeDataModel
+    public class DataModel
     {
         public string id { get; set; }
         public string parent { get; set; }
@@ -20,5 +20,16 @@ namespace ToilluminateModel.Models
         public bool opened { get; set; }
         public bool disabled { get; set; }
         public bool selected { get; set; }
+    }
+    public class PlayerStatusData
+    {
+        public string statusName { get; set; }
+        public int counts { get; set; }
+        public PlayerStatusData() { }
+        public PlayerStatusData(string statusName, int counts)
+        {
+            this.statusName = statusName;
+            this.counts = counts;
+        }
     }
 }

@@ -112,13 +112,13 @@ namespace ToilluminateModel.Controllers
         }
 
         [HttpGet, Route("api/FolderMasters/GetJSTreeData/{GroupID}")]
-        public async Task<IList<JSTreeDataModel>> GetJSTreeData(int GroupID)
+        public async Task<IList<DataModel>> GetJSTreeData(int GroupID)
         {
-            List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
-            JSTreeDataModel jdm;
+            List<DataModel> jdmList = new List<DataModel>();
+            DataModel jdm;
             foreach (FolderMaster fm in db.FolderMaster.Where(a=>a.GroupID == GroupID))
             {
-                jdm = new JSTreeDataModel();
+                jdm = new DataModel();
                 jdm.id = fm.FolderID.ToString();
                 jdm.text = fm.FolderName;
                 jdm.parent = fm.FolderParentID == null ? "#" : fm.FolderParentID.ToString();
@@ -129,14 +129,14 @@ namespace ToilluminateModel.Controllers
         }
 
         [HttpPost, Route("api/FolderMasters/GetJSTreeNodeDataByCreate")]
-        public async Task<JSTreeDataModel> GetJSTreeNodeDataByCreate(FolderMaster folderMaster)
+        public async Task<DataModel> GetJSTreeNodeDataByCreate(FolderMaster folderMaster)
         {
 
             folderMaster.UpdateDate = DateTime.Now;
             folderMaster.InsertDate = DateTime.Now;
             db.FolderMaster.Add(folderMaster);
             await db.SaveChangesAsync();
-            JSTreeDataModel jdm = new JSTreeDataModel();
+            DataModel jdm = new DataModel();
             jdm.id = folderMaster.FolderID.ToString();
             jdm.text = folderMaster.FolderName;
             jdm.parent = folderMaster.FolderParentID == null ? "#" : folderMaster.FolderParentID.ToString();
@@ -144,7 +144,7 @@ namespace ToilluminateModel.Controllers
             return jdm;
         }
         [HttpPost, Route("api/FolderMasters/EditTreeNodeFolder")]
-        public async Task<JSTreeDataModel> EditTreeNodeFolder(FolderMaster folderMaster)
+        public async Task<DataModel> EditTreeNodeFolder(FolderMaster folderMaster)
         {
 
             folderMaster.UpdateDate = DateTime.Now;
@@ -158,7 +158,7 @@ namespace ToilluminateModel.Controllers
             {
                 throw;
             }
-            JSTreeDataModel jdm = new JSTreeDataModel();
+            DataModel jdm = new DataModel();
             jdm.id = folderMaster.FolderID.ToString();
             jdm.text = folderMaster.FolderName;
             jdm.parent = folderMaster.FolderParentID == null ? "#" : folderMaster.FolderParentID.ToString();
@@ -167,7 +167,7 @@ namespace ToilluminateModel.Controllers
         }
 
         [HttpGet, Route("api/FolderMasters/GetFolderJSTreeNodeWithInheritForcedByGroupID/{GroupID}")]
-        public async Task<IList<JSTreeDataModel>> GetFolderJSTreeNodeWithInheritForcedByGroupID(int GroupID)
+        public async Task<IList<DataModel>> GetFolderJSTreeNodeWithInheritForcedByGroupID(int GroupID)
         {
             List<int> GroupIDList = new List<int>();
             GroupIDList.Add(GroupID);
@@ -185,11 +185,11 @@ namespace ToilluminateModel.Controllers
                             }).ToList();
 
 
-            List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
-            JSTreeDataModel jdm;
+            List<DataModel> jdmList = new List<DataModel>();
+            DataModel jdm;
             foreach (var item in jsonList)
             {
-                jdm = new JSTreeDataModel();
+                jdm = new DataModel();
                 jdm.id = item.fm.FolderID.ToString();
                 jdm.text = item.fm.FolderName;
                 jdm.parent = item.fm.FolderParentID == null ? "#" : item.fm.FolderParentID.ToString();
