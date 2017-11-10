@@ -141,6 +141,19 @@ var EnableTouchSpin = function () {
         max: 60
     });
 }
+var textTemplateEditorInit = function () {
+    $("#textTemplateEditor").summernote({
+        height: 150,
+        toolbar: [
+    // [groupName, [list of button]]
+    ['style', ['bold', 'italic', 'underline', 'clear']],
+    ['font', ['strikethrough', 'superscript', 'subscript']],
+    ['fontsize', ['fontsize', 'fontname']],
+    ['color', ['color']],
+    ['Misc', ['undo', 'redo']]
+        ]
+    });
+}
 $(document).ready(function ()
 {
     playerStatusShare();
@@ -160,4 +173,5 @@ $(document).ready(function ()
     $("#group_monday_value").data("ionRangeSlider").update({ from: 10, to: 22 });
     initSlideEffectDropdown();
     EnableTouchSpin();
+    textTemplateEditorInit();
 });
