@@ -107,14 +107,14 @@ namespace ToilluminateModel.Controllers
         }
 
         [HttpGet, Route("api/GroupMasters/GetJSTreeData")]
-        public IList<JSTreeDataModel> GetJSTreeData()
+        public IList<DataModel> GetJSTreeData()
         {
-            List<JSTreeDataModel> jdmList = new List<JSTreeDataModel>();
-            JSTreeDataModel jdm;
+            List<DataModel> jdmList = new List<DataModel>();
+            DataModel jdm;
             StateForJsonModel sfjm = new StateForJsonModel();
             sfjm.opened = true;
             foreach (GroupMaster gm in db.GroupMaster) {
-                jdm = new JSTreeDataModel();
+                jdm = new DataModel();
                 jdm.id = gm.GroupID.ToString();
                 jdm.text = gm.GroupName;
                 jdm.parent = gm.GroupParentID == null?"#":gm.GroupParentID.ToString();

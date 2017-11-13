@@ -142,6 +142,12 @@ namespace ToilluminateModel.Controllers
             return Json(jsonList);
         }
 
+        [HttpPost, Route("api/FileMasters/GetFilesByFileIDArray")]
+        public async Task<IQueryable<FileMaster>> GetFilesByFileIDArray(string[] fileIDs)
+        {
+            return db.FileMaster.Where(a => fileIDs.Contains(a.FileID.ToString()));
+        }
+
         [HttpPost, Route("api/FileMasters/CutFile/{folderID}")]
         public async Task<IHttpActionResult> CutFile(int folderID, FileMaster fileMaster)
         {

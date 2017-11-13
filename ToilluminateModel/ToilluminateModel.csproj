@@ -171,6 +171,7 @@
     <Compile Include="Controllers\FileMastersController.cs" />
     <Compile Include="Controllers\FolderMastersController.cs" />
     <Compile Include="Controllers\GroupMastersController.cs" />
+    <Compile Include="Controllers\GroupPlayListLinkTablesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PlayerMastersController.cs" />
     <Compile Include="Controllers\PlayerPlayListLinkTablesController.cs" />
@@ -192,7 +193,10 @@
     <Compile Include="GroupMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\JSTreeDataModel.cs" />
+    <Compile Include="GroupPlayListLinkTable.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel.cs" />
     <Compile Include="PlayerMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>

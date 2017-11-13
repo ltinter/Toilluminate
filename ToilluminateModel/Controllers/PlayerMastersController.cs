@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using ToilluminateModel;
@@ -131,6 +132,64 @@ namespace ToilluminateModel.Controllers
         public async Task<IQueryable<PlayerMaster>> GetPlayerByGroupID(int GroupID)
         {
             return db.PlayerMaster.Where(a => a.GroupID == GroupID);
+        }
+
+        [HttpPost, Route("api/PlayerMasters/SendHeartBeatPkg/{PlayerID}")]
+        public async Task<IHttpActionResult> SendHeartBeatPkg(int PlayerID)
+        {
+            Dictionary<int, string> playerHeartBeatDic = (Dictionary<int, string>)HttpContext.Current.Application["playerHeartBeat"];
+            if (playerHeartBeatDic != null) {
+                if (playerHeartBeatDic.Keys.Contains(PlayerID))
+                {
+                    playerHeartBeatDic[PlayerID] = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+                }
+                else
+                {
+                    playerHeartBeatDic.Add(PlayerID, DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+                }
+            }
+            return Ok();
+        }
+
+        [HttpGet, Route("api/PlayerMasters/GetPlayerStatusReportData")]
+        public async Task<IHttpActionResult> GetPlayerStatusReportData()
+        {
+            List<Models.PlayerStatusData> psdList = new List<Models.PlayerStatusData>();
+            psdList.Add(new Models.PlayerStatusData("Online", 0));
+            psdList.Add(new Models.PlayerStatusData("Error", 0));
+            psdList.Add(new Models.PlayerStatusData("Lost", 0));
+            psdList.Add(new Models.PlayerStatusData("Offline", 0));
+            psdList.Add(new Models.PlayerStatusData("Total", 0));
+            foreach (PlayerMaster pm in db.PlayerMaster)
+            {
+                if (PublicMethods.isPlayerActive(pm, db))
+                {
+                    if (PublicMethods.isPlayerOnline(pm, db))
+                    {
+                        if (PublicMethods.isPlayerLost(pm.PlayerID, db))
+                        {
+                            psdList.Find(a => a.statusName == "Lost").counts++;
+                        }
+                        else
+                        {
+                            if (pm.ErrorFlag == "1")
+                            {
+                                psdList.Find(a => a.statusName == "Error").counts++;
+                            }
+                            else
+                            {
+                                psdList.Find(a => a.statusName == "Online").counts++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        psdList.Find(a => a.statusName == "Offline").counts++;
+                    }
+                    psdList.Find(a => a.statusName == "Total").counts++;
+                }
+            }
+            return Json(psdList);
         }
 
         protected override void Dispose(bool disposing)

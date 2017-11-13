@@ -12,19 +12,13 @@ namespace ToilluminateModel
     using System;
     using System.Collections.Generic;
     
-    public partial class PlayerMaster
+    public partial class GroupPlayListLinkTable
     {
-        public int PlayerID { get; set; }
+        public int ID { get; set; }
+        public Nullable<int> Index { get; set; }
         public Nullable<int> GroupID { get; set; }
-        public string PlayerName { get; set; }
-        public string PlayerAddress { get; set; }
-        public string ActiveFlag { get; set; }
-        public string OnlineFlag { get; set; }
-        public string Settings { get; set; }
-        public string Comments { get; set; }
+        public Nullable<int> PlayListID { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
-        public string ErrorFlag { get; set; }
-        public string PlayerLog { get; set; }
     }
 }
