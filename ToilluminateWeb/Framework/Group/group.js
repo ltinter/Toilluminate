@@ -482,6 +482,10 @@
         $.insmGroup('defaultDataSet');
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
+
+
+
+
     });
     $("#button_save_Player").click(function () {
         div_main.show();
