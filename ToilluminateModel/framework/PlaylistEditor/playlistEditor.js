@@ -122,7 +122,6 @@
             responsive: { visible: 'lg' }
         }]
     };
-    var playlist_groupID;
     var divselectFile;
     var div_PlaylistEditorContent = $('#div_PlaylistEditorContent');
     var div_playlist = $('#div_playlist');
@@ -174,7 +173,6 @@
             tempselectedGroupID = options.selectedGroupID;
             $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: options.selectedGroupID });
             
-            playlist_groupID = options.selectedGroupID;
             return $this;
         },
         getPlaylistByGroupID: function (options) {
@@ -287,8 +285,8 @@
             $("#label_loop_0").click();
             $("#label_playtime_0").click();
             $("#m_touchspin_1").val('0');
-            $("#m_touchspin_2").val('1');
-            $("#m_touchspin_3").val('2');
+            $("#m_touchspin_2").val('0');
+            $("#m_touchspin_3").val('0');
         },
         editPlaylist: function (options) {
             if (options.playlistID) {
@@ -304,23 +302,26 @@
                             var Settings = JSON.parse(playlistData.Settings);
                             $('#playlist_name').val(playlistData.PlayListName);
                             $('#playlist_note').text(playlistData.Comments);
-                            $("#playlist_monday_value").data("ionRangeSlider").update({ from: Settings.Monday.split(';')[0], to: tempplaylistsettingsData.Monday.split(';')[1] });
-                            $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: Settings.Tuesday.split(';')[0], to: tempplaylistsettingsData.Tuesday.split(';')[0] });
-                            $("#playlist_wednesday_value").data("ionRangeSlider").update({ from: Settings.Wednesday.split(';')[0], to: tempplaylistsettingsData.Wednesday.split(';')[0] });
-                            $("#playlist_thursday_value").data("ionRangeSlider").update({ from: Settings.Thursday.split(';')[0], to: tempplaylistsettingsData.Thursday.split(';')[0] });
-                            $("#playlist_friday_value").data("ionRangeSlider").update({ from: Settings.Friday.split(';')[0], to: tempplaylistsettingsData.Friday.split(';')[0] });
-                            $("#playlist_saturday_value").data("ionRangeSlider").update({ from: Settings.Saturday.split(';')[0], to: tempplaylistsettingsData.Saturday.split(';')[0] });
-                            $("#playlist_sunday_value").data("ionRangeSlider").update({ from: Settings.Sunday.split(';')[0], to: tempplaylistsettingsData.Sunday.split(';')[0] });
-                            $("#label_loop_" + Settings.Loop).click();
-                            $("#label_playtime_" + Settings.Playtime).click();
-                            $("#m_touchspin_1").val(Settings.PlayHours);
-                            $("#m_touchspin_2").val(Settings.PlayMinites);
-                            $("#m_touchspin_3").val(Settings.PlaySeconds);
+                            if (Object.getOwnPropertyNames(Settings).length > 0) {
+                                $("#playlist_monday_value").data("ionRangeSlider").update({from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]});
+                                $("#playlist_tuesday_value").data("ionRangeSlider").update({from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]});
+                                $("#playlist_wednesday_value").data("ionRangeSlider").update({from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]});
+                                $("#playlist_thursday_value").data("ionRangeSlider").update({from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]});
+                                $("#playlist_friday_value").data("ionRangeSlider").update({from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]});
+                                $("#playlist_saturday_value").data("ionRangeSlider").update({from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]});
+                                $("#playlist_sunday_value").data("ionRangeSlider").update({from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
+                                });
+                                $("#label_loop_" +Settings.Loop).click();
+                                $("#label_playtime_" +Settings.Playtime).click();
+                                $("#m_touchspin_1").val(Settings.PlayHours);
+                                $("#m_touchspin_2").val(Settings.PlayMinites);
+                                $("#m_touchspin_3").val(Settings.PlaySeconds);
+                            }
                         }
                     }
                 })
             }
-        },
+       },
         fileDataTableDestroy: function () {
             if ($("#datatable_file1").data("datatable")) {
                 $("#datatable_file1").data("datatable").destroy();
@@ -635,7 +636,7 @@
             toastr.warning("Please select playlist's group!");
                 return;
         }
-        $.playlistEditor('setfolder', { selectedGroupID: playlist_groupID });
+        $.playlistEditor('setfolder', { selectedGroupID: tempselectedGroupID});
         $.playlistEditor('playlistDefaultvalue');
         div_playlist.show();
         div_Mainplaylist.hide();
@@ -651,6 +652,21 @@
         var div_AddnewItem = $("#playlistItem");
         var palylistItemItems = div_AddnewItem.find(".m-portlet__body.row");
         var Settings = {};
+
+        Settings = {
+            Loop: $("input[name='playlist_loop']:checked").val(),
+            Playtime: $("input[name='playlist_playtime']:checked").val(),
+            PlayHours: $("#m_touchspin_1").val(),
+            PlayMinites: $("#m_touchspin_2").val(),
+            PlaySeconds: $("#m_touchspin_3").val(),
+            Monday: $("#playlist_monday_value").val(),
+            Tuesday: $("#playlist_tuesday_value").val(),
+            Wednesday: $("#playlist_wednesday_value").val(),
+            Thursday: $("#playlist_thursday_value").val(),
+            Friday: $("#playlist_friday_value").val(),
+            Saturday: $("#playlist_saturday_value").val(),
+            Sunday: $("#playlist_sunday_value").val()
+        };
         var palylistItemItemsdata = [];
         if (palylistItemItems.length > 0) {
             $.each(palylistItemItems, function (index, palylistItem) {
@@ -663,46 +679,37 @@
                 
                 var imageItem = {};
                 var imageId = [];
+                var imagesrc = [];
                 if ($(palylistItem).find("img").length > 0) {
                     $.each($(palylistItem).find("img"), function (index, imgItem) {
                         imageId.push(imgItem.id);
+                        imagesrc.push(imgItem.src);
                     });
                 }
                 imageItem.name = 'imageItem'
                 imageItem.id = imageId;
+                imageItem.src = imagesrc;
                 playlistItem.itemData = imageItem;
                 palylistItemItemsdata.push(playlistItem); 
             });
-            Settings = {
-                Loop: $("input[name='playlist_loop']:checked").val(),
-                Playtime: $("input[name='playlist_playtime']:checked").val(),
-                PlayHours: $("#m_touchspin_1").val(),
-                PlayMinites: $("#m_touchspin_2").val(),
-                PlaySeconds: $("#m_touchspin_3").val(),
-                Monday: $("#playlist_monday_value").val(),
-                Tuesday: $("#playlist_tuesday_value").val(),
-                Wednesday: $("#playlist_wednesday_value").val(),
-                Thursday: $("#playlist_thursday_value").val(),
-                Friday: $("#playlist_friday_value").val(),
-                Saturday: $("#playlist_saturday_value").val(),
-                Sunday: $("#playlist_sunday_value").val(),
-                PlaylistItems: palylistItemItemsdata
-            }
-            $.insmFramework('creatPlaylist', {
-                GroupID: playlist_groupID,
-                PlayListName: $("#playlist_name").val(),
-                InheritForced: '',
-                Settings: JSON.stringify(Settings),
-                Comments: $("#playlist_note").val(),
-                success: function (playlistData) {
-                    if (playlistData) {
-                        alert('1')
-                    }
-                }
-            })
+            Settings.PlaylistItems= palylistItemItemsdata;
         }
-    });
 
+        $.insmFramework('creatPlaylist', {
+            GroupID: tempselectedGroupID,
+            PlayListName: $("#playlist_name").val(),
+            InheritForced: '',
+            Settings: JSON.stringify(Settings),
+            Comments: $("#playlist_note").val(),
+            success: function (playlistData) {
+                if (playlistData) {
+                    div_playlist.hide();
+                    div_Mainplaylist.show();
+                }
+            }
+        })
+       
+    });
     $("#addPicture").click(function () {
         $.playlistEditor('greateNewItemPicture');
         
