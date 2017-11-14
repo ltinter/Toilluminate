@@ -263,7 +263,7 @@
                     field: "PlayerID",
                     title: "モニターＩＤ",
                     filterable: false, // disable or enable filtering
-                    width: 80
+                    width: 85
                 }, {
                     field: "PlayerName",
                     title: "モニター名",
@@ -464,6 +464,7 @@
         editGroupID = undefined;
         var div_PlaylistEditorContent = $('#group_player_playlist');
         div_PlaylistEditorContent.empty();
+        $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(localize_jap["New Group"]);
     })
     $("#deletegroup").click(function (e) {
         var newGroupdata = $.insmFramework('deleteGroup', {
@@ -490,7 +491,6 @@
         div_edit.show();
 
 
-
         
 
 
@@ -510,6 +510,7 @@
                     $("#groupname").val(userGroupData.GroupName);
                     $("#text_note").val(userGroupData.Comments);
                     editGroupID = selectedGroupID;
+                    $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(userGroupData.GroupName);
                 };
                 $.insmFramework('getPlaylistByGroup', {
                     groupID: selectedGroupID,
@@ -541,6 +542,7 @@
         $.insmGroup('defaultDataSet');
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
+        $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(localize_jap["Add"]);
 
         $.insmFramework('getPlaylistByGroupID', {
             GroupID: selectedGroupID,

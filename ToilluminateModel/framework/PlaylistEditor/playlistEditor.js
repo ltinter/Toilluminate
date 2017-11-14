@@ -863,6 +863,67 @@
         div_Mainplaylist.show();
     });
 
+    $("#m_form_search").keyup(function () {
+        $.each($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"), function (index, item) {
+            if ($(item).find("h3").text().trim().toLowerCase().indexOf($("#m_form_search").val().toLowerCase()) > -1) {
+                $(item).show();
+            }
+            else {
+                $(item).hide();
+            }
+        })
+    });
 
+    $("#sort-alpha-asc").click(function () {
+        var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
+        playlistDivs.sort(function (a, b) {
+            var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
+            var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
+            if (aPlaylistName == bPlaylistName) return 0;
+            return (aPlaylistName < bPlaylistName) ? 1 : -1;
+        })
+        $.each(playlistDivs, function (playlistIndex, playlistItem) {
+            $("#div_PlaylistEditorContent").append($(playlistItem));
+        })
+    });
+
+    $("#sort-alpha-desc").click(function () {
+        var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
+        playlistDivs.sort(function (a, b) {
+            var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
+            var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
+            if (aPlaylistName == bPlaylistName) return 0;
+            return (aPlaylistName > bPlaylistName) ? 1 : -1;
+        })
+        $.each(playlistDivs, function (playlistIndex, playlistItem) {
+            $("#div_PlaylistEditorContent").append($(playlistItem));
+        })
+    });
+
+    $("#sort-numeric-asc").click(function () {
+        var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
+        playlistDivs.sort(function (a, b) {
+            var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
+            var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
+            if (aPlaylistName == bPlaylistName) return 0;
+            return (aPlaylistName < bPlaylistName) ? 1 : -1;
+        })
+        $.each(playlistDivs, function (playlistIndex, playlistItem) {
+            $("#div_PlaylistEditorContent").append($(playlistItem));
+        })
+    });
+
+    $("#sort-alpha-desc").click(function () {
+        var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
+        playlistDivs.sort(function (a, b) {
+            var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
+            var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
+            if (aPlaylistName == bPlaylistName) return 0;
+            return (aPlaylistName > bPlaylistName) ? 1 : -1;
+        })
+        $.each(playlistDivs, function (playlistIndex, playlistItem) {
+            $("#div_PlaylistEditorContent").append($(playlistItem));
+        })
+    });
     
 })(jQuery);
