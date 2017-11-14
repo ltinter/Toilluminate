@@ -631,8 +631,14 @@
         $.playlistEditor('selectfile');
     });
     $("#add_playlist").click(function () {
+        if (tempselectedGroupID == null) {
+            toastr.warning("Please select playlist's group!");
+                return;
+        }
         $.playlistEditor('setfolder', { selectedGroupID: playlist_groupID });
         $.playlistEditor('playlistDefaultvalue');
+        div_playlist.show();
+        div_Mainplaylist.hide();
     });
     $("#playlist_expandAll").click(function () {
         $('#groupTreeForPlaylistEditor').jstree('open_all');
@@ -788,5 +794,21 @@
             $("#div_PlaylistEditorContent").append($(playlistItem));
         })
     });
-    
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
 })(jQuery);
