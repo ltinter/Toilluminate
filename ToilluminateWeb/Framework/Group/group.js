@@ -94,7 +94,7 @@
             div_edit.hide();
             $.insmGroup('defaultDataSet');
             $("#PlayerDetail").css('display', 'none');
-            
+
             $("#button_save").text($.localize('translate', "Save"));
             return $this;
         },
@@ -143,8 +143,8 @@
                         $(div_groupTreeForFileManager).on("changed.jstree", function (e, data) {
                             //存储当前选中的区域的名称
                             if (data.node) {
-                                $.folder('init',{
-                                    selectedGroupID : data.node.id
+                                $.folder('init', {
+                                    selectedGroupID: data.node.id
                                 });
                             }
                         });
@@ -182,13 +182,13 @@
             });
             $("#PlayerDetail").css('display', 'none');
         },
-        defaultDataSet : function () {
+        defaultDataSet: function () {
             $("#label_Active_null").click();
             $("#label_Online_null").click();
             $("#groupname").val('');
             $("#text_note").val('');
         },
-        showPlayerDetail : function (options) {
+        showPlayerDetail: function (options) {
             $("#PlayerDetail").css('display', 'block');
             $.insmFramework('getGroupPlayers', {
                 GroupID: options.GroupID,
@@ -206,7 +206,7 @@
                 }
             })
         },
-        DatatableResponsiveColumnsDemo : function (options) {
+        DatatableResponsiveColumnsDemo: function (options) {
             $('#base_responsive_columns').prop("outerHTML", "<div class='m_datatable' id='base_responsive_columns'></div>");
             datatable = $('#base_responsive_columns').mDatatable({
                 // datasource definition
@@ -302,7 +302,7 @@
 
             $('#m_form_status, #m_form_type').selectpicker();
         },
-        addNewGroup : function () {
+        addNewGroup: function () {
             if ($.trim($("#groupname").val()) == '') {
                 toastr.warning("Group name is empty!");
                 return;
@@ -311,7 +311,7 @@
                 toastr.warning("Group ID have same ID!");
                 return;
             }
-            var newGroupdata = $.insmFramework('creatGroup', {
+            $.insmFramework('creatGroup', {
                 groupID: editGroupID,
                 newGroupName: $("#groupname").val(),
                 active: $("input[name='radio_Active']:checked").val(),
@@ -324,88 +324,125 @@
                     div_edit.hide();
                     $.insmGroup('initGroupTree');
                     editGroupID = undefined;
+                    $.insmFramework('GroupPlayListLinkTables', {
+                        groupID: editGroupID,
+                        PlayListID: '26',
+                        success: function (data) {
+                            //div_main.show();
+                            //div_edit.hide();
+                            //$.insmGroup('initGroupTree');
+                            editGroupID = undefined;
+                        },
+                        error: function () {
+                        }
+                    })
+                },
+                error: function () {
                 }
             })
         },
-        activechange:function(){
+        activechange: function () {
             ActivechangeFlg = true;
-            if(selectPlayerdata){
+            if (selectPlayerdata) {
                 $.each(selectPlayerdata, function (index, item) {
-                    $(selectPlayerdata[index]).data().obj.ActiveFlag =  $("input[name='radio_Active']:checked").val()
+                    $(selectPlayerdata[index]).data().obj.ActiveFlag = $("input[name='radio_Active']:checked").val()
                 });
             }
         },
-        onlinechange:function(){
+        onlinechange: function () {
             OnlinechangeFlg = true;
-            if(selectPlayerdata){
+            if (selectPlayerdata) {
                 $.each(selectPlayerdata, function (index, item) {
-                    $(selectPlayerdata[index]).data().obj.OnlineFlag =  $("input[name='radio_Online']:checked").val()
+                    $(selectPlayerdata[index]).data().obj.OnlineFlag = $("input[name='radio_Online']:checked").val()
                 });
             }
         },
-        showPlaylist: function () {
-            var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
-            var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
-            var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
-            var div_title = $('<div/>').addClass('m-portlet__head-title');     
-            var span_head_icon = $("<span />").addClass('m-portlet__head-icon');
-            var span_i = '<i class="fa fa-file-text"></i>';
-            var head_text = $('<h3 />').addClass('m-portlet__head-text').text('Playlist1');
-            span_head_icon.append(span_i);
-            div_title.append(span_head_icon);
-            div_title.append(head_text);
-            div_head_caption.append(div_title);
-            div_Playlisthead.append(div_head_caption);
-
-            var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
-            var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
-            var div_li = $('<li />').addClass('m-portlet__nav-item');
-            var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
-            var href_i = $('<i />').addClass("fa fa-toggle-right");
-            href.append(href_i);
-            div_li.append(href);
-            div_portlet_nav.append(div_li);
-
-
-            var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push");
-            div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded','true');
-            var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
-            var div_li_i = $('<i />').addClass('la la-ellipsis-v');
-            div_li_a_toggle.append(div_li_i);
-            div_li_list.append(div_li_a_toggle);
-
-            var div_m_dropdown_wrapper = $('<div/>').addClass('m-dropdown__wrapper');
-            var wrappe_spantitle = $("<span style='left: auto; right: 18.5px;'/>").addClass('m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust');
-            var div_m_dropdown_inner = $('<div/>').addClass("m-dropdown__inner");
-            var div_m_dropdown_bodyr = $('<div/>').addClass("m-dropdown__body");
-            var div_m_dropdown_content= $('<div/>').addClass("m-dropdown__content");
-            var ul = $('<ul>').addClass("m-nav");
-            var ul_li = $('<li />').addClass('m-nav__item');
-            var ul_li_href = $('<a />').addClass("m-nav__link");
-            var ul_li_a = $('<i />').addClass("m-nav__link-icon flaticon-share");
-            var ul_li_href_span = $("<span />").addClass('m-nav__link-text');
-
-            //Item
-            ul_li_href_span.text('playlistItem1');
-            ul_li_href.append(ul_li_a, ul_li_href_span);
-            ul_li.append(ul_li_href);
-            ul.append(ul_li);
-            div_m_dropdown_content.append(ul);
-            div_m_dropdown_bodyr.append(div_m_dropdown_content);
-            div_m_dropdown_inner.append(div_m_dropdown_bodyr);
-
-            div_head_tools.append(div_portlet_nav);
-            div_m_dropdown_wrapper.append(wrappe_spantitle);
-            div_m_dropdown_wrapper.append(div_m_dropdown_inner);
-            div_li_list.append(div_m_dropdown_wrapper)
-
-            div_portlet_nav.append(div_li_list);
-            
-            div_Playlisthead.append(div_head_tools);
-            div_Playlist.append(div_Playlisthead);
-
+        showPlaylist: function (options) {
             var div_PlaylistEditorContent = $('#group_player_playlist');
-            div_PlaylistEditorContent.append(div_Playlist);
+            div_PlaylistEditorContent.empty();
+
+            var div_forcedplaylists = $('#forcedplaylists');
+            div_forcedplaylists.empty();
+
+            if (options.Playlists) {
+                $.each(options.Playlists, function (index, Playlist) {
+                    var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
+                    var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
+                    var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
+                    var div_title = $('<div/>').addClass('m-portlet__head-title');
+                    var span_head_icon = $("<span />").addClass('m-portlet__head-icon');
+                    var span_i = '<i class="fa fa-file-text"></i>';
+                    var head_text = $('<h3 />').addClass('m-portlet__head-text').text(Playlist.PlayListName);
+                    span_head_icon.append(span_i);
+                    div_title.append(span_head_icon);
+                    div_title.append(head_text);
+                    div_head_caption.append(div_title);
+                    div_Playlisthead.append(div_head_caption);
+
+                    var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
+                    var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
+                    var div_li = $('<li />').addClass('m-portlet__nav-item');
+                    var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+                    var href_i = $('<i />').addClass("fa fa-toggle-right");
+                    href.append(href_i);
+                    div_li.append(href);
+                    div_portlet_nav.append(div_li);
+                    var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push");
+                    div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
+                    var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
+                    var div_li_i = $('<i />').addClass('la la-ellipsis-v');
+                    div_li_a_toggle.append(div_li_i);
+                    div_li_list.append(div_li_a_toggle);
+
+                    var div_m_dropdown_wrapper = $('<div/>').addClass('m-dropdown__wrapper');
+                    var wrappe_spantitle = $("<span style='left: auto; right: 18.5px;'/>").addClass('m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust');
+                    var div_m_dropdown_inner = $('<div/>').addClass("m-dropdown__inner");
+                    var div_m_dropdown_bodyr = $('<div/>').addClass("m-dropdown__body");
+                    var div_m_dropdown_content = $('<div/>').addClass("m-dropdown__content");
+
+                    var ul = $('<ul>').addClass("m-nav");
+                    //Item
+                    if (Playlist.Settings) {
+                        var playlistSetting = JSON.parse(Playlist.Settings);
+                        $.each(playlistSetting.PlaylistItems, function (index, PlaylistItem) {
+                            var ul_li = $('<li />').addClass('m-nav__item');
+                            var ul_li_href = $('<a />').addClass("m-nav__link");
+                            var ul_li_a = $('<i />').addClass("m-nav__link-icon flaticon-share");
+                            var ul_li_href_span = $("<span />").addClass('m-nav__link-text');
+
+                            ul_li_href_span.text(PlaylistItem.PlaylistItemName);
+                            ul_li_href.append(ul_li_a, ul_li_href_span);
+                            ul_li.append(ul_li_href);
+                            ul.append(ul_li);
+                        })
+                    }
+
+                    div_m_dropdown_content.append(ul);
+                    div_m_dropdown_bodyr.append(div_m_dropdown_content);
+                    div_m_dropdown_inner.append(div_m_dropdown_bodyr);
+                    div_head_tools.append(div_portlet_nav);
+                    div_m_dropdown_wrapper.append(wrappe_spantitle);
+                    div_m_dropdown_wrapper.append(div_m_dropdown_inner);
+                    div_li_list.append(div_m_dropdown_wrapper)
+                    div_portlet_nav.append(div_li_list);
+                    div_Playlisthead.append(div_head_tools);
+                    div_Playlist.append(div_Playlisthead);
+                    div_li.click(function () {
+                        var a = div_Playlist.clone(true);
+                        div_forcedplaylists.append(a);
+                    });
+                    div_PlaylistEditorContent.append(div_Playlist);
+                });
+            };
+            $.insmFramework('GetForcedPlayListByGroupID', {
+                groupID: selectedGroupID,
+                success: function (forcedPlayList) {
+                    var a = '';
+                },
+                error: function () {
+                }
+            })
+            
         }
     }
     $.insmGroup = function (method) {
@@ -425,6 +462,8 @@
         $("#button_save_Player").css('display', 'none');
         $.insmGroup('defaultDataSet');
         editGroupID = undefined;
+        var div_PlaylistEditorContent = $('#group_player_playlist');
+        div_PlaylistEditorContent.empty();
     })
     $("#deletegroup").click(function (e) {
         var newGroupdata = $.insmFramework('deleteGroup', {
@@ -449,7 +488,15 @@
         }
         div_main.hide();
         div_edit.show();
-        $.insmGroup('showPlaylist');
+
+
+
+        
+
+
+
+
+
         editGroupFlg = true;
         $.insmGroup('defaultDataSet');
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
@@ -463,8 +510,20 @@
                     $("#groupname").val(userGroupData.GroupName);
                     $("#text_note").val(userGroupData.Comments);
                     editGroupID = selectedGroupID;
-                }
-            }
+                };
+                $.insmFramework('getPlaylistByGroup', {
+                    groupID: selectedGroupID,
+                    success: function (GroupPlayLists) {
+                        $.insmGroup('showPlaylist', { Playlists: GroupPlayLists });
+                    },
+                    error: function () {
+                    },
+                });
+                
+            },
+            error: function () {
+
+            },
         })
     });
     $("#button_save").click(function (e) {
@@ -483,6 +542,17 @@
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
 
+        $.insmFramework('getPlaylistByGroupID', {
+            GroupID: selectedGroupID,
+            success: function (data) {
+                if (data) {
+                    $.insmGroup('showPlaylist', {Playlists:data});
+                }
+            },
+            error: function () {
+               
+            },
+        })
 
 
 
@@ -512,8 +582,21 @@
                     div_edit.hide();
                     $.insmGroup('initGroupTree');
                     editGroupID = undefined;
+                    $.insmFramework('PlayerPlayListLinkTables', {
+                        Index: '',
+                        PlayerID: data.PlayerID,
+                        PlayListID: '25',
+                        success: function (data) {
+                            div_main.show();
+                            div_edit.hide();
+                            $.insmGroup('initGroupTree');
+                            editGroupID = undefined;
+                        }
+                    })
                 }
             })
+
+            
         } else {
             $.insmFramework('editGroupPlayers', {
                 Playerdata: selectPlayerdata,
