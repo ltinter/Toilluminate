@@ -134,7 +134,7 @@ namespace ToilluminateModel.Controllers
             return db.PlayerMaster.Where(a => a.GroupID == GroupID);
         }
 
-        [HttpPost, Route("api/PlayerMasters/SendHeartBeatPkg/{PlayerID}")]
+        [HttpGet, Route("api/PlayerMasters/SendHeartBeatPkg/{PlayerID}")]
         public async Task<IHttpActionResult> SendHeartBeatPkg(int PlayerID)
         {
             Dictionary<int, string> playerHeartBeatDic = (Dictionary<int, string>)HttpContext.Current.Application["playerHeartBeat"];
