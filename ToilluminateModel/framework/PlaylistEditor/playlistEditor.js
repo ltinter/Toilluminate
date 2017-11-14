@@ -903,8 +903,8 @@
     $("#sort-numeric-asc").click(function () {
         var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
         playlistDivs.sort(function (a, b) {
-            var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
-            var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
+            var aPlaylistName = new Date($(a).find("i.fa.fa-calendar").text().trim().toLowerCase());
+            var bPlaylistName = new Date($(b).find("i.fa.fa-calendar").text().trim().toLowerCase());
             if (aPlaylistName == bPlaylistName) return 0;
             return (aPlaylistName < bPlaylistName) ? 1 : -1;
         })
@@ -916,8 +916,8 @@
     $("#sort-alpha-desc").click(function () {
         var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
         playlistDivs.sort(function (a, b) {
-            var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
-            var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
+            var aPlaylistName = new Date($(a).find("i.fa.fa-calendar").text().trim().toLowerCase());
+            var bPlaylistName = new Date($(b).find("i.fa.fa-calendar").text().trim().toLowerCase());
             if (aPlaylistName == bPlaylistName) return 0;
             return (aPlaylistName > bPlaylistName) ? 1 : -1;
         })
