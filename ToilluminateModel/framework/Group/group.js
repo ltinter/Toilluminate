@@ -327,9 +327,9 @@
                     //div_main.show();
                     //div_edit.hide();
                     //$.insmGroup('initGroupTree');
-                    editGroupID = undefined;
+                    //editGroupID = undefined;
                     $.insmFramework('GroupPlayListLinkTables', {
-                        groupID: editGroupID,
+                        groupID: selectedGroupID,
                         PlayListID: playListgroup,
                         success: function (data) {
                             div_main.show();
@@ -373,10 +373,8 @@
         },
         showPlaylist: function (options) {
             var div_PlaylistEditorContent = $('#group_player_playlist');
-            div_PlaylistEditorContent.empty();
-
             var div_forcedplaylists = $('#forcedplaylists');
-            div_forcedplaylists.empty();
+            div_PlaylistEditorContent.empty();
 
             if (options.Playlists) {
                 $.each(options.Playlists, function (index, Playlist) {
@@ -454,7 +452,7 @@
                 $.insmFramework('getForcedPlaylistByGroup', {
                     groupID: editGroupID,
                     success: function (forcedPlayList) {
-                        tempForcedPlayList = forcedPlayList
+                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList });
                     },
                     error: function () {
                     }
@@ -463,15 +461,20 @@
                 $.insmFramework('getForcedPlaylistByPlayer', {
                     groupID: editGroupID,
                     success: function (forcedPlayList) {
-                        tempForcedPlayList = forcedPlayList;
+                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList });
                     },
                     error: function () {
                     }
                 })
             }
 
-            if (tempForcedPlayList) {
-                $.each(options.Playlists, function (index, Playlist) {
+            
+        },
+        showPlaylistForced: function (options) {
+            var div_forcedplaylists = $('#forcedplaylists');
+            div_forcedplaylists.empty();
+            if (options.tempForcedPlayList) {
+                $.each(options.tempForcedPlayList, function (index, Playlist) {
                     var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
                     var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
                     var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
@@ -536,7 +539,7 @@
                     div_forcedplaylists.append(div_Playlist);
                 });
             }
-        },  
+        },
     }
     $.insmGroup = function (method) {
         if (methods[method]) {
@@ -571,7 +574,7 @@
         //})
     })
     $("#deletegroup").click(function (e) {
-        var newGroupdata = $.insmFramework('deleteGroup', {
+        $.insmFramework('deleteGroup', {
             deleteGroupId: selectedGroupID,
             success: function (resultdata) {
                 div_main.show();
