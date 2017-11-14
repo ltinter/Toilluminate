@@ -679,7 +679,61 @@
             }
             return $.insmFramework('ajax', ajaxOptions);
         },
+        getForcedPlaylistByPlayer: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayListMasters/GetTotalPlayListByPlayerID/' + options.PlayerID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        getForcedPlaylistByGroup: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayListMasters/GetForcedPlayListByGroupID/' + options.groupID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
         getPlaylistByPlayerID: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayListMasters/' + options.playerID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        getPlaylistByPlaylistID: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
             var ajaxOptions = {
@@ -820,6 +874,25 @@
                 denied: function () {
                 }
             };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        playerStatusShare: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayerMasters/GetPlayerStatusReportData',
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
             return $.insmFramework('ajax', ajaxOptions);
         },
     }
