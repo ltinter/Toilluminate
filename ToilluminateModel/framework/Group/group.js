@@ -306,11 +306,15 @@
             if ($.trim($("#groupname").val()) == '') {
                 toastr.warning("Group name is empty!");
                 return;
-            }
+            };
+            if (groupTreeForPlayerEditID == null) {
+                toastr.warning("Please select new group's Parent Group !");
+                return;
+            };
             if (editGroupID == groupTreeForPlayerEditID) {
                 toastr.warning("Group ID have same ID!");
                 return;
-            }
+            };
             $.insmFramework('creatGroup', {
                 groupID: editGroupID,
                 newGroupName: $("#groupname").val(),
