@@ -898,7 +898,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </label>
                                                 <div class="col-9">
                                                     <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn m-btn--pill m-btn--air         btn-warning active labeltext" id="label_Active_null">
+                                                        <label class="btn m-btn--pill m-btn--air         btn-warning active labeltext" id="label_Active_2">
                                                             <input type="radio" name="radio_Active" id="radio_Active_1" value="2" autocomplete="off" checked="">
                                                             <script type="text/javascript">document.write(localize_jap["Inherited"])</script>
                                                         </label>
@@ -921,7 +921,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning active" id="label_Online_null">
                                                             <input type="radio" name="radio_Online" id="radio_Online_1" value="null" autocomplete="off" checked="">
-                                                            Inherited
+                                                            <script type="text/javascript">document.write(localize_jap["Inherited"])</script>
                                                         </label>
                                                         <label class="btn m-btn--pill m-btn--air         btn-warning" id="label_Online_1">
                                                             <input type="radio" name="radio_Online" id="radio_Online_2" value="1" autocomplete="off">
@@ -938,7 +938,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <label for="exampleInputEmail1">
                                                     Display units also known as:
                                                 </label>
-                                                <input id="groupname" , type="text" class="form-control m-input" placeholder="Display unit alias">
+                                                <input id="groupname" type="text" class="form-control m-input" placeholder="Display unit alias">
                                                 <span class="m-form__help">
                                                     Alias of the display units
                                                 </span>
@@ -967,11 +967,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="m-form__group form-group row">
+                                            <div class="m-form__group form-group">
                                                 <label>
                                                     Note:
                                                 </label>
-                                                <textarea id="text_note" ,class="form-control m-input m-input--air" rows="3"></textarea>
+                                                <textarea id="text_note" class="form-control m-input m-input--air" rows="3"></textarea>
                                             </div>
                                             <div class="m-form__group form-group row">
                                                 <div class="m-portlet__body">
@@ -2125,15 +2125,18 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <div class="col-xl-8 order-1 order-xl-2 m--align-right">
                                             <div class="m-btn-group m-btn-group--pill btn-group mr-2" role="group" aria-label="...">
                                                 <button type="button" class="m-btn btn btn-outline-dark btn-secondary" id="add_playlist">
+                                                    <i class="fa fa-file-text"></i>
+                                                </button>
+                                                <button type="button" class="m-btn btn btn-outline-dark btn-secondary" id="sort-alpha-asc">
                                                     <i class="fa fa-sort-alpha-asc"></i>
                                                 </button>
-                                                <button type="button" class="m-btn btn btn-outline-dark btn-secondary">
+                                                <button type="button" class="m-btn btn btn-outline-dark btn-secondary" id="sort-alpha-desc">
                                                     <i class="fa fa-sort-alpha-desc"></i>
                                                 </button>
-                                                <button type="button" class="m-btn btn btn-outline-dark btn-secondary">
+                                                <button type="button" class="m-btn btn btn-outline-dark btn-secondary" id="sort-numeric-asc">
                                                     <i class="fa fa-sort-numeric-asc"></i>
                                                 </button>
-                                                <button type="button" class="m-btn btn btn-outline-dark btn-secondary">
+                                                <button type="button" class="m-btn btn btn-outline-dark btn-secondary" id="sort-numeric-desc">
                                                     <i class="fa fa-sort-numeric-desc"></i>
                                                 </button>
                                             </div>
@@ -2627,11 +2630,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </label>
                                                 <div class="col-9">
                                                     <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn m-btn--pill m-btn--air         btn-warning">
+                                                        <label class="btn m-btn--pill m-btn--air         btn-warning" id="label_loop_1">
                                                             <input type="radio" name="playlist_loop" id="playlist_loop_On" autocomplete="off" value="1">
                                                             On
                                                         </label>
-                                                        <label class="btn m-btn--pill m-btn--air         btn-warning">
+                                                        <label class="btn m-btn--pill m-btn--air         btn-warning" id="label_loop_0">
                                                             <input type="radio" name="playlist_loop" id="playlist_loop_Off" autocomplete="off" value="0">
                                                             Off
                                                         </label>
@@ -2644,11 +2647,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </label>
                                                 <div class="col-9">
                                                     <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn m-btn--pill m-btn--air         btn-warning">
+                                                        <label class="btn m-btn--pill m-btn--air         btn-warning" id="label_playtime_1">
                                                             <input type="radio" name="playlist_playtime" id="playlist_playtime_On" autocomplete="off" value="1">
                                                             On
                                                         </label>
-                                                        <label class="btn m-btn--pill m-btn--air         btn-warning">
+                                                        <label class="btn m-btn--pill m-btn--air         btn-warning" id="label_playtime_0" >
                                                             <input type="radio" name="playlist_playtime" id="playlist_playtime_Off" autocomplete="off" value="0">
                                                             Off
                                                         </label>
