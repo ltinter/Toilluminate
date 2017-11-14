@@ -237,14 +237,19 @@ namespace ToilluminateModel.Controllers
                 HttpPostedFile file = fileUploadData[0];
                 string fileName = file.FileName.Trim('"');
                 FileInfo fileInfo = new FileInfo(fileName);
-                string fileType = fileInfo.Extension;
+                string fileType = fileInfo.Extension.ToLower();
                 string fileNameKey = DateTime.Now.ToString("yyyyMMddHHmmssffff");
                 string filePathName = fileNameKey + fileType;
                 string thumbnailFilePathName = filePathName;
                 string filePath = Path.Combine(dirFilePath, filePathName);
                 string thumbnailFilePath = Path.Combine(dirThumbnailFilePath, thumbnailFilePathName);
-                if (fileType == ".mp4") {
-                    // save mp4 file
+                if (fileType == ".mp4" ||
+                    fileType == ".wmv" ||
+                    fileType == ".mpg" ||
+                    fileType == ".avi" ||
+                    fileType == ".mpeg" ||
+                    fileType == ".mov") {
+                    // save video file
                     file.SaveAs(filePath);
                     // save gif from mp4
                     string ffmpeg = Path.Combine(ROOT_PATH, "bin/ffmpeg.exe");
@@ -252,10 +257,10 @@ namespace ToilluminateModel.Controllers
                     {
                         return BadRequest();
                     }
-                    thumbnailFilePathName = thumbnailFilePathName.ToLower().Replace(".mp4", ".gif");
+                    thumbnailFilePathName = thumbnailFilePathName.ToLower().Replace(fileType, ".gif");
                     Process pcs = new Process();
                     pcs.StartInfo.FileName = ffmpeg;
-                    pcs.StartInfo.Arguments = " -i " + filePath + " -ss 00:00:00.000 -pix_fmt rgb24 -r 10 -s 320x240 -t 00:00:10.000 " + thumbnailFilePath.Replace(".mp4",".gif");
+                    pcs.StartInfo.Arguments = " -i " + filePath + " -ss 00:00:00.000 -pix_fmt rgb24 -r 10 -s 320x240 -t 00:00:10.000 " + thumbnailFilePath.Replace(fileType, ".gif");
                     pcs.StartInfo.UseShellExecute = false;
                     pcs.StartInfo.RedirectStandardError = true;
                     pcs.StartInfo.CreateNoWindow = false;

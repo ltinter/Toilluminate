@@ -870,7 +870,7 @@
         })
     });
 
-    $("#sort-alpha-desc").click(function () {
+    $("#sort-numeric-desc").click(function () {
         var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
         playlistDivs.sort(function (a, b) {
             var aPlaylistName = new Date($(a).find("i.fa.fa-calendar").text().trim().toLowerCase());
