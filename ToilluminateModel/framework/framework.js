@@ -240,12 +240,12 @@
         },
         login: function (options) {
 
-        var data = {
-            username: options.username,
-            password: options.password
-        };
-        return _plugin.data.loginDeferred;
-    },
+            var data = {
+                username: options.username,
+                password: options.password
+            };
+            return _plugin.data.loginDeferred;
+        },
         logout: function (options) {
         // Global vars
         var $this = $('html').eq(0);
@@ -668,7 +668,7 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/PlayListMasters/GetPlayListWithInheritForcedByGroupID/' + options.GroupID,
+                url: 'api/PlayListMasters/GetOwnPlayListWithInheritByGroupID/' + options.groupID,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
@@ -695,6 +695,131 @@
                     options.error();
                 },
             }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        getPlaylistByGroupID: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayListMasters/GetPlayListByGroupID/' + options.GroupID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        PlayerPlayListLinkTables: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var PlayerPlayListLink = {
+                create: function () {
+                    Index: "1";
+                    PlayerID: "";
+                    PlayListID: '';
+                    return PlayerPlayListLink;
+                }
+            }
+            var newPlayerPlayList = PlayerPlayListLink.create();
+
+            newPlayerPlayList.Index = options.Index;
+            newPlayerPlayList.PlayerID = options.PlayerID;
+            newPlayerPlayList.PlayListID = options.PlayListID;
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayerPlayListLinkTables',
+                format: 'json',
+                data: JSON.stringify(newPlayerPlayList),
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        GroupPlayListLinkTables: function (options) {
+
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var GroupPlayListLink = {
+                create: function () {
+                    Index: "1";
+                    PlayerID: "";
+                    PlayListID: '';
+                    return GroupPlayListLink;
+                }
+            }
+            var newGroupPlayList = GroupPlayListLink.create();
+
+            newGroupPlayList.Index = options.Index;
+            newGroupPlayList.PlayerID = options.PlayerID;
+            newGroupPlayList.PlayListID = options.PlayListID;
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/GroupPlayListLinkTables',
+                format: 'json',
+                data: JSON.stringify(newGroupPlayList),
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+
+        GetForcedPlayListByGroupID: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayListMasters/GetForcedPlayListByGroupID/' + options.groupID,
+                format: 'json',
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        deletePlaylist: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayListMasters' + "/" + options.deletePlaylistId,
+                format: 'json',
+                data: '',
+                contentType: "application/json; charset=utf-8",
+                type: "DELETE",
+                denied: function () {
+                }
+            };
             return $.insmFramework('ajax', ajaxOptions);
         },
     }
