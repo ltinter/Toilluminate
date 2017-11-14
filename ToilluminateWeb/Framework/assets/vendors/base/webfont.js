@@ -525,7 +525,7 @@
     }
     ; function qa(a, b, c)
     {
-        this.N = "assets/vendors/base/webfont.css";
+        this.N = "Framework/assets/vendors/base/webfont.css";
         this.o = [];
         this.R = [];
         this.ca = c || ""

@@ -102,11 +102,11 @@
             field: "FileThumbnailUrl",
             title: "IMG",
             filterable: false, // disable or enable filtering
-            width: 120,
-            height:80,
+            width: 150,
+            height:100,
             sortable: true,
             // basic templating support for column rendering,
-            template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" width = "120px" height= "80px"/></a>'
+            template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" style="max-width:150px;max-height:100px" /></a>'
         }, {
             field: "FileName",
             title: "File Name",
@@ -275,7 +275,7 @@
         short: function (options) {
         },
         playlistDefaultvalue: function () {
-            $('#playlist_name').val('');
+            $('#playlist_name').val('New Playlist Name');
             $('#playlist_note').text('');
             $("#playlist_monday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
             $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
@@ -426,13 +426,14 @@
                     var screenshot = new Image();
                     screenshot.src = $(item).data().obj.FileThumbnailUrl;
                     screenshot.id = $(item).data().obj.FileID;
-                    $(screenshot).css('max-width', '244px').css('max-height', '160px');
+                    $(screenshot).css({ "max-height": "150px", "max-width": "200px","padding":"5px" });
                     divselectFile.append(screenshot);
-
+                    var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
+                        $(screenshot).remove();
+                        $(this).remove();
+                    });
+                    divselectFile.append(deleteImg);
                 });
-            } else {
-                //remove selected folder
-                $.folder("deleteFolder");
             }
         },
     greateNewItemPicture: function (options) {
@@ -460,7 +461,7 @@
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
         var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input');
+        var input = $("<input type='text'/>").addClass('form-control m-input').val("New Playlist Item");
         
         div_body_group.append(lable, input);
         div_bodyMain.append(div_body_group);
@@ -472,7 +473,7 @@
 
         var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
-        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1").val("5");
         
         div_touchspin_brand.append(input1);
         div_col1.append(div_touchspin_brand);
@@ -502,9 +503,12 @@
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
 
-        var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
+        var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px').css("line-height", "150px");
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
             divselectFile = div_col_image;
+            if ($("#datatable_file1").data("datatable")) {
+                $("#datatable_file1").data("datatable").setActiveAll(false);
+            }
         });
 
         
@@ -529,7 +533,7 @@
             verticalupclass: 'la la-angle-up',
             verticaldownclass: 'la la-angle-down',
             min: 0,
-            max: 60
+            max: 999999
         });
         if (options) {
             if (options.palylistItem) {

@@ -1,17 +1,4 @@
 ﻿<!DOCTYPE html>
-<!--
-Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 4
-Version: 5.0
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
-Renew Support: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
-License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
--->
 <html lang="en">
 <!-- begin::Head -->
 <head>
@@ -22,7 +9,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <meta name="description" content="Latest updates and statistic charts">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!--begin::Web font -->
     <!--<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>-->
     <script src="Framework/assets/vendors/base/webfont.js" type="text/javascript"></script>
@@ -104,7 +91,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <ul id="playerSelectionHistroyUl" class="m-menu__subnav" style="overflow-x: hidden;"></ul>
                                     </div>
                                 </li>
-                                <li class="m-menu__item  m-menu__item--submenu m-menu__item--rel" data-menu-submenu-toggle="click" aria-haspopup="true">
+                                <li class="m-menu__item  m-menu__item--submenu m-menu__item--rel" data-menu-submenu-toggle="click" aria-haspopup="true" onclick="playerStatusShare();">
                                     <a class="m-menu__link m-menu__toggle">
                                         <i class="m-menu__link-icon flaticon-line-graph"></i>
                                         <span class="m-menu__link-text intros">
@@ -145,7 +132,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                     <script type="text/javascript">document.write(localize_jap["Error:"])</script>
                                                                 </span>
                                                                 <span class="m-menu__link-badge">
-                                                                    <span class="m-badge m-badge--danger">
+                                                                    <span class="m-badge m-badge--danger" id="span_danger">
                                                                         4
                                                                     </span>
                                                                 </span>
@@ -158,7 +145,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                     <script type="text/javascript">document.write(localize_jap["Lost:"])</script>
                                                                 </span>
                                                                 <span class="m-menu__link-badge">
-                                                                    <span class="m-badge m-badge--warning">
+                                                                    <span class="m-badge m-badge--warning" id="span_warning">
                                                                         2
                                                                     </span>
                                                                 </span>
@@ -171,7 +158,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                     <script type="text/javascript">document.write(localize_jap["Offline:"])</script>
                                                                 </span>
                                                                 <span class="m-menu__link-badge">
-                                                                    <span class="m-badge m-badge--metal">
+                                                                    <span class="m-badge m-badge--metal" id="span_metal">
                                                                         15
                                                                     </span>
                                                                 </span>
@@ -184,7 +171,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                     <script type="text/javascript">document.write(localize_jap["Total:"])</script>
                                                                 </span>
                                                                 <span class="m-menu__link-badge">
-                                                                    <span class="m-badge m-badge--brand">
+                                                                    <span class="m-badge m-badge--brand" id="span_brand">
                                                                         67
                                                                     </span>
                                                                 </span>
@@ -205,7 +192,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                     <div class="row  align-items-center">
                                                                         <div class="col">
                                                                             <div id="m_chart_player_status_share" class="m-widget14__chart" style="height: 160px">
-                                                                                <div class="m-widget14__stat">
+                                                                                <div class="m-widget14__stat" id="widget14_brand">
                                                                                     67
                                                                                 </div>
                                                                             </div>
@@ -756,7 +743,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                             <div class="m-dropdown__content">
                                                                 <ul class="m-nav">
                                                                     <li class="m-nav__item" id='newgroup'>
-                                                                        <a class="m-nav__link">
+                                                                        <a href="javascript:;" class="m-nav__link">
                                                                             <i class="m-nav__link-icon fa fa-plus"></i>
                                                                             <span class="m-nav__link-text intros">
                                                                                 <script type="text/javascript">document.write(localize_jap["New Group"])</script>
@@ -764,7 +751,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                         </a>
                                                                     </li>
                                                                     <li class="m-nav__item" id='deletegroup'>
-                                                                        <a class="m-nav__link">
+                                                                        <a href="javascript:;" class="m-nav__link">
                                                                             <i class="m-nav__link-icon fa fa-minus"></i>
                                                                             <span class="m-nav__link-text intros">
                                                                                 <script type="text/javascript">document.write(localize_jap["Delete Group"])</script>
@@ -772,7 +759,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                         </a>
                                                                     </li>
                                                                     <li class="m-nav__item" id="expandAll">
-                                                                        <a class="m-nav__link">
+                                                                        <a href="javascript:;" class="m-nav__link">
                                                                             <i class="m-nav__link-icon fa fa-angle-double-down"></i>
                                                                             <span class="m-nav__link-text intros">
                                                                                 <script type="text/javascript">document.write(localize_jap["Expand All"])</script>
@@ -780,7 +767,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                         </a>
                                                                     </li>
                                                                     <li class="m-nav__item" id="collapseAll">
-                                                                        <a class="m-nav__link">
+                                                                        <a href="javascript:;" class="m-nav__link">
                                                                             <i class="m-nav__link-icon fa fa-angle-double-up"></i>
                                                                             <span class="m-nav__link-text intros">
                                                                                 <script type="text/javascript">document.write(localize_jap["Collapse All"])</script>
