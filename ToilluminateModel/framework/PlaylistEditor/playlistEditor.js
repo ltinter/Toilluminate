@@ -173,93 +173,6 @@
             
             tempselectedGroupID = options.selectedGroupID;
             $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: options.selectedGroupID });
-
-            //                var div_PlaylistEditor = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
-            //                var div_head = $('<div/>').addClass('m-portlet__head');
-            //                var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
-            //                var div_head_title = $('<div/>').addClass("m-portlet__head-title");
-            //                var spantitle = $("<span />").addClass('m-portlet__head-icon');
-            //                var span_i = '<i class="fa fa-file-text"></i>';
-            //                var head_text = $('<h3 />').addClass('m-portlet__head-text').text(item.PlayListName);
-
-            //                var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
-            //                var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
-            //                var div_li = $('<li />').addClass('m-portlet__nav-item');
-            //                var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
-            //                var href_i = $('<i />').addClass("fa fa-calendar");
-
-            //                var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push")
-            //                //    .click(function () {
-            //                //    $.playlistEditor('editPlaylist', { playlistID: item.PlayListID });
-            //                //});
-            //                div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
-
-            //                var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
-            //                var div_li_i = $('<i />').addClass('la la-ellipsis-v');
-            //                var div_m_dropdown_wrapper = $('<div/>').addClass('m-dropdown__wrapper');
-
-            //                var wrappe_spantitle = $("<span style='left: auto; right: 18.5px;'/>").addClass('m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust');
-            //                var div_m_dropdown_inner = $('<div/>').addClass("m-dropdown__inner");
-            //                var div_m_dropdown_bodyr = $('<div/>').addClass("m-dropdown__body");
-            //                var div_m_dropdown_content = $('<div/>').addClass("m-dropdown__content");
-
-            //                spantitle.append(span_i);
-            //                div_head_title.append(spantitle);
-            //                div_head_title.append(head_text);
-            //                div_head_caption.append(div_head_title);
-            //                div_head.append(div_head_caption)
-
-            //                var ul = $('<ul>').addClass("m-nav");
-            //                //Item
-            //                if (item.Settings) {
-            //                    var playlistSetting = JSON.parse(item.Settings);
-            //                    $.each(playlistSetting.PlaylistItems, function (index, PlaylistItem) {
-            //                        var ul_li = $('<li />').addClass('m-nav__item');
-            //                        var ul_li_href = $('<a />').addClass("m-nav__link");
-            //                        var ul_li_a = $('<i />').addClass("m-nav__link-icon flaticon-share");
-            //                        var ul_li_href_span = $("<span />").addClass('m-nav__link-text');
-
-            //                        ul_li_href_span.text(PlaylistItem.PlaylistItemName);
-            //                        ul_li_href.append(ul_li_a, ul_li_href_span);
-            //                        ul_li.append(ul_li_href);
-            //                        ul.append(ul_li);
-            //                    })
-            //                }
-
-            //                div_m_dropdown_content.append(ul);
-            //                div_m_dropdown_bodyr.append(div_m_dropdown_content);
-            //                div_m_dropdown_inner.append(div_m_dropdown_bodyr);
-
-            //                div_m_dropdown_wrapper.append(wrappe_spantitle);
-            //                div_m_dropdown_wrapper.append(div_m_dropdown_inner);
-            //                div_li_a_toggle.append(div_li_i);
-            //                div_li_list.append(div_li_a_toggle, div_m_dropdown_wrapper)
-
-            //                var datetime = new Date(item.UpdateDate).toLocaleDateString()
-            //                href.append(href_i.text(datetime));
-            //                div_li.append(href);
-
-            //                var div_li_edit = $('<li />').addClass('m-portlet__nav-item');
-            //                var edit_href = $('<a />').addClass("btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm").text('Edit');
-
-            //                edit_href.click(function () {
-            //                    $.playlistEditor('editPlaylist', { playlistID: item.PlayListID });
-            //                });
-
-            //                div_li_edit.append(edit_href);
-            //                div_portlet_nav.append(div_li);
-            //                div_portlet_nav.append(div_li_edit);
-
-            //                div_portlet_nav.append(div_li_list);
-            //                div_head_tools.append(div_portlet_nav);
-
-            //                div_head.append(div_head_tools);
-            //                div_PlaylistEditor.append(div_head);
-            //                div_PlaylistEditorContent.append(div_PlaylistEditor);
-            //            })
-            //        }
-            //    }
-            //})
             
             playlist_groupID = options.selectedGroupID;
             return $this;
@@ -361,8 +274,26 @@
         },
         short: function (options) {
         },
+        playlistDefaultvalue: function () {
+            $('#playlist_name').val('');
+            $('#playlist_note').text('');
+            $("#playlist_monday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            $("#playlist_wednesday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            $("#playlist_thursday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            $("#playlist_friday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            $("#playlist_saturday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            $("#playlist_sunday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            $("#label_loop_0").click();
+            $("#label_playtime_0").click();
+            $("#m_touchspin_1").val('0');
+            $("#m_touchspin_2").val('1');
+            $("#m_touchspin_3").val('2');
+        },
         editPlaylist: function (options) {
             if (options.playlistID) {
+                $.playlistEditor('playlistDefaultvalue');
+                
                 div_playlist.show();
                 div_Mainplaylist.hide();
                 edit_playlistId = options.playlistID;
@@ -370,27 +301,21 @@
                     playlistID: options.playlistID,
                     success: function (playlistData) {
                         if (playlistData) {
-                            var Settings = playlistData.Settings.replace(/\{/g, "").replace(/\}/g, "").split(',"')
-                            var Settingsdata=[];
-                            $.each(Settings, function (index, item) {
-                                Settingsdata.push(item.replace(/\"/g, ""));
-                            });
-                            var tempplaylistsettingsData = {};
-                            $.each(Settingsdata, function (index, item) {
-                                tempplaylistsettingsData[item.split(':')[0]] = item.split(':')[1]
-                            });
-                            
+                            var Settings = JSON.parse(playlistData.Settings);
                             $('#playlist_name').val(playlistData.PlayListName);
                             $('#playlist_note').text(playlistData.Comments);
-
-                            $("#playlist_monday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Monday.split(';')[0], to: tempplaylistsettingsData.Monday.split(';')[1] });
-                            $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Tuesday.split(';')[0], to: tempplaylistsettingsData.Tuesday.split(';')[0] });
-                            $("#playlist_wednesday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Wednesday.split(';')[0], to: tempplaylistsettingsData.Wednesday.split(';')[0] });
-                            $("#playlist_thursday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Thursday.split(';')[0], to: tempplaylistsettingsData.Thursday.split(';')[0] });
-                            $("#playlist_friday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Friday.split(';')[0], to: tempplaylistsettingsData.Friday.split(';')[0] });
-                            $("#playlist_saturday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Saturday.split(';')[0], to: tempplaylistsettingsData.Saturday.split(';')[0] });
-                            $("#playlist_sunday_value").data("ionRangeSlider").update({ from: tempplaylistsettingsData.Sunday.split(';')[0], to: tempplaylistsettingsData.Sunday.split(';')[0] });
-
+                            $("#playlist_monday_value").data("ionRangeSlider").update({ from: Settings.Monday.split(';')[0], to: tempplaylistsettingsData.Monday.split(';')[1] });
+                            $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: Settings.Tuesday.split(';')[0], to: tempplaylistsettingsData.Tuesday.split(';')[0] });
+                            $("#playlist_wednesday_value").data("ionRangeSlider").update({ from: Settings.Wednesday.split(';')[0], to: tempplaylistsettingsData.Wednesday.split(';')[0] });
+                            $("#playlist_thursday_value").data("ionRangeSlider").update({ from: Settings.Thursday.split(';')[0], to: tempplaylistsettingsData.Thursday.split(';')[0] });
+                            $("#playlist_friday_value").data("ionRangeSlider").update({ from: Settings.Friday.split(';')[0], to: tempplaylistsettingsData.Friday.split(';')[0] });
+                            $("#playlist_saturday_value").data("ionRangeSlider").update({ from: Settings.Saturday.split(';')[0], to: tempplaylistsettingsData.Saturday.split(';')[0] });
+                            $("#playlist_sunday_value").data("ionRangeSlider").update({ from: Settings.Sunday.split(';')[0], to: tempplaylistsettingsData.Sunday.split(';')[0] });
+                            $("#label_loop_" + Settings.Loop).click();
+                            $("#label_playtime_" + Settings.Playtime).click();
+                            $("#m_touchspin_1").val(Settings.PlayHours);
+                            $("#m_touchspin_2").val(Settings.PlayMinites);
+                            $("#m_touchspin_3").val(Settings.PlaySeconds);
                         }
                     }
                 })
@@ -539,68 +464,6 @@
 
             var div_AddnewItem = $("#playlistItem");
             div_AddnewItem.append(div_head);
-                                                //<div class="">
-                                                    
-                                                //    <div class="m-portlet__body row" style="height:auto;overflow-y:auto;padding: 0px 0.2em 0px 0.2em;max-height:500px;padding:5px;">
-                                                //        <div class="col-xl-4">
-                                                //            //<div class="form-group m-form__group">
-                                                //            //    <label for="exampleInputEmail1">
-                                                //            //        Playlist Item Name:
-                                                //            //    </label>
-                                                //            //    <input type="text" class="form-control m-input">
-                                                //            //</div>
-                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
-                                                //            //    <label for="exampleInputEmail1" style="">
-                                                //            //        Display Inteval(Seconds):
-                                                //            //    </label>
-                                                //            //</div>
-                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
-                                                //            //    <div class="m-bootstrap-touchspin-brand">
-                                                //            //        <input id="m_touchspin_4" type="text" class="form-control bootstrap-touchspin-vertical-btn" value="" name="demo1" placeholder="0" type="text">
-                                                //            //    </div>
-                                                //            //</div>
-                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
-                                                //            //    <label for="exampleInputEmail1" style="">
-                                                //            //        Sildeshow effects:
-                                                //            //    </label>
-                                                //            //</div>
-                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
-                                                //            //    <select class="form-control m-select2" id="m_select2_3" multiple="" tabindex="-1" aria-hidden="true">
-                                                //            //        <option>Random</option>
-                                                //            //        <option>Left to Right</option>
-                                                //            //        <option>Right to Left</option>
-                                                //            //        <option>Top to Bottom</option>
-                                                //            //        <option>Bottom To Top</option>
-                                                //            //        <option>Grow</option>
-                                                //            //        <option>Fadein</option>
-                                                //            //        <option>Rotate horizontally</option>
-                                                //            //        <option>Rotate vertically</option>
-                                                //            //    </select>
-                                                //            //</div>
-
-                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
-                                                //            //    <label for="exampleInputEmail1" style="">
-                                                //            //        Background color:
-                                                //            //    </label>
-                                                //            //</div>
-
-                                                //            //<div class="col-lg-12 col-md-12 col-sm-12">
-                                                //            //    <input class="form-control m-input" type="color" value="#563d7c" id="example-color-input">
-                                                //            //</div>
-                                                //        </div>
-                                                //        <div class="col-xl-8">
-                                                //            <div class="col-lg-12 col-md-12 col-sm-12">
-                                                //                <button type="button" data-toggle="modal" data-target="#m_modal_1" class="btn m-btn--pill m-btn--air         btn-outline-info btn-block">
-                                                //                    Select images
-                                                //                </button>
-                                                //            </div>
-                                                //            <div class="col-lg-12 col-md-12 col-sm-12" style="overflow-y:auto;max-height:400px;margin-top:5px;" id="select_file">
-                                                //                <img style="max-height:100px;max-width:90%" src="/FileResource/20171107//Thumbnail//201711071834100332130796-106.jpg" alt="1">
-                                                //            </div>
-                                                //        </div>
-                                                //    </div>
-                                                //</div>
-
         },
         greateNewItemText: function (options) {
             var div_head = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
@@ -769,7 +632,7 @@
     });
     $("#add_playlist").click(function () {
         $.playlistEditor('setfolder', { selectedGroupID: playlist_groupID });
-
+        $.playlistEditor('playlistDefaultvalue');
     });
     $("#playlist_expandAll").click(function () {
         $('#groupTreeForPlaylistEditor').jstree('open_all');
