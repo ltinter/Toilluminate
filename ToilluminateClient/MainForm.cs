@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -44,28 +45,32 @@ namespace ToilluminateClient
 
 
             PlayApp.Clear();
-            PlayList pList1 = new PlayList(true, Utility.GetPlayDateTime(DateTime.Now).AddSeconds(3), 500);
+            PlayList pList1 = new PlayList(true, Utility.GetPlayDateTime(DateTime.Now).AddSeconds(3), 600);
             PlayApp.PlayListArray.Add(pList1);
 
-            string[] fileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg", @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg"
+            string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg", @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg"
                                             ,@"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg", @"C:\C_Works\Images\A09.jpg", @"C:\C_Works\Images\A10.jpg" };
+            ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Random, ImageShowStyle.TopToDown, ImageShowStyle.Random, ImageShowStyle.Flip_LR };
 
-            ImageShowStyle[] styleList = new ImageShowStyle[] { ImageShowStyle.Random, ImageShowStyle.TopToDown, ImageShowStyle.Random, ImageShowStyle.Flip_LR };
-            ImageTempleteItem itItem = new ImageTempleteItem(fileList.ToList(), styleList.ToList(), 6);
-
-
-            pList1.TempleteItemList.Add(itItem);
-
-
-            //PlayItem pItem2 = new PlayItem(ShowPlayType.Message, Utility.GetPlayDateTime(dtStart.AddSeconds(8)), 3);
-            //PlayApp.PlayListArray.Add(pItem2);
-
-            //pItem2.TempleteItemList.Add(new TempleteItem("hello world",MessageShowStyle.None, 3, 6));
-            //pItem2.TempleteItemList.Add(new TempleteItem("今日は明日の全国に雨が降る。", MessageShowStyle.None, 0, 5));
+            ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 6);
+            //pList1.ad
+           // pList1.TempleteItemList.Add(itItem11);
 
 
-            //PlayItem pItem3 = new PlayItem(ShowPlayType.Media, Utility.GetPlayDateTime(dtStart.AddSeconds(28)), Utility.GetPlayDateTime(dtStart.AddSeconds(48)), 0);
-            //PlayApp.PlayListArray.Add(pItem3);
+            string[] messageList = new string[] { @"hello world", @"今日は明日の全国に雨が降る。" };
+            MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Down, MessageShowStyle.Random };
+
+            MessageTempleteItem itItem21 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 0);
+            pList1.MessageTempleteItemList.Add(itItem21);
+
+
+            //ImageTempleteItem itItem12 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 4);
+            //pList1.TempleteItemList.Add(itItem12);
+
+            
+
+            //MediaTempleteItem itItem31 = new MediaTempleteItem(@"C:\C_Works\Medias\mp01.mp4", MediaShowStyle.None);
+            //pList1.TempleteItemList.Add(itItem31);
 
             //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp01.mp4", MediaShowStyle.None));
             //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp02.mp4", MediaShowStyle.None));
@@ -209,17 +214,10 @@ namespace ToilluminateClient
                         //pnlMediaWMPVisible = false;
                     }
 
-                    if (pList.CurrentTempleteItem.TempleteType == TempleteType.Message)
+                    if (pList.MessageTempleteItemList.Count >0)
                     {
-                        //pnlMessageVisible = true;
-                        //this.tmrMessage_Tick(null, null);
-
-                        //pnlImageVisible = false;
-                        ////pnlMessageVisible = false;
-                        //pnlMediaWMPVisible = false;
-                        //pnlMediaVLCVisible = false;
-                        //pnlWebVisible = false;
-                        //pnlPDFVisible = false;
+                        pnlMessageVisible = true;
+                        this.tmrMessage_Tick(null, null);
                     }
 
                     if (pList.PlayListState == PlayListStateType.Stop)
@@ -315,18 +313,52 @@ namespace ToilluminateClient
             {
                 this.tmrMessage.Stop();
 
-                //PlayItem pItem = PlayApp.CurrentPlayItem();
-                //if (pItem.PlayType == ShowPlayType.Message && pItem.TempleteItemList.Count > 0)
-                //{
-                //    pItem.CurrentTempleteIndex++;
-                //    if (pItem.CurrentTempleteIndex >= pItem.TempleteItemList.Count)
-                //    {
-                //        pItem.CurrentTempleteIndex = 0;
-                //    }
+                if (PlayApp.NowPlayList.PlayListState == PlayListStateType.Stop)
+                {
+                    CloseMessage();
+                    return;
+                }
 
-                //}
+                foreach (MessageTempleteItem mtItem in PlayApp.NowPlayList.MessageTempleteItemList)
+                {
+                    if (mtItem.TempleteState != TempleteStateType.Stop)
+                    {
+                        if (mtItem.IntervalSecond == 0)
+                        {
+                            while (mtItem.CurrentIsChanged())
+                            {
+                                ShowMessage(mtItem);
+                            }
+                        }
+                        else
+                        {
+                            if (mtItem.CurrentIsChanged())
+                            {
+                                ShowMessage(mtItem);
+                            }
+                        }
 
 
+                        Debug.WriteLine(string.Format("{0} - {1} - {2}", mtItem.CurrentIndex, mtItem.CurrentShowStyleIndex, DateTime.Now.ToLongTimeString()));
+                    }
+
+
+                    foreach (Control con in this.Controls)
+                    {
+                        if (con.Name.Length > Constants.LabelNameHead.Length && Utility.GetLeftString(con.Name, Constants.LabelNameHead.Length) == Constants.LabelNameHead)
+                        {
+                            //Label lblMessage_tmp = (con as Label);
+                            Debug.WriteLine(string.Format("{0} - {1} - {2} - {3}", con.Name, con.Text, con.Left, con.Top));
+                            con.Left -= 10;
+                            if (con.Left < 0)
+                            {
+                                con.Left = this.Width;
+                            }
+                        }
+                    }
+                }
+
+                //System.Threading.Thread.Sleep(100);
                 this.tmrMessage.Start();
             }
             catch (Exception ex)
@@ -386,8 +418,7 @@ namespace ToilluminateClient
         {
             try
             {
-#if DEBUG
-#else
+
                 //播放器全屏
                 ////获取屏幕的宽和高
                 //Rectangle screenSize = System.Windows.Forms.SystemInformation.VirtualScreen;
@@ -395,30 +426,13 @@ namespace ToilluminateClient
                 Size screenSize = this.Size;
                 this.pnlShowImage.Location = new System.Drawing.Point(0, 0);
                 this.pnlShowImage.Size = new System.Drawing.Size(screenSize.Width, screenSize.Height);
-                this.pnlShowMessage.Location = new System.Drawing.Point(0, 0);
-                this.pnlShowMessage.Size = new System.Drawing.Size(screenSize.Width, screenSize.Height);
 
                 this.pnlShowMediaWMP.Location = new System.Drawing.Point(0, 0);
                 this.pnlShowMediaWMP.Size = new System.Drawing.Size(screenSize.Width, screenSize.Height);
 
-                this.pnlShowMediaVLC.Location = new System.Drawing.Point(0, 0);
-                this.pnlShowMediaVLC.Size = new System.Drawing.Size(screenSize.Width, screenSize.Height);
-
-
-                this.pnlShowWeb.Location = new System.Drawing.Point(0, 0);
-                this.pnlShowWeb.Size = new System.Drawing.Size(screenSize.Width, screenSize.Height);
-
-                this.pnlShowPDF.Location = new System.Drawing.Point(0, 0);
-                this.pnlShowPDF.Size = new System.Drawing.Size(screenSize.Width, screenSize.Height);
-
                 this.pnlShowImage.Visible = false;
-                this.pnlShowMessage.Visible = false;
                 this.pnlShowMediaWMP.Visible = false;
-                this.pnlShowMediaVLC.Visible = false;
-                this.pnlShowWeb.Visible = false;
-                this.pnlShowPDF.Visible = false;
 
-#endif
 
                 this.picImage.Location = new System.Drawing.Point(0, 0);
                 this.picImage.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
@@ -432,9 +446,7 @@ namespace ToilluminateClient
                 //禁用播放器右键菜单
                 this.axWMP.enableContextMenu = false;
 
-
-
-
+                
 
             }
             catch (Exception ex)
@@ -717,6 +729,20 @@ namespace ToilluminateClient
             try
             {
                 this.tmrMessage.Stop();
+
+                List<string> removeControlName = new List<string> { };
+                foreach (Control con in this.Controls)
+                {
+                    if (con.Name.Length > Constants.LabelNameHead.Length && Utility.GetLeftString(con.Name, Constants.LabelNameHead.Length) == Constants.LabelNameHead)
+                    {
+                        con.Visible = false;
+                        removeControlName.Add(con.Name);
+                    }
+                }
+                foreach (string controlName in removeControlName)
+                {
+                    this.Controls.RemoveByKey(controlName);
+                }
             }
             catch (Exception ex)
             {
@@ -724,6 +750,23 @@ namespace ToilluminateClient
             }
         }
 
+
+
+        /// <summary>
+        /// 显示信息
+        /// </summary>
+        /// <param name="mtItem"></param>
+        private void ShowMessage(MessageTempleteItem mtItem)
+        {
+            try
+            {
+                mtItem.ShowCurrent(this);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "信息提示");
+            }
+        }
         #endregion
 
 
