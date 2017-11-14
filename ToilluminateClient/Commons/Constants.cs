@@ -57,9 +57,10 @@ namespace ToilluminateClient
         /// </summary>
         public const string Version = "1.0.0";
 
+        public const string LabelNameHead = "lblMessage";
         
         #endregion
-        
+
 
         #region Output
 
@@ -83,6 +84,34 @@ namespace ToilluminateClient
         /// クライアントの登録の暗号鍵
         /// </summary>
         public const string CRYPT_KEY_FOR_CLIENT_LOGIN = "1710";
+
+        #endregion
+
+        #region API URL
+
+
+
+        /// <summary>
+        /// web api 地址
+        /// </summary>
+        //public const string API_WEB_ADDRESS = "http://54.238.131.90/{0}";
+        public const string API_WEB_ADDRESS = "http://54.238.131.90/{0}";
+
+        /// <summary>
+        /// 播放器发送心跳包
+        /// </summary>
+        public const string API_PLAYERMASTERS_SEND = "api/PlayerMasters/SendHeartBeatPkg/{0}";
+
+        /// <summary>
+        /// 得到所有播放器的playlist调用
+        /// </summary>
+        public const string API_PLAYERLISTMASTERS_SEND = "api/PlayListMasters/GetPlayListByPlayerID/{0}";
+
+        /// <summary>
+        /// 得到播放器状态数据
+        /// </summary>
+        public const string API_PLAYERMASTERS_GET = "api/PlayerMasters/GetPlayerStatusReportData";
+
 
         #endregion
 
@@ -470,7 +499,19 @@ namespace ToilluminateClient
         /// <summary>
         /// 
         /// </summary>
-        None = 0,
+        Down = 0,
+        /// <summary>
+        /// 
+        /// </summary>
+        Top = 1,
+        /// <summary>
+        /// 
+        /// </summary>
+        Center = 2,
+        /// <summary>
+        /// 
+        /// </summary>
+        Random = 99,
     }
     #endregion
 

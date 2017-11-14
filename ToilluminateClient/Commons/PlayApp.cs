@@ -58,6 +58,8 @@ namespace ToilluminateClient
     {
         #region " variable "
 
+        private List<MessageTempleteItem> mTempleteItemListValue = new List<MessageTempleteItem>();
+
         private List<TempleteItem> templeteItemListValue = new List<TempleteItem>();
 
         private int currentTempleteItemIndex = -1;
@@ -101,6 +103,13 @@ namespace ToilluminateClient
             get
             {
                 return templeteItemListValue;
+            }
+        }
+        public List<MessageTempleteItem> MessageTempleteItemList
+        {
+            get
+            {
+                return mTempleteItemListValue;
             }
         }
         public int CurrentTempleteIndex
@@ -271,6 +280,14 @@ namespace ToilluminateClient
                 this.currentTempleteItemIndex++;
             }
         }
+        public void PlayAddTemplete(TempleteItem tItem)
+        {
+            this.templeteItemListValue.Add(tItem);
+            if (tItem.TempleteType == TempleteType.Message)
+            {
+                this.mTempleteItemListValue.Add(tItem as MessageTempleteItem);
+            }
+        }
         #region " void and function "
         /// <summary>
         /// 状态
@@ -327,7 +344,7 @@ namespace ToilluminateClient
 
         protected MediaShowStyle mediaStyleValue = MediaShowStyle.None;
 
-        protected MessageShowStyle messageStyleValue = MessageShowStyle.None;
+        protected List<MessageShowStyle> messageStyleListValue = new List<MessageShowStyle>() { }; 
 
 
         protected TempleteType templeteTypeValue = TempleteType.Image;
@@ -451,14 +468,17 @@ namespace ToilluminateClient
             this.intervalSecondValue = intervalSecond;
         }
 
-        public TempleteItem(List<string> messageList, MessageShowStyle messageStyle, int intervalSecond)
+        public TempleteItem(List<string> messageList, List<MessageShowStyle> messageStyle, int intervalSecond)
         {
             templeteTypeValue = TempleteType.Message;
             foreach (string message in messageList)
             {
                 fileOrMessageListValue.Add(message);
             }
-            this.messageStyleValue = messageStyle;
+            foreach (MessageShowStyle style in messageStyle)
+            {
+                messageStyleListValue.Add(style);
+            }
             this.intervalSecondValue = intervalSecond;
         }
 
@@ -485,27 +505,11 @@ namespace ToilluminateClient
 
         #region " variable "
 
-        
+
         #endregion
 
 
         #region " propert "
-
-        public List<string> FileList
-        {
-            get
-            {
-                return fileOrMessageListValue;
-            }
-        }
-
-        public List<ImageShowStyle> ImageStyleList
-        {
-            get
-            {
-                return imageStyleListValue;
-            }
-        }
 
         /// <summary>
         /// 持续时间(秒)
@@ -550,7 +554,7 @@ namespace ToilluminateClient
         {
             get
             {
-                return this.FileList[this.currentIndex];
+                return this.fileOrMessageListValue[this.currentIndex];
             }
         }
 
@@ -569,7 +573,7 @@ namespace ToilluminateClient
         }
         #region " void and function "
 
-   
+
         /// <summary>
         /// 播放
         /// </summary>
@@ -593,7 +597,7 @@ namespace ToilluminateClient
         {
             try
             {
-                if (this.FileList.Count > 0)
+                if (this.fileOrMessageListValue.Count > 0)
                 {
                     DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
 
@@ -633,7 +637,7 @@ namespace ToilluminateClient
         public void ShowCurrent(PictureBox picImage)
         {
             Image nowImageFile = null;
-                Bitmap nowBitmap = null;
+            Bitmap nowBitmap = null;
             try
             {
                 if (this.currentIndex >= 0 && this.currentIndex < this.fileOrMessageListValue.Count)
@@ -656,6 +660,319 @@ namespace ToilluminateClient
                     nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size);
 
                     ImageApp.ShowBitmap(nowBitmap, picImage, this.CurrentShowStyle);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (nowBitmap != null)
+                {
+                    nowBitmap.Dispose();
+                }
+                if (nowImageFile != null)
+                {
+                    nowImageFile.Dispose();
+                }
+            }
+        }
+
+        #endregion
+    }
+
+    public class MessageTempleteItem : TempleteItem
+    {
+
+        #region " variable "
+
+
+        #endregion
+
+
+        #region " propert "
+        
+        /// <summary>
+        /// 间隔时间(秒)
+        /// </summary>
+        public int IntervalSecond
+        {
+            get
+            {
+                return intervalSecondValue;
+            }
+        }
+
+        public int CurrentIndex
+        {
+            get
+            {
+                return currentIndex;
+            }
+        }
+
+        public int CurrentShowStyleIndex
+        {
+            get
+            {
+                return currentShowStyleIndex;
+            }
+        }
+
+
+        public string CurrentMessage
+        {
+            get
+            {
+                return this.fileOrMessageListValue[this.currentIndex];
+            }
+        }
+
+        public ImageShowStyle CurrentShowStyle
+        {
+            get
+            {
+                return ImageApp.GetImageShowStyle(this.imageStyleListValue[this.currentShowStyleIndex]);
+            }
+        }
+
+        #endregion
+
+        public MessageTempleteItem(List<string> messageList, List<MessageShowStyle> messageStyleList, int intervalSecond) : base(messageList, messageStyleList, intervalSecond)
+        {
+        }
+        #region " void and function "
+
+
+        /// <summary>
+        /// 播放
+        /// </summary>
+        public void ExecuteStart()
+        {
+            if (this.templeteStateValue != TempleteStateType.Execute && this.templeteStateValue != TempleteStateType.Stop)
+            {
+                dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
+                this.currentIndex = -1;
+                this.currentShowStyleIndex = -1;
+            }
+        }
+        public void ExecuteStop()
+        {
+            this.templeteStateValue = TempleteStateType.Stop;
+        }
+
+        public bool CurrentIsChanged()
+        {
+            try
+            {
+                if (this.fileOrMessageListValue.Count > 0)
+                {
+                    DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
+
+                    if (nowTime >= this.dtStartValue && this.currentIndex< this.fileOrMessageListValue.Count)
+                    {
+                        int nowIndex = this.currentIndex;
+                        if (this.intervalSecondValue > 0)
+                        {
+                            if (nowIndex < 0) nowIndex = 0;
+                            while (nowIndex < this.fileOrMessageListValue.Count)
+                            {
+                                if (nowTime <= this.dtStartValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
+                                {
+                                    break;
+                                }
+                                nowIndex++;
+                            }
+                        }
+                        else
+                        {
+                            if (nowIndex < 0)
+                            {
+                                nowIndex = 0;
+                            }
+                            else
+                            {
+                                nowIndex++;
+                            }
+                        }
+
+                        if (nowIndex >= this.fileOrMessageListValue.Count)
+                        {
+                            this.currentIndex = this.fileOrMessageListValue.Count - 1;
+                            return false;
+                        }
+                        if (nowIndex != this.currentIndex)
+                        {
+                            this.currentIndex = nowIndex;
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public void ShowCurrent(Form showForm)
+        {
+            try
+            {
+                if (this.currentIndex >= 0 && this.currentIndex < this.fileOrMessageListValue.Count)
+                {
+                    currentShowStyleIndex++;
+                    if (currentShowStyleIndex >= this.imageStyleListValue.Count)
+                    {
+                        currentShowStyleIndex = 0;
+                    }
+                    Label lblMessage = new Label();
+                    lblMessage.Name = string.Format("lblMessage{0}", this.currentIndex);
+                    int lblTop = showForm.Height - 30;
+                    int lblLeft = showForm.Width ;
+                    lblMessage.Location = new System.Drawing.Point(lblLeft, lblTop);
+                    lblMessage.Text = this.fileOrMessageListValue[this.currentIndex];
+                    lblMessage.Size = new System.Drawing.Size(100, 23);
+                    showForm.Controls.Add(lblMessage);
+
+                }
+
+                if (this.currentIndex >= this.fileOrMessageListValue.Count - 1)
+                {
+                    this.templeteStateValue = TempleteStateType.Stop;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+     
+            }
+        }
+
+        #endregion
+    }
+
+    public class MediaTempleteItem : TempleteItem
+    {
+
+        #region " variable "
+
+
+        #endregion
+
+
+        #region " propert "
+
+        public string CurrentFile
+        {
+            get
+            {
+                return fileOrMessageListValue[0];
+            }
+        }
+        
+
+        public MediaShowStyle CurrentShowStyle
+        {
+            get
+            {
+                return mediaStyleValue;
+            }
+        }
+
+        #endregion
+
+        public MediaTempleteItem(string file, MediaShowStyle mediaStyle) : base(file, mediaStyle)
+        {
+        }
+        #region " void and function "
+
+
+        /// <summary>
+        /// 播放
+        /// </summary>
+        public void ExecuteStart()
+        {
+            if (this.TempleteState != TempleteStateType.Execute)
+            {
+                dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
+                dtEndValue = dtStartValue.AddSeconds(this.intervalSecondValue * this.fileOrMessageListValue.Count);
+                this.currentIndex = -1;
+            }
+        }
+        public void ExecuteStop()
+        {
+            dtEndValue = Utility.GetPlayDateTime(DateTime.Now);
+            this.currentIndex = -1;
+            this.currentShowStyleIndex = -1;
+        }
+
+        public bool CurrentIsChanged()
+        {
+            try
+            {
+                if (this.fileOrMessageListValue.Count > 0)
+                {
+                    DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
+
+                    if (nowTime >= this.dtStartValue && nowTime <= this.dtEndValue)
+                    {
+                        int nowIndex = this.currentIndex;
+                        if (nowIndex < 0) nowIndex = 0;
+                        while (nowIndex < this.fileOrMessageListValue.Count)
+                        {
+                            if (nowTime <= this.dtStartValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
+                            {
+                                break;
+                            }
+                            nowIndex++;
+                        }
+
+                        if (nowIndex >= this.fileOrMessageListValue.Count)
+                        {
+                            this.currentIndex = this.fileOrMessageListValue.Count - 1;
+                            return false;
+                        }
+                        if (nowIndex != this.currentIndex)
+                        {
+                            this.currentIndex = nowIndex;
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public void ShowCurrent(PictureBox picImage)
+        {
+            Image nowImageFile = null;
+            Bitmap nowBitmap = null;
+            try
+            {
+                if (this.currentIndex >= 0 && this.currentIndex < this.fileOrMessageListValue.Count)
+                {
+                    currentShowStyleIndex++;
+                    if (currentShowStyleIndex >= this.imageStyleListValue.Count)
+                    {
+                        currentShowStyleIndex = 0;
+                    }
+
+                    if (picImage.Image != null)
+                    {
+                        picImage.Image.Dispose();
+                    }
+
 
                 }
             }

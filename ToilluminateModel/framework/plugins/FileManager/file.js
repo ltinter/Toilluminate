@@ -57,7 +57,7 @@
             width: 244,
             sortable: true,
             // basic templating support for column rendering,
-            template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" width = "244px" max-height="160px"/></a>'
+            template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" style="max-width:244px;max-height:160px;"/></a>'
         }, {
             field: "FileName",
             title: "ファイル名",
