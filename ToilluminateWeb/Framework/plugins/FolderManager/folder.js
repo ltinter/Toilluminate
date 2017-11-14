@@ -52,7 +52,7 @@
     var div_groupTreeForFileManager = $("#groupTreeForFileManager");
     var div_folderTreeForFileManager = $("#folderTreeForFileManager");
     //folder tree
-    
+
     var methods = {
         init: function (options) {
             selectedGroupID = options.selectedGroupID;
@@ -71,7 +71,7 @@
                             if (data.node) {
                                 selectedFolderID = data.node.id;
                                 $.file('init', {
-                                    selectedFolderID : selectedFolderID
+                                    selectedFolderID: selectedFolderID
                                 });
                             }
                         });
@@ -110,7 +110,7 @@
                     }
                     if (folderSef) {
                         folderRef.edit(folderSef, folderSef.text, function (obj, tmp, nv, cancel) {
-                            $.folder('editFolder',obj);
+                            $.folder('editFolder', obj);
                         });
                     }
                 }
@@ -146,10 +146,22 @@
         },
         getSelectedGroupID: function () {
             return selectedGroupID;
+        },
+        expandAllFolder: function () {
+            div_groupTreeForFileManager.jstree('open_all');
+        },
+        collapseAllFolder: function () {
+            div_groupTreeForFileManager.jstree('close_all');
         }
     };
     $("#btn_create").click(function () {
         $.folder('createFolder');
+    });
+    $("#file_expandAll").click(function () {
+        $.folder('expandAllFolder');
+    });
+    $("#file_collapseAll").click(function () {
+        $.folder('collapseAllFolder');
     });
 
     $.folder = function (method) {

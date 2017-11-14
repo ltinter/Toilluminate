@@ -18,7 +18,7 @@ namespace ToilluminateModel
         }
         public static void GetChildGroupIDs(int selfGroupID, ref List<int> GroupIDList, ToilluminateEntities db)
         {
-            var gmChildList = db.GroupMaster.Where(a => a.GroupParentID == selfGroupID);
+            List<GroupMaster> gmChildList = db.GroupMaster.Where(a => a.GroupParentID == selfGroupID).ToList();
             foreach (GroupMaster gm in gmChildList) {
                 GroupIDList.Add(gm.GroupID);
                 GetChildGroupIDs(gm.GroupID, ref GroupIDList, db);

@@ -43547,7 +43547,7 @@ return /******/ (function(modules) { // webpackBootstrap
       url: null,
       method: "post",
       withCredentials: false,
-      timeout: 30000,
+      timeout: null,
       parallelUploads: 2,
       uploadMultiple: false,
       maxFilesize: 256,

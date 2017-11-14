@@ -112,8 +112,9 @@ namespace ToilluminateModel.Controllers
             List<DataModel> jdmList = new List<DataModel>();
             DataModel jdm;
             StateForJsonModel sfjm = new StateForJsonModel();
-            sfjm.opened = true;
-            foreach (GroupMaster gm in db.GroupMaster) {
+            sfjm.opened = false;
+            List<GroupMaster> gmList = db.GroupMaster.ToList();
+            foreach (GroupMaster gm in gmList) {
                 jdm = new DataModel();
                 jdm.id = gm.GroupID.ToString();
                 jdm.text = gm.GroupName;

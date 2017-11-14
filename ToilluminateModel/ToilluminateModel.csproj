@@ -168,19 +168,45 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Classes\ImageHelper.cs" />
     <Compile Include="Classes\PublicMethods.cs" />
-    <Compile Include="Controllers\FileMastersController.cs" />
-    <Compile Include="Controllers\FolderMastersController.cs" />
-    <Compile Include="Controllers\GroupMastersController.cs" />
-    <Compile Include="Controllers\GroupPlayListLinkTablesController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\PlayerMastersController.cs" />
-    <Compile Include="Controllers\PlayerPlayListLinkTablesController.cs" />
-    <Compile Include="Controllers\PlayListMastersController.cs" />
-    <Compile Include="Controllers\TemplatTypeMastersController.cs" />
-    <Compile Include="Controllers\TempleFileLinkTablesController.cs" />
-    <Compile Include="Controllers\TempletMastersController.cs" />
-    <Compile Include="Controllers\UserMastersController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\FileMastersController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\FolderMastersController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\GroupMastersController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\GroupPlayListLinkTablesController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\HomeController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\PlayerMastersController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\PlayerPlayListLinkTablesController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\PlayListMastersController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\TemplatTypeMastersController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\TempleFileLinkTablesController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\TempletMastersController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\UserMastersController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Controllers\ValuesController.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="FileMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
@@ -241,6 +267,367 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="framework\assets\app\js\dashboard.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\js\layout-builder.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\bg\bg-1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\bg\bg-2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\bg\bg-3.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\bg\bg-4.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\blog\blog1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\blog\blog2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\blog\blog3.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\blog\blog4.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\blog\blog5.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\client-logos\logo1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\client-logos\logo2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\client-logos\logo3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\client-logos\logo4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\client-logos\logo5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\css.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\csv.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\doc.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\html.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\javascript.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\jpg.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\mp4.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\pdf.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\xml.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\files\zip.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\icons\exchange.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\icons\logout.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\icons\question.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\icons\warning.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\logos\logo-1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\logos\logo-2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\logos\logo-3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\misc\notification_bg.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\misc\quick_actions_bg.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\misc\user_profile_bg.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product10.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product11.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product3.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product4.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product5.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product6.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product7.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product8.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\products\product9.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_10.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_11.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_12.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_13.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_14.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_3.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_4.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_5.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_6.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_7.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_8.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\100_9.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_10.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_11.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_12.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_13.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_14.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_3.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_4.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_5.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_6.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_7.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_8.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\300_9.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\user1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\user2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\user3.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\user4.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\app\media\img\users\user5.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\demo\default\base\scripts.bundle.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\demo\default\base\style.bundle.css" />
+    <Content Include="framework\assets\demo\default\custom\components\base\blockui.js" />
+    <Content Include="framework\assets\demo\default\custom\components\base\bootstrap-notify.js" />
+    <Content Include="framework\assets\demo\default\custom\components\base\dropdown.js" />
+    <Content Include="framework\assets\demo\default\custom\components\base\scrollable.js" />
+    <Content Include="framework\assets\demo\default\custom\components\base\toastr.js" />
+    <Content Include="framework\assets\demo\default\custom\components\base\treeview.js" />
+    <Content Include="framework\assets\demo\default\custom\components\charts\amcharts\charts.js" />
+    <Content Include="framework\assets\demo\default\custom\components\charts\amcharts\maps.js" />
+    <Content Include="framework\assets\demo\default\custom\components\charts\amcharts\stock-charts.js" />
+    <Content Include="framework\assets\demo\default\custom\components\charts\flotcharts.js" />
+    <Content Include="framework\assets\demo\default\custom\components\charts\google-charts.js" />
+    <Content Include="framework\assets\demo\default\custom\components\charts\morris-charts.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\api\events.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\api\methods.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\base\column-rendering.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\base\column-width.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\base\data-ajax.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\base\data-json.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\base\data-local.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\base\record-selection.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\base\responsive-columns.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\base\translation.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\child\data-ajax.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\child\data-local.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\locked\both.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\locked\left.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\locked\right.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\scrolling\both.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\scrolling\horizontal.js" />
+    <Content Include="framework\assets\demo\default\custom\components\datatables\scrolling\vertical.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\validation\form-controls.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\validation\form-widgets.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\autosize.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-datepicker.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-daterangepicker.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-datetimepicker.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-markdown.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-maxlength.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-select.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-selectsplitter.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-switch.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-timepicker.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\bootstrap-touchspin.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\clipboard.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\dropzone.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\google-recaptcha.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\input-mask.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\ion-range-slider.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\select2.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\summernote.js" />
+    <Content Include="framework\assets\demo\default\custom\components\forms\widgets\typeahead.js" />
+    <Content Include="framework\assets\demo\default\custom\components\maps\google-maps.js" />
+    <Content Include="framework\assets\demo\default\custom\components\maps\jqvmap.js" />
+    <Content Include="framework\assets\demo\default\custom\components\maps\jvectormap.js" />
+    <Content Include="framework\assets\demo\default\custom\components\portlets\draggable.js" />
+    <Content Include="framework\assets\demo\default\custom\components\utils\idle-timer.js" />
+    <Content Include="framework\assets\demo\default\custom\components\utils\session-timeout.js" />
+    <Content Include="framework\assets\demo\default\media\img\logo\favicon.ico" />
+    <Content Include="framework\assets\demo\default\media\img\logo\logo.png" />
+    <Content Include="framework\assets\demo\default\media\img\logo\logo_compact.png" />
+    <Content Include="framework\assets\demo\default\media\img\logo\logo_default_dark.png" />
+    <Content Include="framework\assets\demo\default\media\img\logo\logo_default_light.png" />
+    <Content Include="framework\assets\demo\default\media\img\misc\notification_bg.jpg" />
+    <Content Include="framework\assets\demo\default\media\img\misc\quick_actions_bg.jpg" />
+    <Content Include="framework\assets\demo\default\media\img\misc\user_profile_bg.jpg" />
+    <Content Include="framework\assets\demo\demo2\base\scripts.bundle.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\demo\demo2\base\style.bundle.css" />
+    <Content Include="framework\assets\demo\demo2\media\img\logo\favicon.ico" />
+    <Content Include="framework\assets\demo\demo2\media\img\logo\logo.png" />
+    <Content Include="framework\assets\snippets\pages\user\login.js" />
+    <Content Include="framework\assets\vendors\base\fonts\flaticon\Flaticon.svg" />
+    <Content Include="framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.svg" />
+    <Content Include="framework\assets\vendors\base\fonts\line-awesome\line-awesome.svg" />
+    <Content Include="framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.svg" />
+    <Content Include="framework\assets\vendors\base\fonts\socicon\socicon.svg" />
+    <Content Include="framework\assets\vendors\base\images\ion.rangeSlider\sprite-skin-flat.png" />
+    <Content Include="framework\assets\vendors\base\images\jstree\32px.png" />
+    <Content Include="framework\assets\vendors\base\images\jstree\40px.png" />
+    <Content Include="framework\assets\vendors\base\images\jstree\throbber.gif" />
+    <Content Include="framework\assets\vendors\base\images\malihu-custom-scrollbar-plugin\mCSB_buttons.png" />
+    <Content Include="framework\assets\vendors\base\vendors.bundle.css" />
+    <Content Include="framework\assets\vendors\base\vendors.bundle.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\vendors\base\webfont.css" />
+    <Content Include="framework\assets\vendors\base\webfont.js" />
+    <Content Include="framework\assets\vendors\custom\flot\flot.bundle.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\assets\vendors\custom\gmaps\gmaps.js" />
+    <Content Include="framework\assets\vendors\custom\jqvmap\jqvmap.bundle.css" />
+    <Content Include="framework\assets\vendors\custom\jqvmap\jqvmap.bundle.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\framework.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\Group\group.js" />
+    <Content Include="framework\HeaderTopBar\headerTopBar.js" />
+    <Content Include="framework\Header\header.js" />
+    <Content Include="framework\Login\login.js" />
+    <Content Include="framework\MainFrom\mainFrom.js" />
+    <Content Include="framework\PageLoad.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="framework\PlaylistEditor\playlistEditor.js" />
+    <Content Include="framework\plugins\FileManager\file.css" />
+    <Content Include="framework\plugins\FileManager\file.js" />
+    <Content Include="framework\plugins\FileUpload\fileUpload.js" />
+    <Content Include="framework\plugins\FolderManager\folder.js" />
+    <Content Include="framework\plugins\insmLocalize\Languages\chn.js" />
+    <Content Include="framework\plugins\insmLocalize\Languages\eng.js" />
+    <Content Include="framework\plugins\insmLocalize\Languages\jap.js" />
+    <Content Include="framework\plugins\insmLocalize\localize.js" />
+    <Content Include="framework\SelectionHistory\selectionHistory.js" />
     <Content Include="Global.asax" />
     <Content Include="HtmlTestForWebAPI.html" />
     <Content Include="index.html" />
@@ -265,6 +652,28 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="framework\assets\vendors\base\fonts\flaticon\Flaticon.eot" />
+    <Content Include="framework\assets\vendors\base\fonts\flaticon\Flaticon.ttf" />
+    <Content Include="framework\assets\vendors\base\fonts\flaticon\Flaticon.woff" />
+    <Content Include="framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.eot" />
+    <Content Include="framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.ttf" />
+    <Content Include="framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.woff" />
+    <Content Include="framework\assets\vendors\base\fonts\font-awesome\fontawesome-webfont.woff2" />
+    <Content Include="framework\assets\vendors\base\fonts\font-awesome\FontAwesome.otf" />
+    <Content Include="framework\assets\vendors\base\fonts\line-awesome\line-awesome.eot" />
+    <Content Include="framework\assets\vendors\base\fonts\line-awesome\line-awesome.ttf" />
+    <Content Include="framework\assets\vendors\base\fonts\line-awesome\line-awesome.woff" />
+    <Content Include="framework\assets\vendors\base\fonts\line-awesome\line-awesome.woff2" />
+    <Content Include="framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.eot" />
+    <Content Include="framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.ttf" />
+    <Content Include="framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.woff" />
+    <Content Include="framework\assets\vendors\base\fonts\metronic\Metronic_fda1334c35d0f5fe2afb3afebbb6774a.woff2" />
+    <Content Include="framework\assets\vendors\base\fonts\socicon\socicon.eot" />
+    <Content Include="framework\assets\vendors\base\fonts\socicon\socicon.ttf" />
+    <Content Include="framework\assets\vendors\base\fonts\socicon\socicon.woff" />
+    <Content Include="framework\assets\vendors\base\fonts\summernote\summernote.eot" />
+    <Content Include="framework\assets\vendors\base\fonts\summernote\summernote.ttf" />
+    <Content Include="framework\assets\vendors\base\fonts\summernote\summernote.woff" />
     <None Include="Properties\PublishProfiles\ToilluminateWebModel.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

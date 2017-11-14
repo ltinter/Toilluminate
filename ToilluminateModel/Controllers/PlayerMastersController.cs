@@ -160,7 +160,8 @@ namespace ToilluminateModel.Controllers
             psdList.Add(new Models.PlayerStatusData("Lost", 0));
             psdList.Add(new Models.PlayerStatusData("Offline", 0));
             psdList.Add(new Models.PlayerStatusData("Total", 0));
-            foreach (PlayerMaster pm in db.PlayerMaster)
+            List<PlayerMaster> pmList = db.PlayerMaster.ToList();
+            foreach (PlayerMaster pm in pmList)
             {
                 if (PublicMethods.isPlayerActive(pm, db))
                 {

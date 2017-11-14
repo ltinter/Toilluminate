@@ -116,7 +116,8 @@ namespace ToilluminateModel.Controllers
         {
             List<DataModel> jdmList = new List<DataModel>();
             DataModel jdm;
-            foreach (FolderMaster fm in db.FolderMaster.Where(a=>a.GroupID == GroupID))
+            List<FolderMaster> fmList = db.FolderMaster.Where(a => a.GroupID == GroupID).ToList();
+            foreach (FolderMaster fm in fmList)
             {
                 jdm = new DataModel();
                 jdm.id = fm.FolderID.ToString();
@@ -187,12 +188,15 @@ namespace ToilluminateModel.Controllers
 
             List<DataModel> jdmList = new List<DataModel>();
             DataModel jdm;
+            StateForJsonModel sfjm = new StateForJsonModel();
+            sfjm.opened = false;
             foreach (var item in jsonList)
             {
                 jdm = new DataModel();
                 jdm.id = item.fm.FolderID.ToString();
                 jdm.text = item.fm.FolderName;
                 jdm.parent = item.fm.FolderParentID == null ? "#" : item.fm.FolderParentID.ToString();
+                jdm.state = sfjm;
                 jdm.li_attr = item;
                 jdmList.Add(jdm);
             }
