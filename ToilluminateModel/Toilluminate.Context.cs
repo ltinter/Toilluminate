@@ -18,7 +18,6 @@ namespace ToilluminateModel
         public ToilluminateEntities()
             : base("name=ToilluminateEntities")
         {
-            ((IObjectContextAdapter)this).ObjectContext.CommandTimeout = 180;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
