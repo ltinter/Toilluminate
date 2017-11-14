@@ -28,6 +28,7 @@ namespace ToilluminateClient
         public virtual DbSet<FileMaster> FileMaster { get; set; }
         public virtual DbSet<FolderMaster> FolderMaster { get; set; }
         public virtual DbSet<GroupMaster> GroupMaster { get; set; }
+        public virtual DbSet<GroupPlayListLinkTable> GroupPlayListLinkTable { get; set; }
         public virtual DbSet<PlayerMaster> PlayerMaster { get; set; }
         public virtual DbSet<PlayerPlayListLinkTable> PlayerPlayListLinkTable { get; set; }
         public virtual DbSet<PlayListMaster> PlayListMaster { get; set; }

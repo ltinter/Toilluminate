@@ -90,6 +90,9 @@
     <Compile Include="GroupMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
+    <Compile Include="GroupPlayListLinkTable.cs">
+      <DependentUpon>Toilluminate.tt</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

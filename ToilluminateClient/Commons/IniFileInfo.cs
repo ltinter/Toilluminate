@@ -61,6 +61,12 @@ namespace ToilluminateClient
         /// </summary>
         private static string iniFileDir = string.Empty;
         
+        /// <summary>
+        /// web api 地址
+        /// </summary>
+        private static string webApiAddress = "localhost:43315"; 
+        //private static string webApiAddress = "54.238.131.90"; 
+
         #region 変数
         /// <summary>
         /// logが出力することが
@@ -112,7 +118,17 @@ namespace ToilluminateClient
                 return multiDictType;
             }
         }
-        
+
+        /// <summary>
+        /// web api 地址
+        /// </summary>
+        public static string WebApiAddress
+        {
+            get
+            {
+                return webApiAddress;
+            }
+        }
         #endregion
 
         #region publicメソッド

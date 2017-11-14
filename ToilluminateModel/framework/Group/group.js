@@ -4,7 +4,7 @@
     
     var GroupData;
     var selectPlayerdata;
-
+    var playListgroup=[];
     var editGroupID;
     var selectedGroupID = null;
     var groupTreeForPlayerEditID = null;
@@ -324,17 +324,17 @@
                 note: $("#text_note").val(),
                 newGroupNameParentID: groupTreeForPlayerEditID,
                 success: function (data) {
-                    div_main.show();
-                    div_edit.hide();
-                    $.insmGroup('initGroupTree');
+                    //div_main.show();
+                    //div_edit.hide();
+                    //$.insmGroup('initGroupTree');
                     editGroupID = undefined;
                     $.insmFramework('GroupPlayListLinkTables', {
                         groupID: editGroupID,
-                        PlayListID: '26',
+                        PlayListID: playListgroup,
                         success: function (data) {
-                            //div_main.show();
-                            //div_edit.hide();
-                            //$.insmGroup('initGroupTree');
+                            div_main.show();
+                            div_edit.hide();
+                            $.insmGroup('initGroupTree');
                             editGroupID = undefined;
                         },
                         error: function () {
@@ -360,6 +360,16 @@
                     $(selectPlayerdata[index]).data().obj.OnlineFlag = $("input[name='radio_Online']:checked").val()
                 });
             }
+        },
+        getPlaylistByGroup: function (options) {
+            $.insmFramework('getPlaylistByGroup', {
+                groupID: options.groupID,
+                success: function (GroupPlayLists) {
+                    $.insmGroup('showPlaylist', { Playlists: GroupPlayLists, isGroup: options.isGroup });
+                },
+                error: function () {
+                },
+            });
         },
         showPlaylist: function (options) {
             var div_PlaylistEditorContent = $('#group_player_playlist');
@@ -432,22 +442,101 @@
                     div_Playlisthead.append(div_head_tools);
                     div_Playlist.append(div_Playlisthead);
                     div_li.click(function () {
-                        var a = div_Playlist.clone(true);
-                        div_forcedplaylists.append(a);
+                        var playlistclone = div_Playlist.clone(true);
+                        div_forcedplaylists.append(playlistclone);
+                        playListgroup.push(Playlist.PlayListID);
                     });
                     div_PlaylistEditorContent.append(div_Playlist);
                 });
             };
-            $.insmFramework('GetForcedPlayListByGroupID', {
-                groupID: selectedGroupID,
-                success: function (forcedPlayList) {
-                    var a = '';
-                },
-                error: function () {
-                }
-            })
-            
-        }
+            var tempForcedPlayList = null;
+            if (options.isGroup) {
+                $.insmFramework('getForcedPlaylistByGroup', {
+                    groupID: editGroupID,
+                    success: function (forcedPlayList) {
+                        tempForcedPlayList = forcedPlayList
+                    },
+                    error: function () {
+                    }
+                })
+            } else {
+                $.insmFramework('getForcedPlaylistByPlayer', {
+                    groupID: editGroupID,
+                    success: function (forcedPlayList) {
+                        tempForcedPlayList = forcedPlayList;
+                    },
+                    error: function () {
+                    }
+                })
+            }
+
+            if (tempForcedPlayList) {
+                $.each(options.Playlists, function (index, Playlist) {
+                    var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
+                    var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
+                    var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
+                    var div_title = $('<div/>').addClass('m-portlet__head-title');
+                    var span_head_icon = $("<span />").addClass('m-portlet__head-icon');
+                    var span_i = '<i class="fa fa-file-text"></i>';
+                    var head_text = $('<h3 />').addClass('m-portlet__head-text').text(Playlist.PlayListName);
+                    span_head_icon.append(span_i);
+                    div_title.append(span_head_icon);
+                    div_title.append(head_text);
+                    div_head_caption.append(div_title);
+                    div_Playlisthead.append(div_head_caption);
+
+                    var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
+                    var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
+                    var div_li = $('<li />').addClass('m-portlet__nav-item');
+                    var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+                    var href_i = $('<i />').addClass("fa fa-toggle-right");
+                    href.append(href_i);
+                    div_li.append(href);
+                    div_portlet_nav.append(div_li);
+                    var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push");
+                    div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
+                    var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
+                    var div_li_i = $('<i />').addClass('la la-ellipsis-v');
+                    div_li_a_toggle.append(div_li_i);
+                    div_li_list.append(div_li_a_toggle);
+
+                    var div_m_dropdown_wrapper = $('<div/>').addClass('m-dropdown__wrapper');
+                    var wrappe_spantitle = $("<span style='left: auto; right: 18.5px;'/>").addClass('m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust');
+                    var div_m_dropdown_inner = $('<div/>').addClass("m-dropdown__inner");
+                    var div_m_dropdown_bodyr = $('<div/>').addClass("m-dropdown__body");
+                    var div_m_dropdown_content = $('<div/>').addClass("m-dropdown__content");
+
+                    var ul = $('<ul>').addClass("m-nav");
+                    //Item
+                    if (Playlist.Settings) {
+                        var playlistSetting = JSON.parse(Playlist.Settings);
+                        $.each(playlistSetting.PlaylistItems, function (index, PlaylistItem) {
+                            var ul_li = $('<li />').addClass('m-nav__item');
+                            var ul_li_href = $('<a />').addClass("m-nav__link");
+                            var ul_li_a = $('<i />').addClass("m-nav__link-icon flaticon-share");
+                            var ul_li_href_span = $("<span />").addClass('m-nav__link-text');
+
+                            ul_li_href_span.text(PlaylistItem.PlaylistItemName);
+                            ul_li_href.append(ul_li_a, ul_li_href_span);
+                            ul_li.append(ul_li_href);
+                            ul.append(ul_li);
+                        })
+                    }
+
+                    div_m_dropdown_content.append(ul);
+                    div_m_dropdown_bodyr.append(div_m_dropdown_content);
+                    div_m_dropdown_inner.append(div_m_dropdown_bodyr);
+                    div_head_tools.append(div_portlet_nav);
+                    div_m_dropdown_wrapper.append(wrappe_spantitle);
+                    div_m_dropdown_wrapper.append(div_m_dropdown_inner);
+                    div_li_list.append(div_m_dropdown_wrapper)
+                    div_portlet_nav.append(div_li_list);
+                    div_Playlisthead.append(div_head_tools);
+                    div_Playlist.append(div_Playlisthead);
+                    div_forcedplaylists.append(div_Playlist);
+                });
+            }
+        },  
     }
     $.insmGroup = function (method) {
         if (methods[method]) {
@@ -469,6 +558,17 @@
         var div_PlaylistEditorContent = $('#group_player_playlist');
         div_PlaylistEditorContent.empty();
         $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(localize_jap["New Group"]);
+        //$.insmFramework('getPlaylistByGroupID', {
+        //    GroupID: selectedGroupID,
+        //    success: function (data) {
+        //        if (data) {
+        //            $.insmGroup('showPlaylist', { Playlists: data });
+        //        }
+        //    },
+        //    error: function () {
+
+        //    },
+        //})
     })
     $("#deletegroup").click(function (e) {
         var newGroupdata = $.insmFramework('deleteGroup', {
@@ -495,12 +595,6 @@
         div_edit.show();
 
 
-        
-
-
-
-
-
         editGroupFlg = true;
         $.insmGroup('defaultDataSet');
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
@@ -516,15 +610,7 @@
                     editGroupID = selectedGroupID;
                     $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(userGroupData.GroupName);
                 };
-                $.insmFramework('getPlaylistByGroup', {
-                    groupID: selectedGroupID,
-                    success: function (GroupPlayLists) {
-                        $.insmGroup('showPlaylist', { Playlists: GroupPlayLists });
-                    },
-                    error: function () {
-                    },
-                });
-                
+                $.insmGroup('getPlaylistByGroup', { groupID: editGroupID, isGroup:true });
             },
             error: function () {
 
@@ -559,9 +645,6 @@
                
             },
         })
-
-
-
     });
     $("#button_save_Player").click(function () {
         div_main.show();
@@ -637,7 +720,7 @@
         $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: Current_data });
     })
 
-    var edit_player_click = function (selectPlayer) {
+    var edit_player_click = function (selectPlayer, allPlayerID) {
         div_main.hide();
         div_edit.show();
         var allPlayerNames = "";
@@ -666,15 +749,34 @@
                 $("#label_Online_" + $(selectPlayer[index]).data().obj.OnlineFlag).click();
             }
         });
+        if (allPlayerID != '') {
+            $.insmFramework('getPlaylistByPlayerID', {
+                playerID: allPlayerID,
+                success: function (playlistData) {
+                    if (playlistData) {
+                        $.insmGroup('showPlaylist', { Playlists: playlistData });
+                    }
+                    
+                }
+            })
+        }
+
+        $.insmGroup('getPlaylistByGroup', { groupID: editGroupID });
     }
     $("#edit_player").click(function () {
         var selected = datatable.setSelectedRecords().getSelectedRecords();
         selectPlayerdata = selected;
         if (!selectPlayerdata) { return; }
         var allPlayerNames = "";
-        $.each(selectPlayerdata, function (playerIndex,playerItem) {
+        $.each(selectPlayerdata, function (playerIndex, playerItem) {
             allPlayerNames += ", " + $(playerItem).data().obj.PlayerName;
+        });
+
+        var allPlayerID = "";
+        $.each(selectPlayerdata, function (playerIndex, playerItem) {
+            allPlayerID += ", " + $(playerItem).data().obj.PlayerID;
         })
+
         allPlayerNames = allPlayerNames.substr(2);
         var playerSelectionLi = $('<li class="m-menu__item " data-redirect="true" aria-haspopup="true">\
                                                 <a class="m-menu__link" title="'+ allPlayerNames +'">\
@@ -697,7 +799,7 @@
             edit_player_click(selectPlayerdata);
         });
         $("#playerSelectionHistroyUl").prepend(playerSelectionLi);
-        edit_player_click(selectPlayerdata);
+        edit_player_click(selectPlayerdata, allPlayerID);
     })
 
 

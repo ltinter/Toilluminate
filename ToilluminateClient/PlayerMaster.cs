@@ -20,6 +20,8 @@ namespace ToilluminateClient
         public string PlayerAddress { get; set; }
         public string ActiveFlag { get; set; }
         public string OnlineFlag { get; set; }
+        public string ErrorFlag { get; set; }
+        public string PlayerLog { get; set; }
         public string Settings { get; set; }
         public string Comments { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }

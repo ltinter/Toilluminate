@@ -861,8 +861,8 @@ pre {
     flex: 0 0 25%;
     max-width: 25%; }
   .col-xl-4 {
-    flex: 0 0 25%;
-    max-width: 25%; }
+    flex: 0 0 33.33333%;
+    max-width: 33.33333%; }
   .col-xl-5 {
     flex: 0 0 41.66667%;
     max-width: 41.66667%; }
@@ -873,8 +873,8 @@ pre {
     flex: 0 0 58.33333%;
     max-width: 58.33333%; }
   .col-xl-8 {
-    flex: 0 0 75%;
-    max-width: 75%; }
+    flex: 0 0 66.66667%;
+    max-width: 66.66667%; }
   .col-xl-9 {
     flex: 0 0 75%;
     max-width: 75%; }

@@ -123,6 +123,7 @@
         }]
     };
     var divselectFile;
+    var editflg = false;
     var div_PlaylistEditorContent = $('#div_PlaylistEditorContent');
     var div_playlist = $('#div_playlist');
     var div_Mainplaylist = $('#div_Mainplaylist');
@@ -254,6 +255,7 @@
                             var edit_href = $('<a />').addClass("btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm").text('Edit');
 
                             edit_href.click(function () {
+                                $.playlistEditor('setfolder', { selectedGroupID: tempselectedGroupID });
                                 $.playlistEditor('editPlaylist', { playlistID: item.PlayListID });
                             });
 
@@ -294,13 +296,14 @@
             $("#div_playlist").find("h3:first").text('New Playlist');
         },
         editPlaylist: function (options) {
+            editflg = true;
             if (options.playlistID) {
                 $.playlistEditor('playlistDefaultvalue');
 
                 div_playlist.show();
                 div_Mainplaylist.hide();
                 edit_playlistId = options.playlistID;
-                $.insmFramework('getPlaylistByPlayerID', {
+                $.insmFramework('getPlaylistByPlaylistID', {
                     playlistID: options.playlistID,
                     success: function (playlistData) {
                         if (playlistData) {
@@ -374,10 +377,10 @@
             }
         },
         setfolder: function (options) {
-            selectedGroupID = options.selectedGroupID;
+            selectedGroupID = tempselectedGroupID;
             $.playlistEditor('fileDataTableDestroy');
             $.insmFramework('getFolderTreeDataForPlaylist', {
-                groupID: options.selectedGroupID,
+                groupID: tempselectedGroupID,
                 success: function (tempdataFolderTreeData) {
                     if (tempdataFolderTreeData) {
                         var tree = $('.tree-demo.folderTreePlaylist');
@@ -604,27 +607,29 @@
         div_col1.append(div_touchspin_brand);
         div_bodyMain.append(div_col1);
 
-        var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable1 = $('<lable/>').text('Sliding Speed:');
-        div_col.append(lable1);
-        div_bodyMain.append(div_col);
+        var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var lable2 = $('<lable/>').text('Sliding Speed:');
+        div_col2.append(lable1);
+        div_bodyMain.append(div_col2);
 
-        var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
-        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
-        div_touchspin_brand.append(input1);
-        div_col1.append(div_touchspin_brand);
-        div_bodyMain.append(div_col1);
+        var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var div_touchspin_brand1 = $('<div/>').addClass('m-bootstrap-touchspin-brand');
+        var input2 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+        div_touchspin_brand1.append(input2);
+        div_col3.append(div_touchspin_brand1);
+        div_bodyMain.append(div_col3);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var lable2 = $('<lable/>').text('Text Postion:');
         div_col2.append(lable2);
         div_bodyMain.append(div_col2);
-
-        //var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        //var select_option = $('<select/>').addClass('form-control m-select2').attr("id", "m_select2_3").attr("multiple", "").attr("tabindex", "-1").attr("aria-hidden", "true");
-        //div_col3.append(select_option);
-        //div_bodyMain.append(div_col3);
+        var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var select_option = $('<select/>');
+        select_option.append("<option value='0'>Top</option>");
+        select_option.append("<option value='1'>Middle</option>");
+        select_option.append("<option value='2'>Buttom</option>");
+        div_col3.append(select_option);
+        div_bodyMain.append(div_col3);
 
         var div_col4 = $('<div/>').addClass('col-xl-8');
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
@@ -636,6 +641,27 @@
 
         var div_AddnewItem = $("#playlistItem");
         div_AddnewItem.append(div_head);
+
+        input1.TouchSpin({
+            buttondown_class: 'btn btn-secondary',
+            buttonup_class: 'btn btn-secondary',
+            verticalbuttons: true,
+            verticalupclass: 'la la-angle-up',
+            verticaldownclass: 'la la-angle-down',
+            min: 0,
+            max: 60
+        });
+
+        input2.TouchSpin({
+            buttondown_class: 'btn btn-secondary',
+            buttonup_class: 'btn btn-secondary',
+            verticalbuttons: true,
+            verticalupclass: 'la la-angle-up',
+            verticaldownclass: 'la la-angle-down',
+            min: 0,
+            max: 60
+        });
+
         div_col4_main.summernote({
             height: 150,
             toolbar: [
@@ -738,6 +764,7 @@
         $.playlistEditor('playlistDefaultvalue');
         div_playlist.show();
         div_Mainplaylist.hide();
+        editflg = false;
     });
     $("#playlist_expandAll").click(function () {
         $('#groupTreeForPlaylistEditor').jstree('open_all');
@@ -792,21 +819,35 @@
             });
             Settings.PlaylistItems= palylistItemItemsdata;
         }
-
-        $.insmFramework('creatPlaylist', {
-            GroupID: tempselectedGroupID,
-            PlayListName: $("#playlist_name").val(),
-            InheritForced: '',
-            Settings: JSON.stringify(Settings),
-            Comments: $("#playlist_note").val(),
-            success: function (playlistData) {
-                if (playlistData) {
-                    div_playlist.hide();
-                    div_Mainplaylist.show();
+        if (editflg) {
+            $.insmFramework('creatPlaylist', {
+                GroupID: tempselectedGroupID,
+                PlayListName: $("#playlist_name").val(),
+                InheritForced: '',
+                Settings: JSON.stringify(Settings),
+                Comments: $("#playlist_note").val(),
+                success: function (playlistData) {
+                    if (playlistData) {
+                        div_playlist.hide();
+                        div_Mainplaylist.show();
+                    }
                 }
-            }
-        })
-       
+            })
+        } else {
+            $.insmFramework('creatPlaylist', {
+                GroupID: tempselectedGroupID,
+                PlayListName: $("#playlist_name").val(),
+                InheritForced: '',
+                Settings: JSON.stringify(Settings),
+                Comments: $("#playlist_note").val(),
+                success: function (playlistData) {
+                    if (playlistData) {
+                        div_playlist.hide();
+                        div_Mainplaylist.show();
+                    }
+                }
+            })
+        } 
     });
     $("#addPicture").click(function () {
         $.playlistEditor('greateNewItemPicture');
