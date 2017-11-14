@@ -87,15 +87,7 @@ namespace ToilluminateClient
 
         #endregion
 
-        #region API URL
-
-
-
-        /// <summary>
-        /// web api 地址
-        /// </summary>
-        //public const string API_WEB_ADDRESS = "http://54.238.131.90/{0}";
-        public const string API_WEB_ADDRESS = "http://54.238.131.90/{0}";
+        #region API Function
 
         /// <summary>
         /// 播放器发送心跳包
@@ -105,12 +97,12 @@ namespace ToilluminateClient
         /// <summary>
         /// 得到所有播放器的playlist调用
         /// </summary>
-        public const string API_PLAYERLISTMASTERS_SEND = "api/PlayListMasters/GetPlayListByPlayerID/{0}";
+        public const string API_PLAYLISTMASTERS_GET_LIST = "api/PlayListMasters/GetTotalPlayListByPlayerID/{0}";
 
         /// <summary>
         /// 得到播放器状态数据
         /// </summary>
-        public const string API_PLAYERMASTERS_GET = "api/PlayerMasters/GetPlayerStatusReportData";
+        public const string API_PLAYERMASTERS_GET_STATUS = "api/PlayerMasters/GetPlayerStatusReportData";
 
 
         #endregion

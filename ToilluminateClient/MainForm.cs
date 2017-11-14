@@ -24,9 +24,12 @@ namespace ToilluminateClient
 
         #region " variable "
 
-        private bool pnlImageVisible = false;
-        private bool pnlMediaWMPVisible = false;
-        private bool pnlMessageVisible = false;
+        private bool thisImageVisible = false;
+        private bool thisMediaWMPVisible = false;
+        private bool thisMessageVisible = false;
+        private bool thisNowImageVisible = false;
+        private bool thisNowMediaWMPVisible = false;
+        private bool thisNowMessageVisible = false;
         #endregion
 
 
@@ -45,7 +48,7 @@ namespace ToilluminateClient
 
 
             PlayApp.Clear();
-            PlayList pList1 = new PlayList(true, Utility.GetPlayDateTime(DateTime.Now).AddSeconds(3), 600);
+            PlayList pList1 = new PlayList(1,true, Utility.GetPlayDateTime(DateTime.Now).AddSeconds(3), 600);
             PlayApp.PlayListArray.Add(pList1);
 
             string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg", @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg"
@@ -53,21 +56,21 @@ namespace ToilluminateClient
             ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Random, ImageShowStyle.TopToDown, ImageShowStyle.Random, ImageShowStyle.Flip_LR };
 
             ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 6);
-            //pList1.ad
-           // pList1.TempleteItemList.Add(itItem11);
+
+            pList1.PlayAddTemplete(itItem11);
 
 
-            string[] messageList = new string[] { @"hello world", @"今日は明日の全国に雨が降る。" };
-            MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Down, MessageShowStyle.Random };
+            string[] messageList = new string[] { @"hello world", @"今日は明日の全国に雨が降る。", @"Welcome to use this system。" };
+            MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Top, MessageShowStyle.Down, MessageShowStyle.Center };
 
             MessageTempleteItem itItem21 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 0);
-            pList1.MessageTempleteItemList.Add(itItem21);
+            pList1.PlayAddTemplete(itItem21);
 
 
             //ImageTempleteItem itItem12 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 4);
             //pList1.TempleteItemList.Add(itItem12);
 
-            
+
 
             //MediaTempleteItem itItem31 = new MediaTempleteItem(@"C:\C_Works\Medias\mp01.mp4", MediaShowStyle.None);
             //pList1.TempleteItemList.Add(itItem31);
@@ -131,29 +134,36 @@ namespace ToilluminateClient
             {
                 this.tmrPlayList.Stop();
 
+                VariableInfo.RefreshPlayListInfo();
+
                 if (PlayApp.PlayListArray.Count > 0)
                 {
-                    if (PlayApp.CurrentIndex < 0 || PlayApp.CurrentIndex >= PlayApp.PlayListArray.Count)
+                    PlayList eplItem = PlayApp.ExecutePlayList;
+                    if (eplItem == null)
                     {
-                        PlayApp.CurrentIndex = 0;
-                    }
-
-                    while (PlayApp.CurrentIndex < PlayApp.PlayListArray.Count && PlayApp.CurrentPlayList().PlayListState == PlayListStateType.Stop)
-                    {
-                        PlayApp.CurrentIndex++;
-                    }
-
-                    if (PlayApp.CurrentIndex < PlayApp.PlayListArray.Count)
-                    {
-                        if (PlayApp.ExecutePlayList())
+                        if (PlayApp.CurrentPlayValid())
                         {
-                            this.SetAllVisible(false);
-                            this.tmrTemplete_Tick(null, null);
+                            if (PlayApp.ExecutePlayListStart())
+                            {
+                                this.SetAllVisible(false);
+                                this.tmrTemplete_Tick(null, null);
+                            }
+                        }
+                    }
+                    else if (eplItem.PlayListState == PlayListStateType.Stop)
+                    {
+                        if (PlayApp.CurrentPlayValid())
+                        {
+                            if (PlayApp.ExecutePlayListStart())
+                            {
+                                this.SetAllVisible(false);
+                                this.tmrTemplete_Tick(null, null);
+                            }
                         }
                     }
                 }
 
-
+                System.Threading.Thread.Sleep(100);
                 this.tmrPlayList.Start();
             }
             catch (Exception ex)
@@ -172,13 +182,13 @@ namespace ToilluminateClient
             {
                 this.tmrTemplete.Stop();
 
-                if (PlayApp.CurrentPlayValid())
+                if (PlayApp.ExecutePlayList != null && PlayApp.ExecutePlayList.PlayListState != PlayListStateType.Stop)
                 {
-                    PlayList pList = PlayApp.NowPlayList;
-
+                    PlayList pList = PlayApp.ExecutePlayList;
+                    
                     if (pList.CurrentTempleteIndex < 0)
                     {
-                        pList.PlayRefreshTemplete(); 
+                        pList.PlayRefreshTemplete();
                     }
                     else if (pList.CurrentTempleteIndex >= pList.TempleteItemList.Count)
                     {
@@ -186,39 +196,38 @@ namespace ToilluminateClient
                         pList.PlayStop();
                     }
 
-                    pList.PlayNextTemplete();
-
                     if (pList.CurrentTempleteIndex < pList.TempleteItemList.Count)
                     {
                         showVisible = true;
                     }
-                    
 
                     if (pList.CurrentTempleteItem.TempleteType == TempleteType.Image)
                     {
-                        pnlImageVisible = true;
+                        thisImageVisible = true;
                         (pList.CurrentTempleteItem as ImageTempleteItem).ExecuteStart();
                         this.tmrImage_Tick(null, null);
 
                         //pnlImageVisible = false;
-                        pnlMessageVisible = false;
-                        pnlMediaWMPVisible = false;
+                        thisMessageVisible = false;
+                        thisMediaWMPVisible = false;
                     }
                     else if (pList.CurrentTempleteItem.TempleteType == TempleteType.Media)
                     {
-                        pnlMediaWMPVisible = true;
+                        thisMediaWMPVisible = true;
                         this.tmrMedia_Tick(null, null);
 
-                        pnlImageVisible = false;
-                        pnlMessageVisible = false;
+                        thisImageVisible = false;
+                        thisMessageVisible = false;
                         //pnlMediaWMPVisible = false;
                     }
 
-                    if (pList.MessageTempleteItemList.Count >0)
+                    if (pList.MessageTempleteItemList.Count > 0)
                     {
-                        pnlMessageVisible = true;
+                        thisMessageVisible = true;
                         this.tmrMessage_Tick(null, null);
                     }
+
+                    pList.PlayMoveNextTemplete();
 
                     if (pList.PlayListState == PlayListStateType.Stop)
                     {
@@ -232,8 +241,8 @@ namespace ToilluminateClient
                     this.SetNowVisible();
                 }
 
-                
 
+                System.Threading.Thread.Sleep(100);
                 this.tmrTemplete.Start();
             }
             catch (Exception ex)
@@ -248,7 +257,7 @@ namespace ToilluminateClient
             {
                 this.tmrImage.Stop();
 
-                ImageTempleteItem itItem = PlayApp.NowPlayList.CurrentTempleteItem as ImageTempleteItem;
+                ImageTempleteItem itItem = PlayApp.ExecutePlayList.CurrentTempleteItem as ImageTempleteItem;
 
                 if (itItem.CurrentIsChanged())
                 {
@@ -264,6 +273,7 @@ namespace ToilluminateClient
                     return;
                 }
 
+                System.Threading.Thread.Sleep(100);
                 this.tmrImage.Start();
             }
             catch (Exception ex)
@@ -313,14 +323,15 @@ namespace ToilluminateClient
             {
                 this.tmrMessage.Stop();
 
-                if (PlayApp.NowPlayList.PlayListState == PlayListStateType.Stop)
+                if (PlayApp.ExecutePlayList.PlayListState == PlayListStateType.Stop)
                 {
                     CloseMessage();
                     return;
                 }
 
-                foreach (MessageTempleteItem mtItem in PlayApp.NowPlayList.MessageTempleteItemList)
+                foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
                 {
+                    mtItem.ExecuteStart();
                     if (mtItem.TempleteState != TempleteStateType.Stop)
                     {
                         if (mtItem.IntervalSecond == 0)
@@ -337,28 +348,24 @@ namespace ToilluminateClient
                                 ShowMessage(mtItem);
                             }
                         }
-
-
-                        Debug.WriteLine(string.Format("{0} - {1} - {2}", mtItem.CurrentIndex, mtItem.CurrentShowStyleIndex, DateTime.Now.ToLongTimeString()));
                     }
+                }
 
-
-                    foreach (Control con in this.Controls)
+                foreach (Control con in this.pnlShow.Controls)
+                {
+                    if (con.Name.Length > Constants.LabelNameHead.Length && Utility.GetLeftString(con.Name, Constants.LabelNameHead.Length) == Constants.LabelNameHead)
                     {
-                        if (con.Name.Length > Constants.LabelNameHead.Length && Utility.GetLeftString(con.Name, Constants.LabelNameHead.Length) == Constants.LabelNameHead)
+                        //Label lblMessage_tmp = (con as Label);
+                        Debug.WriteLine(string.Format("{0} - {1} - {2} - {3}", con.Name, con.Text, con.Left, con.Top));
+                        con.Left -= 10;
+                        if (con.Left < 0)
                         {
-                            //Label lblMessage_tmp = (con as Label);
-                            Debug.WriteLine(string.Format("{0} - {1} - {2} - {3}", con.Name, con.Text, con.Left, con.Top));
-                            con.Left -= 10;
-                            if (con.Left < 0)
-                            {
-                                con.Left = this.Width;
-                            }
+                            con.Left = this.Width;
                         }
                     }
                 }
 
-                //System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(10);
                 this.tmrMessage.Start();
             }
             catch (Exception ex)
@@ -424,34 +431,33 @@ namespace ToilluminateClient
                 //Rectangle screenSize = System.Windows.Forms.SystemInformation.VirtualScreen;
                 //获取Form的宽和高
                 Size screenSize = this.Size;
-                this.pnlShowImage.Location = new System.Drawing.Point(0, 0);
-                this.pnlShowImage.Size = new System.Drawing.Size(screenSize.Width, screenSize.Height);
-
-                this.pnlShowMediaWMP.Location = new System.Drawing.Point(0, 0);
-                this.pnlShowMediaWMP.Size = new System.Drawing.Size(screenSize.Width, screenSize.Height);
-
-                this.pnlShowImage.Visible = false;
-                this.pnlShowMediaWMP.Visible = false;
-
-
+                this.pnlShow.Location = new System.Drawing.Point(0, 0);
+                this.pnlShow.Size = new System.Drawing.Size(screenSize.Width, screenSize.Height);
+                
+                
                 this.picImage.Location = new System.Drawing.Point(0, 0);
-                this.picImage.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
+                this.picImage.Size = new System.Drawing.Size(pnlShow.Width, pnlShow.Height);
                 //是图片的大小适应控件PictureBox的大小 
                 picImage.SizeMode = PictureBoxSizeMode.StretchImage;
+                this.picImage.Visible = false;
 
                 this.axWMP.Location = new System.Drawing.Point(0, 0);
-                this.axWMP.Size = new System.Drawing.Size(pnlShowMediaWMP.Width, pnlShowMediaWMP.Height);
+                this.axWMP.Size = new System.Drawing.Size(pnlShow.Width, pnlShow.Height);
                 //播放器样式
                 this.axWMP.uiMode = "none";
                 //禁用播放器右键菜单
                 this.axWMP.enableContextMenu = false;
+                this.axWMP.Visible = false;
 
-                
-
+                this.tmrPlayList.Interval = 500;
+                this.tmrTemplete.Interval = 500;
+                this.tmrImage.Interval = 200;
+                this.tmrMessage.Interval = 1;
+                this.tmrMedia.Interval = 200;
             }
             catch (Exception ex)
             {
-                throw ex;
+                Debug.WriteLine(ex.Message);
             }
         }
         #endregion  " public "
@@ -463,6 +469,7 @@ namespace ToilluminateClient
         {
             try
             {
+                this.picImage.Visible = false;
                 this.tmrImage.Stop();
                 if (this.picImage.Image != null)
                 {
@@ -578,6 +585,7 @@ namespace ToilluminateClient
         {
             try
             {
+                this.axWMP.Visible = false;
                 this.tmrMedia.Stop();
                 WMPStop();
             }
@@ -760,7 +768,7 @@ namespace ToilluminateClient
         {
             try
             {
-                mtItem.ShowCurrent(this);
+                mtItem.ShowCurrent(this.pnlShow);
             }
             catch (Exception ex)
             {
@@ -773,15 +781,15 @@ namespace ToilluminateClient
         #region " visible "
         private void GetNowVisible()
         {
-            pnlImageVisible = this.pnlShowImage.Visible;
-            pnlMessageVisible = this.lblMessage.Visible;
-            pnlMediaWMPVisible = this.pnlShowMediaWMP.Visible;
+            thisImageVisible = thisNowImageVisible;
+            thisMessageVisible = thisNowMessageVisible;
+            thisMediaWMPVisible = thisNowMediaWMPVisible;
         }
         private void SetAllVisible(bool visible)
         {
-            this.pnlShowImage.Visible = visible;
-            this.pnlShowMediaWMP.Visible = visible;
-            this.lblMessage.Visible = visible;
+            thisNowImageVisible = visible;
+            thisNowMessageVisible = visible;
+            thisNowMediaWMPVisible = visible;
             GetNowVisible();
 
         }
@@ -789,27 +797,29 @@ namespace ToilluminateClient
         {
             try
             {
-                if (this.pnlShowImage.Visible != pnlImageVisible)
+                if (thisNowImageVisible != thisImageVisible)
                 {
-                    this.pnlShowImage.Visible = pnlImageVisible;
-                    if (this.pnlShowImage.Visible == false)
+                    thisNowImageVisible = thisImageVisible;
+                    this.picImage.Visible = thisNowImageVisible;
+                    if (thisNowImageVisible == false)
                     {
                         CloseImage();
                     }
                 }
-                if (this.lblMessage.Visible != pnlMessageVisible)
+                if (thisNowMessageVisible != thisMessageVisible)
                 {
-                    this.lblMessage.Visible = pnlMessageVisible;
-                    if (this.lblMessage.Visible == false)
+                    thisNowMessageVisible = thisMessageVisible;
+                    if (thisNowMessageVisible == false)
                     {
                         CloseMessage();
                     }
                 }
 
-                if (this.pnlShowMediaWMP.Visible != pnlMediaWMPVisible)
+                if (thisNowMediaWMPVisible != thisMediaWMPVisible)
                 {
-                    this.pnlShowMediaWMP.Visible = pnlMediaWMPVisible;
-                    if (this.pnlShowMediaWMP.Visible == false)
+                    thisNowMediaWMPVisible = thisMediaWMPVisible;
+                    this.axWMP.Visible = thisNowMediaWMPVisible;
+                    if (thisNowMediaWMPVisible == false)
                     {
                         CloseMediaWMP();
                     }

@@ -5,16 +5,17 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="743b6f8835d3413aa9e18ac08a7b1e06" Name="Diagram1">
-        <EntityTypeShape EntityType="ToilluminateModel.FileMaster" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ToilluminateModel.FolderMaster" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ToilluminateModel.GroupMaster" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ToilluminateModel.PlayerMaster" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ToilluminateModel.PlayerPlayListLinkTable" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ToilluminateModel.PlayListMaster" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ToilluminateModel.TemplatTypeMaster" Width="1.5" PointX="6.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ToilluminateModel.TempleFileLinkTable" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ToilluminateModel.TempletMaster" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ToilluminateModel.UserMaster" Width="1.5" PointX="2.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ToilluminateModel.FileMaster" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.FolderMaster" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.GroupMaster" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.GroupPlayListLinkTable" Width="1.5" PointX="2.75" PointY="4.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.PlayerMaster" Width="1.5" PointX="4.75" PointY="4.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.PlayerPlayListLinkTable" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.PlayListMaster" Width="1.5" PointX="6.75" PointY="4.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.TemplatTypeMaster" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.TempleFileLinkTable" Width="1.5" PointX="0.75" PointY="8.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.TempletMaster" Width="1.5" PointX="8.75" PointY="4.75" />
+        <EntityTypeShape EntityType="ToilluminateModel.UserMaster" Width="1.5" PointX="6.75" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

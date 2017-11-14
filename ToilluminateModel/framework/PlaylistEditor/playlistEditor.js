@@ -129,6 +129,8 @@
     var div_Mainplaylist = $('#div_Mainplaylist');
     var edit_playlistId = null;
     var tempselectedGroupID = null;
+    var selectedFolderID = null;
+    var currentNeededFileType = null;
     var methods = {
         init: function (options) {
             // Global vars
@@ -291,6 +293,7 @@
             $("#m_touchspin_3").val('0');
             var div_AddnewItem = $("#playlistItem");
             div_AddnewItem.empty();
+            $("#div_playlist").find("h3:first").text('New Playlist');
         },
         editPlaylist: function (options) {
             editflg = true;
@@ -307,6 +310,7 @@
                             var Settings = JSON.parse(playlistData.Settings);
                             $('#playlist_name').val(playlistData.PlayListName);
                             $('#playlist_note').text(playlistData.Comments);
+                            $("#div_playlist").find("h3:first").text(playlistData.PlayListName);
                         }
                         if (Object.getOwnPropertyNames(Settings).length > 0) {
                             $("#playlist_monday_value").data("ionRangeSlider").update({
@@ -389,9 +393,7 @@
                         tree.on("changed.jstree", function (e, data) {
                             if (data.node) {
                                 selectedFolderID = data.node.id;
-                                $.playlistEditor('setfile', {
-                                    selectedFolderID: selectedFolderID
-                                });
+                                $.playlistEditor('setfile');
                             }
                         });
                     }
@@ -404,12 +406,21 @@
                 },
             });
         },
-        setfile: function (options) {
-            selectedFolderID = options.selectedFolderID;
+        setfile: function () {
             $('#datatable_file1').prop("outerHTML", "<div class='m_datatable' id='datatable_file1'></div>");
             $.insmFramework('getFilesByFolder', {
                 FolderID: selectedFolderID,
                 success: function (fileData) {
+                    var supportedFileTypes = {
+                        "image": [".jpg", ".gif", ".png", ".jpeg", ".bmp"],
+                        "video": [".mp4", ".wmv", ".mpeg", ".mpg", ".avi", ".mov"]
+                    };
+                    $.each(fileData, function (fileIndex, fileItem) {
+                        var tempFileType = supportedFileTypes[currentNeededFileType.toLowerCase()];
+                        if (!tempFileType || !$.inArray(fileItem.FileType.toLowerCase().trim(), tempFileType) == -1) {
+                            fileData[fileIndex] = null;
+                        }
+                    });
                     tableData.data.source.data = fileData;
                     $("#datatable_file1").data("datatable", $('#datatable_file1').mDatatable(tableData));
                 },
@@ -507,7 +518,8 @@
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
             divselectFile = div_col_image;
             if ($("#datatable_file1").data("datatable")) {
-                $("#datatable_file1").data("datatable").setActiveAll(false);
+                currentNeededFileType = "image";
+                $("#datatable_file1").data("datatable").reload();
             }
         });
 
