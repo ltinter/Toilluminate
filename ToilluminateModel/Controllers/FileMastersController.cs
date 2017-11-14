@@ -237,7 +237,7 @@ namespace ToilluminateModel.Controllers
                 HttpPostedFile file = fileUploadData[0];
                 string fileName = file.FileName.Trim('"');
                 FileInfo fileInfo = new FileInfo(fileName);
-                string fileType = fileInfo.Extension;
+                string fileType = fileInfo.Extension.ToLower();
                 string fileNameKey = DateTime.Now.ToString("yyyyMMddHHmmssffff");
                 string filePathName = fileNameKey + fileType;
                 string thumbnailFilePathName = filePathName;
