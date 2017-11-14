@@ -116,24 +116,42 @@ namespace ToilluminateModel.Controllers
         }
         
         [HttpPost, Route("api/PlayListMasters/GetOwnPlayListByPlayerID/{PlayerID}")]
-        public async Task<IQueryable<PlayListMaster>> GetOwnPlayListByPlayerID(int PlayerID)
+        public async Task<IHttpActionResult> GetOwnPlayListByPlayerID(int PlayerID)
         {
-            return db.PlayListMaster
-                    .Where(q => db.PlayerPlayListLinkTable
-                    .Where(s => s.PlayListID == q.PlayListID && s.PlayerID == PlayerID).Count() > 0);
+
+            var jsonList = (from plm in db.PlayListMaster
+                            join pplt in db.PlayerPlayListLinkTable on plm.PlayListID equals pplt.PlayListID
+                            select new
+                            {
+                                plm.PlayListID,
+                                plm.PlayListName,
+                                plm.Settings,
+                                plm.UpdateDate,
+                                plm.GroupID
+                            }).ToList();
+            return Json(jsonList);
         }
 
 
         [HttpPost, Route("api/PlayListMasters/GetForcedPlayListByGroupID/{GroupID}")]
-        public async Task<IQueryable<PlayListMaster>> GetForcedPlayListByGroupID(int GroupID)
+        public async Task<IHttpActionResult> GetForcedPlayListByGroupID(int GroupID)
         {
             List<int> GroupIDList = new List<int>();
             GroupIDList.Add(GroupID);
             PublicMethods.GetParentGroupIDs(GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
-            return db.PlayListMaster
-                    .Where(q => db.GroupPlayListLinkTable
-                    .Where(s => s.PlayListID == q.PlayListID && groupIDs.Contains((int)s.GroupID)).Count() > 0);
+            var jsonList = (from plm in db.PlayListMaster
+                            join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
+                            where groupIDs.Contains((int)gplt.GroupID)
+                            select new
+                            {
+                                plm.PlayListID,
+                                plm.PlayListName,
+                                plm.Settings,
+                                plm.UpdateDate,
+                                plm.GroupID
+                            }).ToList();
+            return Json(jsonList);
         }
 
 
@@ -141,17 +159,18 @@ namespace ToilluminateModel.Controllers
         public async Task<List<PlayListMaster>> GetTotalPlayListByPlayerID(int PlayerID)
         {
             PlayerMaster pm = db.PlayerMaster.Find(PlayerID);
-            List<PlayListMaster> pmList = db.PlayListMaster
-                    .Where(q => db.PlayerPlayListLinkTable
-                    .Where(s => s.PlayListID == q.PlayListID && s.PlayerID == PlayerID).Count() > 0).ToList();
+            List<PlayListMaster> pmList = (from plm in db.PlayListMaster
+                                           join pplt in db.PlayerPlayListLinkTable on plm.PlayListID equals pplt.PlayListID
+                                           select plm).ToList();
 
             List<int> GroupIDList = new List<int>();
             GroupIDList.Add((int)pm.GroupID);
             PublicMethods.GetParentGroupIDs((int)pm.GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
-            pmList.AddRange(db.PlayListMaster
-                    .Where(q => db.GroupPlayListLinkTable
-                    .Where(s => s.PlayListID == q.PlayListID && groupIDs.Contains((int)s.GroupID)).Count() > 0).ToList());
+            pmList.AddRange((from plm in db.PlayListMaster
+                             join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
+                             where groupIDs.Contains((int)gplt.GroupID)
+                             select plm).ToList());
             return pmList;
         }
 
