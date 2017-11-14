@@ -622,7 +622,9 @@
     <Content Include="framework\plugins\FileManager\file.css" />
     <Content Include="framework\plugins\FileManager\file.js" />
     <Content Include="framework\plugins\FileUpload\fileUpload.js" />
-    <Content Include="framework\plugins\FolderManager\folder.js" />
+    <Content Include="framework\plugins\FolderManager\folder.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="framework\plugins\insmLocalize\Languages\chn.js" />
     <Content Include="framework\plugins\insmLocalize\Languages\eng.js" />
     <Content Include="framework\plugins\insmLocalize\Languages\jap.js" />

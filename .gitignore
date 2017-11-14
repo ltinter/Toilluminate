@@ -243,5 +243,4 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-/ToilluminateModel/Framework/*
 /ToilluminateModel/FileResource/*
