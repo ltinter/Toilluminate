@@ -35,7 +35,6 @@
             this.lblMessage = new System.Windows.Forms.Label();
             this.pnlShowMediaWMP = new System.Windows.Forms.Panel();
             this.axWMP = new AxWMPLib.AxWindowsMediaPlayer();
-            this.tipBox = new System.Windows.Forms.ToolTip(this.components);
             this.tmrImage = new System.Windows.Forms.Timer(this.components);
             this.tmrPlayList = new System.Windows.Forms.Timer(this.components);
             this.tmrMedia = new System.Windows.Forms.Timer(this.components);
@@ -143,7 +142,6 @@
         private System.Windows.Forms.Panel pnlShowImage;
         private System.Windows.Forms.Panel pnlShowMediaWMP;
         private System.Windows.Forms.PictureBox picImage;
-        private System.Windows.Forms.ToolTip tipBox;
         private System.Windows.Forms.Timer tmrImage;
         private System.Windows.Forms.Timer tmrPlayList;
         private AxWMPLib.AxWindowsMediaPlayer axWMP;
