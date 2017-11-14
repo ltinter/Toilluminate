@@ -63,6 +63,8 @@ namespace ToilluminateClient
             //    }
             //}
 
+            VariableInfo.RefreshPlayListInfo();
+
             // メイン画面起動
             MainForm mainFormInstance = new MainForm();
             Application.Run(mainFormInstance);

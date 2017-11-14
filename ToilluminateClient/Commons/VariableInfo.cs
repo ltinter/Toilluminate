@@ -30,12 +30,12 @@ namespace ToilluminateClient
         /// <summary>
         /// 放送ID
         /// </summary>
-        private static int playID = 0;
+        private static string playID = "0";
 
         /// <summary>
         /// 放送リストID
         /// </summary>
-        private static int playListID = 0;
+        private static string playListID = "0";
 
         #endregion
 
@@ -44,7 +44,7 @@ namespace ToilluminateClient
         /// <summary>
         /// 放送ID
         /// </summary>
-        public static int PlayID
+        public static string PlayID
         {
             get
             {
@@ -55,7 +55,7 @@ namespace ToilluminateClient
         /// <summary>
         /// 放送リストID
         /// </summary>
-        public static int PlayListID
+        public static string PlayListID
         {
             get
             {
@@ -120,6 +120,12 @@ namespace ToilluminateClient
         {
             try
             {
+                playID = "";
+
+                //Constants.API_PLAYERMASTERS_SEND
+                string urlString = string.Format(Constants.API_WEB_ADDRESS, string.Format(Constants.API_PLAYERMASTERS_GET, playID));
+
+               string getJsonString= WebApiInfo.HttpGet(urlString);
 
             }
             catch (Exception ex)

@@ -53,6 +53,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -73,6 +74,7 @@
     <Compile Include="Commons\PlayApp.cs" />
     <Compile Include="Commons\Utility.cs" />
     <Compile Include="Commons\VariableInfo.cs" />
+    <Compile Include="Commons\WebApiInfo.cs" />
     <Compile Include="FileMaster.cs">
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
