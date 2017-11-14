@@ -118,9 +118,9 @@ var initTimeOptionsInPlayerEdit = function () {
 }
 
 var initSlideEffectDropdown = function () {
-    $('#m_select2_3').select2({
-        placeholder: "Select dildeshow effects"
-    });
+    //$('#m_select2_3').select2({
+    //    placeholder: "Select dildeshow effects"
+    //});
 }
 var EnableTouchSpin = function () {
     $('#m_touchspin_1,#m_touchspin_4').TouchSpin({
