@@ -45057,13 +45057,13 @@ return /******/ (function(modules) { // webpackBootstrap
           });
           myDropzone.on("success",function(file,data){
             $.file('insertDataToTable',data);
-            file.quickFileuploadProgressLi.remove();
+            if (file.quickFileuploadProgressLi) file.quickFileuploadProgressLi.remove();
           });
           myDropzone.on("complete",function(file,data){
-            file.quickFileuploadProgressLi.remove();
+            if (file.quickFileuploadProgressLi) file.quickFileuploadProgressLi.remove();
           });
           myDropzone.on("canceled",function(file,data){
-            file.quickFileuploadProgressLi.remove();
+            if (file.quickFileuploadProgressLi) file.quickFileuploadProgressLi.remove();
           });
         results.push(myDropzone);
       } else {
