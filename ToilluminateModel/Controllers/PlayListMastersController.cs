@@ -146,6 +146,7 @@ namespace ToilluminateModel.Controllers
                                               join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                                               from pv in ProjectV.DefaultIfEmpty()
                                               where groupIDs.Contains((int)gplt.GroupID)
+                                              orderby gplt.GroupID == GroupID?2:1,gplt.Index
                                               select new PlayListLinkData
                                               {
                                                   PlayListID = plm.PlayListID,
@@ -164,11 +165,18 @@ namespace ToilluminateModel.Controllers
         public async Task<List<PlayListLinkData>> GetTotalPlayListByPlayerID(int PlayerID)
         {
             PlayerMaster pm = db.PlayerMaster.Find(PlayerID);
+
+            List<int> GroupIDList = new List<int>();
+            GroupIDList.Add((int)pm.GroupID);
+            PublicMethods.GetParentGroupIDs((int)pm.GroupID, ref GroupIDList, db);
+            int[] groupIDs = GroupIDList.ToArray<int>();
+
             List<PlayListLinkData> pldList = (from plm in db.PlayListMaster
-                                              join pplt in db.PlayerPlayListLinkTable on plm.PlayListID equals pplt.PlayListID
+                                              join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
                                               join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                                               from pv in ProjectV.DefaultIfEmpty()
-                                              where pplt.PlayerID == PlayerID
+                                              where groupIDs.Contains((int)gplt.GroupID)
+                                              orderby gplt.Index
                                               select new PlayListLinkData
                                               {
                                                   PlayListID = plm.PlayListID,
@@ -176,18 +184,17 @@ namespace ToilluminateModel.Controllers
                                                   Settings = plm.Settings,
                                                   UpdateDate = (DateTime)plm.UpdateDate,
                                                   GroupID = (int)plm.GroupID,
-                                                  GroupName = pv.GroupName
+                                                  GroupName = pv.GroupName,
+                                                  BindGroupID = (int)gplt.GroupID,
+                                                  Index = (int)gplt.Index
                                               }).ToList();
 
-            List<int> GroupIDList = new List<int>();
-            GroupIDList.Add((int)pm.GroupID);
-            PublicMethods.GetParentGroupIDs((int)pm.GroupID, ref GroupIDList, db);
-            int[] groupIDs = GroupIDList.ToArray<int>();
             pldList.AddRange((from plm in db.PlayListMaster
-                              join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
+                              join pplt in db.PlayerPlayListLinkTable on plm.PlayListID equals pplt.PlayListID
                               join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                               from pv in ProjectV.DefaultIfEmpty()
-                              where groupIDs.Contains((int)gplt.GroupID)
+                              where pplt.PlayerID == PlayerID
+                              orderby pplt.Index
                               select new PlayListLinkData
                               {
                                   PlayListID = plm.PlayListID,
@@ -196,7 +203,7 @@ namespace ToilluminateModel.Controllers
                                   UpdateDate = (DateTime)plm.UpdateDate,
                                   GroupID = (int)plm.GroupID,
                                   GroupName = pv.GroupName,
-                                  BindGroupID = (int)gplt.GroupID
+                                  Index = (int)pplt.Index
                               }).ToList());
             return pldList;
         }

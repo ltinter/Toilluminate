@@ -42,5 +42,6 @@ namespace ToilluminateModel.Models
         public int GroupID { get; set; }
         public string GroupName { get; set; }
         public int BindGroupID { get; set; }
+        public int Index { get; set; }
     }
 }

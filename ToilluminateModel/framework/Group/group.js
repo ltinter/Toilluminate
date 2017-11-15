@@ -1,7 +1,5 @@
 ﻿(function ($) {
-    var _guid = 0;
     var GroupTreedata = [];
-    
     var GroupData;
     var selectPlayerdata;
     var playListgroup=[];
@@ -24,7 +22,7 @@
     var editPlayerFlg = false;
     var editGroupFlg = false;
     var datatable = null;
-
+    var temp_GroupTreeData;
     
     var groupJstreeData = {
         "core": {
@@ -115,6 +113,7 @@
         initGroupTree: function () {
             $.insmFramework('getGroupTreeData', {
                 success: function (tempdataGroupTreeData) {
+                    temp_GroupTreeData = tempdataGroupTreeData;
                     if (tempdataGroupTreeData) {
                         var tree = $('.tree-demo.groupTree');
                         tree.jstree(groupJstreeData);
@@ -629,6 +628,7 @@
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
         $.insmGroup('defaultDataSet');
+        div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
 
         $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
         $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
@@ -685,6 +685,13 @@
         editGroupFlg = true;
         $.insmGroup('defaultDataSet');
 
+        $.each(temp_GroupTreeData, function (index, item) {
+            if (item.id == div_groupTree.jstree(true).get_selected()) {
+                div_groupTreeForPlayerEdit.jstree(true).select_node(item.parent);
+                groupTreeForPlayerEditID = item.parent;
+            }
+        });
+
         $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
         $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
         $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
@@ -730,8 +737,9 @@
                             $("#group_sunday_value").data("ionRangeSlider").update({
                                 from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
                             });
-
-                            $('#select_resolution').val(Settings.resolution);
+                            if (Settings.resolution) {
+                                $('#select_resolution').val(Settings.resolution);
+                            }
                         }
                     }
                     
