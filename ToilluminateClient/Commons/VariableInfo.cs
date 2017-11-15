@@ -18,23 +18,20 @@ namespace ToilluminateClient
         /// </summary>
         private static string clientPath = string.Empty;
         private static string tempPath = string.Empty;
+        private static string filesPath = string.Empty;
+        private static string logsPath = string.Empty;
 
         /// <summary>
         /// システムのファイル
         /// </summary>
         private static string iniFile = string.Empty;
 
-        public static void OutputClientLog(Exception ex)
-        {
-
-        }
-
         #region フィールド
         /// <summary>
         /// 用户ID
         /// </summary>
         private static string playerID = "0";
-        
+
         #endregion
 
         #region publicプロパティ
@@ -49,7 +46,7 @@ namespace ToilluminateClient
                 return playerID;
             }
         }
-        
+
 
         /// <summary>
         /// 放送リストID
@@ -79,6 +76,20 @@ namespace ToilluminateClient
                 return tempPath;
             }
         }
+        public static string FilesPath
+        {
+            get
+            {
+                return filesPath;
+            }
+        }
+        public static string LogsPath
+        {
+            get
+            {
+                return logsPath;
+            }
+        }
 
         #endregion
 
@@ -96,85 +107,103 @@ namespace ToilluminateClient
 #endif
             iniFile = clientPath + "\\" + Constants.INI_NAME;
 
-            tempPath = Utility.GetFullFileName(clientPath, "temp");
+            tempPath = Utility.GetFullFileName(clientPath, "Temp");
+            filesPath = Utility.GetFullFileName(clientPath, "Files");
+            logsPath = Utility.GetFullFileName(clientPath, "Logs");
         }
 
 
         /// <summary>
         /// 共通変数が初期化
         /// </summary>
-        public static void RefreshPlayListInfo()
+        public static bool RefreshPlayListInfo()
         {
-            return;
-            playerID = "2";
+            if (PlayApp.RefreshPlayList)
+            {
+                return false;
+            }
             try
             {
-                string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_SEND, playerID));
-                string getJsonString = WebApiInfo.HttpGet(urlString);
-            }
-            catch (Exception ex)
-            {
-                LogApp.OutputErrorLog("VariableInfo", "RefreshPlayListInfo:1", ex);
-            }
+                PlayApp.RefreshPlayList = true;
 
-            //try
-            //{
-            //    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_GET_STATUS, playerID));
-            //    string getJsonString = WebApiInfo.HttpGet(urlString);
-            //}
-            //catch (Exception ex)
-            //{
-            //    LogApp.OutputErrorLog("VariableInfo", "RefreshPlayListInfo:2", ex);
-            //}
+                LogApp.OutputProcessLog("VariableInfo", "RefreshPlayListInfo", "Begin");
 
-
-            try
-            {
-                string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYLISTMASTERS_GET_LIST, playerID));
-                string getJsonString = WebApiInfo.HttpPost(urlString, "");
-
-                if (PlayApp.CurrentPlayListJsonString != getJsonString)
+                try
                 {
-                    PlayApp.CurrentPlayListJsonString = getJsonString;
-                    PlayApp.Clear();
-
-
-                    PlayApp.PlayListMasterArray = new List<PlayListMaster> { };
-
-                    JArray plmArray = (JArray)JsonConvert.DeserializeObject(PlayApp.CurrentPlayListJsonString);
-                    foreach (JObject obj in plmArray)
-                    {
-                        PlayListMaster plmStudent = new PlayListMaster();
-
-                        plmStudent = JsonConvert.DeserializeAnonymousType(obj.ToString(), plmStudent);
-
-                        if (string.IsNullOrEmpty(plmStudent.Settings) == false)
-                        {
-                            PlayApp.PlayListMasterArray.Add(plmStudent);
-                        }
-                    }
-
-                    foreach (PlayListMaster plmItem in PlayApp.PlayListMasterArray)
-                    {
-                        PlayListSettings plsStudent = new PlayListSettings();
-                        plsStudent = JsonConvert.DeserializeAnonymousType(plmItem.Settings, plsStudent);
-
-
-                        PlayList plItem = new PlayList(plmItem.PlayListID,plsStudent);
-
-
-
-                        PlayApp.PlayListArray.Add(plItem);
-                    }
-
+                    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_SEND, IniFileInfo.PlayerID));
+                    string getJsonString = WebApiInfo.HttpGet(urlString);
+                }
+                catch (Exception ex)
+                {
+                    LogApp.OutputErrorLog("VariableInfo", "RefreshPlayListInfo:1", ex);
                 }
 
+                //try
+                //{
+                //    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_GET_STATUS, IniFileInfo.PlayerID));
+                //    string getJsonString = WebApiInfo.HttpGet(urlString);
+                //}
+                //catch (Exception ex)
+                //{
+                //    LogApp.OutputErrorLog("VariableInfo", "RefreshPlayListInfo:2", ex);
+                //}
+
+
+                try
+                {
+                    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYLISTMASTERS_GET_LIST, IniFileInfo.PlayerID));
+                    string getJsonString = WebApiInfo.HttpPost(urlString, "");
+
+                    if (PlayApp.CurrentPlayListJsonString != getJsonString)
+                    {
+                        PlayApp.CurrentPlayListJsonString = getJsonString;
+                        PlayApp.Clear();
+
+
+                        PlayApp.PlayListMasterArray = new List<PlayListMaster> { };
+
+                        JArray plmArray = (JArray)JsonConvert.DeserializeObject(PlayApp.CurrentPlayListJsonString);
+                        foreach (JObject obj in plmArray)
+                        {
+                            PlayListMaster plmStudent = new PlayListMaster();
+
+                            plmStudent = JsonConvert.DeserializeAnonymousType(obj.ToString(), plmStudent);
+
+                            if (string.IsNullOrEmpty(plmStudent.Settings) == false)
+                            {
+                                PlayApp.PlayListMasterArray.Add(plmStudent);
+                            }
+                        }
+
+                        foreach (PlayListMaster plmItem in PlayApp.PlayListMasterArray)
+                        {
+                            PlayListSettings plsStudent = new PlayListSettings();
+                            plsStudent = JsonConvert.DeserializeAnonymousType(plmItem.Settings, plsStudent);
+
+
+                            PlayList plItem = new PlayList(plmItem.PlayListID, plsStudent);
+
+
+
+                            PlayApp.PlayListArray.Add(plItem);
+                        }
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogApp.OutputErrorLog("VariableInfo", "RefreshPlayListInfo:3", ex);
+                }
+
+                return false;
             }
-            catch (Exception ex)
+            finally
             {
-                LogApp.OutputErrorLog("VariableInfo", "RefreshPlayListInfo:3", ex);
+                PlayApp.RefreshPlayList = false;
+                LogApp.OutputProcessLog("VariableInfo", "RefreshPlayListInfo", "End");
             }
         }
+
         #endregion
     }
 
@@ -195,7 +224,7 @@ namespace ToilluminateClient
         public string Sunday { get; set; }
 
         public PlaylistItem[] PlaylistItems { get; set; }
-        
+
     }
     public class PlaylistItem
     {
@@ -205,7 +234,7 @@ namespace ToilluminateClient
         public string type { get; set; }
         public PlaylistItemData itemData { get; set; }
     }
-    
+
     public class PlaylistItemData
     {
         public string name { get; set; }

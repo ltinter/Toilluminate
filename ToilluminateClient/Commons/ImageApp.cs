@@ -478,9 +478,11 @@ namespace ToilluminateClient
 
                 Bitmap bmpOld_LR = GetBitmapSpecial(bmpOld, BitmapSpecialStyle.LeftRight);
 
+                int addNum = 0;
+                int addNumMax = 10;
+                int addNumIndex = 0;
                 for (int j = -height / 2; j < 0; j++)
                 {
-
                     int i = Convert.ToInt32(j * (Convert.ToSingle(width) / Convert.ToSingle(height)));
                     Rectangle DestRect = new Rectangle(width / 2 - i, 0, 2 * i, height);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpOld.Width, bmpOld.Height);
@@ -489,7 +491,18 @@ namespace ToilluminateClient
                     gBmpOld.DrawImage(bmpOld_LR, DestRect, SrcRect, GraphicsUnit.Pixel);
 
                     g.DrawImage(bmpOld, left, top);
-                    System.Threading.Thread.Sleep(15);
+                    System.Threading.Thread.Sleep(5);
+
+                    if (addNumIndex >= addNumMax)
+                    {
+                        addNum += 1;
+                    }
+
+                    j+=addNum;
+                    if (j >= 0)
+                    {
+                        break;
+                    }
                 }
 
 
@@ -500,7 +513,7 @@ namespace ToilluminateClient
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
 
                     g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
-                    System.Threading.Thread.Sleep(15);
+                    System.Threading.Thread.Sleep(5);
                 }
 
                 g.DrawImage(bmpSource, left, top);
@@ -559,7 +572,7 @@ namespace ToilluminateClient
                     gBmpOld.DrawImage(bmpOld_TD, DestRect, SrcRect, GraphicsUnit.Pixel);
 
                     g.DrawImage(bmpOld, left, top);
-                    System.Threading.Thread.Sleep(15);
+                    System.Threading.Thread.Sleep(5);
                 }
 
 
@@ -570,7 +583,7 @@ namespace ToilluminateClient
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
 
                     g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
-                    System.Threading.Thread.Sleep(15);
+                    System.Threading.Thread.Sleep(5);
                 }
 
                 g.DrawImage(bmpSource, left, top);

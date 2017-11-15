@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Net;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ToilluminateClient
 {
@@ -101,8 +102,24 @@ namespace ToilluminateClient
         /// <param name="exception">エラー内容</param>
         public static void OutputErrorLog(string className, string methodName, Exception exception)
         {
+            OutputErrorLog(className, methodName, exception.Message);
+        }
+        public static void OutputErrorLog(string className, string methodName, string messsage)
+        {
             try
             {
+#if DEBUG
+                if (string.IsNullOrEmpty(messsage))
+                {
+                    Debug.WriteLine(messsage);
+                    Console.WriteLine(messsage);
+                }
+#endif
+                if (IniFileInfo.CanOutputLog == false || string.IsNullOrEmpty(messsage))
+                {
+                    return;
+                }
+
                 //・日時（秒単位）：yyyy/mm/dd hh:mm:ss
                 //・発生箇所：ﾓｼﾞｭｰﾙ名
                 //・ｴﾗｰ内容：exception.Description
@@ -110,7 +127,7 @@ namespace ToilluminateClient
                     "{0}\t{1}\t{2}\t{3}",
                     DateTime.Now.ToString(),
                     className + "." + methodName + "()",
-                    exception.Message
+                    messsage
                 );
 
                 WriteLogFile(text, ErrorLogFIleFullPath);
@@ -139,14 +156,17 @@ namespace ToilluminateClient
         {
             try
             {
-                if (IniFileInfo.CanOutputLog == false)
-                {
-                    return;
-                }
-                
+#if DEBUG
                 if (string.IsNullOrEmpty(detail))
                 {
-                    detail = "";
+                    Debug.WriteLine(detail);
+                    Console.WriteLine(detail);
+                }
+#endif
+
+                if (IniFileInfo.CanOutputLog == false || string.IsNullOrEmpty(detail))
+                {
+                    return;
                 }
 
                 //処理日時				：	yyyy/mm/dd hh:mm:ss

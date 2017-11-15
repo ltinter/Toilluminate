@@ -1,10 +1,12 @@
-﻿using System;
+﻿using AxWMPLib;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WMPLib;
 
 namespace ToilluminateClient
 {
@@ -20,6 +22,8 @@ namespace ToilluminateClient
         private static int CurrentPlayListIndex = -1;
         private static int CurrentPlayListID = -1;
         private static int ExecutePlayListID = -1;
+
+        public static bool RefreshPlayList = false;
 
         public static void Clear()
         {
@@ -175,9 +179,19 @@ namespace ToilluminateClient
         private bool loopPlayValidValue = true;
 
         /// <summary>
+        /// 强制播放时间有效
+        /// </summary>
+        private bool fixPlayTimeValidValue = true;
+
+        /// <summary>
+        /// 强制播放时间(秒)
+        /// </summary>
+        private int fixPlayTimeValue = 0;
+
+        /// <summary>
         /// 持续时间(秒)
         /// </summary>
-        private int intervalSecondValue = 0;
+        private int intervalSecondValue = 5;
 
         #endregion
 
@@ -360,11 +374,31 @@ namespace ToilluminateClient
             {
                 return loopPlayValidValue;
             }
-            set
+        }
+
+
+        /// <summary>
+        /// 强制播放时间有效
+        /// </summary>
+        public bool FixPlayTimeValid
+        {
+            get
             {
-                loopPlayValidValue = value;
+                return fixPlayTimeValidValue;
             }
         }
+
+        /// <summary>
+        /// 强制播放时间(秒)
+        /// </summary>
+        public int FixPlayTime
+        {
+            get
+            {
+                return fixPlayTimeValue;
+            }
+        }
+
         #endregion
 
 
@@ -375,11 +409,18 @@ namespace ToilluminateClient
         /// </summary>
         /// <param name="loopPlayValid">循环有效</param>
         /// <param name="intervalSecond">持续时间(秒)</param>
-        public PlayList(int playListID, bool loopPlayValid, DateTime dtStart, int intervalSecond)
+        public PlayList(int playListID, bool loopPlayValid, DateTime dtStart, int intervalSecond, int fixPlayTime)
         {
             playListIDValue = playListID;
             loopPlayValidValue = loopPlayValid;
             intervalSecondValue = intervalSecond;
+
+
+            fixPlayTimeValue =fixPlayTime;
+            if (fixPlayTimeValue > 0)
+            {
+                fixPlayTimeValidValue = true;
+            }
         }
         public PlayList(int playListID, PlayListSettings plsValue)
         {
@@ -387,8 +428,81 @@ namespace ToilluminateClient
             plSettings = plsValue;
 
             loopPlayValidValue = plsValue.Loop == "0" ? true : false;
-            intervalSecondValue = Utility.ToInt(plsValue.PlayHours) * 3600 + Utility.ToInt(plsValue.PlayMinites) * 60 + Utility.ToInt(plsValue.PlaySeconds);
 
+            fixPlayTimeValue = Utility.ToInt(plsValue.PlayHours) * 3600 + Utility.ToInt(plsValue.PlayMinites) * 60 + Utility.ToInt(plsValue.PlaySeconds);
+            if (fixPlayTimeValue>0)
+            {
+                fixPlayTimeValidValue = true;
+            }
+
+            intervalSecondValue = Utility.ToInt(plsValue.Playtime);
+
+
+            foreach (PlaylistItem pliTemlete in plSettings.PlaylistItems)
+            {
+                if (Utility.ToInt(pliTemlete.type) == TempleteType.Image.GetHashCode())
+                {
+                    #region "Image"
+                    List<string> imageFileList = new List<string> { };
+                    foreach (string url in pliTemlete.itemData.src)
+                    {
+                        string file = WebApiInfo.DownloadFile(url, "");
+                        if (string.IsNullOrEmpty(file) == false)
+                        {
+                            imageFileList.Add(file);
+                        }
+                    }
+
+                    ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Random };
+
+
+                    ImageTempleteItem itItem = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 6);
+
+                    this.PlayAddTemplete(itItem);
+                    #endregion
+                }
+                else if (Utility.ToInt(pliTemlete.type) == TempleteType.Message.GetHashCode())
+                {
+                    #region "Message"
+                    List<string> messageList = new List<string> { };
+                    foreach (string message in pliTemlete.itemData.src)
+                    {
+                        if (string.IsNullOrEmpty(message) == false)
+                        {
+                            messageList.Add(message);
+                        }
+                    }
+
+                    MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Down };
+
+                    MessageTempleteItem itItem = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 0);
+
+                    this.PlayAddTemplete(itItem);
+                    #endregion
+                }
+                else if (Utility.ToInt(pliTemlete.type) == TempleteType.Media.GetHashCode())
+                {
+                    #region "Media"
+                    List<string> mediaFileList = new List<string> { };
+
+                    foreach (string url in pliTemlete.itemData.src)
+                    {
+                        string file = WebApiInfo.DownloadFile(url, "");
+                        if (string.IsNullOrEmpty(file) == false)
+                        {
+                            mediaFileList.Add(file);
+                        }
+                    }
+
+                    if (mediaFileList.Count > 0)
+                    {
+                        MediaTempleteItem itItem = new MediaTempleteItem(mediaFileList[0], MediaShowStyle.None);
+
+                        this.PlayAddTemplete(itItem);
+                    }
+                    #endregion
+                }
+            }
         }
 
         #endregion
@@ -1079,18 +1193,18 @@ namespace ToilluminateClient
         /// </summary>
         public void ExecuteStart()
         {
-            if (this.TempleteState != TempleteStateType.Execute)
+            if (this.templeteStateValue != TempleteStateType.Execute)
             {
+                this.templeteStateValue = TempleteStateType.Wait;
+
                 dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
-                dtEndValue = dtStartValue.AddSeconds(this.intervalSecondValue * this.fileOrMessageListValue.Count);
-                this.currentIndex = -1;
+              //  dtEndValue = dtStartValue.AddSeconds(this.intervalSecondValue * this.fileOrMessageListValue.Count);
             }
         }
         public void ExecuteStop()
         {
             dtEndValue = Utility.GetPlayDateTime(DateTime.Now);
-            this.currentIndex = -1;
-            this.currentShowStyleIndex = -1;
+            this.templeteStateValue = TempleteStateType.Stop;
         }
 
         public bool CurrentIsChanged()
@@ -1099,31 +1213,10 @@ namespace ToilluminateClient
             {
                 if (this.fileOrMessageListValue.Count > 0)
                 {
-                    DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
-
-                    if (nowTime >= this.dtStartValue && nowTime <= this.dtEndValue)
+                    //DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
+                    if (this.templeteStateValue == TempleteStateType.Wait)
                     {
-                        int nowIndex = this.currentIndex;
-                        if (nowIndex < 0) nowIndex = 0;
-                        while (nowIndex < this.fileOrMessageListValue.Count)
-                        {
-                            if (nowTime <= this.dtStartValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
-                            {
-                                break;
-                            }
-                            nowIndex++;
-                        }
-
-                        if (nowIndex >= this.fileOrMessageListValue.Count)
-                        {
-                            this.currentIndex = this.fileOrMessageListValue.Count - 1;
-                            return false;
-                        }
-                        if (nowIndex != this.currentIndex)
-                        {
-                            this.currentIndex = nowIndex;
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 return false;
@@ -1133,27 +1226,31 @@ namespace ToilluminateClient
                 return false;
             }
         }
-
-        public void ShowCurrent(PictureBox picImage)
+        public void ShowCurrent(AxWindowsMediaPlayer axWMP)
         {
-            Image nowImageFile = null;
-            Bitmap nowBitmap = null;
+            ShowCurrent(axWMP, WMPLib.WMPPlayState.wmppsPlaying, 0);
+        }
+
+        public void ShowCurrent(AxWindowsMediaPlayer axWMP, WMPPlayState state, double position)
+        {
             try
             {
-                if (this.currentIndex >= 0 && this.currentIndex < this.fileOrMessageListValue.Count)
+                if (this.fileOrMessageListValue.Count > 0)
                 {
-                    currentShowStyleIndex++;
-                    if (currentShowStyleIndex >= this.imageStyleListValue.Count)
+                    axWMP.URL = this.CurrentFile;
+                    axWMP.Ctlcontrols.currentPosition = position;
+                    if (state == WMPLib.WMPPlayState.wmppsPlaying)
                     {
-                        currentShowStyleIndex = 0;
+                        axWMP.Ctlcontrols.play();
                     }
-
-                    if (picImage.Image != null)
+                    else if (state == WMPLib.WMPPlayState.wmppsStopped)
                     {
-                        picImage.Image.Dispose();
+                        axWMP.Ctlcontrols.stop();
                     }
-
-
+                    else if (state == WMPLib.WMPPlayState.wmppsPaused)
+                    {
+                        axWMP.Ctlcontrols.pause();
+                    }
                 }
             }
             catch (Exception ex)
@@ -1162,14 +1259,7 @@ namespace ToilluminateClient
             }
             finally
             {
-                if (nowBitmap != null)
-                {
-                    nowBitmap.Dispose();
-                }
-                if (nowImageFile != null)
-                {
-                    nowImageFile.Dispose();
-                }
+                this.templeteStateValue = TempleteStateType.Execute;
             }
         }
 
