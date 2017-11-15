@@ -168,6 +168,7 @@ namespace ToilluminateModel.Controllers
                                               join pplt in db.PlayerPlayListLinkTable on plm.PlayListID equals pplt.PlayListID
                                               join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                                               from pv in ProjectV.DefaultIfEmpty()
+                                              where pplt.PlayerID == PlayerID
                                               select new PlayListLinkData
                                               {
                                                   PlayListID = plm.PlayListID,
