@@ -295,7 +295,7 @@
             $("#m_touchspin_3").val('0');
             var div_AddnewItem = $("#playlistItem");
             div_AddnewItem.empty();
-            $("#div_playlist").find("h3:first").text('New Playlist');
+            $("#div_playlist").find("h3:first").text($.localize('translate', 'New Playlist'));
         },
         editPlaylist: function (options) {
             editflg = true;
@@ -466,7 +466,7 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.append('PlaylistItemPicture<br>(Picture)'));
+        div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemPicture<br>(Picture)')));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
@@ -476,14 +476,14 @@
         var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '0');
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
-        var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input').val("New Playlist Item").val("New Playlist Item");
+        var lable = $('<lable/>').text($.localize('translate', 'Playlist Item Name:'));
+        var input = $("<input type='text'/>").addClass('form-control m-input').val($.localize('translate', 'New Playlist Item')).val($.localize('translate', 'New Playlist Item'));
         
         div_body_group.append(lable, input);
         div_bodyMain.append(div_body_group);
 
         var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
+        var lable1 = $('<lable/>').text($.localize('translate', 'Display Inteval(Seconds):'));
         div_col.append(lable1);
         div_bodyMain.append(div_col);
 
@@ -496,21 +496,21 @@
         div_bodyMain.append(div_col1);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable2 = $('<lable/>').text('Sildeshow effects:');
+        var lable2 = $('<lable/>').text($.localize('translate', 'Sildeshow effects:'));
         div_col2.append(lable2);
         div_bodyMain.append(div_col2);
 
         var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var select_option = $('<select/>').addClass('form-control m-select2').attr("id", "m_select2_3").attr("multiple", "").attr("tabindex", "-1").attr("aria-hidden", "true");
-        select_option.append("<option value='0'>Random</option>");
-        select_option.append("<option value='1'>Left to Right</option>");
-        select_option.append("<option value='2'>Right to Left</option>");
-        select_option.append("<option value='3'>Top to Bottom</option>");
-        select_option.append("<option value='4'>Bottom To Top</option>");
-        select_option.append("<option value='5'>Grow</option>");
-        select_option.append("<option value='6'>Fadein</option>");
-        select_option.append("<option value='7'>Rotate horizontally</option>");
-        select_option.append("<option value='8'>Rotate vertically</option>");
+        select_option.append("<option value='0'>" + $.localize('translate', 'Random') + "</option>");
+        select_option.append("<option value='1'>" + $.localize('translate', 'Left to Right') + "</option>");
+        select_option.append("<option value='2'>" + $.localize('translate', 'Right to Left') + "</option>");
+        select_option.append("<option value='3'>" + $.localize('translate', 'Top to Bottom') + "</option>");
+        select_option.append("<option value='4'>" + $.localize('translate', 'Bottom To Top') + "</option>");
+        select_option.append("<option value='5'>" + $.localize('translate', 'Grow') + "</option>");
+        select_option.append("<option value='6'>" + $.localize('translate', 'Fadein') + "</option>");
+        select_option.append("<option value='7'>" + $.localize('translate', 'Rotate horizontally') + "</option>");
+        select_option.append("<option value='8'>" + $.localize('translate', 'Rotate vertically') + "</option>");
         div_col3.append(select_option);
         div_bodyMain.append(div_col3);
 
@@ -520,7 +520,7 @@
         div_col4.append(div_col4_main);
 
         var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px').css("line-height", "150px");
-        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
+        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select images')).click(function () {
             divselectFile = div_col_image;
             currentNeededFileType = "image";
             if ($("#datatable_file1").data("datatable")) {
@@ -540,7 +540,7 @@
         var div_AddnewItem = $("#playlistItem");
         div_AddnewItem.append(div_head);
         select_option.select2({
-                placeholder: "Select dildeshow effects"
+            placeholder: $.localize('translate', "Select sildeshow effects")
             });
         input1.TouchSpin({
             buttondown_class: 'btn btn-secondary',
@@ -584,7 +584,7 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.append('PlaylistItemText<br>(Text)'));
+        div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemText<br>(Text)')));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
@@ -594,13 +594,13 @@
         var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '1');
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
-        var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input').val("New Playlist Item");
+        var lable = $('<lable/>').text($.localize('translate', 'Playlist Item Name:'));
+        var input = $("<input type='text'/>").addClass('form-control m-input').val($.localize('translate', 'New Playlist Item'));
         div_body_group.append(lable, input);
         div_bodyMain.append(div_body_group);
 
         var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
+        var lable1 = $('<lable/>').text($.localize('translate', 'Display Inteval(Seconds):'));
         div_col.append(lable1);
         div_bodyMain.append(div_col);
 
@@ -612,7 +612,7 @@
         div_bodyMain.append(div_col1);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable2 = $('<lable/>').text('Sliding Speed:');
+        var lable2 = $('<lable/>').text($.localize('translate', 'Sliding Speed:'));
         div_col2.append(lable2);
         div_bodyMain.append(div_col2);
 
@@ -624,15 +624,15 @@
         div_bodyMain.append(div_col3);
 
         var div_col4 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable4 = $('<lable/>').text('Text Postion:');
+        var lable4 = $('<lable/>').text($.localize('translate', 'Text Postion:'));
         div_col4.append(lable4);
         div_bodyMain.append(div_col4);
 
         var div_col5 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var select_option = $('<select/>');
-        select_option.append("<option value='0'>Top</option>");
-        select_option.append("<option value='1'>Middle</option>");
-        select_option.append("<option value='2'>Buttom</option>");
+        select_option.append("<option value='0'>" + $.localize('translate', 'Top') + "</option>");
+        select_option.append("<option value='1'>" + $.localize('translate', 'Middle') + "</option>");
+        select_option.append("<option value='2'>" + $.localize('translate', 'Bottom') + "</option>");
         div_col5.append(select_option);
         div_bodyMain.append(div_col5);
 
@@ -709,7 +709,7 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.append('PlaylistItemVideo<br>(video)'));
+        div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemVideo<br>(video)')));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
@@ -719,20 +719,20 @@
         var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '2');
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
-        var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input').val("New Playlist Item");
+        var lable = $('<lable/>').text($.localize('translate', 'Playlist Item Name:'));
+        var input = $("<input type='text'/>").addClass('form-control m-input').val($.localize('translate', 'New Playlist Item'));
         div_body_group.append(lable, input);
         div_bodyMain.append(div_body_group);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable2 = $('<lable/>').text('Zoom option:');
+        var lable2 = $('<lable/>').text($.localize('translate', 'Zoom option:'));
         div_col2.append(lable2);
         div_bodyMain.append(div_col2);
         var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var select_option = $('<select/>');
-        select_option.append("<option value='0'>None</option>");
-        select_option.append("<option value='1'>Fullscreen</option>");
-        select_option.append("<option value='2'>Fullscreen with original aspect</option>");
+        select_option.append("<option value='0'>" + $.localize('translate', 'None') + "</option>");
+        select_option.append("<option value='1'>" + $.localize('translate', 'Fullscreen') + "</option>");
+        select_option.append("<option value='2'>" + $.localize('translate', 'Fullscreen with original aspect') + "</option>");
         div_col3.append(select_option);
         div_bodyMain.append(div_col3);
 
@@ -741,7 +741,7 @@
         div_col4.append(div_col4_main);
 
         var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
-        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select video').click(function () {
+        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select video')).click(function () {
             divselectFile = div_col_image;
             currentNeededFileType = "video";
             if ($("#datatable_file1").data("datatable")) {
