@@ -130,7 +130,7 @@
     var edit_playlistId = null;
     var tempselectedGroupID = null;
     var selectedFolderID = null;
-    var currentNeededFileType = null;
+    var currentNeededFileType = "image";
     var methods = {
         init: function (options) {
             // Global vars
@@ -415,13 +415,14 @@
                         "image": [".jpg", ".gif", ".png", ".jpeg", ".bmp"],
                         "video": [".mp4", ".wmv", ".mpeg", ".mpg", ".avi", ".mov"]
                     };
+                    var tempFileData = [];
                     $.each(fileData, function (fileIndex, fileItem) {
                         var tempFileType = supportedFileTypes[currentNeededFileType.toLowerCase()];
-                        if (!tempFileType || !$.inArray(fileItem.FileType.toLowerCase().trim(), tempFileType) == -1) {
-                            fileData[fileIndex] = null;
+                        if (tempFileType && $.inArray(fileItem.FileType.toLowerCase().trim(), tempFileType) > -1) {
+                            tempFileData.push(fileData[fileIndex]);
                         }
                     });
-                    tableData.data.source.data = fileData;
+                    tableData.data.source.data = tempFileData;
                     $("#datatable_file1").data("datatable", $('#datatable_file1').mDatatable(tableData));
                 },
                 error: function () {
@@ -517,9 +518,9 @@
         var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px').css("line-height", "150px");
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
             divselectFile = div_col_image;
+            currentNeededFileType = "image";
             if ($("#datatable_file1").data("datatable")) {
-                currentNeededFileType = "image";
-                $("#datatable_file1").data("datatable").reload();
+                $.playlistEditor('setfile');
             }
         });
 
