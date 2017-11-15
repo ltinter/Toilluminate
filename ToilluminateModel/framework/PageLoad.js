@@ -129,7 +129,7 @@ var initTimeOptionsInPlayerEdit = function () {
             max: 24,
             from: 0,
             to: 24,
-            postfix: " o'clock",
+            postfix: $.localize('translate', " o'clock"),
             decorate_both: true,
             grid: true,
         });
