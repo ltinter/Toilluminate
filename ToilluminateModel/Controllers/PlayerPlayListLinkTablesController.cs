@@ -105,6 +105,23 @@ namespace ToilluminateModel.Controllers
             return Ok(playerPlayListLinkTable);
         }
 
+        [HttpPost, Route("api/PlayerPlayListLinkTables/DeletePlayerPlayListLinkTableByPlayerID/{PlayerID}")]
+        public async Task<IHttpActionResult> DeletePlayerPlayListLinkTableByGroupID(int PlayerID)
+        {
+            foreach (PlayerPlayListLinkTable pplt in db.PlayerPlayListLinkTable.Where(a => a.PlayerID == PlayerID))
+            {
+                if (pplt == null)
+                {
+                    return NotFound();
+                }
+
+                db.PlayerPlayListLinkTable.Remove(pplt);
+                await db.SaveChangesAsync();
+
+            }
+            return Ok();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
