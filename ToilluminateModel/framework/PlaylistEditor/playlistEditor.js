@@ -697,6 +697,7 @@
             }
             if (options.palylistItem) {
                 select_option.val(options.palylistItem.TextPostion);
+                div_col6_main.summernote("code", options.palylistItem.itemData);
             }
         }
     },
@@ -868,7 +869,7 @@
                     playlistItem.DisplayIntevalSeconds = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn').val();
                     playlistItem.SlidingSpeed = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn.slidingSpeed').val();
                     playlistItem.TextPostion = $(palylistItem).find('select').val();
-                    playlistItem.itemData = '';
+                    playlistItem.itemData = $(palylistItem).find(".note-editable.panel-body").html();
                 }
                 if (playlistItem.type == '2') {
                     playlistItem.ZoomOption = $(palylistItem).find('select').val();
