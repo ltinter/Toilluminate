@@ -324,18 +324,15 @@
                 note: $("#text_note").val(),
                 newGroupNameParentID: groupTreeForPlayerEditID,
                 success: function (data) {
-                    //div_main.show();
-                    //div_edit.hide();
-                    //$.insmGroup('initGroupTree');
-                    //editGroupID = undefined;
+                    div_main.show();
+                    div_edit.hide();
+                    $.insmGroup('initGroupTree');
+                    editGroupID = undefined;
                     $.insmFramework('GroupPlayListLinkTables', {
                         groupID: selectedGroupID,
                         PlayListID: playListgroup,
                         success: function (data) {
-                            div_main.show();
-                            div_edit.hide();
-                            $.insmGroup('initGroupTree');
-                            editGroupID = undefined;
+                            
                         },
                         error: function () {
                         }
