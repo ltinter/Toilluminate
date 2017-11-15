@@ -1,12 +1,13 @@
 ﻿
 var localize_jap =
      {
-         Toilluminate: "Toilluminate",
-         Cancel: "キャンセル",
-         Add:"新規",
-         Save: "登録",
-         Back: "戻り",
-         Close: "閉じる",
+         "Toilluminate": "Toilluminate",
+         "Cancel": "キャンセル",
+         "Add": "新規",
+         "Save": "登録",
+         "Save changes": "登録",
+         "Back": "戻り",
+         "Close": "閉じる",
          "Delete":"削除",
          "Selection History": "選択履歴",
          'Reports': "レポート",
@@ -73,6 +74,7 @@ var localize_jap =
          "Text Postion:": "テキスト位置",
          "Select video": "ビデオ選択",
          "Select images": "画像選択",
+         "Select File": "ファイル選択",
          "PlaylistItemPicture<br>(Picture)": "再生ノード<br>(画像)",
          "PlaylistItemVideo<br>(Video)": "再生ノード<br>(ビデオ)",
          "PlaylistItemText<br>(Text)": "再生ノード<br>(テキスト)",
