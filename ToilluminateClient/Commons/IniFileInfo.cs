@@ -64,9 +64,13 @@ namespace ToilluminateClient
         /// <summary>
         /// web api 地址
         /// </summary>
-        private static string webApiAddress = "localhost:43315"; 
+        private static string webApiAddress = "localhost:43315";
         //private static string webApiAddress = "54.238.131.90"; 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private static string playerID = string.Empty;
         #region 変数
         /// <summary>
         /// logが出力することが
@@ -76,15 +80,6 @@ namespace ToilluminateClient
         #endregion 変数
 
         #region publicプロパティ
-
-        /// <summary>
-        /// 臨時フォルダ
-        /// </summary>
-        public static string TempPath
-        {
-            get;
-            set;
-        }
 
         /// <summary>
         /// logが出力することが
@@ -129,6 +124,18 @@ namespace ToilluminateClient
                 return webApiAddress;
             }
         }
+
+        /// <summary>
+        /// Player ID
+        /// </summary>
+        public static string PlayerID
+        {
+            get
+            {
+                return playerID;
+            }
+        }
+        
         #endregion
 
         #region publicメソッド
@@ -164,31 +171,7 @@ namespace ToilluminateClient
         {
             //iniフォルダ
             iniFileDir = Path.GetDirectoryName(file);
-
-            //アプリのインストールフォルダパス。
-            string install_Path = GetIniFileString("DATA_DRIVE", "InstallPath", file);
-
-            // InstallPathの確認
-            if (Directory.Exists(install_Path) == false)
-            {
-                install_Path = Directory.GetParent(iniFileDir).FullName;
-                WriteIniFileString("DATA_DRIVE", "InstallPath", install_Path, file);
-            }
-
-            //臨時フォルダ
-            TempPath = GetIniFileString("DATA_DRIVE", "TempPath", file);
-            if (string.IsNullOrEmpty(TempPath) || Directory.Exists(TempPath) == false)
-            {
-                TempPath = Path.GetTempPath();
-            }
-            else
-            {
-                if (TempPath.Substring(TempPath.Length - 1, 1) != "\\" && TempPath.Substring(TempPath.Length - 1, 1) != "/")
-                {
-                    TempPath = TempPath + "\\";
-                }
-            }
-
+            
             //CanOutputLog
             canOutputLog = Utility.ToInt(GetIniFileString("MAINTE", "CanOutputLog", file)) == 0 ? false : true;
 
@@ -207,17 +190,11 @@ namespace ToilluminateClient
             DictionaryInfo.InitMultilingualDictionaryForMessage();
 
 
-            //Device
-            string deviceIP = GetIniFileString("MAINTE", "DeviceIP", file);
-            int devicePort = Utility.ToInt(GetIniFileString("MAINTE", "DevicePort", file));
-            string deviceUser = GetIniFileString("MAINTE", "DeviceUser", file);
-            string devicePassword = GetIniFileString("MAINTE", "DevicePassword", file);
-            devicePassword = Crypt.DecryptDES(devicePassword, Constants.CRYPT_KEY_FOR_CLIENT_LOGIN);
-            int deviceChannel = Utility.ToInt(GetIniFileString("MAINTE", "DeviceChannel", file));
-            
+            //WebApiAddress
+            webApiAddress = GetIniFileString("MAINTE", "WebApiAddress", file);
 
-            string captureTypeValue = GetIniFileString("MAINTE", "CaptureType", file);
-            
+            playerID = GetIniFileString("MAINTE", "PlayerID", file);
+
             
         }
 
@@ -242,30 +219,31 @@ namespace ToilluminateClient
                     isNewFile = true;
                 }
 
-                //アプリのインストールフォルダパス	
-                WriteIniFileString("DATA_DRIVE", "InstallPath", path, file);
-
-                //臨時フォルダ
-                WriteIniFileString("DATA_DRIVE", "TempPath", TempPath, file);
-
-
                 //logが出力することが
                 WriteIniFileString("MAINTE", "CanOutputLog", CanOutputLog ? "1" : "0", file);
-
+                if (isNewFile)
+                {
+                    WriteIniFileNotesString("MAINTE", "CanOutputLog", "logが出力することが", file);
+                }
 
                 WriteIniFileString("MAINTE", "MultilingualDictionaryType", EnumHelper.GetDescription(MultiDictType), file);
-
                 if (isNewFile)
                 {
                     WriteIniFileNotesString("MAINTE", "MultilingualDictionaryType", "表示言語選択 {JP, EN}", file);
                 }
 
 
+                WriteIniFileString("MAINTE", "WebApiAddress", webApiAddress, file);
                 if (isNewFile)
                 {
-                    WriteIniFileNotesString("MAINTE", "DeviceIP", "設備設置", file);
+                    WriteIniFileNotesString("MAINTE", "WebApiAddress", "ウェブアドレス", file);
                 }
 
+                WriteIniFileString("MAINTE", "PlayerID", playerID, file);
+                if (isNewFile)
+                {
+                    WriteIniFileNotesString("MAINTE", "PlayerID", "プレイのid", file);                    
+                }
                 
             }
             catch (Exception ex)
