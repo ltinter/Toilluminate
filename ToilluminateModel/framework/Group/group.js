@@ -482,17 +482,26 @@
                     }
                 })
             } else {
-                $.insmFramework('getForcedPlaylistByPlayer', {
-                    playerId: options.playerId,
-                    success: function (forcedPlayList) {
-                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList,isGroup:false });
-                    },
-                    error: function () {
-                    }
-                })
+                if(options.newgroup){
+                    $.insmFramework('getForcedPlaylistByGroup', {
+                        groupID: options.GroupID,
+                        success: function (forcedPlayList) {
+                            $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false });
+                        },
+                        error: function () {
+                        }
+                    })
+                } else {
+                    $.insmFramework('getForcedPlaylistByPlayer', {
+                        playerId: options.playerId,
+                        success: function (forcedPlayList) {
+                            $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false });
+                        },
+                        error: function () {
+                        }
+                    })
+                }   
             }
-
-            
         },
         showPlaylistForced: function (options) {
             var div_forcedplaylists = $('#forcedplaylists');
@@ -617,7 +626,7 @@
             GroupID: selectedGroupID,
             success: function (data) {
                 if (data) {
-                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID });
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID});
                 }
             },
             error: function () {
@@ -745,7 +754,7 @@
             GroupID: selectedGroupID,
             success: function (data) {
                 if (data) {
-                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: false, GroupID: selectedGroupID });
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: false, GroupID: selectedGroupID, newgroup: true });
                 }
             },
             error: function () {
