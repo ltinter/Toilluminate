@@ -625,9 +625,6 @@
     $("#newgroup").click(function (e) {
         div_main.hide();
         div_edit.show();
-        if (div_groupTreeForPlayerEdit.jstree(true).get_selected().length == 0) {
-            div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
-        }
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
         $.insmGroup('defaultDataSet');
