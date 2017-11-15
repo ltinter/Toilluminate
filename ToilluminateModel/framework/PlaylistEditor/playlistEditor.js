@@ -661,7 +661,7 @@
             verticalupclass: 'la la-angle-up',
             verticaldownclass: 'la la-angle-down',
             min: 0,
-            max: 60
+            max: 9999999
         });
 
         input2.TouchSpin({
@@ -671,7 +671,7 @@
             verticalupclass: 'la la-angle-up',
             verticaldownclass: 'la la-angle-down',
             min: 0,
-            max: 60
+            max: 9999999
         });
 
         div_col6_main.summernote({
