@@ -824,7 +824,7 @@
 
             $.each(options.PlayListID, function (index, objId) {
                 var newPlayerPlayList = PlayerPlayListLink.create();
-                newPlayerPlayList.Index = index;
+                newPlayerPlayList.Index = index + 1;
                 newPlayerPlayList.PlayerID = options.playerId;
                 newPlayerPlayList.PlayListID = objId;
 
@@ -865,7 +865,7 @@
 
             $.each(options.PlayListID, function (index, objId) {
                 var newGroupPlayList = GroupPlayListLink.create();
-                newGroupPlayList.Index = index;
+                newGroupPlayList.Index = index + 1;
                 newGroupPlayList.GroupID = options.groupID;
                 newGroupPlayList.PlayListID = objId;
 

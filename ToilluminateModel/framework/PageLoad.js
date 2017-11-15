@@ -158,7 +158,7 @@ var EnableTouchSpin = function () {
         verticalupclass: 'la la-angle-up',
         verticaldownclass: 'la la-angle-down',
         min: 0,
-        max: 60
+        max: 59
     });
 }
 var textTemplateEditorInit = function () {
