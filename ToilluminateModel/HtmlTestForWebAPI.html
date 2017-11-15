@@ -103,6 +103,10 @@
             <div id="rst2" />
         </div>
         <div>
+            <input type="button" value="DeleteGroupPlayListLinkTableByGroupID" onclick="DeleteGroupPlayListLinkTableByGroupID();" />
+            <div id="rst2" />
+        </div>
+        <div>
             <input type="button" value="GET FILES BY FOLDER IDS" onclick="getFilesByFolders();" />
             <div id="rst2" />
         </div>
@@ -340,6 +344,19 @@
             $.ajax({
                 url: 'api/PlayListMasters/GetOwnPlayListWithInheritByGroupID/268',
                 type: "GET",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function DeleteGroupPlayListLinkTableByGroupID() {
+            $.ajax({
+                url: 'api/GroupPlayListLinkTables/DeleteGroupPlayListLinkTableByGroupID/303',
+                type: "POST",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     var aa = data;

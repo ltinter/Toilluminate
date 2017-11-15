@@ -105,7 +105,8 @@ namespace ToilluminateModel.Controllers
         [HttpPost, Route("api/GroupPlayListLinkTables/DeleteGroupPlayListLinkTableByGroupID/{GroupID}")]
         public async Task<IHttpActionResult> DeleteGroupPlayListLinkTableByGroupID(int GroupID)
         {
-            foreach (GroupPlayListLinkTable gplt in db.GroupPlayListLinkTable.Where(a => a.GroupID == GroupID))
+            List<GroupPlayListLinkTable> gpltList = db.GroupPlayListLinkTable.Where(a => a.GroupID == GroupID).ToList();
+            foreach (GroupPlayListLinkTable gplt in gpltList)
             {
                 if (gplt == null)
                 {
