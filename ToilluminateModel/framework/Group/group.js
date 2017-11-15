@@ -476,7 +476,7 @@
                 $.insmFramework('getForcedPlaylistByGroup', {
                     groupID: options.GroupID,
                     success: function (forcedPlayList) {
-                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList });
+                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList ,isGroup:true});
                     },
                     error: function () {
                     }
@@ -485,7 +485,7 @@
                 $.insmFramework('getForcedPlaylistByPlayer', {
                     playerId: options.playerId,
                     success: function (forcedPlayList) {
-                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList });
+                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList,isGroup:false });
                     },
                     error: function () {
                     }
@@ -499,7 +499,7 @@
             div_forcedplaylists.empty();
             if (options.tempForcedPlayList) {
                 $.each(options.tempForcedPlayList, function (index, Playlist) {
-                    if (Playlist.BindGroupID == selectedGroupID) {
+                    if ((Playlist.BindGroupID == selectedGroupID && options.isGroup) || (!options.isGroup && Playlist.BindGroupID == 0)) {
                         var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm').attr('playlistId', Playlist.PlayListID);
                         var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
                     } else {
@@ -512,7 +512,7 @@
                     var div_title = $('<div/>').addClass('m-portlet__head-title');
                     var span_head_icon = $("<span />").addClass('m-portlet__head-icon');
                     var span_i = '<i class="fa fa-file-text"></i>';
-                    if (Playlist.BindGroupID == selectedGroupID) {
+                    if ((Playlist.BindGroupID == selectedGroupID && options.isGroup) || (!options.isGroup && Playlist.BindGroupID == 0)) {
                         var head_text = $('<h3 />').addClass('m-portlet__head-text').append(Playlist.PlayListName);
                     } else {
                         var head_text = $('<h3 />').addClass('m-portlet__head-text').append(Playlist.PlayListName + '<br>' +'(' + Playlist.GroupName + ')');
@@ -525,7 +525,7 @@
                     div_Playlisthead.append(div_head_caption);
                     var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
                     var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
-                    if (Playlist.BindGroupID == selectedGroupID) {
+                    if ((Playlist.BindGroupID == selectedGroupID && options.isGroup) || (!options.isGroup && Playlist.BindGroupID == 0)) {
                         var div_li = $('<li />').addClass('m-portlet__nav-item');
                         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
                         var href_i = $('<i />').addClass("la la-close");

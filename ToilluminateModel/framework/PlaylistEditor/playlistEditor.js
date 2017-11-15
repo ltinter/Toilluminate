@@ -568,6 +568,11 @@
                     });
                 }
             }
+            if (options.palylistItem) {
+                if (options.palylistItem.SildeshowEffects) {
+                    select_option.val(options.palylistItem.SildeshowEffects).trigger('change');
+                }
+            }
         } 
     },
     greateNewItemText: function (options) {
@@ -843,7 +848,8 @@
 
                 if (playlistItem.type == '0') {
                     playlistItem.DisplayIntevalSeconds = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn').val();
-                    playlistItem.SildeshowEffects = 'Left to Right';
+                    playlistItem.SildeshowEffects = $(palylistItem).find('#m_select2_3').val();
+
                     var imageItem = {};
                     var imageId = [];
                     var imagesrc = [];
