@@ -334,31 +334,31 @@
                 settings: JSON.stringify(Settings),
                 newGroupNameParentID: groupTreeForPlayerEditID,
                 success: function (data) {
-                    //var div_forcedplaylists = $('#forcedplaylists');
-                    //var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
-                    //if (forcedplaylists.length > 0) {
-                    //    playListgroup = [];
-                    //    $.each(forcedplaylists, function (index, forcedplaylist) {
-                    //        var playlistItem = {};
-                    //        var forcedplaylistID = $(forcedplaylist).attr('playlistId');
-                    //        playListgroup.push(forcedplaylistID);
-                    //    });
-                    //}
-                    //$.insmFramework('deleteGroupPlayListLinkTableByGroupID', {
-                    //    groupID: selectedGroupID,
-                    //    success: function (data) {
-                    //        $.insmFramework('GroupPlayListLinkTables', {
-                    //            groupID: selectedGroupID,
-                    //            PlayListID: playListgroup,
-                    //            success: function (data) {
-                    //            },
-                    //            error: function () {
-                    //            }
-                    //        })
-                    //    },
-                    //    error: function () {
-                    //    }
-                    //})
+                    var div_forcedplaylists = $('#forcedplaylists');
+                    var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
+                    if (forcedplaylists.length > 0) {
+                        playListgroup = [];
+                        $.each(forcedplaylists, function (index, forcedplaylist) {
+                            var playlistItem = {};
+                            var forcedplaylistID = $(forcedplaylist).attr('playlistId');
+                            playListgroup.push(forcedplaylistID);
+                        });
+                    }
+                    $.insmFramework('deleteGroupPlayListLinkTableByGroupID', {
+                        groupID: selectedGroupID,
+                        success: function (data) {
+                            $.insmFramework('GroupPlayListLinkTables', {
+                                groupID: selectedGroupID,
+                                PlayListID: playListgroup,
+                                success: function (data) {
+                                },
+                                error: function () {
+                                }
+                            })
+                        },
+                        error: function () {
+                        }
+                    })
                     
                     div_main.show();
                     div_edit.hide();
@@ -483,7 +483,7 @@
                 })
             } else {
                 $.insmFramework('getForcedPlaylistByPlayer', {
-                    groupID: options.GroupID,
+                    playerId: options.playerId,
                     success: function (forcedPlayList) {
                         $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList });
                     },
@@ -676,31 +676,34 @@
                     if (userGroupData) {
                         Settings = JSON.parse(userGroupData.Settings);
                     }
-                    if (Object.getOwnPropertyNames(Settings).length > 0) {
-                        $("#group_monday_value").data("ionRangeSlider").update({
-                            from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
-                        });
-                        $("#group_tuesday_value").data("ionRangeSlider").update({
-                            from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
-                        });
-                        $("#group_wednesday_value").data("ionRangeSlider").update({
-                            from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
-                        });
-                        $("#group_thursday_value").data("ionRangeSlider").update({
-                            from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
-                        });
-                        $("#group_friday_value").data("ionRangeSlider").update({
-                            from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
-                        });
-                        $("#group_saturday_value").data("ionRangeSlider").update({
-                            from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
-                        });
-                        $("#group_sunday_value").data("ionRangeSlider").update({
-                            from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
-                        });
+                    if (Settings != null) {
+                        if (Object.getOwnPropertyNames(Settings).length > 0) {
+                            $("#group_monday_value").data("ionRangeSlider").update({
+                                from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
+                            });
+                            $("#group_tuesday_value").data("ionRangeSlider").update({
+                                from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
+                            });
+                            $("#group_wednesday_value").data("ionRangeSlider").update({
+                                from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
+                            });
+                            $("#group_thursday_value").data("ionRangeSlider").update({
+                                from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
+                            });
+                            $("#group_friday_value").data("ionRangeSlider").update({
+                                from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
+                            });
+                            $("#group_saturday_value").data("ionRangeSlider").update({
+                                from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
+                            });
+                            $("#group_sunday_value").data("ionRangeSlider").update({
+                                from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
+                            });
 
-                        $('#select_resolution').val(Settings.resolution);
+                            $('#select_resolution').val(Settings.resolution);
+                        }
                     }
+                    
 
                     editGroupID = selectedGroupID;
                     $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(userGroupData.GroupName);
@@ -738,15 +741,14 @@
         $("#button_save").css('display', 'none');
         $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(localize_jap["Add"]);
 
-        $.insmFramework('getPlaylistByGroupID', {
+        $.insmFramework('getPlaylistByGroup', {
             GroupID: selectedGroupID,
             success: function (data) {
                 if (data) {
-                    $.insmGroup('showPlaylist', {Playlists:data});
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: false, GroupID: selectedGroupID });
                 }
             },
             error: function () {
-               
             },
         })
     });
@@ -771,21 +773,36 @@
                 DisplayNamechangeFlg: DisplayNamechangeFlg,
                 NotechangeFlg: DisplayNamechangeFlg,
                 success: function (data) {
+                    var div_forcedplaylists = $('#forcedplaylists');
+                    var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
+                    if (forcedplaylists.length > 0) {
+                        playListgroup = [];
+                        $.each(forcedplaylists, function (index, forcedplaylist) {
+                            var playlistItem = {};
+                            var forcedplaylistID = $(forcedplaylist).attr('playlistId');
+                            playListgroup.push(forcedplaylistID);
+                        });
+                    }
+                    $.insmFramework('deletePlayerPlayListLinkTableByPlayerID', {
+                        playerId: data.PlayerID,
+                        success: function () {
+                            $.insmFramework('playerPlayListLinkTables', {
+                                playerId: data.PlayerID,
+                                PlayListID: playListgroup,
+                                success: function (data) {
+                                },
+                                error: function () {
+                                }
+                            })
+                        },
+                        error: function () {
+                        }
+                    })
+
                     div_main.show();
                     div_edit.hide();
                     $.insmGroup('initGroupTree');
                     editGroupID = undefined;
-                    $.insmFramework('PlayerPlayListLinkTables', {
-                        Index: '',
-                        PlayerID: data.PlayerID,
-                        PlayListID: '25',
-                        success: function (data) {
-                            div_main.show();
-                            div_edit.hide();
-                            $.insmGroup('initGroupTree');
-                            editGroupID = undefined;
-                        }
-                    })
                 }
             })
 
@@ -833,6 +850,13 @@
         })
         allPlayerNames = allPlayerNames.substr(2);
         div_edit.find("H3:first").text(selectPlayer.length + " Display Units / (" + allPlayerNames + ")");
+
+        var allPlayerID = "";
+        $.each(selectPlayer, function (playerIndex, playerItem) {
+            allPlayerID += ", " + $(playerItem).data().obj.PlayerID;
+        })
+        allPlayerID = allPlayerID.substr(2);
+
         editPlayerFlg = true;
         $.insmGroup('defaultDataSet');
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
@@ -853,19 +877,16 @@
                 $("#label_Online_" + $(selectPlayer[index]).data().obj.OnlineFlag).click();
             }
         });
-        if (allPlayerID != '') {
-            $.insmFramework('getPlaylistByPlayerID', {
-                playerID: allPlayerID,
-                success: function (playlistData) {
-                    if (playlistData) {
-                        $.insmGroup('showPlaylist', { Playlists: playlistData });
-                    }
-                    
+        $.insmFramework('getPlaylistByGroup', {
+            GroupID: selectedGroupID,
+            success: function (data) {
+                if (data) {
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: false, GroupID: selectedGroupID, playerId: allPlayerID });
                 }
-            })
-        }
-
-        $.insmGroup('getPlaylistByGroup', { groupID: editGroupID });
+            },
+            error: function () {
+            },
+        })
     }
     $("#edit_player").click(function () {
         var selected = datatable.setSelectedRecords().getSelectedRecords();

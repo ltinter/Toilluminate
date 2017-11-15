@@ -314,61 +314,63 @@
                             $('#playlist_note').text(playlistData.Comments);
                             $("#div_playlist").find("h3:first").text(playlistData.PlayListName);
                         }
-                        if (Object.getOwnPropertyNames(Settings).length > 0) {
-                            $("#playlist_monday_value").data("ionRangeSlider").update({
-                                from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
-                            });
-                            $("#playlist_tuesday_value").data("ionRangeSlider").update({
-                                from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
-                            });
-                            $("#playlist_wednesday_value").data("ionRangeSlider").update({
-                                from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
-                            });
-                            $("#playlist_thursday_value").data("ionRangeSlider").update({
-                                from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
-                            });
-                            $("#playlist_friday_value").data("ionRangeSlider").update({
-                                from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
-                            });
-                            $("#playlist_saturday_value").data("ionRangeSlider").update({
-                                from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
-                            });
-                            $("#playlist_sunday_value").data("ionRangeSlider").update({
-                                from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
-                            });
-                            $("#label_loop_" + Settings.Loop).click();
-                            $("#label_playtime_" + Settings.Playtime).click();
-                            $("#m_touchspin_1").val(Settings.PlayHours);
-                            $("#m_touchspin_2").val(Settings.PlayMinites);
-                            $("#m_touchspin_3").val(Settings.PlaySeconds);
+                        if (Settings != null) {
+                            if (Object.getOwnPropertyNames(Settings).length > 0) {
+                                $("#playlist_monday_value").data("ionRangeSlider").update({
+                                    from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
+                                });
+                                $("#playlist_tuesday_value").data("ionRangeSlider").update({
+                                    from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
+                                });
+                                $("#playlist_wednesday_value").data("ionRangeSlider").update({
+                                    from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
+                                });
+                                $("#playlist_thursday_value").data("ionRangeSlider").update({
+                                    from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
+                                });
+                                $("#playlist_friday_value").data("ionRangeSlider").update({
+                                    from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
+                                });
+                                $("#playlist_saturday_value").data("ionRangeSlider").update({
+                                    from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
+                                });
+                                $("#playlist_sunday_value").data("ionRangeSlider").update({
+                                    from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
+                                });
+                                $("#label_loop_" + Settings.Loop).click();
+                                $("#label_playtime_" + Settings.Playtime).click();
+                                $("#m_touchspin_1").val(Settings.PlayHours);
+                                $("#m_touchspin_2").val(Settings.PlayMinites);
+                                $("#m_touchspin_3").val(Settings.PlaySeconds);
 
-
-                            if (Settings.PlaylistItems) {
-                                if (Settings.PlaylistItems.length > 0) {
-                                    $.each(Settings.PlaylistItems, function (index, palylistItem) {
-                                        if (palylistItem.type) {
-                                            switch (palylistItem.type.toLowerCase()) {
-                                                case "0":
-                                                    $.playlistEditor('greateNewItemPicture', {
-                                                        palylistItem: palylistItem
-                                                    });
-                                                    break;
-                                                case "1":
-                                                    $.playlistEditor('greateNewItemText', {
-                                                        palylistItem: palylistItem
-                                                    });
-                                                    break;
-                                                case "2":
-                                                    $.playlistEditor('greateNewItemvideo', {
-                                                        palylistItem: palylistItem
-                                                    });
-                                                    break;
+                                if (Settings.PlaylistItems) {
+                                    if (Settings.PlaylistItems.length > 0) {
+                                        $.each(Settings.PlaylistItems, function (index, palylistItem) {
+                                            if (palylistItem.type) {
+                                                switch (palylistItem.type.toLowerCase()) {
+                                                    case "0":
+                                                        $.playlistEditor('greateNewItemPicture', {
+                                                            palylistItem: palylistItem
+                                                        });
+                                                        break;
+                                                    case "1":
+                                                        $.playlistEditor('greateNewItemText', {
+                                                            palylistItem: palylistItem
+                                                        });
+                                                        break;
+                                                    case "2":
+                                                        $.playlistEditor('greateNewItemvideo', {
+                                                            palylistItem: palylistItem
+                                                        });
+                                                        break;
+                                                }
                                             }
-                                        }
-                                    })
+                                        })
+                                    }
                                 }
                             }
                         }
+                        
                     }
                 })
             }

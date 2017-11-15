@@ -727,10 +727,10 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/PlayListMasters/GetTotalPlayListByPlayerID/' + options.PlayerID,
+                url: 'api/PlayListMasters/GetTotalPlayListByPlayerID/' + options.playerId,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
-                type: "GET",
+                type: "POST",
                 denied: function () { },
                 error: function () {
                     options.error();
@@ -809,39 +809,45 @@
             }
             return $.insmFramework('ajax', ajaxOptions);
         },
-        PlayerPlayListLinkTables: function (options) {
+        playerPlayListLinkTables: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
 
             var PlayerPlayListLink = {
                 create: function () {
-                    Index: "1";
+                    Index: "";
                     PlayerID: "";
                     PlayListID: '';
                     return PlayerPlayListLink;
                 }
             }
-            var newPlayerPlayList = PlayerPlayListLink.create();
 
-            newPlayerPlayList.Index = options.Index;
-            newPlayerPlayList.PlayerID = options.PlayerID;
-            newPlayerPlayList.PlayListID = options.PlayListID;
+            $.each(options.PlayListID, function (index, objId) {
+                var newPlayerPlayList = PlayerPlayListLink.create();
+                newPlayerPlayList.Index = index;
+                newPlayerPlayList.PlayerID = options.playerId;
+                newPlayerPlayList.PlayListID = objId;
 
-            var ajaxOptions = {
-                success: function (result) {
-                    options.success(result);
-                },
-                url: 'api/PlayerPlayListLinkTables',
-                format: 'json',
-                data: JSON.stringify(newPlayerPlayList),
-                contentType: "application/json; charset=utf-8",
-                type: "POST",
-                denied: function () { },
-                error: function () {
-                    options.error();
-                },
-            }
-            return $.insmFramework('ajax', ajaxOptions);
+                var ajaxOptions = {
+                    success: function (result) {
+                        options.success(result);
+                    },
+                    url: 'api/PlayerPlayListLinkTables',
+                    format: 'json',
+                    data: JSON.stringify(newPlayerPlayList),
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    denied: function () { },
+                    error: function () {
+                        options.error();
+                    },
+                }
+                if (index == options.PlayListID.length - 1) {
+                    return $.insmFramework('ajax', ajaxOptions);
+                } else {
+                    $.insmFramework('ajax', ajaxOptions);
+                }
+            });
         },
         GroupPlayListLinkTables: function (options) {
 
@@ -885,6 +891,7 @@
             });  
         },
 
+        
         deletePlaylist: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -912,6 +919,24 @@
                     options.success(result);
                 },
                 url: 'api/GroupPlayListLinkTables/DeleteGroupPlayListLinkTableByGroupID/' + options.groupID,
+                format: 'json',
+                data: '',
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                denied: function () {
+                }
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        deletePlayerPlayListLinkTableByPlayerID: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayerPlayListLinkTables/DeletePlayerPlayListLinkTableByPlayerID/' + options.playerId,
                 format: 'json',
                 data: '',
                 contentType: "application/json; charset=utf-8",
