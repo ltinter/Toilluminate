@@ -182,8 +182,8 @@
             $("#PlayerDetail").css('display', 'none');
         },
         defaultDataSet: function () {
-            $("#label_Active_null").click();
-            $("#label_Online_null").click();
+            $("#label_Active_2").click();
+            $("#label_Online_2").click();
             $("#groupname").val('');
             $("#text_note").val('');
         },
@@ -314,35 +314,52 @@
                 toastr.warning("Group ID have same ID!");
                 return;
             };
+            var Settings = {};
+            Settings = {
+                Monday: $("#group_monday_value").val(),
+                Tuesday: $("#group_tuesday_value").val(),
+                Wednesday: $("#group_wednesday_value").val(),
+                Thursday: $("#group_thursday_value").val(),
+                Friday: $("#group_friday_value").val(),
+                Saturday: $("#group_saturday_value").val(),
+                Sunday: $("#group_sunday_value").val(),
+                resolution: $("#select_resolution").val()
+            };
             $.insmFramework('creatGroup', {
                 groupID: editGroupID,
                 newGroupName: $("#groupname").val(),
                 active: $("input[name='radio_Active']:checked").val(),
                 onlineUnits: $("input[name='radio_Online']:checked").val(),
-                //resolution:$("#select_resolution").find("option:selected").text(),
                 note: $("#text_note").val(),
+                settings: JSON.stringify(Settings),
                 newGroupNameParentID: groupTreeForPlayerEditID,
                 success: function (data) {
-                    var div_forcedplaylists = $('#forcedplaylists');
-                    var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
-                    if (forcedplaylists.length > 0) {
-                        playListgroup = [];
-                        $.each(forcedplaylists, function (index, forcedplaylist) {
-                            var playlistItem = {};
-                            var forcedplaylistID = $(forcedplaylist).attr('playlistId');
-                            playListgroup.push(forcedplaylistID);
-                        });
-                    }
-
-                    $.insmFramework('GroupPlayListLinkTables', {
-                        groupID: selectedGroupID,
-                        PlayListID: playListgroup,
-                        success: function (data) {
-                            
-                        },
-                        error: function () {
-                        }
-                    })
+                    //var div_forcedplaylists = $('#forcedplaylists');
+                    //var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
+                    //if (forcedplaylists.length > 0) {
+                    //    playListgroup = [];
+                    //    $.each(forcedplaylists, function (index, forcedplaylist) {
+                    //        var playlistItem = {};
+                    //        var forcedplaylistID = $(forcedplaylist).attr('playlistId');
+                    //        playListgroup.push(forcedplaylistID);
+                    //    });
+                    //}
+                    //$.insmFramework('deleteGroupPlayListLinkTableByGroupID', {
+                    //    groupID: selectedGroupID,
+                    //    success: function (data) {
+                    //        $.insmFramework('GroupPlayListLinkTables', {
+                    //            groupID: selectedGroupID,
+                    //            PlayListID: playListgroup,
+                    //            success: function (data) {
+                    //            },
+                    //            error: function () {
+                    //            }
+                    //        })
+                    //    },
+                    //    error: function () {
+                    //    }
+                    //})
+                    
                     div_main.show();
                     div_edit.hide();
                     $.insmGroup('initGroupTree');
@@ -581,6 +598,15 @@
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
         $.insmGroup('defaultDataSet');
+
+        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+
         editGroupID = undefined;
         var div_PlaylistEditorContent = $('#group_player_playlist');
         var div_forcedplaylists = $('#forcedplaylists');
@@ -625,9 +651,17 @@
         div_main.hide();
         div_edit.show();
 
-
         editGroupFlg = true;
         $.insmGroup('defaultDataSet');
+
+        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
         $.insmFramework('editGroup', {
@@ -638,6 +672,36 @@
                     $("#label_Online_" + userGroupData.OnlineFlag).click();
                     $("#groupname").val(userGroupData.GroupName);
                     $("#text_note").val(userGroupData.Comments);
+                    var Settings;
+                    if (userGroupData) {
+                        Settings = JSON.parse(userGroupData.Settings);
+                    }
+                    if (Object.getOwnPropertyNames(Settings).length > 0) {
+                        $("#group_monday_value").data("ionRangeSlider").update({
+                            from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
+                        });
+                        $("#group_tuesday_value").data("ionRangeSlider").update({
+                            from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
+                        });
+                        $("#group_wednesday_value").data("ionRangeSlider").update({
+                            from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
+                        });
+                        $("#group_thursday_value").data("ionRangeSlider").update({
+                            from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
+                        });
+                        $("#group_friday_value").data("ionRangeSlider").update({
+                            from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
+                        });
+                        $("#group_saturday_value").data("ionRangeSlider").update({
+                            from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
+                        });
+                        $("#group_sunday_value").data("ionRangeSlider").update({
+                            from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
+                        });
+
+                        $('#select_resolution').val(Settings.resolution);
+                    }
+
                     editGroupID = selectedGroupID;
                     $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(userGroupData.GroupName);
                 };
@@ -844,7 +908,7 @@
 
 
 
-    $("#label_Active_null").click(function () {
+    $("#label_Active_2").click(function () {
         if (editPlayerFlg) { $.insmGroup('activechange'); }
     })
     $("#label_Active_1").click(function () {
@@ -854,7 +918,7 @@
         if (editPlayerFlg) { $.insmGroup('activechange'); }
     })
 
-    $("#label_Onlinenull").click(function () {
+    $("#label_Online_2").click(function () {
         if (editPlayerFlg) { $.insmGroup('onlinechange'); }
     })
     $("#label_Online_1").click(function () {

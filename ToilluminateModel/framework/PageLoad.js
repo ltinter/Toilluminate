@@ -179,18 +179,8 @@ $(document).ready(function ()
     playerStatusShare();
     $.localize({});
     $.insmGroup({});
-    ////$("#span_success").text(100);
-    //var localizetext = $(".intros");
-    //$.each(localizetext, function (index, obj) {
-    //    obj.innerHTML = $.localize('translate', $.trim(obj.innerHTML));
-    //});
-    //var buttontext = $(".labeltext");
-    ////$.each(buttontext, function (index, obj) {
-    ////    obj.html($.localize('translate', $.trim(obj.innerText)));
-    ////});
     initTimeOptionsInPlayerEdit();
     
-    $("#group_monday_value").data("ionRangeSlider").update({ from: 10, to: 22 });
     initSlideEffectDropdown();
     EnableTouchSpin();
     textTemplateEditorInit();
