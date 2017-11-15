@@ -32,4 +32,15 @@ namespace ToilluminateModel.Models
             this.counts = counts;
         }
     }
+
+    public class PlayListLinkData
+    {
+        public int PlayListID { get; set; }
+        public string PlayListName { get; set; }
+        public string Settings { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public int GroupID { get; set; }
+        public string GroupName { get; set; }
+        public int BindGroupID { get; set; }
+    }
 }

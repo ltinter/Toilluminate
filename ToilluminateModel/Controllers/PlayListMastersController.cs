@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using ToilluminateModel;
+using ToilluminateModel.Models;
 
 namespace ToilluminateModel.Controllers
 {
@@ -114,68 +115,112 @@ namespace ToilluminateModel.Controllers
         {
             return db.PlayListMaster.Where(a=>a.GroupID == GroupID);
         }
-        
-        [HttpPost, Route("api/PlayListMasters/GetOwnPlayListByPlayerID/{PlayerID}")]
-        public async Task<IQueryable<PlayListMaster>> GetOwnPlayListByPlayerID(int PlayerID)
-        {
-            return db.PlayListMaster
-                    .Where(q => db.PlayerPlayListLinkTable
-                    .Where(s => s.PlayListID == q.PlayListID && s.PlayerID == PlayerID).Count() > 0);
-        }
+
+        //[HttpPost, Route("api/PlayListMasters/GetOwnPlayListByPlayerID/{PlayerID}")]
+        //public async Task<IHttpActionResult> GetOwnPlayListByPlayerID(int PlayerID)
+        //{
+
+        //    var jsonList = (from plm in db.PlayListMaster
+        //                    join pplt in db.PlayerPlayListLinkTable on plm.PlayListID equals pplt.PlayListID
+        //                    select new
+        //                    {
+        //                        plm.PlayListID,
+        //                        plm.PlayListName,
+        //                        plm.Settings,
+        //                        plm.UpdateDate,
+        //                        plm.GroupID
+        //                    }).ToList();
+        //    return Json(jsonList);
+        //}
 
 
         [HttpPost, Route("api/PlayListMasters/GetForcedPlayListByGroupID/{GroupID}")]
-        public async Task<IQueryable<PlayListMaster>> GetForcedPlayListByGroupID(int GroupID)
+        public async Task<List<PlayListLinkData>> GetForcedPlayListByGroupID(int GroupID)
         {
             List<int> GroupIDList = new List<int>();
             GroupIDList.Add(GroupID);
             PublicMethods.GetParentGroupIDs(GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
-            return db.PlayListMaster
-                    .Where(q => db.GroupPlayListLinkTable
-                    .Where(s => s.PlayListID == q.PlayListID && groupIDs.Contains((int)s.GroupID)).Count() > 0);
+            List<PlayListLinkData> pldList = (from plm in db.PlayListMaster
+                                              join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
+                                              join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
+                                              from pv in ProjectV.DefaultIfEmpty()
+                                              where groupIDs.Contains((int)gplt.GroupID)
+                                              select new PlayListLinkData
+                                              {
+                                                  PlayListID = plm.PlayListID,
+                                                  PlayListName = plm.PlayListName,
+                                                  Settings = plm.Settings,
+                                                  UpdateDate = (DateTime)plm.UpdateDate,
+                                                  GroupID = (int)plm.GroupID,
+                                                  GroupName = pv.GroupName,
+                                                  BindGroupID = (int)gplt.GroupID
+                                              }).ToList();
+            return pldList;
         }
 
 
         [HttpPost, Route("api/PlayListMasters/GetTotalPlayListByPlayerID/{PlayerID}")]
-        public async Task<List<PlayListMaster>> GetTotalPlayListByPlayerID(int PlayerID)
+        public async Task<List<PlayListLinkData>> GetTotalPlayListByPlayerID(int PlayerID)
         {
             PlayerMaster pm = db.PlayerMaster.Find(PlayerID);
-            List<PlayListMaster> pmList = db.PlayListMaster
-                    .Where(q => db.PlayerPlayListLinkTable
-                    .Where(s => s.PlayListID == q.PlayListID && s.PlayerID == PlayerID).Count() > 0).ToList();
+            List<PlayListLinkData> pldList = (from plm in db.PlayListMaster
+                                              join pplt in db.PlayerPlayListLinkTable on plm.PlayListID equals pplt.PlayListID
+                                              join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
+                                              from pv in ProjectV.DefaultIfEmpty()
+                                              select new PlayListLinkData
+                                              {
+                                                  PlayListID = plm.PlayListID,
+                                                  PlayListName = plm.PlayListName,
+                                                  Settings = plm.Settings,
+                                                  UpdateDate = (DateTime)plm.UpdateDate,
+                                                  GroupID = (int)plm.GroupID,
+                                                  GroupName = pv.GroupName
+                                              }).ToList();
 
             List<int> GroupIDList = new List<int>();
             GroupIDList.Add((int)pm.GroupID);
             PublicMethods.GetParentGroupIDs((int)pm.GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
-            pmList.AddRange(db.PlayListMaster
-                    .Where(q => db.GroupPlayListLinkTable
-                    .Where(s => s.PlayListID == q.PlayListID && groupIDs.Contains((int)s.GroupID)).Count() > 0).ToList());
-            return pmList;
+            pldList.AddRange((from plm in db.PlayListMaster
+                              join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
+                              join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
+                              from pv in ProjectV.DefaultIfEmpty()
+                              where groupIDs.Contains((int)gplt.GroupID)
+                              select new PlayListLinkData
+                              {
+                                  PlayListID = plm.PlayListID,
+                                  PlayListName = plm.PlayListName,
+                                  Settings = plm.Settings,
+                                  UpdateDate = (DateTime)plm.UpdateDate,
+                                  GroupID = (int)plm.GroupID,
+                                  GroupName = pv.GroupName,
+                                  BindGroupID = (int)gplt.GroupID
+                              }).ToList());
+            return pldList;
         }
 
         [HttpGet, Route("api/PlayListMasters/GetOwnPlayListWithInheritByGroupID/{GroupID}")]
-        public async Task<IHttpActionResult> GetOwnPlayListWithInheritByGroupID(int GroupID)
+        public async Task<List<PlayListLinkData>> GetOwnPlayListWithInheritByGroupID(int GroupID)
         {
             List<int> GroupIDList = new List<int>();
             GroupIDList.Add(GroupID);
             PublicMethods.GetParentGroupIDs(GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
-            var jsonList = (from plm in db.PlayListMaster
+            List<PlayListLinkData> pldList = (from plm in db.PlayListMaster
                             join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                             from pv in ProjectV.DefaultIfEmpty()
                             where groupIDs.Contains((int)plm.GroupID)
-                            select new
+                            select new PlayListLinkData
                             {
-                                plm.PlayListID,
-                                plm.PlayListName,
-                                plm.Settings,
-                                plm.UpdateDate,
-                                pv.GroupName,
-                                pv.GroupID
+                                PlayListID = plm.PlayListID,
+                                PlayListName = plm.PlayListName,
+                                Settings = plm.Settings,
+                                UpdateDate = (DateTime)plm.UpdateDate,
+                                GroupID = (int)plm.GroupID,
+                                GroupName = pv.GroupName
                             }).ToList();
-            return Json(jsonList);
+            return pldList;
         }
 
         protected override void Dispose(bool disposing)

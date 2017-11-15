@@ -116,7 +116,6 @@
             $.insmFramework('getGroupTreeData', {
                 success: function (tempdataGroupTreeData) {
                     if (tempdataGroupTreeData) {
-
                         var tree = $('.tree-demo.groupTree');
                         tree.jstree(groupJstreeData);
                         $.each(tree, function (key, item) {
@@ -183,8 +182,8 @@
             $("#PlayerDetail").css('display', 'none');
         },
         defaultDataSet: function () {
-            $("#label_Active_null").click();
-            $("#label_Online_null").click();
+            $("#label_Active_2").click();
+            $("#label_Online_2").click();
             $("#groupname").val('');
             $("#text_note").val('');
         },
@@ -315,31 +314,56 @@
                 toastr.warning("Group ID have same ID!");
                 return;
             };
+            var Settings = {};
+            Settings = {
+                Monday: $("#group_monday_value").val(),
+                Tuesday: $("#group_tuesday_value").val(),
+                Wednesday: $("#group_wednesday_value").val(),
+                Thursday: $("#group_thursday_value").val(),
+                Friday: $("#group_friday_value").val(),
+                Saturday: $("#group_saturday_value").val(),
+                Sunday: $("#group_sunday_value").val(),
+                resolution: $("#select_resolution").val()
+            };
             $.insmFramework('creatGroup', {
                 groupID: editGroupID,
                 newGroupName: $("#groupname").val(),
                 active: $("input[name='radio_Active']:checked").val(),
                 onlineUnits: $("input[name='radio_Online']:checked").val(),
-                //resolution:$("#select_resolution").find("option:selected").text(),
                 note: $("#text_note").val(),
+                settings: JSON.stringify(Settings),
                 newGroupNameParentID: groupTreeForPlayerEditID,
                 success: function (data) {
-                    //div_main.show();
-                    //div_edit.hide();
-                    //$.insmGroup('initGroupTree');
-                    editGroupID = undefined;
-                    $.insmFramework('GroupPlayListLinkTables', {
-                        groupID: editGroupID,
-                        PlayListID: playListgroup,
+                    var div_forcedplaylists = $('#forcedplaylists');
+                    var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
+                    if (forcedplaylists.length > 0) {
+                        playListgroup = [];
+                        $.each(forcedplaylists, function (index, forcedplaylist) {
+                            var playlistItem = {};
+                            var forcedplaylistID = $(forcedplaylist).attr('playlistId');
+                            playListgroup.push(forcedplaylistID);
+                        });
+                    }
+                    $.insmFramework('deleteGroupPlayListLinkTableByGroupID', {
+                        groupID: selectedGroupID,
                         success: function (data) {
-                            div_main.show();
-                            div_edit.hide();
-                            $.insmGroup('initGroupTree');
-                            editGroupID = undefined;
+                            $.insmFramework('GroupPlayListLinkTables', {
+                                groupID: selectedGroupID,
+                                PlayListID: playListgroup,
+                                success: function (data) {
+                                },
+                                error: function () {
+                                }
+                            })
                         },
                         error: function () {
                         }
                     })
+                    
+                    div_main.show();
+                    div_edit.hide();
+                    $.insmGroup('initGroupTree');
+                    editGroupID = undefined;
                 },
                 error: function () {
                 }
@@ -373,14 +397,12 @@
         },
         showPlaylist: function (options) {
             var div_PlaylistEditorContent = $('#group_player_playlist');
-            div_PlaylistEditorContent.empty();
-
             var div_forcedplaylists = $('#forcedplaylists');
+            div_PlaylistEditorContent.empty();
             div_forcedplaylists.empty();
-
             if (options.Playlists) {
                 $.each(options.Playlists, function (index, Playlist) {
-                    var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
+                    var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm').attr('playlistId', Playlist.PlayListID);
                     var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
                     var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
                     var div_title = $('<div/>').addClass('m-portlet__head-title');
@@ -444,7 +466,7 @@
                     div_li.click(function () {
                         var playlistclone = div_Playlist.clone(true);
                         div_forcedplaylists.append(playlistclone);
-                        playListgroup.push(Playlist.PlayListID);
+                        //playListgroup.push(Playlist.PlayListID);
                     });
                     div_PlaylistEditorContent.append(div_Playlist);
                 });
@@ -452,47 +474,68 @@
             var tempForcedPlayList = null;
             if (options.isGroup) {
                 $.insmFramework('getForcedPlaylistByGroup', {
-                    groupID: editGroupID,
+                    groupID: options.GroupID,
                     success: function (forcedPlayList) {
-                        tempForcedPlayList = forcedPlayList
+                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList });
                     },
                     error: function () {
                     }
                 })
             } else {
                 $.insmFramework('getForcedPlaylistByPlayer', {
-                    groupID: editGroupID,
+                    playerId: options.playerId,
                     success: function (forcedPlayList) {
-                        tempForcedPlayList = forcedPlayList;
+                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList });
                     },
                     error: function () {
                     }
                 })
             }
 
-            if (tempForcedPlayList) {
-                $.each(options.Playlists, function (index, Playlist) {
-                    var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
+            
+        },
+        showPlaylistForced: function (options) {
+            var div_forcedplaylists = $('#forcedplaylists');
+            div_forcedplaylists.empty();
+            if (options.tempForcedPlayList) {
+                $.each(options.tempForcedPlayList, function (index, Playlist) {
+                    if (Playlist.BindGroupID == selectedGroupID) {
+                        var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm').attr('playlistId', Playlist.PlayListID);
+                        var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
+                    } else {
+                        var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
+                        var div_Playlisthead = $('<div/>').addClass('m-portlet__head ui-sortable-handle');
+                    }
+                    
                     var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
                     var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
                     var div_title = $('<div/>').addClass('m-portlet__head-title');
                     var span_head_icon = $("<span />").addClass('m-portlet__head-icon');
                     var span_i = '<i class="fa fa-file-text"></i>';
-                    var head_text = $('<h3 />').addClass('m-portlet__head-text').text(Playlist.PlayListName);
+                    if (Playlist.BindGroupID == selectedGroupID) {
+                        var head_text = $('<h3 />').addClass('m-portlet__head-text').append(Playlist.PlayListName);
+                    } else {
+                        var head_text = $('<h3 />').addClass('m-portlet__head-text').append(Playlist.PlayListName + '<br>' +'(' + Playlist.GroupName + ')');
+                    }
+
                     span_head_icon.append(span_i);
                     div_title.append(span_head_icon);
                     div_title.append(head_text);
                     div_head_caption.append(div_title);
                     div_Playlisthead.append(div_head_caption);
-
                     var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
                     var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
-                    var div_li = $('<li />').addClass('m-portlet__nav-item');
-                    var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
-                    var href_i = $('<i />').addClass("fa fa-toggle-right");
-                    href.append(href_i);
-                    div_li.append(href);
-                    div_portlet_nav.append(div_li);
+                    if (Playlist.BindGroupID == selectedGroupID) {
+                        var div_li = $('<li />').addClass('m-portlet__nav-item');
+                        var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+                        var href_i = $('<i />').addClass("la la-close");
+                        href.append(href_i);
+                        div_li.append(href);
+                        div_portlet_nav.append(div_li);
+                        div_li.click(function () {
+                            div_Playlist.remove();
+                        });
+                    }
                     var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push");
                     div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
                     var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
@@ -533,10 +576,11 @@
                     div_portlet_nav.append(div_li_list);
                     div_Playlisthead.append(div_head_tools);
                     div_Playlist.append(div_Playlisthead);
+                    
                     div_forcedplaylists.append(div_Playlist);
                 });
             }
-        },  
+        },
     }
     $.insmGroup = function (method) {
         if (methods[method]) {
@@ -554,31 +598,44 @@
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
         $.insmGroup('defaultDataSet');
+
+        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+
         editGroupID = undefined;
         var div_PlaylistEditorContent = $('#group_player_playlist');
+        var div_forcedplaylists = $('#forcedplaylists');
         div_PlaylistEditorContent.empty();
+        div_forcedplaylists.empty();
         $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(localize_jap["New Group"]);
-        //$.insmFramework('getPlaylistByGroupID', {
-        //    GroupID: selectedGroupID,
-        //    success: function (data) {
-        //        if (data) {
-        //            $.insmGroup('showPlaylist', { Playlists: data });
-        //        }
-        //    },
-        //    error: function () {
+        $.insmFramework('getPlaylistByGroup', {
+            GroupID: selectedGroupID,
+            success: function (data) {
+                if (data) {
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID });
+                }
+            },
+            error: function () {
 
-        //    },
-        //})
+            },
+        })
     })
     $("#deletegroup").click(function (e) {
-        var newGroupdata = $.insmFramework('deleteGroup', {
-            deleteGroupId: selectedGroupID,
-            success: function (resultdata) {
-                div_main.show();
-                div_edit.hide();
-                $.insmGroup('initGroupTree');
-            }
-        })
+        //$.insmFramework('deleteGroup', {
+        //    deleteGroupId: selectedGroupID,
+        //    success: function (resultdata) {
+        //        div_main.show();
+        //        div_edit.hide();
+        //        $.insmGroup('initGroupTree');
+        //    }
+        //})
+        toastr.warning("Group is used!");
+        return;
     })
     $("#expandAll").click(function () {
         $('#groupTree').jstree('open_all');
@@ -594,9 +651,17 @@
         div_main.hide();
         div_edit.show();
 
-
         editGroupFlg = true;
         $.insmGroup('defaultDataSet');
+
+        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
         $.insmFramework('editGroup', {
@@ -607,10 +672,52 @@
                     $("#label_Online_" + userGroupData.OnlineFlag).click();
                     $("#groupname").val(userGroupData.GroupName);
                     $("#text_note").val(userGroupData.Comments);
+                    var Settings;
+                    if (userGroupData) {
+                        Settings = JSON.parse(userGroupData.Settings);
+                    }
+                    if (Settings != null) {
+                        if (Object.getOwnPropertyNames(Settings).length > 0) {
+                            $("#group_monday_value").data("ionRangeSlider").update({
+                                from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
+                            });
+                            $("#group_tuesday_value").data("ionRangeSlider").update({
+                                from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
+                            });
+                            $("#group_wednesday_value").data("ionRangeSlider").update({
+                                from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
+                            });
+                            $("#group_thursday_value").data("ionRangeSlider").update({
+                                from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
+                            });
+                            $("#group_friday_value").data("ionRangeSlider").update({
+                                from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
+                            });
+                            $("#group_saturday_value").data("ionRangeSlider").update({
+                                from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
+                            });
+                            $("#group_sunday_value").data("ionRangeSlider").update({
+                                from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
+                            });
+
+                            $('#select_resolution').val(Settings.resolution);
+                        }
+                    }
+                    
+
                     editGroupID = selectedGroupID;
                     $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(userGroupData.GroupName);
                 };
-                $.insmGroup('getPlaylistByGroup', { groupID: editGroupID, isGroup:true });
+                $.insmFramework('getPlaylistByGroup', {
+                    GroupID: selectedGroupID,
+                    success: function (data) {
+                        if (data) {
+                            $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID });
+                        }
+                    },
+                    error: function () {
+                    },
+                })
             },
             error: function () {
 
@@ -634,15 +741,14 @@
         $("#button_save").css('display', 'none');
         $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(localize_jap["Add"]);
 
-        $.insmFramework('getPlaylistByGroupID', {
+        $.insmFramework('getPlaylistByGroup', {
             GroupID: selectedGroupID,
             success: function (data) {
                 if (data) {
-                    $.insmGroup('showPlaylist', {Playlists:data});
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: false, GroupID: selectedGroupID });
                 }
             },
             error: function () {
-               
             },
         })
     });
@@ -667,21 +773,36 @@
                 DisplayNamechangeFlg: DisplayNamechangeFlg,
                 NotechangeFlg: DisplayNamechangeFlg,
                 success: function (data) {
+                    var div_forcedplaylists = $('#forcedplaylists');
+                    var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
+                    if (forcedplaylists.length > 0) {
+                        playListgroup = [];
+                        $.each(forcedplaylists, function (index, forcedplaylist) {
+                            var playlistItem = {};
+                            var forcedplaylistID = $(forcedplaylist).attr('playlistId');
+                            playListgroup.push(forcedplaylistID);
+                        });
+                    }
+                    $.insmFramework('deletePlayerPlayListLinkTableByPlayerID', {
+                        playerId: data.PlayerID,
+                        success: function () {
+                            $.insmFramework('playerPlayListLinkTables', {
+                                playerId: data.PlayerID,
+                                PlayListID: playListgroup,
+                                success: function (data) {
+                                },
+                                error: function () {
+                                }
+                            })
+                        },
+                        error: function () {
+                        }
+                    })
+
                     div_main.show();
                     div_edit.hide();
                     $.insmGroup('initGroupTree');
                     editGroupID = undefined;
-                    $.insmFramework('PlayerPlayListLinkTables', {
-                        Index: '',
-                        PlayerID: data.PlayerID,
-                        PlayListID: '25',
-                        success: function (data) {
-                            div_main.show();
-                            div_edit.hide();
-                            $.insmGroup('initGroupTree');
-                            editGroupID = undefined;
-                        }
-                    })
                 }
             })
 
@@ -729,6 +850,13 @@
         })
         allPlayerNames = allPlayerNames.substr(2);
         div_edit.find("H3:first").text(selectPlayer.length + " Display Units / (" + allPlayerNames + ")");
+
+        var allPlayerID = "";
+        $.each(selectPlayer, function (playerIndex, playerItem) {
+            allPlayerID += ", " + $(playerItem).data().obj.PlayerID;
+        })
+        allPlayerID = allPlayerID.substr(2);
+
         editPlayerFlg = true;
         $.insmGroup('defaultDataSet');
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
@@ -749,19 +877,16 @@
                 $("#label_Online_" + $(selectPlayer[index]).data().obj.OnlineFlag).click();
             }
         });
-        if (allPlayerID != '') {
-            $.insmFramework('getPlaylistByPlayerID', {
-                playerID: allPlayerID,
-                success: function (playlistData) {
-                    if (playlistData) {
-                        $.insmGroup('showPlaylist', { Playlists: playlistData });
-                    }
-                    
+        $.insmFramework('getPlaylistByGroup', {
+            GroupID: selectedGroupID,
+            success: function (data) {
+                if (data) {
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: false, GroupID: selectedGroupID, playerId: allPlayerID });
                 }
-            })
-        }
-
-        $.insmGroup('getPlaylistByGroup', { groupID: editGroupID });
+            },
+            error: function () {
+            },
+        })
     }
     $("#edit_player").click(function () {
         var selected = datatable.setSelectedRecords().getSelectedRecords();
@@ -804,7 +929,7 @@
 
 
 
-    $("#label_Active_null").click(function () {
+    $("#label_Active_2").click(function () {
         if (editPlayerFlg) { $.insmGroup('activechange'); }
     })
     $("#label_Active_1").click(function () {
@@ -814,7 +939,7 @@
         if (editPlayerFlg) { $.insmGroup('activechange'); }
     })
 
-    $("#label_Onlinenull").click(function () {
+    $("#label_Online_2").click(function () {
         if (editPlayerFlg) { $.insmGroup('onlinechange'); }
     })
     $("#label_Online_1").click(function () {

@@ -129,6 +129,9 @@
     var div_Mainplaylist = $('#div_Mainplaylist');
     var edit_playlistId = null;
     var tempselectedGroupID = null;
+    var selectedFolderID = null;
+    var currentNeededFileType = "image";
+    var editplaylistID = null;
     var methods = {
         init: function (options) {
             // Global vars
@@ -253,6 +256,7 @@
                             var edit_href = $('<a />').addClass("btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm").text('Edit');
 
                             edit_href.click(function () {
+                                editplaylistID = item.PlayListID;
                                 $.playlistEditor('setfolder', { selectedGroupID: tempselectedGroupID });
                                 $.playlistEditor('editPlaylist', { playlistID: item.PlayListID });
                             });
@@ -291,6 +295,7 @@
             $("#m_touchspin_3").val('0');
             var div_AddnewItem = $("#playlistItem");
             div_AddnewItem.empty();
+            $("#div_playlist").find("h3:first").text($.localize('translate', 'New Playlist'));
         },
         editPlaylist: function (options) {
             editflg = true;
@@ -307,62 +312,65 @@
                             var Settings = JSON.parse(playlistData.Settings);
                             $('#playlist_name').val(playlistData.PlayListName);
                             $('#playlist_note').text(playlistData.Comments);
+                            $("#div_playlist").find("h3:first").text(playlistData.PlayListName);
                         }
-                        if (Object.getOwnPropertyNames(Settings).length > 0) {
-                            $("#playlist_monday_value").data("ionRangeSlider").update({
-                                from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
-                            });
-                            $("#playlist_tuesday_value").data("ionRangeSlider").update({
-                                from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
-                            });
-                            $("#playlist_wednesday_value").data("ionRangeSlider").update({
-                                from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
-                            });
-                            $("#playlist_thursday_value").data("ionRangeSlider").update({
-                                from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
-                            });
-                            $("#playlist_friday_value").data("ionRangeSlider").update({
-                                from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
-                            });
-                            $("#playlist_saturday_value").data("ionRangeSlider").update({
-                                from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
-                            });
-                            $("#playlist_sunday_value").data("ionRangeSlider").update({
-                                from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
-                            });
-                            $("#label_loop_" + Settings.Loop).click();
-                            $("#label_playtime_" + Settings.Playtime).click();
-                            $("#m_touchspin_1").val(Settings.PlayHours);
-                            $("#m_touchspin_2").val(Settings.PlayMinites);
-                            $("#m_touchspin_3").val(Settings.PlaySeconds);
+                        if (Settings != null) {
+                            if (Object.getOwnPropertyNames(Settings).length > 0) {
+                                $("#playlist_monday_value").data("ionRangeSlider").update({
+                                    from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
+                                });
+                                $("#playlist_tuesday_value").data("ionRangeSlider").update({
+                                    from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
+                                });
+                                $("#playlist_wednesday_value").data("ionRangeSlider").update({
+                                    from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
+                                });
+                                $("#playlist_thursday_value").data("ionRangeSlider").update({
+                                    from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
+                                });
+                                $("#playlist_friday_value").data("ionRangeSlider").update({
+                                    from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
+                                });
+                                $("#playlist_saturday_value").data("ionRangeSlider").update({
+                                    from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
+                                });
+                                $("#playlist_sunday_value").data("ionRangeSlider").update({
+                                    from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
+                                });
+                                $("#label_loop_" + Settings.Loop).click();
+                                $("#label_playtime_" + Settings.Playtime).click();
+                                $("#m_touchspin_1").val(Settings.PlayHours);
+                                $("#m_touchspin_2").val(Settings.PlayMinites);
+                                $("#m_touchspin_3").val(Settings.PlaySeconds);
 
-
-                            if (Settings.PlaylistItems) {
-                                if (Settings.PlaylistItems.length > 0) {
-                                    $.each(Settings.PlaylistItems, function (index, palylistItem) {
-                                        if (palylistItem.type) {
-                                            switch (palylistItem.type.toLowerCase()) {
-                                                case "1":
-                                                    $.playlistEditor('greateNewItemPicture', {
-                                                        palylistItem: palylistItem
-                                                    });
-                                                    break;
-                                                case "2":
-                                                    $.playlistEditor('greateNewItemPicture', {
-                                                        palylistItem: palylistItem
-                                                    });
-                                                    break;
-                                                case "3":
-                                                    $.playlistEditor('greateNewItemPicture', {
-                                                        palylistItem: palylistItem
-                                                    });
-                                                    break;
+                                if (Settings.PlaylistItems) {
+                                    if (Settings.PlaylistItems.length > 0) {
+                                        $.each(Settings.PlaylistItems, function (index, palylistItem) {
+                                            if (palylistItem.type) {
+                                                switch (palylistItem.type.toLowerCase()) {
+                                                    case "0":
+                                                        $.playlistEditor('greateNewItemPicture', {
+                                                            palylistItem: palylistItem
+                                                        });
+                                                        break;
+                                                    case "1":
+                                                        $.playlistEditor('greateNewItemText', {
+                                                            palylistItem: palylistItem
+                                                        });
+                                                        break;
+                                                    case "2":
+                                                        $.playlistEditor('greateNewItemvideo', {
+                                                            palylistItem: palylistItem
+                                                        });
+                                                        break;
+                                                }
                                             }
-                                        }
-                                    })
+                                        })
+                                    }
                                 }
                             }
                         }
+                        
                     }
                 })
             }
@@ -389,9 +397,7 @@
                         tree.on("changed.jstree", function (e, data) {
                             if (data.node) {
                                 selectedFolderID = data.node.id;
-                                $.playlistEditor('setfile', {
-                                    selectedFolderID: selectedFolderID
-                                });
+                                $.playlistEditor('setfile');
                             }
                         });
                     }
@@ -404,13 +410,23 @@
                 },
             });
         },
-        setfile: function (options) {
-            selectedFolderID = options.selectedFolderID;
+        setfile: function () {
             $('#datatable_file1').prop("outerHTML", "<div class='m_datatable' id='datatable_file1'></div>");
             $.insmFramework('getFilesByFolder', {
                 FolderID: selectedFolderID,
                 success: function (fileData) {
-                    tableData.data.source.data = fileData;
+                    var supportedFileTypes = {
+                        "image": [".jpg", ".gif", ".png", ".jpeg", ".bmp"],
+                        "video": [".mp4", ".wmv", ".mpeg", ".mpg", ".avi", ".mov"]
+                    };
+                    var tempFileData = [];
+                    $.each(fileData, function (fileIndex, fileItem) {
+                        var tempFileType = supportedFileTypes[currentNeededFileType.toLowerCase()];
+                        if (tempFileType && $.inArray(fileItem.FileType.toLowerCase().trim(), tempFileType) > -1) {
+                            tempFileData.push(fileData[fileIndex]);
+                        }
+                    });
+                    tableData.data.source.data = tempFileData;
                     $("#datatable_file1").data("datatable", $('#datatable_file1').mDatatable(tableData));
                 },
                 error: function () {
@@ -450,24 +466,24 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.text('PlaylistItemPicture\r\n(Picture)'));
+        div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemPicture<br>(Picture)')));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
         div_portlet_nav.append(div_li)
         div_head_tools.append(div_portlet_nav)
         div_head_handle.append(div_head_caption, div_head_tools)
-        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '1');
+        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '0');
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
-        var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input').val("New Playlist Item");
+        var lable = $('<lable/>').text($.localize('translate', 'Playlist Item Name:'));
+        var input = $("<input type='text'/>").addClass('form-control m-input').val($.localize('translate', 'New Playlist Item')).val($.localize('translate', 'New Playlist Item'));
         
         div_body_group.append(lable, input);
         div_bodyMain.append(div_body_group);
 
         var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
+        var lable1 = $('<lable/>').text($.localize('translate', 'Display Inteval(Seconds):'));
         div_col.append(lable1);
         div_bodyMain.append(div_col);
 
@@ -480,21 +496,21 @@
         div_bodyMain.append(div_col1);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable2 = $('<lable/>').text('Sildeshow effects:');
+        var lable2 = $('<lable/>').text($.localize('translate', 'Sildeshow effects:'));
         div_col2.append(lable2);
         div_bodyMain.append(div_col2);
 
         var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var select_option = $('<select/>').addClass('form-control m-select2').attr("id", "m_select2_3").attr("multiple", "").attr("tabindex", "-1").attr("aria-hidden", "true");
-        select_option.append("<option value='0'>Random</option>");
-        select_option.append("<option value='1'>Left to Right</option>");
-        select_option.append("<option value='2'>Right to Left</option>");
-        select_option.append("<option value='3'>Top to Bottom</option>");
-        select_option.append("<option value='4'>Bottom To Top</option>");
-        select_option.append("<option value='5'>Grow</option>");
-        select_option.append("<option value='6'>Fadein</option>");
-        select_option.append("<option value='7'>Rotate horizontally</option>");
-        select_option.append("<option value='8'>Rotate vertically</option>");
+        select_option.append("<option value='0'>" + $.localize('translate', 'Random') + "</option>");
+        select_option.append("<option value='1'>" + $.localize('translate', 'Left to Right') + "</option>");
+        select_option.append("<option value='2'>" + $.localize('translate', 'Right to Left') + "</option>");
+        select_option.append("<option value='3'>" + $.localize('translate', 'Top to Bottom') + "</option>");
+        select_option.append("<option value='4'>" + $.localize('translate', 'Bottom To Top') + "</option>");
+        select_option.append("<option value='5'>" + $.localize('translate', 'Grow') + "</option>");
+        select_option.append("<option value='6'>" + $.localize('translate', 'Fadein') + "</option>");
+        select_option.append("<option value='7'>" + $.localize('translate', 'Rotate horizontally') + "</option>");
+        select_option.append("<option value='8'>" + $.localize('translate', 'Rotate vertically') + "</option>");
         div_col3.append(select_option);
         div_bodyMain.append(div_col3);
 
@@ -504,27 +520,27 @@
         div_col4.append(div_col4_main);
 
         var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px').css("line-height", "150px");
-        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
+        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select images')).click(function () {
             divselectFile = div_col_image;
+            currentNeededFileType = "image";
             if ($("#datatable_file1").data("datatable")) {
-                $("#datatable_file1").data("datatable").setActiveAll(false);
+                $.playlistEditor('setfile');
             }
         });
 
-        
         div_col4_main.append(button_Selectimages);
         div_col4.append(div_col_image);
         div_body.append(div_bodyMain, div_col4);
         div_head.append(div_head_handle, div_body)
 
         div_li.click(function () {
-            div_head.empty();
+            div_head.remove();
         });
 
         var div_AddnewItem = $("#playlistItem");
         div_AddnewItem.append(div_head);
         select_option.select2({
-                placeholder: "Select dildeshow effects"
+            placeholder: $.localize('translate', "Select sildeshow effects")
             });
         input1.TouchSpin({
             buttondown_class: 'btn btn-secondary',
@@ -568,68 +584,71 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.text('PlaylistItemText\r\n(Text)'));
+        div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemText<br>(Text)')));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
         div_portlet_nav.append(div_li)
         div_head_tools.append(div_portlet_nav)
         div_head_handle.append(div_head_caption, div_head_tools)
-        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto');
+        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '1');
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
-        var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input');
+        var lable = $('<lable/>').text($.localize('translate', 'Playlist Item Name:'));
+        var input = $("<input type='text'/>").addClass('form-control m-input').val($.localize('translate', 'New Playlist Item'));
         div_body_group.append(lable, input);
         div_bodyMain.append(div_body_group);
 
         var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
+        var lable1 = $('<lable/>').text($.localize('translate', 'Display Inteval(Seconds):'));
         div_col.append(lable1);
         div_bodyMain.append(div_col);
 
         var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
-        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1").val("5");
         div_touchspin_brand.append(input1);
         div_col1.append(div_touchspin_brand);
         div_bodyMain.append(div_col1);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable2 = $('<lable/>').text('Sliding Speed:');
-        div_col2.append(lable1);
+        var lable2 = $('<lable/>').text($.localize('translate', 'Sliding Speed:'));
+        div_col2.append(lable2);
         div_bodyMain.append(div_col2);
 
         var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var div_touchspin_brand1 = $('<div/>').addClass('m-bootstrap-touchspin-brand');
-        var input2 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+        var input2 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn slidingSpeed').attr("name", "demo1").val("5");
         div_touchspin_brand1.append(input2);
         div_col3.append(div_touchspin_brand1);
         div_bodyMain.append(div_col3);
 
-        var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable2 = $('<lable/>').text('Text Postion:');
-        div_col2.append(lable2);
-        div_bodyMain.append(div_col2);
-        var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var div_col4 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var lable4 = $('<lable/>').text($.localize('translate', 'Text Postion:'));
+        div_col4.append(lable4);
+        div_bodyMain.append(div_col4);
+
+        var div_col5 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var select_option = $('<select/>');
-        select_option.append("<option value='0'>Top</option>");
-        select_option.append("<option value='1'>Middle</option>");
-        select_option.append("<option value='2'>Buttom</option>");
-        div_col3.append(select_option);
-        div_bodyMain.append(div_col3);
+        select_option.append("<option value='0'>" + $.localize('translate', 'Top') + "</option>");
+        select_option.append("<option value='1'>" + $.localize('translate', 'Middle') + "</option>");
+        select_option.append("<option value='2'>" + $.localize('translate', 'Bottom') + "</option>");
+        div_col5.append(select_option);
+        div_bodyMain.append(div_col5);
 
-        var div_col4 = $('<div/>').addClass('col-xl-8');
-        var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var div_col6 = $('<div/>').addClass('col-xl-8');
+        var div_col6_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
 
-        div_col4.append(div_col4_main);
+        div_col6.append(div_col6_main);
 
-        div_body.append(div_bodyMain, div_col4);
+        div_body.append(div_bodyMain, div_col6);
         div_head.append(div_head_handle, div_body)
 
         var div_AddnewItem = $("#playlistItem");
         div_AddnewItem.append(div_head);
-
+        div_li.click(function () {
+            div_head.remove();
+        });
         input1.TouchSpin({
             buttondown_class: 'btn btn-secondary',
             buttonup_class: 'btn btn-secondary',
@@ -650,7 +669,7 @@
             max: 60
         });
 
-        div_col4_main.summernote({
+        div_col6_main.summernote({
             height: 150,
             toolbar: [
         // [groupName, [list of button]]
@@ -661,6 +680,20 @@
         ['Misc', ['undo', 'redo']]
             ]
         });
+        if (options) {
+            if (options.palylistItem) {
+                input.val(options.palylistItem.PlaylistItemName);
+            }
+            if (options.palylistItem) {
+                input1.val(options.palylistItem.DisplayIntevalSeconds);
+            }
+            if (options.palylistItem) {
+                input2.val(options.palylistItem.SlidingSpeed);
+            }
+            if (options.palylistItem) {
+                select_option.val(options.palylistItem.TextPostion);
+            }
+        }
     },
     greateNewItemvideo: function (options) {
         var div_head = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
@@ -676,49 +709,44 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.text('PlaylistItemText<br />(Picture)'));
+        div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemVideo<br>(video)')));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
         div_portlet_nav.append(div_li)
         div_head_tools.append(div_portlet_nav)
         div_head_handle.append(div_head_caption, div_head_tools)
-        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto');
+        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '2');
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
-        var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input');
+        var lable = $('<lable/>').text($.localize('translate', 'Playlist Item Name:'));
+        var input = $("<input type='text'/>").addClass('form-control m-input').val($.localize('translate', 'New Playlist Item'));
         div_body_group.append(lable, input);
-        var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
-        div_col.append(lable1);
-        div_body_group.append(div_col);
-
-        var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
-        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
-        div_touchspin_brand.append(input1);
-        div_col1.append(div_touchspin_brand);
-        div_body_group.append(div_col1);
+        div_bodyMain.append(div_body_group);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable2 = $('<lable/>').text('Sildeshow effects:');
+        var lable2 = $('<lable/>').text($.localize('translate', 'Zoom option:'));
         div_col2.append(lable2);
-        div_body_group.append(div_col2);
-
+        div_bodyMain.append(div_col2);
         var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var select_option = $('<select/>').addClass('form-control m-select2').attr("id", "m_select2_3").attr("multiple", "").attr("tabindex", "-1").attr("aria-hidden", "true");
+        var select_option = $('<select/>');
+        select_option.append("<option value='0'>" + $.localize('translate', 'None') + "</option>");
+        select_option.append("<option value='1'>" + $.localize('translate', 'Fullscreen') + "</option>");
+        select_option.append("<option value='2'>" + $.localize('translate', 'Fullscreen with original aspect') + "</option>");
         div_col3.append(select_option);
-        div_body_group.append(div_col3);
-        div_bodyMain.append(div_body_group);
+        div_bodyMain.append(div_col3);
 
         var div_col4 = $('<div/>').addClass('col-xl-8');
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
 
         var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
-        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
+        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select video')).click(function () {
             divselectFile = div_col_image;
+            currentNeededFileType = "video";
+            if ($("#datatable_file1").data("datatable")) {
+                $.playlistEditor('setfile');
+            }
         });
         div_col4_main.append(button_Selectimages);
         div_col4.append(div_col_image);
@@ -727,6 +755,29 @@
 
         var div_AddnewItem = $("#playlistItem");
         div_AddnewItem.append(div_head);
+
+        div_li.click(function () {
+            div_head.remove();
+        });
+
+        if (options) {
+            if (options.palylistItem) {
+                input.val(options.palylistItem.PlaylistItemName);
+            }
+            if (options.palylistItem) {
+                if (options.palylistItem.itemData) {
+                    $.each(options.palylistItem.itemData.src, function (index, item) {
+                        var screenshot = new Image();
+                        screenshot.src = item;
+                        //screenshot.id = $(item).data().obj.FileID;
+                        div_col_image.append(screenshot);
+                    });
+                }
+            }
+            if (options.palylistItem) {
+                select_option.val(options.palylistItem.ZoomOption);
+            }
+        }
     }
 }
 
@@ -786,39 +837,65 @@
                 var playlistItem = {};
                 var inputPlaylistItemName = $(palylistItem).find('.form-control.m-input');
                 playlistItem.PlaylistItemName = inputPlaylistItemName.val();
-                playlistItem.DisplayIntevalSeconds = 20;
-                playlistItem.SildeshowEffects = 'Left to Right'
-                playlistItem.type = $(palylistItem).attr('type');//images
                 
-                var imageItem = {};
-                var imageId = [];
-                var imagesrc = [];
-                if ($(palylistItem).find("img").length > 0) {
-                    $.each($(palylistItem).find("img"), function (index, imgItem) {
-                        imageId.push(imgItem.id);
-                        imagesrc.push(imgItem.src);
-                    });
+
+                playlistItem.type = $(palylistItem).attr('type');//images
+
+                if (playlistItem.type == '0') {
+                    playlistItem.DisplayIntevalSeconds = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn').val();
+                    playlistItem.SildeshowEffects = 'Left to Right';
+                    var imageItem = {};
+                    var imageId = [];
+                    var imagesrc = [];
+                    if ($(palylistItem).find("img").length > 0) {
+                        $.each($(palylistItem).find("img"), function (index, imgItem) {
+                            imageId.push(imgItem.id);
+                            imagesrc.push(imgItem.src);
+                        });
+                    }
+                    imageItem.name = 'imageItem'
+                    imageItem.id = imageId;
+                    imageItem.src = imagesrc;
+                    playlistItem.itemData = imageItem;
                 }
-                imageItem.name = 'imageItem'
-                imageItem.id = imageId;
-                imageItem.src = imagesrc;
-                playlistItem.itemData = imageItem;
+                if (playlistItem.type == '1') {
+                    playlistItem.DisplayIntevalSeconds = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn').val();
+                    playlistItem.SlidingSpeed = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn.slidingSpeed').val();
+                    playlistItem.TextPostion = $(palylistItem).find('select').val();
+                    playlistItem.itemData = '';
+                }
+                if (playlistItem.type == '2') {
+                    playlistItem.ZoomOption = $(palylistItem).find('select').val();
+                    var imageItem = {};
+                    var imageId = [];
+                    var imagesrc = [];
+                    if ($(palylistItem).find("img").length > 0) {
+                        $.each($(palylistItem).find("img"), function (index, imgItem) {
+                            imageId.push(imgItem.id);
+                            imagesrc.push(imgItem.src);
+                        });
+                    }
+                    imageItem.name = 'imageItem'
+                    imageItem.id = imageId;
+                    imageItem.src = imagesrc;
+                    playlistItem.itemData = imageItem;
+                }
                 palylistItemItemsdata.push(playlistItem); 
             });
             Settings.PlaylistItems= palylistItemItemsdata;
         }
         if (editflg) {
-            $.insmFramework('creatPlaylist', {
+            $.insmFramework('editPlaylist', {
                 GroupID: tempselectedGroupID,
+                playlistId: editplaylistID,
                 PlayListName: $("#playlist_name").val(),
                 InheritForced: '',
                 Settings: JSON.stringify(Settings),
                 Comments: $("#playlist_note").val(),
                 success: function (playlistData) {
-                    if (playlistData) {
-                        div_playlist.hide();
-                        div_Mainplaylist.show();
-                    }
+                    div_playlist.hide();
+                    div_Mainplaylist.show();
+                    editplaylistID = null;
                 }
             })
         } else {
@@ -833,6 +910,7 @@
                         div_playlist.hide();
                         div_Mainplaylist.show();
                     }
+                    editplaylistID = null;
                 }
             })
         } 
@@ -844,8 +922,13 @@
     $("#addText").click(function () {
         $.playlistEditor('greateNewItemText');
     });
+    $("#addVideo").click(function () {
+        $.playlistEditor('greateNewItemvideo');
+    });
     $("#playlist_delete").click(function () {
         if (edit_playlistId) {
+            toastr.warning("Group is used!");
+            return;
             $.insmFramework('deletePlaylist', {
                 deletePlaylistId: edit_playlistId,
                 success: function (fileData) {
