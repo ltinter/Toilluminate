@@ -194,4 +194,5 @@ $(document).ready(function ()
     initSlideEffectDropdown();
     EnableTouchSpin();
     textTemplateEditorInit();
+    $("#div_PlaylistEditorContent").empty();
 });

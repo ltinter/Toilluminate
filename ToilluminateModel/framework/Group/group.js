@@ -116,7 +116,6 @@
             $.insmFramework('getGroupTreeData', {
                 success: function (tempdataGroupTreeData) {
                     if (tempdataGroupTreeData) {
-
                         var tree = $('.tree-demo.groupTree');
                         tree.jstree(groupJstreeData);
                         $.each(tree, function (key, item) {
@@ -324,10 +323,17 @@
                 note: $("#text_note").val(),
                 newGroupNameParentID: groupTreeForPlayerEditID,
                 success: function (data) {
-                    div_main.show();
-                    div_edit.hide();
-                    $.insmGroup('initGroupTree');
-                    editGroupID = undefined;
+                    var div_forcedplaylists = $('#forcedplaylists');
+                    var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
+                    if (forcedplaylists.length > 0) {
+                        playListgroup = [];
+                        $.each(forcedplaylists, function (index, forcedplaylist) {
+                            var playlistItem = {};
+                            var forcedplaylistID = $(forcedplaylist).attr('playlistId');
+                            playListgroup.push(forcedplaylistID);
+                        });
+                    }
+
                     $.insmFramework('GroupPlayListLinkTables', {
                         groupID: selectedGroupID,
                         PlayListID: playListgroup,
@@ -337,6 +343,10 @@
                         error: function () {
                         }
                     })
+                    div_main.show();
+                    div_edit.hide();
+                    $.insmGroup('initGroupTree');
+                    editGroupID = undefined;
                 },
                 error: function () {
                 }
@@ -375,7 +385,7 @@
             div_forcedplaylists.empty();
             if (options.Playlists) {
                 $.each(options.Playlists, function (index, Playlist) {
-                    var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
+                    var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm').attr('playlistId', Playlist.PlayListID);
                     var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
                     var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
                     var div_title = $('<div/>').addClass('m-portlet__head-title');
@@ -439,7 +449,7 @@
                     div_li.click(function () {
                         var playlistclone = div_Playlist.clone(true);
                         div_forcedplaylists.append(playlistclone);
-                        playListgroup.push(Playlist.PlayListID);
+                        //playListgroup.push(Playlist.PlayListID);
                     });
                     div_PlaylistEditorContent.append(div_Playlist);
                 });
@@ -472,8 +482,8 @@
             div_forcedplaylists.empty();
             if (options.tempForcedPlayList) {
                 $.each(options.tempForcedPlayList, function (index, Playlist) {
-                    if (Playlist.GroupID == selectedGroupID) {
-                        var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
+                    if (Playlist.BindGroupID == selectedGroupID) {
+                        var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm').attr('playlistId', Playlist.PlayListID);
                         var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
                     } else {
                         var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
@@ -485,21 +495,30 @@
                     var div_title = $('<div/>').addClass('m-portlet__head-title');
                     var span_head_icon = $("<span />").addClass('m-portlet__head-icon');
                     var span_i = '<i class="fa fa-file-text"></i>';
-                    var head_text = $('<h3 />').addClass('m-portlet__head-text').text(Playlist.PlayListName);
+                    if (Playlist.BindGroupID == selectedGroupID) {
+                        var head_text = $('<h3 />').addClass('m-portlet__head-text').append(Playlist.PlayListName);
+                    } else {
+                        var head_text = $('<h3 />').addClass('m-portlet__head-text').append(Playlist.PlayListName + '<br>' +'(' + Playlist.GroupName + ')');
+                    }
+
                     span_head_icon.append(span_i);
                     div_title.append(span_head_icon);
                     div_title.append(head_text);
                     div_head_caption.append(div_title);
                     div_Playlisthead.append(div_head_caption);
-
                     var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
                     var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
-                    var div_li = $('<li />').addClass('m-portlet__nav-item');
-                    var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
-                    var href_i = $('<i />').addClass("fa fa-toggle-right");
-                    href.append(href_i);
-                    div_li.append(href);
-                    div_portlet_nav.append(div_li);
+                    if (Playlist.BindGroupID == selectedGroupID) {
+                        var div_li = $('<li />').addClass('m-portlet__nav-item');
+                        var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+                        var href_i = $('<i />').addClass("la la-close");
+                        href.append(href_i);
+                        div_li.append(href);
+                        div_portlet_nav.append(div_li);
+                        div_li.click(function () {
+                            div_Playlist.remove();
+                        });
+                    }
                     var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push");
                     div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
                     var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
@@ -540,6 +559,7 @@
                     div_portlet_nav.append(div_li_list);
                     div_Playlisthead.append(div_head_tools);
                     div_Playlist.append(div_Playlisthead);
+                    
                     div_forcedplaylists.append(div_Playlist);
                 });
             }
@@ -580,14 +600,16 @@
         })
     })
     $("#deletegroup").click(function (e) {
-        $.insmFramework('deleteGroup', {
-            deleteGroupId: selectedGroupID,
-            success: function (resultdata) {
-                div_main.show();
-                div_edit.hide();
-                $.insmGroup('initGroupTree');
-            }
-        })
+        //$.insmFramework('deleteGroup', {
+        //    deleteGroupId: selectedGroupID,
+        //    success: function (resultdata) {
+        //        div_main.show();
+        //        div_edit.hide();
+        //        $.insmGroup('initGroupTree');
+        //    }
+        //})
+        toastr.warning("Group is used!");
+        return;
     })
     $("#expandAll").click(function () {
         $('#groupTree').jstree('open_all');

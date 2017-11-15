@@ -113,6 +113,7 @@ namespace ToilluminateModel.Controllers
             DataModel jdm;
             StateForJsonModel sfjm = new StateForJsonModel();
             sfjm.opened = false;
+            sfjm.selected = true;
             List<GroupMaster> gmList = db.GroupMaster.ToList();
             foreach (GroupMaster gm in gmList) {
                 jdm = new DataModel();

@@ -131,6 +131,7 @@
     var tempselectedGroupID = null;
     var selectedFolderID = null;
     var currentNeededFileType = "image";
+    var editplaylistID = null;
     var methods = {
         init: function (options) {
             // Global vars
@@ -255,6 +256,7 @@
                             var edit_href = $('<a />').addClass("btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm").text('Edit');
 
                             edit_href.click(function () {
+                                editplaylistID = item.PlayListID;
                                 $.playlistEditor('setfolder', { selectedGroupID: tempselectedGroupID });
                                 $.playlistEditor('editPlaylist', { playlistID: item.PlayListID });
                             });
@@ -352,12 +354,12 @@
                                                     });
                                                     break;
                                                 case "1":
-                                                    $.playlistEditor('greateNewItemPicture', {
+                                                    $.playlistEditor('greateNewItemText', {
                                                         palylistItem: palylistItem
                                                     });
                                                     break;
                                                 case "2":
-                                                    $.playlistEditor('greateNewItemPicture', {
+                                                    $.playlistEditor('greateNewItemvideo', {
                                                         palylistItem: palylistItem
                                                     });
                                                     break;
@@ -462,7 +464,7 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.text('PlaylistItemPicture\r\n(Picture)'));
+        div_head_title.append(span_head_title, head_text.append('PlaylistItemPicture<br>(Picture)'));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
@@ -473,7 +475,7 @@
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
         var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input').val("New Playlist Item");
+        var input = $("<input type='text'/>").addClass('form-control m-input').val("New Playlist Item").val("New Playlist Item");
         
         div_body_group.append(lable, input);
         div_bodyMain.append(div_body_group);
@@ -524,14 +526,13 @@
             }
         });
 
-        
         div_col4_main.append(button_Selectimages);
         div_col4.append(div_col_image);
         div_body.append(div_bodyMain, div_col4);
         div_head.append(div_head_handle, div_body)
 
         div_li.click(function () {
-            div_head.empty();
+            div_head.remove();
         });
 
         var div_AddnewItem = $("#playlistItem");
@@ -581,7 +582,7 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.text('PlaylistItemText\r\n(Text)'));
+        div_head_title.append(span_head_title, head_text.append('PlaylistItemText<br>(Text)'));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
@@ -592,7 +593,7 @@
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
         var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input');
+        var input = $("<input type='text'/>").addClass('form-control m-input').val("New Playlist Item");
         div_body_group.append(lable, input);
         div_bodyMain.append(div_body_group);
 
@@ -603,46 +604,49 @@
 
         var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
-        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1").val("5");
         div_touchspin_brand.append(input1);
         div_col1.append(div_touchspin_brand);
         div_bodyMain.append(div_col1);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var lable2 = $('<lable/>').text('Sliding Speed:');
-        div_col2.append(lable1);
+        div_col2.append(lable2);
         div_bodyMain.append(div_col2);
 
         var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var div_touchspin_brand1 = $('<div/>').addClass('m-bootstrap-touchspin-brand');
-        var input2 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+        var input2 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn slidingSpeed').attr("name", "demo1").val("5");
         div_touchspin_brand1.append(input2);
         div_col3.append(div_touchspin_brand1);
         div_bodyMain.append(div_col3);
 
-        var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable2 = $('<lable/>').text('Text Postion:');
-        div_col2.append(lable2);
-        div_bodyMain.append(div_col2);
-        var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var div_col4 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var lable4 = $('<lable/>').text('Text Postion:');
+        div_col4.append(lable4);
+        div_bodyMain.append(div_col4);
+
+        var div_col5 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var select_option = $('<select/>');
         select_option.append("<option value='0'>Top</option>");
         select_option.append("<option value='1'>Middle</option>");
         select_option.append("<option value='2'>Buttom</option>");
-        div_col3.append(select_option);
-        div_bodyMain.append(div_col3);
+        div_col5.append(select_option);
+        div_bodyMain.append(div_col5);
 
-        var div_col4 = $('<div/>').addClass('col-xl-8');
-        var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var div_col6 = $('<div/>').addClass('col-xl-8');
+        var div_col6_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
 
-        div_col4.append(div_col4_main);
+        div_col6.append(div_col6_main);
 
-        div_body.append(div_bodyMain, div_col4);
+        div_body.append(div_bodyMain, div_col6);
         div_head.append(div_head_handle, div_body)
 
         var div_AddnewItem = $("#playlistItem");
         div_AddnewItem.append(div_head);
-
+        div_li.click(function () {
+            div_head.remove();
+        });
         input1.TouchSpin({
             buttondown_class: 'btn btn-secondary',
             buttonup_class: 'btn btn-secondary',
@@ -663,7 +667,7 @@
             max: 60
         });
 
-        div_col4_main.summernote({
+        div_col6_main.summernote({
             height: 150,
             toolbar: [
         // [groupName, [list of button]]
@@ -674,6 +678,20 @@
         ['Misc', ['undo', 'redo']]
             ]
         });
+        if (options) {
+            if (options.palylistItem) {
+                input.val(options.palylistItem.PlaylistItemName);
+            }
+            if (options.palylistItem) {
+                input1.val(options.palylistItem.DisplayIntevalSeconds);
+            }
+            if (options.palylistItem) {
+                input2.val(options.palylistItem.SlidingSpeed);
+            }
+            if (options.palylistItem) {
+                select_option.val(options.palylistItem.TextPostion);
+            }
+        }
     },
     greateNewItemvideo: function (options) {
         var div_head = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
@@ -689,7 +707,7 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.text('PlaylistItemVideo<br />(Picture)'));
+        div_head_title.append(span_head_title, head_text.append('PlaylistItemVideo<br>(video)'));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
@@ -700,25 +718,9 @@
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
         var lable = $('<lable/>').text(' Playlist Item Name:');
-        var input = $("<input type='text'/>").addClass('form-control m-input');
+        var input = $("<input type='text'/>").addClass('form-control m-input').val("New Playlist Item");
         div_body_group.append(lable, input);
         div_bodyMain.append(div_body_group);
-        //var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        //var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
-        //div_col.append(lable1);
-        //div_body_group.append(div_col);
-
-        //var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        //var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
-        //var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
-        //div_touchspin_brand.append(input1);
-        //div_col1.append(div_touchspin_brand);
-        //div_body_group.append(div_col1);
-
-        //var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        //var lable2 = $('<lable/>').text('Zoom option:');
-        //div_col2.append(lable2);
-        //div_body_group.append(div_col2);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var lable2 = $('<lable/>').text('Zoom option:');
@@ -732,12 +734,6 @@
         div_col3.append(select_option);
         div_bodyMain.append(div_col3);
 
-        //var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        //var select_option = $('<select/>').addClass('form-control m-select2').attr("id", "m_select2_3").attr("multiple", "").attr("tabindex", "-1").attr("aria-hidden", "true");
-        //div_col3.append(select_option);
-        //div_body_group.append(div_col3);
-        //div_bodyMain.append(div_body_group);
-
         var div_col4 = $('<div/>').addClass('col-xl-8');
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
@@ -745,6 +741,10 @@
         var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select video').click(function () {
             divselectFile = div_col_image;
+            currentNeededFileType = "video";
+            if ($("#datatable_file1").data("datatable")) {
+                $.playlistEditor('setfile');
+            }
         });
         div_col4_main.append(button_Selectimages);
         div_col4.append(div_col_image);
@@ -753,6 +753,29 @@
 
         var div_AddnewItem = $("#playlistItem");
         div_AddnewItem.append(div_head);
+
+        div_li.click(function () {
+            div_head.remove();
+        });
+
+        if (options) {
+            if (options.palylistItem) {
+                input.val(options.palylistItem.PlaylistItemName);
+            }
+            if (options.palylistItem) {
+                if (options.palylistItem.itemData) {
+                    $.each(options.palylistItem.itemData.src, function (index, item) {
+                        var screenshot = new Image();
+                        screenshot.src = item;
+                        //screenshot.id = $(item).data().obj.FileID;
+                        div_col_image.append(screenshot);
+                    });
+                }
+            }
+            if (options.palylistItem) {
+                select_option.val(options.palylistItem.ZoomOption);
+            }
+        }
     }
 }
 
@@ -812,39 +835,65 @@
                 var playlistItem = {};
                 var inputPlaylistItemName = $(palylistItem).find('.form-control.m-input');
                 playlistItem.PlaylistItemName = inputPlaylistItemName.val();
-                playlistItem.DisplayIntevalSeconds = 20;
-                playlistItem.SildeshowEffects = 'Left to Right'
-                playlistItem.type = $(palylistItem).attr('type');//images
                 
-                var imageItem = {};
-                var imageId = [];
-                var imagesrc = [];
-                if ($(palylistItem).find("img").length > 0) {
-                    $.each($(palylistItem).find("img"), function (index, imgItem) {
-                        imageId.push(imgItem.id);
-                        imagesrc.push(imgItem.src);
-                    });
+
+                playlistItem.type = $(palylistItem).attr('type');//images
+
+                if (playlistItem.type == '0') {
+                    playlistItem.DisplayIntevalSeconds = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn').val();
+                    playlistItem.SildeshowEffects = 'Left to Right';
+                    var imageItem = {};
+                    var imageId = [];
+                    var imagesrc = [];
+                    if ($(palylistItem).find("img").length > 0) {
+                        $.each($(palylistItem).find("img"), function (index, imgItem) {
+                            imageId.push(imgItem.id);
+                            imagesrc.push(imgItem.src);
+                        });
+                    }
+                    imageItem.name = 'imageItem'
+                    imageItem.id = imageId;
+                    imageItem.src = imagesrc;
+                    playlistItem.itemData = imageItem;
                 }
-                imageItem.name = 'imageItem'
-                imageItem.id = imageId;
-                imageItem.src = imagesrc;
-                playlistItem.itemData = imageItem;
+                if (playlistItem.type == '1') {
+                    playlistItem.DisplayIntevalSeconds = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn').val();
+                    playlistItem.SlidingSpeed = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn.slidingSpeed').val();
+                    playlistItem.TextPostion = $(palylistItem).find('select').val();
+                    playlistItem.itemData = '';
+                }
+                if (playlistItem.type == '2') {
+                    playlistItem.ZoomOption = $(palylistItem).find('select').val();
+                    var imageItem = {};
+                    var imageId = [];
+                    var imagesrc = [];
+                    if ($(palylistItem).find("img").length > 0) {
+                        $.each($(palylistItem).find("img"), function (index, imgItem) {
+                            imageId.push(imgItem.id);
+                            imagesrc.push(imgItem.src);
+                        });
+                    }
+                    imageItem.name = 'imageItem'
+                    imageItem.id = imageId;
+                    imageItem.src = imagesrc;
+                    playlistItem.itemData = imageItem;
+                }
                 palylistItemItemsdata.push(playlistItem); 
             });
             Settings.PlaylistItems= palylistItemItemsdata;
         }
         if (editflg) {
-            $.insmFramework('creatPlaylist', {
+            $.insmFramework('editPlaylist', {
                 GroupID: tempselectedGroupID,
+                playlistId: editplaylistID,
                 PlayListName: $("#playlist_name").val(),
                 InheritForced: '',
                 Settings: JSON.stringify(Settings),
                 Comments: $("#playlist_note").val(),
                 success: function (playlistData) {
-                    if (playlistData) {
-                        div_playlist.hide();
-                        div_Mainplaylist.show();
-                    }
+                    div_playlist.hide();
+                    div_Mainplaylist.show();
+                    editplaylistID = null;
                 }
             })
         } else {
@@ -859,6 +908,7 @@
                         div_playlist.hide();
                         div_Mainplaylist.show();
                     }
+                    editplaylistID = null;
                 }
             })
         } 
@@ -875,6 +925,8 @@
     });
     $("#playlist_delete").click(function () {
         if (edit_playlistId) {
+            toastr.warning("Group is used!");
+            return;
             $.insmFramework('deletePlaylist', {
                 deletePlaylistId: edit_playlistId,
                 success: function (fileData) {
