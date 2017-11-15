@@ -251,7 +251,7 @@
                 // columns definition
                 columns: [{
                     field: "RecordID",
-                    title: "#",
+                    title: "",
                     sortable: false, // disable sort for this column
                     width: 40,
                     textAlign: 'center',
