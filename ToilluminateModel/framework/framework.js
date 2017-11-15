@@ -185,7 +185,7 @@
                     GroupParentID: '';
                     ActiveFlag: '';
                     OnlineFlag: '';
-                    //displayUnits: '';
+                    Settings: '';
                     Comments: '';
                     return GroupMaster;
                 }
@@ -199,7 +199,7 @@
             newGroup.ActiveFlag = options.active;
             newGroup.OnlineFlag = options.onlineUnits;
             newGroup.Comments = options.note;
-
+            newGroup.Settings = options.settings;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
@@ -885,25 +885,6 @@
             });  
         },
 
-        //GetForcedPlayListByGroupID: function (options) {
-        //    var $this = $('html').eq(0);
-        //    var _plugin = $this.data('insmFramework');
-
-        //    var ajaxOptions = {
-        //        success: function (result) {
-        //            options.success(result);
-        //        },
-        //        url: 'api/PlayListMasters/GetForcedPlayListByGroupID/' + options.groupID,
-        //        format: 'json',
-        //        contentType: "application/json; charset=utf-8",
-        //        type: "POST",
-        //        denied: function () { },
-        //        error: function () {
-        //            options.error();
-        //        },
-        //    }
-        //    return $.insmFramework('ajax', ajaxOptions);
-        //},
         deletePlaylist: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -917,6 +898,24 @@
                 data: '',
                 contentType: "application/json; charset=utf-8",
                 type: "DELETE",
+                denied: function () {
+                }
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+        deleteGroupPlayListLinkTableByGroupID: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/GroupPlayListLinkTables/DeleteGroupPlayListLinkTableByGroupID/' + options.groupID,
+                format: 'json',
+                data: '',
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
                 denied: function () {
                 }
             };
