@@ -661,6 +661,47 @@
             };
             return $.insmFramework('ajax', ajaxOptions);
         },
+        editPlaylist: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var PlaylistMaster = {
+                create: function () {
+                    GroupID: "";
+                    PlayListName: '';
+                    InheritForced: '';
+                    Settings: '';
+                    Comments: '';
+                    PlayListID: '';
+                    return PlaylistMaster;
+                }
+            }
+            var newPlaylist = PlaylistMaster.create();
+            newPlaylist.GroupID = options.GroupID;
+            newPlaylist.PlayListName = options.PlayListName;
+            newPlaylist.PlayListID = options.playlistId;
+            newPlaylist.InheritForced = options.InheritForced;
+            newPlaylist.Settings = options.Settings;
+            newPlaylist.Comments = options.Comments;
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/PlayListMasters/' + options.playlistId,
+                format: 'json',
+                data: JSON.stringify(PlaylistMaster),
+                contentType: "application/json; charset=utf-8",
+                type: 'PUT',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
         getPlaylistByGroup: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
