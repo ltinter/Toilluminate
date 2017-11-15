@@ -130,7 +130,7 @@
     var edit_playlistId = null;
     var tempselectedGroupID = null;
     var selectedFolderID = null;
-    var currentNeededFileType = null;
+    var currentNeededFileType = "image";
     var methods = {
         init: function (options) {
             // Global vars
@@ -346,17 +346,17 @@
                                     $.each(Settings.PlaylistItems, function (index, palylistItem) {
                                         if (palylistItem.type) {
                                             switch (palylistItem.type.toLowerCase()) {
+                                                case "0":
+                                                    $.playlistEditor('greateNewItemPicture', {
+                                                        palylistItem: palylistItem
+                                                    });
+                                                    break;
                                                 case "1":
                                                     $.playlistEditor('greateNewItemPicture', {
                                                         palylistItem: palylistItem
                                                     });
                                                     break;
                                                 case "2":
-                                                    $.playlistEditor('greateNewItemPicture', {
-                                                        palylistItem: palylistItem
-                                                    });
-                                                    break;
-                                                case "3":
                                                     $.playlistEditor('greateNewItemPicture', {
                                                         palylistItem: palylistItem
                                                     });
@@ -415,13 +415,14 @@
                         "image": [".jpg", ".gif", ".png", ".jpeg", ".bmp"],
                         "video": [".mp4", ".wmv", ".mpeg", ".mpg", ".avi", ".mov"]
                     };
+                    var tempFileData = [];
                     $.each(fileData, function (fileIndex, fileItem) {
                         var tempFileType = supportedFileTypes[currentNeededFileType.toLowerCase()];
-                        if (!tempFileType || !$.inArray(fileItem.FileType.toLowerCase().trim(), tempFileType) == -1) {
-                            fileData[fileIndex] = null;
+                        if (tempFileType && $.inArray(fileItem.FileType.toLowerCase().trim(), tempFileType) > -1) {
+                            tempFileData.push(fileData[fileIndex]);
                         }
                     });
-                    tableData.data.source.data = fileData;
+                    tableData.data.source.data = tempFileData;
                     $("#datatable_file1").data("datatable", $('#datatable_file1').mDatatable(tableData));
                 },
                 error: function () {
@@ -468,7 +469,7 @@
         div_portlet_nav.append(div_li)
         div_head_tools.append(div_portlet_nav)
         div_head_handle.append(div_head_caption, div_head_tools)
-        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '1');
+        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '0');
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
         var lable = $('<lable/>').text(' Playlist Item Name:');
@@ -517,9 +518,9 @@
         var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px').css("line-height", "150px");
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
             divselectFile = div_col_image;
+            currentNeededFileType = "image";
             if ($("#datatable_file1").data("datatable")) {
-                currentNeededFileType = "image";
-                $("#datatable_file1").data("datatable").reload();
+                $.playlistEditor('setfile');
             }
         });
 
@@ -587,7 +588,7 @@
         div_portlet_nav.append(div_li)
         div_head_tools.append(div_portlet_nav)
         div_head_handle.append(div_head_caption, div_head_tools)
-        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto');
+        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '1');
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
         var lable = $('<lable/>').text(' Playlist Item Name:');
@@ -688,48 +689,61 @@
         var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
-        div_head_title.append(span_head_title, head_text.text('PlaylistItemText<br />(Picture)'));
+        div_head_title.append(span_head_title, head_text.text('PlaylistItemVideo<br />(Picture)'));
         div_head_caption.append(div_head_title);
         href.append(href_i)
         div_li.append(href)
         div_portlet_nav.append(div_li)
         div_head_tools.append(div_portlet_nav)
         div_head_handle.append(div_head_caption, div_head_tools)
-        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto');
+        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '2');
         var div_bodyMain = $('<div/>').addClass('col-xl-4');
         var div_body_group = $('<div/>').addClass('form-group m-form__group');
         var lable = $('<lable/>').text(' Playlist Item Name:');
         var input = $("<input type='text'/>").addClass('form-control m-input');
         div_body_group.append(lable, input);
-        var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
-        div_col.append(lable1);
-        div_body_group.append(div_col);
+        div_bodyMain.append(div_body_group);
+        //var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        //var lable1 = $('<lable/>').text('Display Inteval(Seconds):');
+        //div_col.append(lable1);
+        //div_body_group.append(div_col);
 
-        var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
-        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
-        div_touchspin_brand.append(input1);
-        div_col1.append(div_touchspin_brand);
-        div_body_group.append(div_col1);
+        //var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        //var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
+        //var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1");
+        //div_touchspin_brand.append(input1);
+        //div_col1.append(div_touchspin_brand);
+        //div_body_group.append(div_col1);
+
+        //var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        //var lable2 = $('<lable/>').text('Zoom option:');
+        //div_col2.append(lable2);
+        //div_body_group.append(div_col2);
 
         var div_col2 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var lable2 = $('<lable/>').text('Sildeshow effects:');
+        var lable2 = $('<lable/>').text('Zoom option:');
         div_col2.append(lable2);
-        div_body_group.append(div_col2);
-
+        div_bodyMain.append(div_col2);
         var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
-        var select_option = $('<select/>').addClass('form-control m-select2').attr("id", "m_select2_3").attr("multiple", "").attr("tabindex", "-1").attr("aria-hidden", "true");
+        var select_option = $('<select/>');
+        select_option.append("<option value='0'>None</option>");
+        select_option.append("<option value='1'>Fullscreen</option>");
+        select_option.append("<option value='2'>Fullscreen with original aspect</option>");
         div_col3.append(select_option);
-        div_body_group.append(div_col3);
-        div_bodyMain.append(div_body_group);
+        div_bodyMain.append(div_col3);
+
+        //var div_col3 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        //var select_option = $('<select/>').addClass('form-control m-select2').attr("id", "m_select2_3").attr("multiple", "").attr("tabindex", "-1").attr("aria-hidden", "true");
+        //div_col3.append(select_option);
+        //div_body_group.append(div_col3);
+        //div_bodyMain.append(div_body_group);
 
         var div_col4 = $('<div/>').addClass('col-xl-8');
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
 
         var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
-        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select images').click(function () {
+        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text('Select video').click(function () {
             divselectFile = div_col_image;
         });
         div_col4_main.append(button_Selectimages);
@@ -855,6 +869,9 @@
     });
     $("#addText").click(function () {
         $.playlistEditor('greateNewItemText');
+    });
+    $("#addVideo").click(function () {
+        $.playlistEditor('greateNewItemvideo');
     });
     $("#playlist_delete").click(function () {
         if (edit_playlistId) {

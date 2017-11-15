@@ -668,7 +668,7 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/PlayListMasters/GetOwnPlayListWithInheritByGroupID/' + options.groupID,
+                url: 'api/PlayListMasters/GetOwnPlayListWithInheritByGroupID/' + options.GroupID,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",

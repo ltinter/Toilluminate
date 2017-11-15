@@ -324,18 +324,15 @@
                 note: $("#text_note").val(),
                 newGroupNameParentID: groupTreeForPlayerEditID,
                 success: function (data) {
-                    //div_main.show();
-                    //div_edit.hide();
-                    //$.insmGroup('initGroupTree');
-                    //editGroupID = undefined;
+                    div_main.show();
+                    div_edit.hide();
+                    $.insmGroup('initGroupTree');
+                    editGroupID = undefined;
                     $.insmFramework('GroupPlayListLinkTables', {
                         groupID: selectedGroupID,
                         PlayListID: playListgroup,
                         success: function (data) {
-                            div_main.show();
-                            div_edit.hide();
-                            $.insmGroup('initGroupTree');
-                            editGroupID = undefined;
+                            
                         },
                         error: function () {
                         }
@@ -375,7 +372,7 @@
             var div_PlaylistEditorContent = $('#group_player_playlist');
             var div_forcedplaylists = $('#forcedplaylists');
             div_PlaylistEditorContent.empty();
-
+            div_forcedplaylists.empty();
             if (options.Playlists) {
                 $.each(options.Playlists, function (index, Playlist) {
                     var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
@@ -450,7 +447,7 @@
             var tempForcedPlayList = null;
             if (options.isGroup) {
                 $.insmFramework('getForcedPlaylistByGroup', {
-                    groupID: editGroupID,
+                    groupID: options.GroupID,
                     success: function (forcedPlayList) {
                         $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList });
                     },
@@ -459,7 +456,7 @@
                 })
             } else {
                 $.insmFramework('getForcedPlaylistByPlayer', {
-                    groupID: editGroupID,
+                    groupID: options.GroupID,
                     success: function (forcedPlayList) {
                         $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList });
                     },
@@ -475,7 +472,14 @@
             div_forcedplaylists.empty();
             if (options.tempForcedPlayList) {
                 $.each(options.tempForcedPlayList, function (index, Playlist) {
-                    var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
+                    if (Playlist.GroupID == selectedGroupID) {
+                        var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
+                        var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
+                    } else {
+                        var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
+                        var div_Playlisthead = $('<div/>').addClass('m-portlet__head ui-sortable-handle');
+                    }
+                    
                     var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
                     var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
                     var div_title = $('<div/>').addClass('m-portlet__head-title');
@@ -559,19 +563,21 @@
         $.insmGroup('defaultDataSet');
         editGroupID = undefined;
         var div_PlaylistEditorContent = $('#group_player_playlist');
+        var div_forcedplaylists = $('#forcedplaylists');
         div_PlaylistEditorContent.empty();
+        div_forcedplaylists.empty();
         $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(localize_jap["New Group"]);
-        //$.insmFramework('getPlaylistByGroupID', {
-        //    GroupID: selectedGroupID,
-        //    success: function (data) {
-        //        if (data) {
-        //            $.insmGroup('showPlaylist', { Playlists: data });
-        //        }
-        //    },
-        //    error: function () {
+        $.insmFramework('getPlaylistByGroup', {
+            GroupID: selectedGroupID,
+            success: function (data) {
+                if (data) {
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID });
+                }
+            },
+            error: function () {
 
-        //    },
-        //})
+            },
+        })
     })
     $("#deletegroup").click(function (e) {
         $.insmFramework('deleteGroup', {
@@ -613,7 +619,16 @@
                     editGroupID = selectedGroupID;
                     $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(userGroupData.GroupName);
                 };
-                $.insmGroup('getPlaylistByGroup', { groupID: editGroupID, isGroup:true });
+                $.insmFramework('getPlaylistByGroup', {
+                    GroupID: selectedGroupID,
+                    success: function (data) {
+                        if (data) {
+                            $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID });
+                        }
+                    },
+                    error: function () {
+                    },
+                })
             },
             error: function () {
 
