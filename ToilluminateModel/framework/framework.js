@@ -839,7 +839,7 @@
 
                 var ajaxOptions = {
                     success: function (result) {
-                        playerPlayListLinkList.resolve();
+                        tempPlayerPlayListLinkDrferred.resolve();
                     },
                     url: 'api/PlayerPlayListLinkTables',
                     format: 'json',
@@ -887,7 +887,7 @@
 
                 var ajaxOptions = {
                     success: function (result) {
-                        groupPlayListLinkDeferredList.resolve();
+                        tempGroupPlayListLinkDrferred.resolve();
                     },
                     url: 'api/GroupPlayListLinkTables',
                     format: 'json',
