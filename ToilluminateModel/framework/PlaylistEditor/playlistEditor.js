@@ -566,7 +566,7 @@
                 if (options.palylistItem.itemData) {
                     $.each(options.palylistItem.itemData.id, function (index, item) {
                         var screenshot = new Image();
-                        screenshot.src = options.palylistItem.itemData.src[index];
+                        screenshot.src = options.palylistItem.itemData.fileUrl[index];
                         screenshot.fileUrl = options.palylistItem.itemData.fileUrl[index];
                         screenshot.id = item;
                         $(screenshot).css({ "max-height": "150px", "max-width": "200px", "padding": "5px" });
@@ -786,6 +786,7 @@
                     $.each(options.palylistItem.itemData.src, function (index, item) {
                         var screenshot = new Image();
                         screenshot.src = item;
+                        screenshot.fileUrl = options.palylistItem.itemData.fileUrl[index];
                         //screenshot.id = $(item).data().obj.FileID;
                         div_col_image.append(screenshot);
                     });
