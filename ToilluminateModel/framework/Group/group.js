@@ -23,6 +23,7 @@
     var editGroupFlg = false;
     var datatable = null;
     var temp_GroupTreeData;
+    var firstPageload = true;
     
     var groupJstreeData = {
         "core": {
@@ -135,6 +136,11 @@
                 var obj = inst.get_node(e.target.firstChild.firstChild.lastChild);
 
                 inst.select_node(obj);
+                if (firstPageload) {
+                    mApp.unblockPage();
+                    $("#DisplayUnitsContent").show();
+                    firstPageload = false;
+                }
             })
 
             //if (selectedGroupID != null) {
