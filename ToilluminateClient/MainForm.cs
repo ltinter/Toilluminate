@@ -53,7 +53,8 @@ namespace ToilluminateClient
             {
 
                 PlayApp.Clear();
-                PlayList pList1 = new PlayList(1, true, true, 600);
+
+                PlayList pList1 = new PlayList(1, true, true, 10);
                 PlayApp.PlayListArray.Add(pList1);
                 
                 string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg" };
@@ -65,13 +66,30 @@ namespace ToilluminateClient
                 string[] messageList = new string[] { @"hello world", @"今日は明日の全国に雨が降る。", @"Welcome to use this system。" };
                 MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Top, MessageShowStyle.Bottom, MessageShowStyle.Middle };
 
-                MessageTempleteItem itItem21 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 2, 10);
-                pList1.PlayAddTemplete(itItem21);
-                                
+                MessageTempleteItem itItem12 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 2, 10);
+                pList1.PlayAddTemplete(itItem12);
 
-                MediaTempleteItem itItem31 = new MediaTempleteItem(@"C:\C_Works\Medias\mp01.mp4", ZoomOptionStyle.None);
-                pList1.PlayAddTemplete(itItem31);
+
+                MediaTempleteItem itItem13 = new MediaTempleteItem(@"C:\C_Works\Medias\A01.mp4", ZoomOptionStyle.None);
+                pList1.PlayAddTemplete(itItem13);
+                //MediaTempleteItem itItem14 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
+                //pList1.PlayAddTemplete(itItem14);
+
+
+                PlayList pList2 = new PlayList(2, false, true, 1200);
+                PlayApp.PlayListArray.Add(pList2);
                 
+                ImageTempleteItem itItem21 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 2);
+                pList2.PlayAddTemplete(itItem21);
+
+                MessageTempleteItem itItem22 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 2, 10);
+                pList2.PlayAddTemplete(itItem22);
+
+
+                MediaTempleteItem itItem23 = new MediaTempleteItem(@"C:\C_Works\Medias\A01.mp4", ZoomOptionStyle.None);
+                pList2.PlayAddTemplete(itItem23);
+                MediaTempleteItem itItem24= new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
+                pList2.PlayAddTemplete(itItem24);
             }
             #endregion
 #endif
@@ -146,7 +164,7 @@ namespace ToilluminateClient
                 if (PlayApp.PlayListArray.Count > 0)
                 {
                     PlayList eplItem = PlayApp.ExecutePlayList;
-                    if (eplItem == null)
+                    if (eplItem == null || eplItem.PlayListState == PlayListStateType.Wait || eplItem.PlayListState == PlayListStateType.Stop)
                     {
                         if (PlayApp.CurrentPlayValid())
                         {
@@ -157,15 +175,17 @@ namespace ToilluminateClient
                             }
                         }
                     }
-                    else if (eplItem.PlayListState == PlayListStateType.Stop)
+                    else if (eplItem.PlayListState == PlayListStateType.Last)
                     {
-                        if (PlayApp.CurrentPlayValid())
+                        if (eplItem.LoopPlayValid)
                         {
-                            if (PlayApp.ExecutePlayListStart())
-                            {
-                                this.SetAllVisibleFalse();
-                                this.tmrTemplete_Tick(null, null);
-                            }
+                            eplItem.PlayStart();
+                            this.SetAllVisibleFalse();
+                            this.tmrTemplete_Tick(null, null);
+                        }
+                        else
+                        {
+                            eplItem.PlayStop();
                         }
                     }
                 }
@@ -188,7 +208,7 @@ namespace ToilluminateClient
             {
                 this.tmrTemplete.Stop();
 
-                if (PlayApp.ExecutePlayList != null && PlayApp.ExecutePlayList.PlayListState != PlayListStateType.Stop)
+                if (PlayApp.ExecutePlayList != null && PlayApp.ExecutePlayList.PlayListState == PlayListStateType.Execute)
                 {
                     PlayList pList = PlayApp.ExecutePlayList;
 
@@ -219,8 +239,12 @@ namespace ToilluminateClient
 
                     pList.PlayMoveNextTemplete();
 
-                    if (pList.PlayListState == PlayListStateType.Stop)
+                    if (pList.CheckPlayListState == PlayListStateType.Stop)
                     {
+                        CloseImage();
+                        CloseMediaWMP();
+                        CloseMessage();
+                        pList.PlayStop();
                         return;
                     }
                 }
@@ -418,7 +442,8 @@ namespace ToilluminateClient
                 this.axWMP.Location = new System.Drawing.Point(0, 0);
                 this.axWMP.Name = "axWMP";
                 this.axWMP.PlayStateChange += this.AxWMP_PlayStateChange;
-                
+
+                this.axWMP.settings.autoStart=false; //是否自动播放
                 this.axWMP.Visible = false;
                 this.axWMP.Size = new System.Drawing.Size(pnlShow.Width, pnlShow.Height);
 
@@ -436,20 +461,12 @@ namespace ToilluminateClient
                 LogApp.OutputErrorLog("MainForm", "ControlsInit", ex);
             }
         }
-
-        private void WMP_PlayStateChange(int NewState)
-        {
-            //判断视频是否已停止播放  
-            if ((int)this.axWMP.playState == 1)
-            {
-                CloseMediaWMP();
-            }
-        }
+        
 
         private void AxWMP_PlayStateChange(object sender, _WMPOCXEvents_PlayStateChangeEvent e)
         {
             //判断视频是否已停止播放  
-            if ((int)this.axWMP.playState == 1)
+            if (this.axWMP.playState == WMPPlayState.wmppsStopped  )
             {
                 CloseMediaWMP();
             }
@@ -502,8 +519,7 @@ namespace ToilluminateClient
         #region " windows media play "
         private bool mediaIsReady()
         {
-            if (this.axWMP.playState == WMPPlayState.wmppsStopped
-                || this.axWMP.playState == WMPPlayState.wmppsUndefined)
+            if (this.axWMP.playState != WMPPlayState.wmppsPlaying)
             {
                 return true;
             }
@@ -582,6 +598,7 @@ namespace ToilluminateClient
             {
                 PlayApp.NowMediaIsShow = false;
                 this.axWMP.Visible = false;
+                
                 this.tmrMedia.Stop();
                 WMPStop();
 
@@ -654,7 +671,7 @@ namespace ToilluminateClient
         public void WMPStop()
         {
             this.axWMP.Ctlcontrols.stop();
-            //this.axWMP.currentPlaylist.clear();//清除列表
+            this.axWMP.currentPlaylist.clear();//清除列表
         }
         //视频静音
         public void WMPMute(bool t)

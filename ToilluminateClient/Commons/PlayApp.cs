@@ -82,10 +82,25 @@ namespace ToilluminateClient
         {
             if (PlayListArray.Count > 0)
             {
-                for (int i = 0; i < PlayListArray.Count; i++)
+                if (CurrentPlayListIndex < 0 )
+                {
+                    CurrentPlayListIndex = 0;
+                }
+                if ( CurrentPlayListIndex >= PlayListArray.Count)
+                {
+                    CurrentPlayListIndex = 0;
+
+                    for (int i = 0; i < PlayListArray.Count; i++)
+                    {
+                        PlayList plItem = PlayListArray[i];
+                        plItem.PlayRefreshTemplete();
+                    }
+                }
+
+                for (int i = CurrentPlayListIndex; i < PlayListArray.Count; i++)
                 {
                     PlayList plItem = PlayListArray[i];
-                    if (plItem.PlayListState != PlayListStateType.Stop)
+                    if (plItem.CheckPlayListState == PlayListStateType.Execute)
                     {
                         CurrentPlayListIndex = i;
                         CurrentPlayListID = plItem.PlayListID;
@@ -258,67 +273,19 @@ namespace ToilluminateClient
         /// </summary>
         public bool IsOutExecuteTime()
         {
-            bool isOutExectueTime = true;
+            bool isOutExectueTime = false;
             try
             {
-                DateTime dtEndValue = this.dtStartValue;
 
-
-                DateTime nowTime = DateTime.Now;
-                DayOfWeek week = nowTime.DayOfWeek;
-
-                string weekTimeString = string.Empty;
-                if (week == DayOfWeek.Sunday)
+                if (this.playListStateValue == PlayListStateType.Execute || this.playListStateValue == PlayListStateType.Last)
                 {
-                    weekTimeString = plSettings.Sunday;
-                }
-                else if (week == DayOfWeek.Monday)
-                {
-                    weekTimeString = plSettings.Monday;
-                }
-                else if (week == DayOfWeek.Tuesday)
-                {
-                    weekTimeString = plSettings.Tuesday;
-                }
-                else if (week == DayOfWeek.Wednesday)
-                {
-                    weekTimeString = plSettings.Wednesday;
-                }
-                else if (week == DayOfWeek.Thursday)
-                {
-                    weekTimeString = plSettings.Thursday;
-                }
-                else if (week == DayOfWeek.Friday)
-                {
-                    weekTimeString = plSettings.Friday;
-                }
-                else if (week == DayOfWeek.Saturday)
-                {
-                    weekTimeString = plSettings.Saturday;
-                }
-
-
-                if (string.IsNullOrEmpty(weekTimeString) == false)
-                {
-                    string[] weekTimes = weekTimeString.Split(';');
-                    if (Utility.ToInt(weekTimes[0]) <= nowTime.Hour && nowTime.Hour < Utility.ToInt(weekTimes[1]))
+                    if (this.fixPlayTimeValidValue)
                     {
-                        isOutExectueTime = false;
-                    }
-                }
-
-                if (isOutExectueTime == false)
-                {
-                    if (this.playListStateValue == PlayListStateType.Execute && this.playListStateValue == PlayListStateType.Last)
-                    {
-                        if (this.fixPlayTimeValidValue)
+                        DateTime dtEndValue = this.dtStartValue.AddSeconds(this.FixPlayTime);
+                        DateTime nowTime = DateTime.Now;
+                        if (nowTime > dtEndValue)
                         {
-                            dtEndValue = this.dtStartValue.AddSeconds(this.FixPlayTime);
-
-                            if (nowTime <= dtEndValue)
-                            {
-                                isOutExectueTime = false;
-                            }
+                            isOutExectueTime = true;
                         }
                     }
                 }
@@ -559,6 +526,10 @@ namespace ToilluminateClient
         {
             this.dtNowValue = Utility.GetPlayDateTime(DateTime.Now);
             playListStateValue = PlayListStateType.Stop;
+            if (this.PlayListID == 2)
+            {
+                string a = "";
+            }
         }
 
         public void PlayRefreshTemplete()
@@ -567,6 +538,11 @@ namespace ToilluminateClient
             foreach (TempleteItem titem in this.TempleteItemList)
             {
                 titem.ExecuteRefresh();
+            }
+
+            if (playListStateValue == PlayListStateType.Stop)
+            {
+                playListStateValue = PlayListStateType.Wait;
             }
         }
         public void PlayMoveNextTemplete()
@@ -594,37 +570,47 @@ namespace ToilluminateClient
         {
             get
             {
+                return playListStateValue;
+            }
+        }
+
+        public PlayListStateType CheckPlayListState
+        {
+            get
+            {
                 try
                 {
-                    if (playListStateValue == PlayListStateType.Wait)
-                    {
-                        if (IsInExecuteTime() == false)
-                        {
-                            playListStateValue = PlayListStateType.Stop;
-                        }
-                    }
-                    else if (playListStateValue == PlayListStateType.Execute || playListStateValue == PlayListStateType.Last)
-                    {
-                        if (this.IsOutExecuteTime())
-                        {
-                            playListStateValue = PlayListStateType.Stop;
-                        }
-                    }
-                    else if (playListStateValue == PlayListStateType.Stop)
-                    {
-                        if (IsInExecuteTime())
-                        {
-                            playListStateValue = PlayListStateType.Wait;
-                        }
-                    }
 #if DEBUG
                     if (this.templeteItemListValue.Count == 0)
                     {
-                        playListStateValue = PlayListStateType.Stop;
+                        return PlayListStateType.Stop;
                     }
 #endif
 
-                    return playListStateValue;
+                    if (this.IsInExecuteTime())
+                    {
+                        if (playListStateValue == PlayListStateType.Stop)
+                        {
+                            return PlayListStateType.Stop;
+                        }
+
+                        if (this.IsOutExecuteTime())
+                        {
+                            playListStateValue = PlayListStateType.Stop;
+                            if (this.PlayListID == 2)
+                            {
+                                string a = "";
+                            }
+                            return PlayListStateType.Stop;
+                        }
+
+                        return PlayListStateType.Execute;                        
+                    }
+                    else
+                    {
+                        return PlayListStateType.Stop;
+                    }
+
                 }
                 catch (Exception ex)
                 {
