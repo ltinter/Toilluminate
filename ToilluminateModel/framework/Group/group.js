@@ -497,16 +497,31 @@
             };
             var tempForcedPlayList = null;
             if (options.isGroup) {
-                $.insmFramework('getForcedPlaylistByGroup', {
-                    groupID: options.GroupID,
-                    success: function (forcedPlayList) {
-                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: true });
-                        div_main.hide();
-                        div_edit.show();
-                    },
-                    error: function () {
-                    }
-                })
+                if (options.newGroup) {
+                    $.insmFramework('getForcedPlaylistByGroup', {
+                        groupID: options.GroupID,
+                        success: function (forcedPlayList) {
+                            $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false, newgroup: options.newgroup });
+                            div_main.hide();
+                            div_edit.show();
+                        },
+                        error: function () {
+                        }
+                    })
+                } else {
+                    $.insmFramework('getForcedPlaylistByGroup', {
+                        groupID: options.GroupID,
+                        success: function (forcedPlayList) {
+                            $.insmGroup('showPlaylistForced', {
+                                tempForcedPlayList: forcedPlayList, isGroup: true
+                            });
+                            div_main.hide();
+                            div_edit.show();
+                        },
+                        error: function () {
+                        }
+                    })
+                }
             } else {
                 if(options.newgroup){
                     $.insmFramework('getForcedPlaylistByGroup', {
@@ -705,7 +720,6 @@
         $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
         $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
 
-        editGroupID = undefined;
         var div_PlaylistEditorContent = $('#group_player_playlist');
         var div_forcedplaylists = $('#forcedplaylists');
         div_PlaylistEditorContent.empty();
@@ -834,7 +848,7 @@
         $.insmGroup('addNewGroup');
         console.log("Group Save Button!");
         editGroupID = undefined;
-        $("#forcedplaylists").empty();
+        //$("#forcedplaylists").empty();
     })
     $("#button_back").click(function () {
         div_main.show();
@@ -863,7 +877,7 @@
             GroupID: selectedGroupID,
             success: function (data) {
                 if (data) {
-                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: false, GroupID: selectedGroupID, newgroup: true });
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: false, GroupID: selectedGroupID });
                 }
             },
             error: function () {
