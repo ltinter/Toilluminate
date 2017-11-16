@@ -532,7 +532,7 @@
                         }
                     })
                 } else {
-                    if (options.playerId.indexOf(",") > 0) {
+                    if (options.playerId && options.playerId.indexOf(",") > 0) {
                         var editplayerIds = options.playerId.split(', ');
                         var editplayerPlists = {};
                         var playlistEditDeferredList = [];
@@ -567,16 +567,29 @@
                             }
                         });
                     } else {
-                        $.insmFramework('getForcedPlaylistByPlayer', {
-                            playerId: options.playerId,
-                            success: function (forcedPlayList) {
-                                $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false });
-                                div_main.hide();
-                                div_edit.show();
-                            },
-                            error: function () {
-                            }
-                        })
+                        if (options.playerId) {
+                            $.insmFramework('getForcedPlaylistByPlayer', {
+                                playerId: options.playerId,
+                                success: function (forcedPlayList) {
+                                    $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false });
+                                    div_main.hide();
+                                    div_edit.show();
+                                },
+                                error: function () {
+                                }
+                            })
+                        } else {
+                            $.insmFramework('getForcedPlaylistByGroup', {
+                                groupID: options.GroupID,
+                                success: function (forcedPlayList) {
+                                    $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false, newgroup: options.newgroup });
+                                    div_main.hide();
+                                    div_edit.show();
+                                },
+                                error: function () {
+                                }
+                            })
+                        }
                     }
                     
                 }   
@@ -963,6 +976,8 @@
                 ActivechangeFlg: ActivechangeFlg,
                 OnlinechangeFlg: OnlinechangeFlg,
                 DisplayNamechangeFlg: DisplayNamechangeFlg,
+                ActiveFlag: $("input[name='radio_Active']:checked").val(),
+                OnlineFlag: $("input[name='radio_Online']:checked").val(),
                 NotechangeFlg: DisplayNamechangeFlg,
                 newGroupID: groupTreeForPlayerEditID,
                 settings: JSON.stringify(Settings),
