@@ -1149,7 +1149,12 @@ namespace ToilluminateClient
             ImageShowStyle reStyle = ImageShowStyle.None;
             List<int> disEnumValueList = new List<int> {
                     ImageShowStyle.Random.GetHashCode()
-                    , ImageShowStyle.Rotate.GetHashCode() };
+                    , ImageShowStyle.Gradient.GetHashCode()
+                    , ImageShowStyle.Docking_LR.GetHashCode()
+                    , ImageShowStyle.Docking_TD.GetHashCode()
+                    , ImageShowStyle.Block.GetHashCode()
+                    , ImageShowStyle.Special.GetHashCode()};
+            
             try
             {
                 if (style == ImageShowStyle.Random)

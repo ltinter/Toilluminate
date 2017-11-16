@@ -26,7 +26,7 @@ namespace ToilluminateClient
 
         #region " variable "
 
-        private delegate void FlushClient();//代理
+        //private delegate void FlushClient();//代理
 
 
         private bool thisImageVisible = false;
@@ -360,6 +360,7 @@ namespace ToilluminateClient
         {
             try
             {
+                this.DoubleBuffered = true;
                 //播放器全屏
                 ////获取屏幕的宽和高
                 //Rectangle screenSize = System.Windows.Forms.SystemInformation.VirtualScreen;
@@ -450,10 +451,12 @@ namespace ToilluminateClient
                 PlayApp.NowImageIsShow = false;
                 this.picImage.Visible = false;
                 this.tmrImage.Stop();
-                //if (this.picImage.Image != null)
-                //{
-                //    this.picImage.Image.Dispose();
-                //}
+                if (this.picImage.Image != null)
+                {
+                    this.picImage.Image.Dispose();
+                }
+
+                PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
             }
             catch (Exception ex)
             {
@@ -869,43 +872,36 @@ namespace ToilluminateClient
         {
             try
             {
-                if (this.picImage.InvokeRequired)//等待异步    
+
+                if (showImageFlag == false)
                 {
-                    FlushClient fc = new FlushClient(ThreadShowImageVoid);
-                    this.Invoke(fc);//通过代理调用刷新方法         
-                }
-                else
-                {
-                    if (showImageFlag == false)
+                    showImageFlag = true;
+
+                    try
                     {
-                        showImageFlag = true;
+                        ImageTempleteItem itItem = PlayApp.ExecutePlayList.CurrentTempleteItem as ImageTempleteItem;
 
-                        try
+                        if (itItem.CurrentIsChanged())
                         {
-                            ImageTempleteItem itItem = PlayApp.ExecutePlayList.CurrentTempleteItem as ImageTempleteItem;
-
-                            if (itItem.CurrentIsChanged())
-                            {
-                                LogApp.OutputProcessLog("MainForm", "ThreadShowImageVoid", string.Format("{0} - {1} - {2}", itItem.CurrentIndex, itItem.CurrentShowStyleIndex, DateTime.Now.ToLongTimeString()));
-                                ShowImage(itItem);
-                            }
-
-
-                            if (itItem.TempleteState == TempleteStateType.Stop)
-                            {
-                                itItem.ExecuteStop();
-                                CloseImage();
-                                return;
-                            }
+                            LogApp.OutputProcessLog("MainForm", "ThreadShowImageVoid", string.Format("{0} - {1} - {2}", itItem.CurrentIndex, itItem.CurrentShowStyleIndex, DateTime.Now.ToLongTimeString()));
+                            ShowImage(itItem);
                         }
-                        catch (Exception ex)
+
+
+                        if (itItem.TempleteState == TempleteStateType.Stop)
                         {
-                            throw ex;
+                            itItem.ExecuteStop();
+                            CloseImage();
+                            return;
                         }
-                        finally
-                        {
-                            showImageFlag = false;
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        showImageFlag = false;
                     }
                 }
             }
