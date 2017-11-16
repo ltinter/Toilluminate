@@ -443,7 +443,8 @@
                         divselectFile.empty();
                     }
                     var screenshot = new Image();
-                    screenshot.src = $(item).data().obj.FileUrl;
+                    screenshot.src = $(item).data().obj.FileThumbnailUrl;
+                    screenshot.fileUrl = $(item).data().obj.FileUrl;
                     screenshot.id = $(item).data().obj.FileID;
                     $(screenshot).css({ "max-height": "150px", "max-width": "200px","padding":"5px" });
                     divselectFile.append(screenshot);
@@ -863,15 +864,18 @@
                     var imageItem = {};
                     var imageId = [];
                     var imagesrc = [];
+                    var imagefileUrl = [];
                     if ($(palylistItem).find("img").length > 0) {
                         $.each($(palylistItem).find("img"), function (index, imgItem) {
                             imageId.push(imgItem.id);
                             imagesrc.push(imgItem.src);
+                            imagefileUrl.push(imgItem.fileUrl);
                         });
                     }
                     imageItem.name = 'imageItem'
                     imageItem.id = imageId;
                     imageItem.src = imagesrc;
+                    imageItem.fileUrl = imagefileUrl;
                     playlistItem.itemData = imageItem;
                 }
                 if (playlistItem.type == '1') {
@@ -885,15 +889,18 @@
                     var imageItem = {};
                     var imageId = [];
                     var imagesrc = [];
+                    var imagefileUrl = [];
                     if ($(palylistItem).find("img").length > 0) {
                         $.each($(palylistItem).find("img"), function (index, imgItem) {
                             imageId.push(imgItem.id);
                             imagesrc.push(imgItem.src);
+                            imagefileUrl.push(imgItem.fileUrl);
                         });
                     }
                     imageItem.name = 'imageItem'
                     imageItem.id = imageId;
                     imageItem.src = imagesrc;
+                    imageItem.fileUrl = imagefileUrl;
                     playlistItem.itemData = imageItem;
                 }
                 palylistItemItemsdata.push(playlistItem); 
