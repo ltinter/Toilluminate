@@ -23,7 +23,6 @@
     var editGroupFlg = false;
     var datatable = null;
     var temp_GroupTreeData;
-    var initedTree = 0;
     
     var groupJstreeData = {
         "core": {
@@ -123,13 +122,12 @@
                             $(item).jstree(true).refresh();
                             $(item).bind("refresh.jstree", function (e, data) {
                                 $(this).jstree("open_all");
-                                if (initedTree < 4) {
-                                    $(item).jstree('select_node', 'ul > li:first');
-                                    initedTree++;
-                                }
+                                $(item).jstree('select_node', 'ul > li:first');
                             })
                         });
-
+                        if (selectedGroupID != null) {
+                            div_groupTree.jstree('select_node', 'ul > li:first');
+                        }
                         div_groupTree.on("changed.jstree", function (e, data) {
                             //存储当前选中的区域的名称
                             if (data.node) {
@@ -846,6 +844,14 @@
 
     $("#add_player").click(function () {
         $.insmGroup('defaultDataSet');
+        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+
         editPlayerFlg = false;
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
@@ -865,26 +871,25 @@
         })
     });
     $("#button_save_Player").click(function () {
-        div_main.show();
-        div_edit.hide();
+        var Settings = {};
+        Settings = {
+            Monday: $("#group_monday_value").val(),
+            Tuesday: $("#group_tuesday_value").val(),
+            Wednesday: $("#group_wednesday_value").val(),
+            Thursday: $("#group_thursday_value").val(),
+            Friday: $("#group_friday_value").val(),
+            Saturday: $("#group_saturday_value").val(),
+            Sunday: $("#group_sunday_value").val(),
+            resolution: $("#select_resolution").val(),
+            ActiveFlag: $("input[name='radio_Active']:checked").val(),
+            OnlineFlag: $("input[name='radio_Online']:checked").val()
+        };
 
         if (!editPlayerFlg) {
             if ($.trim($("#groupname").val()) == '' || groupTreeForPlayerEditID == null) {
                 toastr.warning("Player name is empty!");
                 return;
             }
-            var Settings = {};
-            Settings = {
-                Monday: $("#group_monday_value").val(),
-                Tuesday: $("#group_tuesday_value").val(),
-                Wednesday: $("#group_wednesday_value").val(),
-                Thursday: $("#group_thursday_value").val(),
-                Friday: $("#group_friday_value").val(),
-                Saturday: $("#group_saturday_value").val(),
-                Sunday: $("#group_sunday_value").val(),
-                resolution: $("#select_resolution").val()
-            };
-
             $.insmFramework('creatPlayer', {
                 GroupID: groupTreeForPlayerEditID,
                 PlayerName: $("#groupname").val(),
@@ -979,7 +984,6 @@
             })
         }
         $("#PlayerDetail").css('display', 'none');
-        
     });
     $("#radio_All").click(function () {
         $('#m_form_search_Player').val('');
@@ -997,16 +1001,21 @@
     })
 
     var edit_player_click = function (selectPlayer, allPlayerID) {
-        
+        $.insmGroup('defaultDataSet');
+        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+
         var allPlayerNames = "";
         $.each(selectPlayer, function (playerIndex, playerItem) {
             allPlayerNames += ", " + $(playerItem).data().obj.PlayerName;
         })
         allPlayerNames = allPlayerNames.substr(2);
         div_edit.find("H3:first").text(selectPlayer.length + " Display Units / (" + allPlayerNames + ")");
-        
-
-
         groupTreeForPlayerEditID = div_groupTree.jstree(true).get_selected()[0];
 
         var allPlayerID = "";
@@ -1036,10 +1045,7 @@
                 div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
 
                 $("#groupname").val($(selectPlayer[index]).data().obj.PlayerName);
-                $("#text_note").val($(selectPlayer[index]).data().obj.Comments);
-
-                $("#label_Active_" + $(selectPlayer[index]).data().obj.ActiveFlag).click();
-                $("#label_Online_" + $(selectPlayer[index]).data().obj.OnlineFlag).click();
+                $("#text_note").val($(selectPlayer[index]).data().obj.Comments); 
 
                 var Settings;
                 $.each(player_Alldata, function (playerindex, playerdata) {
@@ -1074,6 +1080,8 @@
                         if (Settings.resolution) {
                             $('#select_resolution').val(Settings.resolution);
                         }
+                        $("#label_Active_" + Settings.ActiveFlag).click();
+                        $("#label_Online_" + Settings.OnlineFlag).click();
                     }
                 }
 
