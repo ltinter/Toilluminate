@@ -311,8 +311,8 @@
             newPlayer.GroupID = options.GroupID;
             newPlayer.PlayerName = options.PlayerName;
             newPlayer.Comments = options.note;
-            newPlayer.ActiveFlag = options.active;
-            newPlayer.OnlineFlag = options.onlineUnits;
+            newPlayer.ActiveFlag = options.ActiveFlag;
+            newPlayer.OnlineFlag = options.OnlineFlag;
             newPlayer.Settings = options.settings;
             var ajaxOptions = {
                 success: function (result) {
