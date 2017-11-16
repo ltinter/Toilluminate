@@ -500,20 +500,37 @@
                     if (options.playerId.indexOf(",") > 0) {
                         var editplayerIds = options.playerId.split(', ');
                         var editplayerPlists = {};
+                        var playlistEditDeferredList = [];
                         $.each(editplayerIds, function (index, editplayerId) {
+                            var tempPlayerEditDrferred = new $.Deferred();
+                            playlistEditDeferredList.push(tempPlayerEditDrferred);
                             $.insmFramework('getForcedPlaylistByPlayer', {
                                 playerId: editplayerId,
                                 success: function (forcedPlayList) {
                                     editplayerPlists[editplayerId] = forcedPlayList;
+                                    tempPlayerEditDrferred.resolve();
                                 },
                                 error: function () {
                                 }
                             })
                         })
-
-                        
-
-                        return;
+                        $.when.apply($, playlistEditDeferredList).done(function () {
+                            var tempList = [];
+                            var isSame = true;
+                            $.each(editplayerPlists, function (index, item) {
+                                var tempPlaylists = '';
+                                $.each(item, function (listindex, listitem) {
+                                    tempPlaylists += listitem.PlayListID + ",";
+                                })
+                                tempList.push(tempPlaylists);
+                            });
+                            $.unique(tempList);
+                            if (tempList.length == 0 || tempList.length == 1) {
+                                $.insmGroup('showPlaylistForced', { tempForcedPlayList: editplayerPlists[editplayerIds[0]], isGroup: false });
+                                div_main.hide();
+                                div_edit.show();
+                            }
+                        });
                     } else {
                         $.insmFramework('getForcedPlaylistByPlayer', {
                             playerId: options.playerId,
