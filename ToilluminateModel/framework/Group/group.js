@@ -185,6 +185,7 @@
             $("#label_Online_2").click();
             $("#groupname").val('');
             $("#text_note").val('');
+            $("#select_resolution").val('0');
         },
         showPlayerDetail: function (options) {
             $("#PlayerDetail").css('display', 'block');
@@ -283,6 +284,11 @@
                     responsive: { visible: 'lg' }
                 }, {
                     field: "Online",
+                    title: "オンライン",
+                    filterable: false,
+                    responsive: { visible: 'lg' }
+                }, {
+                    field: "GroupID",
                     title: "オンライン",
                     filterable: false,
                     responsive: { visible: 'lg' }
@@ -976,8 +982,9 @@
         })
         allPlayerNames = allPlayerNames.substr(2);
         div_edit.find("H3:first").text(selectPlayer.length + " Display Units / (" + allPlayerNames + ")");
-        div_groupTreeForPlayerEdit.jstree(true).deselect_all(true);
-        div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
+        
+
+
         groupTreeForPlayerEditID = div_groupTree.jstree(true).get_selected()[0];
 
         var allPlayerID = "";
@@ -999,7 +1006,13 @@
                 if ($("#groupname").val() != $(selectPlayer[index]).data().obj.PlayerName) {
                     $("#text_note").val('');
                 }
+                if (div_groupTreeForPlayerEdit.jstree(true).get_selected() != $(selectPlayer[index]).data().obj.GroupID) {
+                    div_groupTreeForPlayerEdit.jstree(true).deselect_all(true);
+                }
             } else {
+                div_groupTreeForPlayerEdit.jstree(true).deselect_all(true);
+                div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
+
                 $("#groupname").val($(selectPlayer[index]).data().obj.PlayerName);
                 $("#text_note").val($(selectPlayer[index]).data().obj.Comments);
 
