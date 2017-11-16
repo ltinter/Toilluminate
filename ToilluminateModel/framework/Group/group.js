@@ -512,7 +512,7 @@
                     $.insmFramework('getForcedPlaylistByGroup', {
                         groupID: options.GroupID,
                         success: function (forcedPlayList) {
-                            $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false });
+                            $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false, newgroup: options.newgroup });
                             div_main.hide();
                             div_edit.show();
                         },
@@ -575,7 +575,7 @@
             div_forcedplaylists.empty();
             if (options.tempForcedPlayList) {
                 $.each(options.tempForcedPlayList, function (index, Playlist) {
-                    if ((Playlist.BindGroupID == selectedGroupID && options.isGroup) || (!options.isGroup && Playlist.BindGroupID == 0)) {
+                    if ((Playlist.BindGroupID == selectedGroupID && options.isGroup && !options.newgroup) || (!options.isGroup && Playlist.BindGroupID == 0)) {
                         var div_Playlist = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-sm').attr('playlistId', Playlist.PlayListID);
                         var div_Playlisthead = $('<div/>').addClass('m-portlet__head');
                     } else {
@@ -715,7 +715,7 @@
             GroupID: selectedGroupID,
             success: function (data) {
                 if (data) {
-                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID});
+                    $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID, newGroup: true});
                 }
             },
             error: function () {
