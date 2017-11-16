@@ -35,7 +35,6 @@
             this.tmrImage = new System.Windows.Forms.Timer(this.components);
             this.tmrPlayList = new System.Windows.Forms.Timer(this.components);
             this.tmrMedia = new System.Windows.Forms.Timer(this.components);
-            this.tmrMessage = new System.Windows.Forms.Timer(this.components);
             this.tmrTemplete = new System.Windows.Forms.Timer(this.components);
             this.chkRefresh = new System.Windows.Forms.CheckBox();
             this.axWMP = new AxWMPLib.AxWindowsMediaPlayer();
@@ -54,7 +53,6 @@
             this.pnlShow.Name = "pnlShow";
             this.pnlShow.Size = new System.Drawing.Size(620, 392);
             this.pnlShow.TabIndex = 0;
-            this.pnlShow.DoubleClick += new System.EventHandler(this.panle_DoubleClick);
             // 
             // picImage
             // 
@@ -64,7 +62,6 @@
             this.picImage.Size = new System.Drawing.Size(100, 50);
             this.picImage.TabIndex = 0;
             this.picImage.TabStop = false;
-            this.picImage.DoubleClick += new System.EventHandler(this.control_DoubleClick);
             // 
             // tmrImage
             // 
@@ -78,11 +75,6 @@
             // tmrMedia
             // 
             this.tmrMedia.Tick += new System.EventHandler(this.tmrMedia_Tick);
-            // 
-            // tmrMessage
-            // 
-            this.tmrMessage.Interval = 50;
-            this.tmrMessage.Tick += new System.EventHandler(this.tmrMessage_Tick);
             // 
             // tmrTemplete
             // 
@@ -120,7 +112,6 @@
             this.Name = "MainForm";
             this.Text = "表示情報";
             this.Load += new System.EventHandler(this.MainForm_Load);
-            this.DoubleClick += new System.EventHandler(this.MainForm_DoubleClick);
             this.pnlShow.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWMP)).EndInit();
@@ -136,7 +127,6 @@
         private System.Windows.Forms.Timer tmrImage;
         private System.Windows.Forms.Timer tmrPlayList;
         private System.Windows.Forms.Timer tmrMedia;
-        private System.Windows.Forms.Timer tmrMessage;
         private System.Windows.Forms.Timer tmrTemplete;
         private System.Windows.Forms.CheckBox chkRefresh;
         private AxWMPLib.AxWindowsMediaPlayer axWMP;

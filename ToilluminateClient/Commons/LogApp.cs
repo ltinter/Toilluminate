@@ -38,7 +38,7 @@ namespace ToilluminateClient
         /// 工程ログファイル名
         /// </summary>
         private static readonly string PROCESS_LOG_FILENAME_FORMAT = PROCESS_LOG_FILE_DIRECTORY + @"\ProcessLog{0}.log";
-        
+
 
         #endregion
 
@@ -46,7 +46,7 @@ namespace ToilluminateClient
 
         // 日付ローテーション用のファイル名を作成する場所をまとめるため、
         // 以下のプロパティを追加しました。 YAMAZAKI
-        
+
 
         /// <summary>
         /// エラーログのファイル名を取得します。
@@ -109,7 +109,7 @@ namespace ToilluminateClient
             try
             {
 #if DEBUG
-                if (string.IsNullOrEmpty(messsage))
+                if (string.IsNullOrEmpty(messsage) == false)
                 {
                     Debug.WriteLine(messsage);
                     Console.WriteLine(messsage);
@@ -157,7 +157,7 @@ namespace ToilluminateClient
             try
             {
 #if DEBUG
-                if (string.IsNullOrEmpty(detail))
+                if (string.IsNullOrEmpty(detail) == false)
                 {
                     Debug.WriteLine(detail);
                     Console.WriteLine(detail);
@@ -193,9 +193,9 @@ namespace ToilluminateClient
                 Console.WriteLine(ex.Message);
             }
         }
-  
-        
-        
+
+
+
         /// <summary>
         /// 指定したパスのファイルが一ヶ月前のものであれば削除します。
         /// </summary>
@@ -230,11 +230,11 @@ namespace ToilluminateClient
 
 
         #endregion
-        
+
         #endregion
 
         #region privateメソッド
-        
+
         /// <summary>
         /// ログファイルにログを出力します。
         /// </summary>
@@ -263,7 +263,7 @@ namespace ToilluminateClient
         }
 
         #endregion
-        
+
         /// <summary>
         /// IPv4アドレスを返す。
         /// </summary>
@@ -281,6 +281,6 @@ namespace ToilluminateClient
             return "";
         }
 
-                
+
     }
 }

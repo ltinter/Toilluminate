@@ -21,6 +21,9 @@ namespace ToilluminateClient
         private static string filesPath = string.Empty;
         private static string logsPath = string.Empty;
 
+        
+        public static MessageForm messageFormInstance = new MessageForm();
+
         /// <summary>
         /// システムのファイル
         /// </summary>
@@ -179,12 +182,9 @@ namespace ToilluminateClient
                         {
                             PlayListSettings plsStudent = new PlayListSettings();
                             plsStudent = JsonConvert.DeserializeAnonymousType(plmItem.Settings, plsStudent);
-
-
+                            
                             PlayList plItem = new PlayList(plmItem.PlayListID, plsStudent);
-
-
-
+                            
                             PlayApp.PlayListArray.Add(plItem);
                         }
                         return true;
@@ -229,10 +229,19 @@ namespace ToilluminateClient
     public class PlaylistItem
     {
         public string PlaylistItemName { get; set; }
-        public string DisplayIntevalSeconds { get; set; }
-        public string SildeshowEffects { get; set; }
         public string type { get; set; }
+        public string DisplayIntevalSeconds { get; set; }
+        
+        public string[] SildeshowEffects { get; set; }
         public PlaylistItemData itemData { get; set; }
+        
+
+        public string SlidingSpeed { get; set; }
+        public string TextPostion { get; set; }
+
+        public string itemTextData { get; set; }
+  
+        public string ZoomOption { get; set; }
     }
 
     public class PlaylistItemData

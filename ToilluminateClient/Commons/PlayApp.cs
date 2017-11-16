@@ -25,6 +25,21 @@ namespace ToilluminateClient
 
         public static bool RefreshPlayList = false;
 
+
+        public static int ThreadLoadPlayListTime = 30;
+        public static int ThreadLoadPlayListTimeCurrent = 0;
+
+
+        public static Bitmap DrawBitmap;
+        public static bool DrawBitmapFlag = false;
+
+        public static List<DrawMessage> DrawMessageList = new List<DrawMessage>();
+        public static bool DrawMessageFlag = false;
+
+        public static bool NowImageIsShow = false;
+        public static bool NowMediaIsShow = false;
+        public static bool NowMessageIsShow = false;
+
         public static void Clear()
         {
             PlayListArray.Clear();
@@ -311,7 +326,7 @@ namespace ToilluminateClient
         {
             get
             {
-                DateTime dtEndValue = this.dtStartValue.AddSeconds(this.intervalSecondValue);
+                DateTime dtEndValue = this.dtStartValue.AddSeconds(this.FixPlayTime);
 
                 DayOfWeek week = DateTime.Now.DayOfWeek;
 
@@ -416,7 +431,7 @@ namespace ToilluminateClient
             intervalSecondValue = intervalSecond;
 
 
-            fixPlayTimeValue =fixPlayTime;
+            fixPlayTimeValue = fixPlayTime;
             if (fixPlayTimeValue > 0)
             {
                 fixPlayTimeValidValue = true;
@@ -430,7 +445,7 @@ namespace ToilluminateClient
             loopPlayValidValue = plsValue.Loop == "0" ? true : false;
 
             fixPlayTimeValue = Utility.ToInt(plsValue.PlayHours) * 3600 + Utility.ToInt(plsValue.PlayMinites) * 60 + Utility.ToInt(plsValue.PlaySeconds);
-            if (fixPlayTimeValue>0)
+            if (fixPlayTimeValue > 0)
             {
                 fixPlayTimeValidValue = true;
             }
@@ -465,13 +480,13 @@ namespace ToilluminateClient
                 {
                     #region "Message"
                     List<string> messageList = new List<string> { };
-                    foreach (string message in pliTemlete.itemData.src)
+                    
+                    string message = pliTemlete.itemTextData;
+                    if (string.IsNullOrEmpty(message) == false)
                     {
-                        if (string.IsNullOrEmpty(message) == false)
-                        {
-                            messageList.Add(message);
-                        }
+                        messageList.Add(message);
                     }
+                    
 
                     MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Down };
 
@@ -537,8 +552,8 @@ namespace ToilluminateClient
         public void PlayMoveNextTemplete()
         {
             while (this.currentTempleteItemIndex < this.TempleteItemList.Count
-                && this.CurrentTempleteItem.TempleteType == TempleteType.Message
-                && this.CurrentTempleteItem.TempleteState == TempleteStateType.Stop)
+                && (this.CurrentTempleteItem.TempleteType == TempleteType.Message
+                || this.CurrentTempleteItem.TempleteState == TempleteStateType.Stop))
             {
                 this.currentTempleteItemIndex++;
             }
@@ -1026,10 +1041,12 @@ namespace ToilluminateClient
             }
         }
 
-        public void ExecuteStop()
+        public void ExecuteRefresh()
         {
-            this.templeteStateValue = TempleteStateType.Stop;
+            this.templeteStateValue = TempleteStateType.Wait;
+            loadControlsFlag = false;
         }
+
         public TempleteStateType TempleteState
         {
             get
@@ -1096,10 +1113,12 @@ namespace ToilluminateClient
             }
         }
 
-        public void ShowCurrent(Panel showPanel)
+        public void ShowCurrent(Control objControl)
         {
             try
             {
+
+
                 if (this.loadControlsFlag == false && this.currentIndex >= 0 && this.currentIndex < this.fileOrMessageListValue.Count)
                 {
                     currentShowStyleIndex++;
@@ -1107,9 +1126,7 @@ namespace ToilluminateClient
                     {
                         currentShowStyleIndex = 0;
                     }
-                    Label lblMessage = new Label();
-                    lblMessage.Name = string.Format("lblMessage{0}", this.currentIndex);
-
+                   
                     int lblTop = 20;
                     if (this.messageStyleListValue[currentShowStyleIndex] == MessageShowStyle.Top)
                     {
@@ -1117,20 +1134,23 @@ namespace ToilluminateClient
                     }
                     else if (this.messageStyleListValue[currentShowStyleIndex] == MessageShowStyle.Down)
                     {
-                        lblTop = showPanel.Height - lblMessage.Height - 40;
+                        lblTop = objControl.Height - 60;
                     }
                     else if (this.messageStyleListValue[currentShowStyleIndex] == MessageShowStyle.Center)
                     {
-                        lblTop = showPanel.Height / 2 - 20;
+                        lblTop = objControl.Height / 2 - 20;
                     }
 
-                    int lblLeft = showPanel.Width;
-                    lblMessage.BackColor= System.Drawing.Color.Transparent;
-                    lblMessage.Location = new System.Drawing.Point(lblLeft, lblTop);
-                    lblMessage.Text = this.fileOrMessageListValue[this.currentIndex];
-                    lblMessage.Size = new System.Drawing.Size(100, 23);
-                    showPanel.Controls.Add(lblMessage);
+                    int lblLeft = objControl.Width;
 
+
+                    DrawMessage dmItem = new DrawMessage(this.fileOrMessageListValue[this.currentIndex]
+                        , new Font("MS UI Gothic", 12, System.Drawing.FontStyle.Bold)
+                        , System.Drawing.Color.Red
+                        , lblLeft, lblTop
+                        , 0, 0
+                        );
+                    PlayApp.DrawMessageList.Add(dmItem);
                 }
 
                 if (this.currentIndex >= this.fileOrMessageListValue.Count - 1)
@@ -1198,7 +1218,7 @@ namespace ToilluminateClient
                 this.templeteStateValue = TempleteStateType.Wait;
 
                 dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
-              //  dtEndValue = dtStartValue.AddSeconds(this.intervalSecondValue * this.fileOrMessageListValue.Count);
+                //  dtEndValue = dtStartValue.AddSeconds(this.intervalSecondValue * this.fileOrMessageListValue.Count);
             }
         }
         public void ExecuteStop()
@@ -1265,8 +1285,105 @@ namespace ToilluminateClient
 
         #endregion
     }
+ 
+    public class DrawMessage
+    {
+
+        #region " variable "
+        private string messageValue = string.Empty;
+        private Font fontValue;
+        private Color colorValue;
+
+        private int leftValue;
+        private int leftMaxValue;
+        private int topValue;
+        private int widthValue;
+        private int heigthValue;
+
+        #endregion
 
 
+        #region " propert "
+
+        public string Message
+        {
+            get
+            {
+                return messageValue;
+            }
+        }
+
+        public Font Font
+        {
+            get
+            {
+                return fontValue;
+            }
+        }
+        public Color Color
+        {
+            get
+            {
+                return colorValue;
+            }
+        }
+        public int Left
+        {
+            get
+            {
+                return leftValue;
+            }
+        }
+        public int Top
+        {
+            get
+            {
+                return topValue;
+            }
+        }
+        public int Width
+        {
+            get
+            {
+                return widthValue;
+            }
+        }
+        public int Heigth
+        {
+            get
+            {
+                return heigthValue;
+            }
+        }
+
+        #endregion
+
+        public DrawMessage(string message, Font font, Color color, int left, int top, int width, int heigth)
+        {
+            messageValue = message;
+            fontValue = font;
+            colorValue = color;
+
+            leftValue = left;
+            leftMaxValue = left;
+            topValue = top;
+            widthValue = width;
+            heigthValue = heigth;
+        }
+
+        #region " void and function "
+        
+        public void MoveMessage()
+        {
+            leftValue = leftValue - 2;
+            if (leftValue <= 0)
+            {
+                leftValue = leftMaxValue;
+            }
+        }        
+
+        #endregion
+    }
 
     #region play状态类型
     /// <summary>
