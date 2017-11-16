@@ -417,7 +417,7 @@
                 success: function (fileData) {
                     var supportedFileTypes = {
                         "image": [".jpg", ".gif", ".png", ".jpeg", ".bmp"],
-                        "video": [".mp4", ".wmv", ".mpeg", ".mpg", ".avi", ".mov"]
+                        "video": [".mp4", ".wmv", ".mpeg", ".mpg", ".avi", ".mov", ".flv", ".mkv"]
                     };
                     var tempFileData = [];
                     $.each(fileData, function (fileIndex, fileItem) {
