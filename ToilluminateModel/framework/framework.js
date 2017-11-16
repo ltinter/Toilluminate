@@ -313,7 +313,7 @@
             newPlayer.Comments = options.note;
             newPlayer.ActiveFlag = options.active;
             newPlayer.OnlineFlag = options.onlineUnits;
-
+            newPlayer.Settings = options.settings;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
@@ -362,6 +362,7 @@
                 newPlayer.ActiveFlag = Player.ActiveFlag;
                 newPlayer.OnlineFlag = Player.OnlineFlag;
                 newPlayer.GroupID = options.newGroupID;
+                newPlayer.Settings = options.settings;
 
                 var ajaxOptions = {
                     success: function (result) {
@@ -383,7 +384,7 @@
                     $.insmFramework('ajax', ajaxOptions);
                 }
             });     
-            $.when(playerEditDeferredList).done(function () {
+            $.when.apply(playerEditDeferredList).done(function () {
                 options.success();
             });
             
@@ -856,7 +857,7 @@
                     $.insmFramework('ajax', ajaxOptions);
                 }
             });
-            $.when(playerPlayListLinkList).done(function () {
+            $.when.apply(playerPlayListLinkList).done(function () {
                 options.success();
             });
         },
@@ -904,7 +905,7 @@
                     $.insmFramework('ajax', ajaxOptions);
                 }
             });
-            $.when(groupPlayListLinkDeferredList).done(function () {
+            $.when.apply(groupPlayListLinkDeferredList).done(function () {
                 options.success();
             });
         },

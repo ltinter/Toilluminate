@@ -845,12 +845,24 @@
                 toastr.warning("Player name is empty!");
                 return;
             }
+            var Settings = {};
+            Settings = {
+                Monday: $("#group_monday_value").val(),
+                Tuesday: $("#group_tuesday_value").val(),
+                Wednesday: $("#group_wednesday_value").val(),
+                Thursday: $("#group_thursday_value").val(),
+                Friday: $("#group_friday_value").val(),
+                Saturday: $("#group_saturday_value").val(),
+                Sunday: $("#group_sunday_value").val(),
+                resolution: $("#select_resolution").val()
+            };
+
             $.insmFramework('creatPlayer', {
                 GroupID: groupTreeForPlayerEditID,
                 PlayerName: $("#groupname").val(),
                 active: $("input[name='radio_Active']:checked").val(),
                 onlineUnits: $("input[name='radio_Online']:checked").val(),
-                //resolution:$("#select_resolution").find("option:selected").text(),
+                settings: JSON.stringify(Settings),
                 note: $("#text_note").val(),
                 ActivechangeFlg: ActivechangeFlg,
                 OnlinechangeFlg: OnlinechangeFlg,
@@ -909,6 +921,7 @@
                 DisplayNamechangeFlg: DisplayNamechangeFlg,
                 NotechangeFlg: DisplayNamechangeFlg,
                 newGroupID: groupTreeForPlayerEditID,
+                settings: JSON.stringify(Settings),
                 success: function (data) {
                     $.each(selectPlayerdata, function (index, editedplayer) {
                         var editedplayerID = $(selectPlayerdata[index]).data().obj.PlayerID
@@ -977,6 +990,7 @@
         $.insmGroup('defaultDataSet');
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
+
         $.each(selectPlayer, function (index, item) {
             if (index != 0) {
                 if ($("#groupname").val() != $(selectPlayer[index]).data().obj.PlayerName) {
@@ -991,6 +1005,43 @@
 
                 $("#label_Active_" + $(selectPlayer[index]).data().obj.ActiveFlag).click();
                 $("#label_Online_" + $(selectPlayer[index]).data().obj.OnlineFlag).click();
+
+                var Settings;
+                $.each(player_Alldata, function (playerindex, playerdata) {
+                    if (playerdata.PlayerID == $(selectPlayer[index]).data().obj.PlayerID) {
+                        Settings = JSON.parse(playerdata.Settings);
+                    }
+                    
+                });
+                if (Settings != null) {
+                    if (Object.getOwnPropertyNames(Settings).length > 0) {
+                        $("#group_monday_value").data("ionRangeSlider").update({
+                            from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
+                        });
+                        $("#group_tuesday_value").data("ionRangeSlider").update({
+                            from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
+                        });
+                        $("#group_wednesday_value").data("ionRangeSlider").update({
+                            from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
+                        });
+                        $("#group_thursday_value").data("ionRangeSlider").update({
+                            from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
+                        });
+                        $("#group_friday_value").data("ionRangeSlider").update({
+                            from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
+                        });
+                        $("#group_saturday_value").data("ionRangeSlider").update({
+                            from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
+                        });
+                        $("#group_sunday_value").data("ionRangeSlider").update({
+                            from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
+                        });
+                        if (Settings.resolution) {
+                            $('#select_resolution').val(Settings.resolution);
+                        }
+                    }
+                }
+
             }
         });
         $.insmFramework('getPlaylistByGroup', {

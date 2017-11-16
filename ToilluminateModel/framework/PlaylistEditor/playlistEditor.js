@@ -908,6 +908,9 @@
                 success: function (playlistData) {
                     div_playlist.hide();
                     div_Mainplaylist.show();
+                    $.playlistEditor('init', {
+                        selectedGroupID: tempselectedGroupID
+                    });
                     editplaylistID = null;
                 }
             })
@@ -923,10 +926,14 @@
                         div_playlist.hide();
                         div_Mainplaylist.show();
                     }
+                    $.playlistEditor('init', {
+                        selectedGroupID: tempselectedGroupID
+                    });
                     editplaylistID = null;
                 }
             })
-        } 
+        }
+        
     });
     $("#addPicture").click(function () {
         $.playlistEditor('greateNewItemPicture');
