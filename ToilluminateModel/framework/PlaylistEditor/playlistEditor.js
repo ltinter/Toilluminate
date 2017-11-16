@@ -567,6 +567,7 @@
                     $.each(options.palylistItem.itemData.id, function (index, item) {
                         var screenshot = new Image();
                         screenshot.src = options.palylistItem.itemData.src[index];
+                        screenshot.fileUrl = options.palylistItem.itemData.fileUrl[index];
                         screenshot.id = item;
                         $(screenshot).css({ "max-height": "150px", "max-width": "200px", "padding": "5px" });
                         div_col_image.append(screenshot);
