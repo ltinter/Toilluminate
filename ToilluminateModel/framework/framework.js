@@ -654,7 +654,7 @@
                 },
                 url: 'api/PlayListMasters',
                 format: 'json',
-                data: JSON.stringify(PlaylistMaster),
+                data: JSON.stringify(newPlaylist),
                 contentType: "application/json; charset=utf-8",
                 type:'POST',
                 denied: function () {
@@ -695,7 +695,7 @@
                 },
                 url: 'api/PlayListMasters/' + options.playlistId,
                 format: 'json',
-                data: JSON.stringify(PlaylistMaster),
+                data: JSON.stringify(newPlaylist),
                 contentType: "application/json; charset=utf-8",
                 type: 'PUT',
                 denied: function () {

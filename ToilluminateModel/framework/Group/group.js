@@ -294,6 +294,7 @@
                     field: "OnlineFlag",
                     title: "オンライン",
                     filterable: false,
+                    textAlign: 'center',
                     responsive: { visible: 'lg' },
                     template: function (row, a, b) {
                         var dropup = (row.getDatatable().getPageSize() - row.getIndex()) <= 4 ? 'dropup' : '';
@@ -308,7 +309,8 @@
                     field: "GroupID",
                     title: "オンライン",
                     filterable: false,
-                    responsive: { visible: 'lg' }
+                    responsive: { visible: 'lg' },
+                    width: 0,
                 }]
             });
             datatable.on('m-datatable--on-check', function (e, args) {
