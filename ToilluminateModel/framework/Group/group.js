@@ -941,8 +941,8 @@
                 success: function (data) {
                     var div_forcedplaylists = $('#forcedplaylists');
                     var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
+                    playListgroup =[];
                     if (forcedplaylists.length > 0) {
-                        playListgroup = [];
                         $.each(forcedplaylists, function (index, forcedplaylist) {
                             var playlistItem = {};
                             var forcedplaylistID = $(forcedplaylist).attr('playlistId');
@@ -976,8 +976,8 @@
         } else {
             var div_forcedplaylists = $('#forcedplaylists');
             var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
+            playListgroup = [];
             if (forcedplaylists.length > 0) {
-                playListgroup = [];
                 $.each(forcedplaylists, function (index, forcedplaylist) {
                     var playlistItem = {};
                     var forcedplaylistID = $(forcedplaylist).attr('playlistId');

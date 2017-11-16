@@ -253,7 +253,7 @@
                             div_li.append(href);
 
                             var div_li_edit = $('<li />').addClass('m-portlet__nav-item');
-                            var edit_href = $('<a />').addClass("btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm").text('Edit');
+                            var edit_href = $('<a />').addClass("btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm").text($.localize('translate', 'Edit'));
 
                             edit_href.click(function () {
                                 editplaylistID = item.PlayListID;
