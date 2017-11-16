@@ -23,6 +23,7 @@
     var editGroupFlg = false;
     var datatable = null;
     var temp_GroupTreeData;
+    var initedTree = 0;
     
     var groupJstreeData = {
         "core": {
@@ -44,10 +45,7 @@
         "state": {
             "key": "demo2"
         },
-        "plugins": ["dnd", "state", "types"],
-        "ui": {
-            "initially_select": ["1"]
-        }
+        "plugins": ["dnd", "state", "types"]
 
     };
     var methods = {
@@ -125,7 +123,10 @@
                             $(item).jstree(true).refresh();
                             $(item).bind("refresh.jstree", function (e, data) {
                                 $(this).jstree("open_all");
-                                $(item).jstree('select_node', 'ul > li:first');
+                                if (initedTree < 4) {
+                                    $(item).jstree('select_node', 'ul > li:first');
+                                    initedTree++;
+                                }
                             })
                         });
 
@@ -290,10 +291,19 @@
                     datetype: "yyyy-MM-dd HH:mm",
                     responsive: { visible: 'lg' }
                 }, {
-                    field: "Online",
+                    field: "OnlineFlag",
                     title: "オンライン",
                     filterable: false,
-                    responsive: { visible: 'lg' }
+                    responsive: { visible: 'lg' },
+                    template: function (row, a, b) {
+                        var dropup = (row.getDatatable().getPageSize() - row.getIndex()) <= 4 ? 'dropup' : '';
+
+                        return '\
+						<span class="m-menu__link-badge">\
+                             <span class="m-badge m-badge--success" id="span_success"><i class="m-menu__link-icon fa fa-check-circle"></i></span>\
+                        </span>\
+					';
+                    }
                 }, {
                     field: "GroupID",
                     title: "オンライン",
@@ -822,6 +832,7 @@
     });
     $("#button_save").click(function (e) {
         $.insmGroup('addNewGroup');
+        console.log("Group Save Button!");
         editGroupID = undefined;
         $("#forcedplaylists").empty();
     })
