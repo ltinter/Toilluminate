@@ -1142,7 +1142,7 @@
     $("#edit_player").click(function () {
         var selected = datatable.setSelectedRecords().getSelectedRecords();
         selectPlayerdata = selected;
-        if (selectPlayerdata.length == 0) { return; }
+        if (selectPlayerdata || selectPlayerdata.length == 0) { return; }
         var allPlayerNames = "";
         $.each(selectPlayerdata, function (playerIndex, playerItem) {
             allPlayerNames += ", " + $(playerItem).data().obj.PlayerName;
