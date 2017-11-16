@@ -440,7 +440,7 @@
                 //remove selected files
                 $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
                     var screenshot = new Image();
-                    screenshot.src = $(item).data().obj.FileThumbnailUrl;
+                    screenshot.src = $(item).data().obj.FilelUrl;
                     screenshot.id = $(item).data().obj.FileID;
                     $(screenshot).css({ "max-height": "150px", "max-width": "200px","padding":"5px" });
                     divselectFile.append(screenshot);
