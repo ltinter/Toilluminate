@@ -826,8 +826,11 @@
                     return PlayerPlayListLink;
                 }
             }
-
+            var playerPlayListLinkList = [];
             $.each(options.PlayListID, function (index, objId) {
+                var tempPlayerPlayListLinkDrferred = new $.Deferred();
+                playerPlayListLinkList.push(tempPlayerPlayListLinkDrferred)
+
                 var newPlayerPlayList = PlayerPlayListLink.create();
                 newPlayerPlayList.Index = index + 1;
                 newPlayerPlayList.PlayerID = options.playerId;
@@ -853,6 +856,9 @@
                     $.insmFramework('ajax', ajaxOptions);
                 }
             });
+            $.when(playerPlayListLinkList).done(function () {
+                options.success();
+            });
         },
         GroupPlayListLinkTables: function (options) {
 
@@ -868,7 +874,11 @@
                 }
             };
 
+            var groupPlayListLinkDeferredList = [];        
+
             $.each(options.PlayListID, function (index, objId) {
+                var tempGroupPlayListLinkDrferred = new $.Deferred();
+                groupPlayListLinkDeferredList.push(tempGroupPlayListLinkDrferred);
                 var newGroupPlayList = GroupPlayListLink.create();
                 newGroupPlayList.Index = index + 1;
                 newGroupPlayList.GroupID = options.groupID;
@@ -893,9 +903,11 @@
                 } else {
                     $.insmFramework('ajax', ajaxOptions);
                 }
-            });  
+            });
+            $.when(groupPlayListLinkDeferredList).done(function () {
+                options.success();
+            });
         },
-
         
         deletePlaylist: function (options) {
             var $this = $('html').eq(0);

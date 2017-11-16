@@ -498,6 +498,21 @@
                     })
                 } else {
                     if (options.playerId.indexOf(",") > 0) {
+                        var editplayerIds = options.playerId.split(', ');
+                        var editplayerPlists = {};
+                        $.each(editplayerIds, function (index, editplayerId) {
+                            $.insmFramework('getForcedPlaylistByPlayer', {
+                                playerId: editplayerId,
+                                success: function (forcedPlayList) {
+                                    editplayerPlists[editplayerId] = forcedPlayList;
+                                },
+                                error: function () {
+                                }
+                            })
+                        })
+
+                        
+
                         return;
                     } else {
                         $.insmFramework('getForcedPlaylistByPlayer', {
@@ -924,8 +939,7 @@
     })
 
     var edit_player_click = function (selectPlayer, allPlayerID) {
-        div_main.hide();
-        div_edit.show();
+        
         var allPlayerNames = "";
         $.each(selectPlayer, function (playerIndex, playerItem) {
             allPlayerNames += ", " + $(playerItem).data().obj.PlayerName;
@@ -968,6 +982,8 @@
                 if (data) {
                     $.insmGroup('showPlaylist', { Playlists: data, isGroup: false, GroupID: selectedGroupID, playerId: allPlayerID });
                 }
+                div_main.hide();
+                div_edit.show();
             },
             error: function () {
             },
