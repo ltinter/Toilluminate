@@ -313,7 +313,7 @@
             newPlayer.Comments = options.note;
             newPlayer.ActiveFlag = options.active;
             newPlayer.OnlineFlag = options.onlineUnits;
-
+            newPlayer.Settings = options.settings;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
@@ -349,7 +349,10 @@
                     return PlayerMaster;
                 }
             }
+            var playerEditDeferredList = [];
             $.each(options.Playerdata, function (index, item) {
+                var tempPlayerEditDrferred = new $.Deferred();
+                playerEditDeferredList.push(tempPlayerEditDrferred);
                 var Player = $(options.Playerdata[index]).data().obj;
                 var newPlayer = PlayerMaster.create();
 
@@ -359,10 +362,11 @@
                 newPlayer.ActiveFlag = Player.ActiveFlag;
                 newPlayer.OnlineFlag = Player.OnlineFlag;
                 newPlayer.GroupID = options.newGroupID;
+                newPlayer.Settings = options.settings;
 
                 var ajaxOptions = {
                     success: function (result) {
-                        options.success(result);
+                        tempPlayerEditDrferred.resolve();
                     },
                     url: 'api/PlayerMasters',
                     format: 'json',
@@ -380,7 +384,9 @@
                     $.insmFramework('ajax', ajaxOptions);
                 }
             });     
-            
+            $.when.apply(playerEditDeferredList).done(function () {
+                options.success();
+            });
             
         },
         getPlayerStaus: function (options) {
@@ -648,7 +654,7 @@
                 },
                 url: 'api/PlayListMasters',
                 format: 'json',
-                data: JSON.stringify(PlaylistMaster),
+                data: JSON.stringify(newPlaylist),
                 contentType: "application/json; charset=utf-8",
                 type:'POST',
                 denied: function () {
@@ -689,7 +695,7 @@
                 },
                 url: 'api/PlayListMasters/' + options.playlistId,
                 format: 'json',
-                data: JSON.stringify(PlaylistMaster),
+                data: JSON.stringify(newPlaylist),
                 contentType: "application/json; charset=utf-8",
                 type: 'PUT',
                 denied: function () {
@@ -821,8 +827,11 @@
                     return PlayerPlayListLink;
                 }
             }
-
+            var playerPlayListLinkList = [];
             $.each(options.PlayListID, function (index, objId) {
+                var tempPlayerPlayListLinkDrferred = new $.Deferred();
+                playerPlayListLinkList.push(tempPlayerPlayListLinkDrferred)
+
                 var newPlayerPlayList = PlayerPlayListLink.create();
                 newPlayerPlayList.Index = index + 1;
                 newPlayerPlayList.PlayerID = options.playerId;
@@ -830,7 +839,7 @@
 
                 var ajaxOptions = {
                     success: function (result) {
-                        options.success(result);
+                        tempPlayerPlayListLinkDrferred.resolve();
                     },
                     url: 'api/PlayerPlayListLinkTables',
                     format: 'json',
@@ -848,6 +857,9 @@
                     $.insmFramework('ajax', ajaxOptions);
                 }
             });
+            $.when.apply(playerPlayListLinkList).done(function () {
+                options.success();
+            });
         },
         GroupPlayListLinkTables: function (options) {
 
@@ -863,7 +875,11 @@
                 }
             };
 
+            var groupPlayListLinkDeferredList = [];        
+
             $.each(options.PlayListID, function (index, objId) {
+                var tempGroupPlayListLinkDrferred = new $.Deferred();
+                groupPlayListLinkDeferredList.push(tempGroupPlayListLinkDrferred);
                 var newGroupPlayList = GroupPlayListLink.create();
                 newGroupPlayList.Index = index + 1;
                 newGroupPlayList.GroupID = options.groupID;
@@ -871,7 +887,7 @@
 
                 var ajaxOptions = {
                     success: function (result) {
-                        options.success(result);
+                        tempGroupPlayListLinkDrferred.resolve();
                     },
                     url: 'api/GroupPlayListLinkTables',
                     format: 'json',
@@ -888,9 +904,11 @@
                 } else {
                     $.insmFramework('ajax', ajaxOptions);
                 }
-            });  
+            });
+            $.when.apply(groupPlayListLinkDeferredList).done(function () {
+                options.success();
+            });
         },
-
         
         deletePlaylist: function (options) {
             var $this = $('html').eq(0);

@@ -560,11 +560,17 @@
             }
             if (options.palylistItem) {
                 if (options.palylistItem.itemData) {
-                    $.each(options.palylistItem.itemData.src, function (index, item) {
+                    $.each(options.palylistItem.itemData.id, function (index, item) {
                         var screenshot = new Image();
-                        screenshot.src = item;
-                        //screenshot.id = $(item).data().obj.FileID;
+                        screenshot.src = options.palylistItem.itemData.src[index];
+                        screenshot.id = item;
+                        $(screenshot).css({ "max-height": "150px", "max-width": "200px", "padding": "5px" });
                         div_col_image.append(screenshot);
+                        var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
+                            $(screenshot).remove();
+                            $(this).remove();
+                        });
+                        div_col_image.append(deleteImg);
                     });
                 }
             }
@@ -902,6 +908,9 @@
                 success: function (playlistData) {
                     div_playlist.hide();
                     div_Mainplaylist.show();
+                    $.playlistEditor('init', {
+                        selectedGroupID: tempselectedGroupID
+                    });
                     editplaylistID = null;
                 }
             })
@@ -917,10 +926,14 @@
                         div_playlist.hide();
                         div_Mainplaylist.show();
                     }
+                    $.playlistEditor('init', {
+                        selectedGroupID: tempselectedGroupID
+                    });
                     editplaylistID = null;
                 }
             })
-        } 
+        }
+        
     });
     $("#addPicture").click(function () {
         $.playlistEditor('greateNewItemPicture');
@@ -1017,6 +1030,27 @@
         $.each(playlistDivs, function (playlistIndex, playlistItem) {
             $("#div_PlaylistEditorContent").append($(playlistItem));
         })
+    });
+    $("#playlistItem").sortable({
+        connectWith: ".m-portlet__head",
+        items: "div.m-portlet.m-portlet--mobile.m-portlet--sortable.m-portlet--warning.m-portlet--head-solid-bg",
+        opacity: 0.8,
+        handle: '.m-portlet__head',
+        coneHelperSize: true,
+        placeholder: 'm-portlet--sortable-placeholder',
+        forcePlaceholderSize: true,
+        tolerance: "pointer",
+        helper: "clone",
+        tolerance: "pointer",
+        forcePlaceholderSize: !0,
+        helper: "clone",
+        cancel: ".m-portlet--sortable-empty", // cancel dragging if portlet is in fullscreen mode
+        revert: 250, // animation in milliseconds
+        update: function (b, c) {
+            if (c.item.prev().hasClass("m-portlet--sortable-empty")) {
+                c.item.prev().before(c.item);
+            }
+        }
     });
     toastr.options = {
         "closeButton": true,

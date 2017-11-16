@@ -114,6 +114,11 @@
             <input type="button" value="CREATE PLAYLIST" onclick="createPlayList();" />
             <div id="rst2" />
         </div>
+        <div>
+            <input type="text" id="txt_playlistid" value="" />
+            <input type="button" value="updatePlaylist" onclick="updatePlaylist();" />
+            <div id="rst2" />
+        </div>
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
@@ -397,6 +402,40 @@
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(newPL),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function updatePlaylist() {
+
+            var PlaylistMaster = {
+                create: function () {
+                    GroupID: "";
+                    PlayListName: '';
+                    InheritForced: '';
+                    Settings: '';
+                    Comments: '';
+                    PlayListID: '';
+                    return PlaylistMaster;
+                }
+            }
+            var newPlaylist = PlaylistMaster.create();
+            newPlaylist.GroupID = 1;
+            newPlaylist.PlayListName = "Rootリスト１";
+            newPlaylist.PlayListID = 1;
+            newPlaylist.InheritForced = undefined;
+            newPlaylist.Settings = "";
+            newPlaylist.Comments = "Rootリスト１";
+
+            $.ajax({
+                url: 'api/PlayListMasters/1',
+                type: "PUT",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(newPlaylist),
                 success: function (data) {
                     var aa = data;
                 },
