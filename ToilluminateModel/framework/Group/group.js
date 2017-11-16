@@ -417,14 +417,14 @@
                     var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
                     var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
                     var div_li = $('<li />').addClass('m-portlet__nav-item');
-                    var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+                    var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon").attr("href", "javascript:;");
                     var href_i = $('<i />').addClass("fa fa-toggle-right");
                     href.append(href_i);
                     div_li.append(href);
                     div_portlet_nav.append(div_li);
                     var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push");
                     div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
-                    var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
+                    var div_li_a_toggle = $('<a href="javascript:;"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
                     var div_li_i = $('<i />').addClass('la la-ellipsis-v');
                     div_li_a_toggle.append(div_li_i);
                     div_li_list.append(div_li_a_toggle);
@@ -466,7 +466,7 @@
                         var playlistclone = div_Playlist.clone(true);
                         div_forcedplaylists.append(playlistclone);
                         playlistclone.find("li.m-portlet__nav-item:first").empty();
-                        playlistclone.find("li.m-portlet__nav-item:first").append($("<a class='m-portlet__nav-link m-portlet__nav-link--icon'><i class='la la-close'></i></a>").click(function () { playlistclone.remove() }));
+                        playlistclone.find("li.m-portlet__nav-item:first").append($("<a href='javascript:;' class='m-portlet__nav-link m-portlet__nav-link--icon'><i class='la la-close'></i></a>").click(function () { playlistclone.remove() }));
                         //playListgroup.push(Playlist.PlayListID);
                     });
                     div_PlaylistEditorContent.append(div_Playlist);
@@ -579,7 +579,7 @@
                     var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
                     if ((Playlist.BindGroupID == selectedGroupID && options.isGroup) || (!options.isGroup && Playlist.BindGroupID == 0)) {
                         var div_li = $('<li />').addClass('m-portlet__nav-item');
-                        var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+                        var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon").attr("href", "javascript:;");
                         var href_i = $('<i />').addClass("la la-close");
                         href.append(href_i);
                         div_li.append(href);
@@ -590,7 +590,7 @@
                     }
                     var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push");
                     div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
-                    var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
+                    var div_li_a_toggle = $('<a href="javascript:;"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
                     var div_li_i = $('<i />').addClass('la la-ellipsis-v');
                     div_li_a_toggle.append(div_li_i);
                     div_li_list.append(div_li_a_toggle);
@@ -1022,7 +1022,7 @@
 
         allPlayerNames = allPlayerNames.substr(2);
         var playerSelectionLi = $('<li class="m-menu__item " data-redirect="true" aria-haspopup="true">\
-                                                <a class="m-menu__link" title="'+ allPlayerNames +'">\
+                                                <a class="m-menu__link" title="' + allPlayerNames + '">\
                                                     <span class="m-menu__link-title" style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">\
                                                         <span class="m-menu__link-wrap">\
                                                             <span class="m-menu__link-badge">\
