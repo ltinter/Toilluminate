@@ -420,7 +420,7 @@ namespace ToilluminateClient
                             {
                                 foreach (string url in pliTemlete.itemData.fileUrl)
                                 {
-                                    string file = WebApiInfo.DownloadFile(url, "");
+                                    string file = WebApiInfo.DownloadFile(VariableInfo.GetUrlFile(url), "");
                                     if (string.IsNullOrEmpty(file) == false)
                                     {
                                         imageFileList.Add(file);
@@ -461,7 +461,7 @@ namespace ToilluminateClient
                             string message = pliTemlete.itemTextData;
                             if (string.IsNullOrEmpty(message) == false)
                             {
-                                messageList.Add(message);
+                                messageList.Add(message.Replace("<p>", "").Replace("</p>", ""));
                             }
 
 
@@ -493,7 +493,7 @@ namespace ToilluminateClient
                             {
                                 foreach (string url in pliTemlete.itemData.fileUrl)
                                 {
-                                    string file = WebApiInfo.DownloadFile(url, "");
+                                    string file = WebApiInfo.DownloadFile(VariableInfo.GetUrlFile(url), "");
                                     if (string.IsNullOrEmpty(file) == false)
                                     {
                                         mediaFileList.Add(file);
@@ -723,6 +723,7 @@ namespace ToilluminateClient
 
         protected TempleteStateType templeteStateValue = TempleteStateType.Wait;
 
+        protected bool loadControlsFlag = false;
         /// <summary>
         /// 间隔时间(秒)
         /// </summary>
@@ -780,6 +781,15 @@ namespace ToilluminateClient
                         }
                     }
                 }
+
+                if (templeteTypeValue == TempleteType.Message)
+                {
+                    if (this.loadControlsFlag)
+                    {
+                        this.templeteStateValue = TempleteStateType.Stop;
+                    }
+                }
+
                 return templeteStateValue;
             }
         }
@@ -836,11 +846,14 @@ namespace ToilluminateClient
 
         #region " void and function "
         public void ExecuteRefresh()
-        {
-            previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
+        {            
+            if (this.templeteTypeValue == TempleteType.Image)
+            {
+                previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
+                templeteStateValue = TempleteStateType.Wait;
+            }
 
-            templeteStateValue = TempleteStateType.Wait;
-
+            loadControlsFlag = false;
             this.currentIndex = -1;
             this.currentShowStyleIndex = -1;
         }
@@ -1048,7 +1061,7 @@ namespace ToilluminateClient
 
         #region " variable "
 
-        private bool loadControlsFlag = false;
+    
 
 
 
@@ -1122,24 +1135,7 @@ namespace ToilluminateClient
             }
         }
 
-        public void ExecuteRefresh()
-        {
-            this.templeteStateValue = TempleteStateType.Wait;
-            loadControlsFlag = false;
-        }
-
-        public TempleteStateType TempleteState
-        {
-            get
-            {
-                if (this.loadControlsFlag)
-                {
-                    this.templeteStateValue = TempleteStateType.Stop;
-                }
-                return templeteStateValue;
-            }
-        }
-        public bool CurrentIsChanged()
+                public bool CurrentIsChanged()
         {
             try
             {

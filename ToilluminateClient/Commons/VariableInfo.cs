@@ -224,6 +224,11 @@ namespace ToilluminateClient
             }
         }
 
+
+        public static string GetUrlFile(string url)
+        {
+            return string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, url);
+        }
         #endregion
     }
 

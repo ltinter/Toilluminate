@@ -112,6 +112,7 @@
             this.Name = "MainForm";
             this.Text = "表示情報";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Move += new System.EventHandler(this.MainForm_Move);
             this.pnlShow.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWMP)).EndInit();
