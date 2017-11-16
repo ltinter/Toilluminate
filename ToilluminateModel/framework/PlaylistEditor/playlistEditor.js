@@ -560,11 +560,17 @@
             }
             if (options.palylistItem) {
                 if (options.palylistItem.itemData) {
-                    $.each(options.palylistItem.itemData.src, function (index, item) {
+                    $.each(options.palylistItem.itemData.id, function (index, item) {
                         var screenshot = new Image();
-                        screenshot.src = item;
-                        //screenshot.id = $(item).data().obj.FileID;
+                        screenshot.src = options.palylistItem.itemData.src[index];
+                        screenshot.id = item;
+                        $(screenshot).css({ "max-height": "150px", "max-width": "200px", "padding": "5px" });
                         div_col_image.append(screenshot);
+                        var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
+                            $(screenshot).remove();
+                            $(this).remove();
+                        });
+                        div_col_image.append(deleteImg);
                     });
                 }
             }
