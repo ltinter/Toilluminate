@@ -280,7 +280,7 @@
         },
         playlistDefaultvalue: function () {
             $('#playlist_name').val('New Playlist Name');
-            $('#playlist_note').text('');
+            $('#playlist_note').val('');
             $("#playlist_monday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
             $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
             $("#playlist_wednesday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
@@ -311,7 +311,7 @@
                         if (playlistData) {
                             var Settings = JSON.parse(playlistData.Settings);
                             $('#playlist_name').val(playlistData.PlayListName);
-                            $('#playlist_note').text(playlistData.Comments);
+                            $('#playlist_note').val(playlistData.Comments);
                             $("#div_playlist").find("h3:first").text(playlistData.PlayListName);
                         }
                         if (Settings != null) {
