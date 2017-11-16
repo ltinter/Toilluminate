@@ -302,9 +302,11 @@ var mApp = function() {
                     opacity: options.opacity,
                     cursor: 'wait'
                 },
-                onUnblock: function() {
-                    el.css('position', '');
-                    el.css('zoom', '');
+                onUnblock: function () {
+                    if (el) {
+                        el.css('position', '');
+                        el.css('zoom', '');
+                    }
                 }
             };
 
