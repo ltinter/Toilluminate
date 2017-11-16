@@ -44,7 +44,10 @@
         "state": {
             "key": "demo2"
         },
-        "plugins": ["dnd", "state", "types"]
+        "plugins": ["dnd", "state", "types"],
+        "ui": {
+            "initially_select": ["1"]
+        }
 
     };
     var methods = {
@@ -120,6 +123,10 @@
                         $.each(tree, function (key, item) {
                             $(item).jstree(true).settings.core.data = tempdataGroupTreeData;
                             $(item).jstree(true).refresh();
+                            $(item).bind("refresh.jstree", function (e, data) {
+                                $(this).jstree("open_all");
+                                $(item).jstree('select_node', 'ul > li:first');
+                            })
                         });
 
                         div_groupTree.on("changed.jstree", function (e, data) {
@@ -816,10 +823,12 @@
     $("#button_save").click(function (e) {
         $.insmGroup('addNewGroup');
         editGroupID = undefined;
+        $("#forcedplaylists").empty();
     })
     $("#button_back").click(function () {
         div_main.show();
         div_edit.hide();
+        $("#forcedplaylists").empty();
     });
 
     $("#add_player").click(function () {
