@@ -135,17 +135,12 @@ namespace ToilluminateClient
         /// <summary>
         /// 强制播放时间有效
         /// </summary>
-        private bool fixPlayTimeValidValue = true;
+        private bool fixPlayTimeValidValue = false;
 
         /// <summary>
         /// 强制播放时间(秒)
         /// </summary>
         private int fixPlayTimeValue = 0;
-
-        /// <summary>
-        /// 持续时间(秒)
-        /// </summary>
-        private int intervalSecondValue = 5;
 
         #endregion
 
@@ -261,13 +256,16 @@ namespace ToilluminateClient
         /// <summary>
         /// 结束时间
         /// </summary>
-        public DateTime EndDateTime
+        public bool IsOutExecuteTime()
         {
-            get
+            bool isOutExectueTime = true;
+            try
             {
-                DateTime dtEndValue = this.dtStartValue.AddSeconds(this.FixPlayTime);
+                DateTime dtEndValue = this.dtStartValue;
 
-                DayOfWeek week = DateTime.Now.DayOfWeek;
+
+                DateTime nowTime = DateTime.Now;
+                DayOfWeek week = nowTime.DayOfWeek;
 
                 string weekTimeString = string.Empty;
                 if (week == DayOfWeek.Sunday)
@@ -299,22 +297,41 @@ namespace ToilluminateClient
                     weekTimeString = plSettings.Saturday;
                 }
 
+
                 if (string.IsNullOrEmpty(weekTimeString) == false)
                 {
                     string[] weekTimes = weekTimeString.Split(';');
-                    if (dtEndValue.Hour < Utility.ToInt(weekTimes[1]))
+                    if (Utility.ToInt(weekTimes[0]) <= nowTime.Hour && nowTime.Hour < Utility.ToInt(weekTimes[1]))
                     {
-                        if (this.loopPlayValidValue)
+                        isOutExectueTime = false;
+                    }
+                }
+
+                if (isOutExectueTime == false)
+                {
+                    if (this.playListStateValue == PlayListStateType.Execute && this.playListStateValue == PlayListStateType.Last)
+                    {
+                        if (this.fixPlayTimeValidValue)
                         {
-                            dtEndValue = Utility.GetPlayDateTime(DateTime.Parse(string.Format("{0}{1}:59:59", dtEndValue.ToString("yyyy-MM-dd "), Utility.ToInt(weekTimes[1]) - 1)));
+                            dtEndValue = this.dtStartValue.AddSeconds(this.FixPlayTime);
+
+                            if (nowTime <= dtEndValue)
+                            {
+                                isOutExectueTime = false;
+                            }
                         }
                     }
                 }
 
-
-                return dtEndValue;
+                return isOutExectueTime;
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("PlayApp", "IsOutExecuteTime", ex);
+                return true;
             }
         }
+
 
 
 
@@ -363,17 +380,16 @@ namespace ToilluminateClient
         /// </summary>
         /// <param name="loopPlayValid">循环有效</param>
         /// <param name="intervalSecond">持续时间(秒)</param>
-        public PlayList(int playListID, bool loopPlayValid, DateTime dtStart, int intervalSecond, int fixPlayTime)
+        public PlayList(int playListID, bool loopPlayValid, bool fixPlayTimeValid, int fixPlayTime)
         {
             playListIDValue = playListID;
             loopPlayValidValue = loopPlayValid;
-            intervalSecondValue = intervalSecond;
 
 
             fixPlayTimeValue = fixPlayTime;
             if (fixPlayTimeValue > 0)
             {
-                fixPlayTimeValidValue = true;
+                fixPlayTimeValidValue = fixPlayTimeValid;
             }
         }
         public PlayList(int playListID, PlayListSettings plsValue)
@@ -383,15 +399,14 @@ namespace ToilluminateClient
                 playListIDValue = playListID;
                 plSettings = plsValue;
 
-                loopPlayValidValue = plsValue.Loop == "0" ? true : false;
+                loopPlayValidValue = plsValue.Loop == "0" ? false : true;
 
                 fixPlayTimeValue = Utility.ToInt(plsValue.PlayHours) * 3600 + Utility.ToInt(plsValue.PlayMinites) * 60 + Utility.ToInt(plsValue.PlaySeconds);
                 if (fixPlayTimeValue > 0)
                 {
-                    fixPlayTimeValidValue = true;
+                    fixPlayTimeValidValue = plsValue.Playtime == "0" ? false : true; ;
                 }
 
-                intervalSecondValue = Utility.ToInt(plsValue.Playtime);
 
                 if (plSettings.PlaylistItems != null)
                 {
@@ -450,9 +465,22 @@ namespace ToilluminateClient
                             }
 
 
-                            MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Down };
+                            List<MessageShowStyle> messageStyleList = new List<MessageShowStyle> { };
+                            string style = pliTemlete.TextPostion;
+                            if (string.IsNullOrEmpty(style) == false)
+                            {
+                                int styleValue = Utility.ToInt(style);
+                                if (Enum.IsDefined(typeof(MessageShowStyle), styleValue))
+                                {
+                                    messageStyleList.Add((MessageShowStyle)styleValue);
+                                }
+                            }
+                            if (messageStyleList.Count == 0)
+                            {
+                                messageStyleList.Add(MessageShowStyle.Random);
+                            }
 
-                            MessageTempleteItem itItem = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList());
+                            MessageTempleteItem itItem = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), Utility.ToInt(pliTemlete.DisplayIntevalSeconds), Utility.ToInt(pliTemlete.SlidingSpeed));
 
                             this.PlayAddTemplete(itItem);
                             #endregion
@@ -509,6 +537,8 @@ namespace ToilluminateClient
             this.dtStartValue = this.dtNowValue;
 
             playListStateValue = PlayListStateType.Execute;
+
+            PlayRefreshTemplete();
         }
 
         public void PlayLast()
@@ -519,6 +549,8 @@ namespace ToilluminateClient
             {
                 PlayStop();
             }
+
+            this.PlayRefreshTemplete();
         }
         public void PlayStop()
         {
@@ -561,31 +593,25 @@ namespace ToilluminateClient
             {
                 try
                 {
-                    DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
-
-                    DateTime dtEndValue = this.EndDateTime;
-
                     if (playListStateValue == PlayListStateType.Wait)
                     {
-                        if (nowTime <= dtEndValue)
-                        {
-                            playListStateValue = PlayListStateType.Execute;
-                        }
-                    }
-
-                    if (playListStateValue != PlayListStateType.Stop)
-                    {
-                        if (dtEndValue <= nowTime)
+                        if (IsInExecuteTime() == false)
                         {
                             playListStateValue = PlayListStateType.Stop;
                         }
                     }
-
-                    if (playListStateValue == PlayListStateType.Wait)
+                    else if (playListStateValue == PlayListStateType.Execute || playListStateValue == PlayListStateType.Last)
                     {
-                        if (InExecuteTime() == false)
+                        if (this.IsOutExecuteTime())
                         {
                             playListStateValue = PlayListStateType.Stop;
+                        }
+                    }
+                    else if (playListStateValue == PlayListStateType.Stop)
+                    {
+                        if (IsInExecuteTime())
+                        {
+                            playListStateValue = PlayListStateType.Wait;
                         }
                     }
 #if DEBUG
@@ -603,8 +629,8 @@ namespace ToilluminateClient
                 }
             }
         }
-        
-        public bool InExecuteTime()
+
+        public bool IsInExecuteTime()
         {
             try
             {
@@ -707,6 +733,8 @@ namespace ToilluminateClient
         /// </summary>
         protected DateTime previousTimeValue = DateTime.Now;
 
+        private int slidingSpeedValue = 10;
+
         #endregion
 
 
@@ -788,7 +816,7 @@ namespace ToilluminateClient
             }
         }
 
-        public TempleteItem(List<string> messageList, List<MessageShowStyle> messageStyle, int intervalSecond)
+        public TempleteItem(List<string> messageList, List<MessageShowStyle> messageStyle, int intervalSecond, int slidingSpeed)
         {
             templeteTypeValue = TempleteType.Message;
             foreach (string message in messageList)
@@ -800,6 +828,9 @@ namespace ToilluminateClient
                 messageStyleListValue.Add(style);
             }
             this.intervalSecondValue = intervalSecond;
+
+            this.slidingSpeedValue = slidingSpeed;
+
         }
 
 
@@ -894,7 +925,7 @@ namespace ToilluminateClient
         {
             try
             {
-                if (this.templeteStateValue== TempleteStateType.Stop)
+                if (this.templeteStateValue == TempleteStateType.Stop)
                 {
                     return false;
                 }
@@ -903,24 +934,45 @@ namespace ToilluminateClient
                 {
                     DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
 
-                    if ( nowTime >= previousTimeValue.AddSeconds(intervalSecondValue))
+                    if (nowTime >= previousTimeValue.AddSeconds(intervalSecondValue))
                     {
                         int nowIndex = this.currentIndex;
-                        if (nowIndex < 0) nowIndex = 0;
-                        while (nowIndex < this.fileOrMessageListValue.Count)
+                        if (nowIndex < 0)
                         {
-                            if (nowTime <= previousTimeValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
-                            {
-                                break;
-                            }
+                            nowIndex = 0;
+                            this.currentIndex = nowIndex;
+                            return true;
+                        }
+                        else
+                        {
                             nowIndex++;
                         }
-
+                        
                         if (nowIndex >= this.fileOrMessageListValue.Count)
                         {
                             this.templeteStateValue = TempleteStateType.Stop;
                             return false;
                         }
+
+                        if (nowTime < previousTimeValue.AddSeconds(this.intervalSecondValue))
+                        {
+                            return false;
+                        }
+
+                        //while (nowIndex < this.fileOrMessageListValue.Count)
+                        //{
+                        //    if (nowTime <= previousTimeValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
+                        //    {
+                        //        break;
+                        //    }
+                        //    nowIndex++;
+                        //}
+
+                        //if (nowIndex >= this.fileOrMessageListValue.Count)
+                        //{
+                        //    this.templeteStateValue = TempleteStateType.Stop;
+                        //    return false;
+                        //}
                         if (nowIndex != this.currentIndex)
                         {
                             this.currentIndex = nowIndex;
@@ -998,6 +1050,8 @@ namespace ToilluminateClient
 
         private bool loadControlsFlag = false;
 
+
+
         #endregion
 
 
@@ -1048,11 +1102,7 @@ namespace ToilluminateClient
         }
 
         #endregion
-        public MessageTempleteItem(List<string> messageList, List<MessageShowStyle> messageStyleList) : base(messageList, messageStyleList, 0)
-        {
-        }
-
-        public MessageTempleteItem(List<string> messageList, List<MessageShowStyle> messageStyleList, int intervalSecond) : base(messageList, messageStyleList, intervalSecond)
+        public MessageTempleteItem(List<string> messageList, List<MessageShowStyle> messageStyleList, int intervalSecond, int slidingSpeed) : base(messageList, messageStyleList, intervalSecond, slidingSpeed)
         {
         }
         #region " void and function "
@@ -1097,7 +1147,7 @@ namespace ToilluminateClient
                 {
                     return false;
                 }
-                
+
                 if (this.fileOrMessageListValue.Count > 0)
                 {
                     DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
@@ -1107,27 +1157,36 @@ namespace ToilluminateClient
                         if (nowTime >= previousTimeValue.AddSeconds(intervalSecondValue))
                         {
                             int nowIndex = this.currentIndex;
-                            if (nowIndex < 0) nowIndex = 0;
-                            while (nowIndex < this.fileOrMessageListValue.Count)
+                            if (nowIndex < 0)
                             {
-                                if (nowTime <= previousTimeValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
-                                {
-                                    break;
-                                }
+                                nowIndex = 0;
+                                this.currentIndex = nowIndex;
+                                return true;
+                            }
+                            else
+                            {
                                 nowIndex++;
                             }
+                                                      
 
                             if (nowIndex >= this.fileOrMessageListValue.Count)
                             {
                                 this.templeteStateValue = TempleteStateType.Stop;
                                 return false;
                             }
+
+                            if (nowTime < previousTimeValue.AddSeconds(this.intervalSecondValue))
+                            {
+                                return false;
+                            }
+
+
                             if (nowIndex != this.currentIndex)
                             {
                                 this.currentIndex = nowIndex;
                                 return true;
                             }
-                            
+
                         }
 
                     }
@@ -1153,7 +1212,7 @@ namespace ToilluminateClient
                             this.currentIndex = nowIndex;
                             return true;
                         }
-                    }                   
+                    }
                 }
                 return false;
             }
@@ -1179,31 +1238,20 @@ namespace ToilluminateClient
                     {
                         currentShowStyleIndex = 0;
                     }
-                   
-                    int lblTop = 20;
-                    if (this.messageStyleListValue[currentShowStyleIndex] == MessageShowStyle.Top)
-                    {
-                        lblTop = 20;
-                    }
-                    else if (this.messageStyleListValue[currentShowStyleIndex] == MessageShowStyle.Down)
-                    {
-                        lblTop = objControl.Height - 60;
-                    }
-                    else if (this.messageStyleListValue[currentShowStyleIndex] == MessageShowStyle.Center)
-                    {
-                        lblTop = objControl.Height / 2 - 20;
-                    }
-
-                    int lblLeft = objControl.Width;
-
 
                     DrawMessage dmItem = new DrawMessage(this.fileOrMessageListValue[this.currentIndex]
                         , new Font("MS UI Gothic", 12, System.Drawing.FontStyle.Bold)
                         , System.Drawing.Color.Red
-                        , lblLeft, lblTop
-                        , 0, 0
+                        , objControl.Width, objControl.Height
+                        , this.messageStyleListValue[currentShowStyleIndex]
                         );
                     PlayApp.DrawMessageList.Add(dmItem);
+
+
+                    if (this.intervalSecondValue > 0)
+                    {
+                        previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
+                    }
                 }
 
                 if (this.currentIndex >= this.fileOrMessageListValue.Count - 1)
@@ -1346,7 +1394,7 @@ namespace ToilluminateClient
 
         #endregion
     }
- 
+
     public class DrawMessage
     {
 
@@ -1358,9 +1406,9 @@ namespace ToilluminateClient
         private int leftValue;
         private int leftMaxValue;
         private int topValue;
-        private int widthValue;
-        private int heigthValue;
-
+        private MessageShowStyle showStyleValue;
+        private int parentHeigthValue;
+        private bool needRefreshTop = false;
         #endregion
 
 
@@ -1402,47 +1450,66 @@ namespace ToilluminateClient
                 return topValue;
             }
         }
-        public int Width
+        public MessageShowStyle ShowStyle
         {
             get
             {
-                return widthValue;
-            }
-        }
-        public int Heigth
-        {
-            get
-            {
-                return heigthValue;
+                return showStyleValue;
             }
         }
 
         #endregion
 
-        public DrawMessage(string message, Font font, Color color, int left, int top, int width, int heigth)
+        public DrawMessage(string message, Font font, Color color, int left, int parentHeigth, MessageShowStyle showStyle)
         {
-            messageValue = message;
-            fontValue = font;
-            colorValue = color;
+            this.messageValue = message;
+            this.fontValue = font;
+            this.colorValue = color;
 
-            leftValue = left;
-            leftMaxValue = left;
-            topValue = top;
-            widthValue = width;
-            heigthValue = heigth;
+            this.leftValue = left;
+            this.leftMaxValue = left;
+            this.showStyleValue = showStyle;
+            this.parentHeigthValue = parentHeigth;
+            this.needRefreshTop = true;
+            RefreshTop();
         }
 
         #region " void and function "
-        
+        public void SetParentHeigth(int parentHeigth)
+        {
+            this.parentHeigthValue = parentHeigth;
+            this.needRefreshTop = true;
+        }
         public void MoveMessage()
         {
-            leftValue = leftValue - 2;
-            if (leftValue <= 0)
+            this.leftValue = this.leftValue - 2;
+            if (this.leftValue <= 0)
             {
-                leftValue = leftMaxValue;
+                this.leftValue = this.leftMaxValue;
             }
-        }        
-
+            if (needRefreshTop)
+            {
+                RefreshTop();
+            }
+        }
+        private void RefreshTop()
+        {
+            int top = 30;
+            if (this.showStyleValue == MessageShowStyle.Top)
+            {
+                top = 30;
+            }
+            else if (this.showStyleValue == MessageShowStyle.Bottom)
+            {
+                top = this.parentHeigthValue - 70;
+            }
+            else if (this.showStyleValue == MessageShowStyle.Middle)
+            {
+                top = this.parentHeigthValue / 2 - 30;
+            }
+            this.topValue = top;
+            this.needRefreshTop = false;
+        }
         #endregion
     }
 

@@ -486,22 +486,23 @@ namespace ToilluminateClient
     /// </summary>
     public enum MessageShowStyle
     {
+        Top = 0,
         /// <summary>
         /// 
         /// </summary>
-        Down = 0,
+        Middle = 1,
         /// <summary>
         /// 
         /// </summary>
-        Top = 1,
+        Bottom = 2,
         /// <summary>
         /// 
         /// </summary>
-        Center = 2,
         /// <summary>
         /// 
         /// </summary>
         Random = 99,
+       
     }
     #endregion
 

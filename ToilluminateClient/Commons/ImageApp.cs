@@ -983,8 +983,6 @@ namespace ToilluminateClient
                 {
                     ShowBitmap_Block(bmpSource, picBox);
                 }
-
-
                 else if (ImageShowStyle.Special == imgShowStyle)
                 {
                     ShowBitmap_Special(bmpSource, picBox);
