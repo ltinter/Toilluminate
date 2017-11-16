@@ -308,7 +308,7 @@
                     }
                 }, {
                     field: "GroupID",
-                    title: "オンライン",
+                    title: "",
                     filterable: false,
                     responsive: { visible: 'lg' },
                     width: 0,
