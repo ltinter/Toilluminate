@@ -50,6 +50,7 @@ namespace ToilluminateClient
             this.TransparencyKey = ImageApp.BackClearColor;
 
             this.StartPosition = FormStartPosition.Manual;
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         public void tmrMessage_Tick(object sender, EventArgs e)
@@ -253,5 +254,7 @@ namespace ToilluminateClient
                 dmItem.SetParentHeigth(this.Height);
             }
         }
+
+
     }
 }

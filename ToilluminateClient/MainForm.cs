@@ -28,6 +28,7 @@ namespace ToilluminateClient
 
         //private delegate void FlushClient();//代理
 
+        private bool thisRefreshPlayList = false;
 
         private bool thisImageVisible = false;
         private bool thisMediaWMPVisible = false;
@@ -111,7 +112,19 @@ namespace ToilluminateClient
         {
             this.tmrPlayList.Start();
         }
-
+        private void MainForm_Move(object sender, EventArgs e)
+        {
+            if (this.FormBorderStyle == VariableInfo.messageFormInstance.FormBorderStyle)
+            {
+                VariableInfo.messageFormInstance.Size = this.Size;
+                VariableInfo.messageFormInstance.Location = this.Location;
+            }
+            else
+            {
+                VariableInfo.messageFormInstance.Size = new Size(this.Size.Width - 16, this.Size.Height - 38);
+                VariableInfo.messageFormInstance.Location = new Point(this.Location.X + 8, this.Location.Y + 30);
+            }
+        }
         private void tmrPlayList_Tick(object sender, EventArgs e)
         {
             this.GetNowVisible();
@@ -119,12 +132,16 @@ namespace ToilluminateClient
             {
                 this.tmrPlayList.Stop();
 
-                if (chkRefresh.Checked)
-                {
-                    return;
-                }
-
                 this.ThreadLoadPlayList();
+
+                if (thisRefreshPlayList)
+                {
+                    CloseImage();
+                    CloseMediaWMP();
+                    CloseMessage();
+
+                    thisRefreshPlayList = false;
+                }
 
                 if (PlayApp.PlayListArray.Count > 0)
                 {
@@ -295,19 +312,7 @@ namespace ToilluminateClient
 
         private void chkRefresh_CheckedChanged(object sender, EventArgs e)
         {
-            try
-            {
-                if (chkRefresh.Checked)
-                {
-                    this.tmrPlayList.Stop();
-                    chkRefresh.Checked = false;
-                    this.tmrPlayList.Start();
-                }
-            }
-            catch (Exception ex)
-            {
-                LogApp.OutputErrorLog("MainForm", "chkRefresh_CheckedChanged", ex);
-            }
+           
         }
         #endregion
 
@@ -348,8 +353,17 @@ namespace ToilluminateClient
 
             if (VariableInfo.messageFormInstance != null && VariableInfo.messageFormInstance.IsDisposed == false)
             {
-                VariableInfo.messageFormInstance.Size = this.Size;
-                VariableInfo.messageFormInstance.FormBorderStyle = this.FormBorderStyle;
+                //VariableInfo.messageFormInstance.WindowState = this.WindowState;
+                if (this.FormBorderStyle == VariableInfo.messageFormInstance.FormBorderStyle)
+                {
+                    VariableInfo.messageFormInstance.Size = this.Size;
+                    VariableInfo.messageFormInstance.Location = this.Location;
+                }
+                else
+                {
+                    VariableInfo.messageFormInstance.Size =new Size( this.Size.Width-16, this.Size.Height - 38);
+                    VariableInfo.messageFormInstance.Location = new Point(this.Location.X +8, this.Location.Y + 30);
+                }
                 VariableInfo.messageFormInstance.WindowState = this.WindowState;
             }
 
@@ -760,8 +774,19 @@ namespace ToilluminateClient
                         {
                             VariableInfo.messageFormInstance = new MessageForm();
                         }
-                        VariableInfo.messageFormInstance.Size = this.Size;
-                        VariableInfo.messageFormInstance.Location = this.Location;
+
+                        if (this.FormBorderStyle == VariableInfo.messageFormInstance.FormBorderStyle)
+                        {
+                            VariableInfo.messageFormInstance.Size = this.Size;
+                            VariableInfo.messageFormInstance.Location = this.Location;
+                        }
+                        else
+                        {
+                            VariableInfo.messageFormInstance.Size = new Size(this.Size.Width - 16, this.Size.Height - 38);
+                            VariableInfo.messageFormInstance.Location = new Point(this.Location.X + 8, this.Location.Y + 30);
+                        }
+                        VariableInfo.messageFormInstance.WindowState = this.WindowState;
+
                         VariableInfo.messageFormInstance.SetParentForm(this);
                         VariableInfo.messageFormInstance.Show();
                         VariableInfo.messageFormInstance.ThreadShowMessage();
@@ -824,6 +849,7 @@ namespace ToilluminateClient
                 PlayApp.ThreadLoadPlayListTimeCurrent++;
                 return;
             }
+            
             Thread tmpThread = new Thread(this.ThreadLoadPlayListVoid);
             tmpThread.IsBackground = true;
             tmpThread.Start();
@@ -833,21 +859,12 @@ namespace ToilluminateClient
         private void ThreadLoadPlayListVoid()
         {
             try
-            {
-                //if (this.picImage.InvokeRequired)//等待异步    
-                //{
-                //    FlushClient fc = new FlushClient(ThreadLoadPlayListVoid);
-                //    this.Invoke(fc);//通过代理调用刷新方法         
-                //}
-                //else
-                //{
-
+            { 
                 if (VariableInfo.RefreshPlayListInfo())
                 {
-                    this.chkRefresh.Checked = true;
+                    thisRefreshPlayList = true;
                 }
 
-                //}
             }
             catch (Exception ex)
             {

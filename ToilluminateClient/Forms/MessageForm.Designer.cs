@@ -43,6 +43,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MessageForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.TopMost = true;
