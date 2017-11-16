@@ -779,7 +779,8 @@
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save").css('display', 'none');
         $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(localize_jap["Add"]);
-
+        div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
+        groupTreeForPlayerEditID = div_groupTree.jstree(true).get_selected()[0];
         $.insmFramework('getPlaylistByGroup', {
             GroupID: selectedGroupID,
             success: function (data) {
@@ -855,6 +856,32 @@
                 NotechangeFlg: DisplayNamechangeFlg,
                 newGroupID: groupTreeForPlayerEditID,
                 success: function (data) {
+                    var div_forcedplaylists = $('#forcedplaylists');
+                    var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
+                    if (forcedplaylists.length > 0) {
+                        playListgroup = [];
+                        $.each(forcedplaylists, function (index, forcedplaylist) {
+                            var playlistItem = {};
+                            var forcedplaylistID = $(forcedplaylist).attr('playlistId');
+                            playListgroup.push(forcedplaylistID);
+                        });
+                    }
+                    $.insmFramework('deletePlayerPlayListLinkTableByPlayerID', {
+                        playerId: $(selectPlayerdata[0]).data().obj.PlayerID,
+                        success: function () {
+                            $.insmFramework('playerPlayListLinkTables', {
+                                playerId: $(selectPlayerdata[0]).data().obj.PlayerID,
+                                PlayListID: playListgroup,
+                                success: function (data) {
+                                },
+                                error: function () {
+                                }
+                            })
+                        },
+                        error: function () {
+                        }
+                    })
+
                     div_main.show();
                     div_edit.hide();
                     $.insmGroup('initGroupTree');
@@ -889,6 +916,9 @@
         })
         allPlayerNames = allPlayerNames.substr(2);
         div_edit.find("H3:first").text(selectPlayer.length + " Display Units / (" + allPlayerNames + ")");
+
+        div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
+        groupTreeForPlayerEditID = div_groupTree.jstree(true).get_selected()[0];
 
         var allPlayerID = "";
         $.each(selectPlayer, function (playerIndex, playerItem) {
