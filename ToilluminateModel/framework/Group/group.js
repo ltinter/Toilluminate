@@ -50,7 +50,7 @@
         "state": {
             "key": "demo2"
         },
-        "plugins": ["dnd", "state", "types"]
+        "plugins": ["dnd", "types"]
 
     };
     var methods = {
@@ -126,14 +126,20 @@
             var tree = $('.tree-demo.groupTree');
             tree.jstree(groupJstreeData);
 
-            tree.bind("refresh.jstree", function (e, data) {
-                $(this).jstree("open_all");
-                tree.jstree('select_node', 'ul > li:first');
+            div_groupTree.bind("refresh.jstree", function (e, data) {
+                div_groupTree.jstree(true).select_node(selectedGroupID);
+            });
+
+            tree.on('loaded.jstree', function(e, data) {
+                var inst = data.instance;
+                var obj = inst.get_node(e.target.firstChild.firstChild.lastChild);
+
+                inst.select_node(obj);
             })
 
-            if (selectedGroupID != null) {
-                div_groupTree.jstree('select_node', 'ul > li:first');
-            }
+            //if (selectedGroupID != null) {
+            //    div_groupTree.jstree('select_node', 'ul > li:first');
+            //}
 
             div_groupTree.on("changed.jstree", function (e, data) {
                 //存储当前选中的区域的名称
