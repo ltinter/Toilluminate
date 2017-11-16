@@ -163,7 +163,7 @@ namespace ToilluminateModel.Controllers
             List<PlayerMaster> pmList = db.PlayerMaster.ToList();
             foreach (PlayerMaster pm in pmList)
             {
-                if (PublicMethods.isPlayerActive(pm, db))
+                //if (PublicMethods.isPlayerActive(pm, db))
                 {
                     if (PublicMethods.isPlayerOnline(pm, db))
                     {
