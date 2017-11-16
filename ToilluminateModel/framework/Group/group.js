@@ -293,7 +293,7 @@
                     responsive: { visible: 'lg' }
                 }, {
                     field: "OnlineFlag",
-                    title: "オンライン",
+                    title: "",
                     filterable: false,
                     textAlign: 'center',
                     responsive: { visible: 'lg' },
@@ -304,11 +304,12 @@
 						<span class="m-menu__link-badge">\
                              <span class="m-badge m-badge--success" id="span_success"><i class="m-menu__link-icon fa fa-check-circle"></i></span>\
                         </span>\
-					';
-                    }
+                        ';
+                    },
+                    width: 0,
                 }, {
                     field: "GroupID",
-                    title: "オンライン",
+                    title: "",
                     filterable: false,
                     responsive: { visible: 'lg' },
                     width: 0,

@@ -439,6 +439,9 @@
             if (datatable && datatable.setSelectedRecords().getSelectedRecords().length > 0) {
                 //remove selected files
                 $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
+                    if (currentNeededFileType === "video") {
+                        divselectFile.empty();
+                    }
                     var screenshot = new Image();
                     screenshot.src = $(item).data().obj.FileThumbnailUrl;
                     screenshot.id = $(item).data().obj.FileID;
