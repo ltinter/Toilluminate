@@ -62,6 +62,9 @@ namespace ToilluminateClient
                     CloseMessage();
                     return;
                 }
+
+                ThreadShowMessage();
+                
             }
             catch (Exception ex)
             {
@@ -239,8 +242,16 @@ namespace ToilluminateClient
             parentForm = mainForm;
         }
 
+
         #endregion
 
+        private void MessageForm_SizeChanged(object sender, EventArgs e)
+        {
 
+            foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
+            {
+                dmItem.SetParentHeigth(this.Height);
+            }
+        }
     }
 }

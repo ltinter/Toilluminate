@@ -50,6 +50,7 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MessageForm_FormClosed);
             this.Load += new System.EventHandler(this.MessageForm_Load);
             this.Shown += new System.EventHandler(this.MessageForm_Shown);
+            this.SizeChanged += new System.EventHandler(this.MessageForm_SizeChanged);
             this.ResumeLayout(false);
 
         }

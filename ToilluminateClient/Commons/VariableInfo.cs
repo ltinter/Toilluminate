@@ -104,15 +104,35 @@ namespace ToilluminateClient
         /// </summary>
         public static void InitVariableInfo()
         {
-            clientPath = Application.StartupPath;
-#if DEBUG
-            clientPath = new DirectoryInfo(Application.StartupPath).Parent.Parent.Parent.FullName;
-#endif
-            iniFile = clientPath + "\\" + Constants.INI_NAME;
+            try
+            {
+                clientPath = Application.StartupPath;
 
-            tempPath = Utility.GetFullFileName(clientPath, "Temp");
-            filesPath = Utility.GetFullFileName(clientPath, "Files");
-            logsPath = Utility.GetFullFileName(clientPath, "Logs");
+                iniFile = clientPath + "\\" + Constants.INI_NAME;
+
+                tempPath = Utility.GetFullFileName(clientPath, "Temp");
+                filesPath = Utility.GetFullFileName(clientPath, "Files");
+                logsPath = Utility.GetFullFileName(clientPath, "Logs");
+
+                if (Directory.Exists(tempPath) == false)
+                {
+                    Directory.CreateDirectory(tempPath);
+                }
+                if (Directory.Exists(filesPath) == false)
+                {
+                    Directory.CreateDirectory(filesPath);
+                }
+
+                if (Directory.Exists(logsPath) == false)
+                {
+                    Directory.CreateDirectory(logsPath);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("VariableInfo", "InitVariableInfo", ex);
+            }
         }
 
 

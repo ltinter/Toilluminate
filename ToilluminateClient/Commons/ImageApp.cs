@@ -556,12 +556,8 @@ namespace ToilluminateClient
                 g = picBox.CreateGraphics();
 
                 Bitmap bmpOld = new Bitmap(picBox.Width, picBox.Height);
-                gBmpOld = Graphics.FromImage(bmpOld);
+                gBmpOld = Graphics.FromImage(PlayApp.DrawBitmap);
                
-                //转换成控件在屏幕上的坐标
-                var screenPoint = picBox.Parent.PointToScreen(picBox.Location);
-                gBmpOld.CopyFromScreen(screenPoint, new Point(0, 0), picBox.Size);
-
                 Bitmap bmpOld_LR = GetBitmapSpecial(bmpOld, BitmapSpecialStyle.LeftRight);
 
                 int addNum = 0;
@@ -642,11 +638,8 @@ namespace ToilluminateClient
                 g = picBox.CreateGraphics();
 
                 Bitmap bmpOld = new Bitmap(picBox.Width, picBox.Height);
-                gBmpOld = Graphics.FromImage(bmpOld);
-                //转换成控件在屏幕上的坐标
-                var screenPoint = picBox.Parent.PointToScreen(picBox.Location);
-                gBmpOld.CopyFromScreen(screenPoint, new Point(0, 0), picBox.Size);
-
+                gBmpOld = Graphics.FromImage(PlayApp.DrawBitmap);
+                
                 Bitmap bmpOld_TD = GetBitmapSpecial(bmpOld, BitmapSpecialStyle.TopDown);
 
                 for (int j = -width / 2; j < 0; j++)
@@ -990,8 +983,6 @@ namespace ToilluminateClient
                 {
                     ShowBitmap_Block(bmpSource, picBox);
                 }
-
-
                 else if (ImageShowStyle.Special == imgShowStyle)
                 {
                     ShowBitmap_Special(bmpSource, picBox);

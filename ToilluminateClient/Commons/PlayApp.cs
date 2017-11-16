@@ -26,7 +26,7 @@ namespace ToilluminateClient
         public static bool RefreshPlayList = false;
 
 
-        public static int ThreadLoadPlayListTime = 30;
+        public static int ThreadLoadPlayListTime = 5;
         public static int ThreadLoadPlayListTimeCurrent = 0;
 
 
@@ -85,7 +85,7 @@ namespace ToilluminateClient
                 for (int i = 0; i < PlayListArray.Count; i++)
                 {
                     PlayList plItem = PlayListArray[i];
-                    if (ExecutePlayListValid(plItem.Settings))
+                    if (plItem.PlayListState != PlayListStateType.Stop)
                     {
                         CurrentPlayListIndex = i;
                         CurrentPlayListID = plItem.PlayListID;
@@ -95,67 +95,6 @@ namespace ToilluminateClient
             }
 
             return false;
-        }
-
-        private static bool ExecutePlayListValid(PlayListSettings plSettings)
-        {
-            try
-            {
-                DateTime nowTime = DateTime.Now;
-                DayOfWeek week = nowTime.DayOfWeek;
-
-                string weekTimeString = string.Empty;
-                if (week == DayOfWeek.Sunday)
-                {
-                    weekTimeString = plSettings.Sunday;
-                }
-                else if (week == DayOfWeek.Monday)
-                {
-                    weekTimeString = plSettings.Monday;
-                }
-                else if (week == DayOfWeek.Tuesday)
-                {
-                    weekTimeString = plSettings.Tuesday;
-                }
-                else if (week == DayOfWeek.Wednesday)
-                {
-                    weekTimeString = plSettings.Wednesday;
-                }
-                else if (week == DayOfWeek.Thursday)
-                {
-                    weekTimeString = plSettings.Thursday;
-                }
-                else if (week == DayOfWeek.Friday)
-                {
-                    weekTimeString = plSettings.Friday;
-                }
-                else if (week == DayOfWeek.Saturday)
-                {
-                    weekTimeString = plSettings.Saturday;
-                }
-
-
-                if (string.IsNullOrEmpty(weekTimeString) == false)
-                {
-                    string[] weekTimes = weekTimeString.Split(';');
-                    if (Utility.ToInt(weekTimes[0]) <= nowTime.Hour && nowTime.Hour <= Utility.ToInt(weekTimes[1]))
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-#if DEBUG
-                    return true;
-#endif
-                }
-
-                return false;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
         }
     }
 
@@ -196,17 +135,12 @@ namespace ToilluminateClient
         /// <summary>
         /// 强制播放时间有效
         /// </summary>
-        private bool fixPlayTimeValidValue = true;
+        private bool fixPlayTimeValidValue = false;
 
         /// <summary>
         /// 强制播放时间(秒)
         /// </summary>
         private int fixPlayTimeValue = 0;
-
-        /// <summary>
-        /// 持续时间(秒)
-        /// </summary>
-        private int intervalSecondValue = 5;
 
         #endregion
 
@@ -322,13 +256,16 @@ namespace ToilluminateClient
         /// <summary>
         /// 结束时间
         /// </summary>
-        public DateTime EndDateTime
+        public bool IsOutExecuteTime()
         {
-            get
+            bool isOutExectueTime = true;
+            try
             {
-                DateTime dtEndValue = this.dtStartValue.AddSeconds(this.FixPlayTime);
+                DateTime dtEndValue = this.dtStartValue;
 
-                DayOfWeek week = DateTime.Now.DayOfWeek;
+
+                DateTime nowTime = DateTime.Now;
+                DayOfWeek week = nowTime.DayOfWeek;
 
                 string weekTimeString = string.Empty;
                 if (week == DayOfWeek.Sunday)
@@ -360,22 +297,41 @@ namespace ToilluminateClient
                     weekTimeString = plSettings.Saturday;
                 }
 
+
                 if (string.IsNullOrEmpty(weekTimeString) == false)
                 {
                     string[] weekTimes = weekTimeString.Split(';');
-                    if (dtEndValue.Hour < Utility.ToInt(weekTimes[1]))
+                    if (Utility.ToInt(weekTimes[0]) <= nowTime.Hour && nowTime.Hour < Utility.ToInt(weekTimes[1]))
                     {
-                        if (this.loopPlayValidValue)
+                        isOutExectueTime = false;
+                    }
+                }
+
+                if (isOutExectueTime == false)
+                {
+                    if (this.playListStateValue == PlayListStateType.Execute && this.playListStateValue == PlayListStateType.Last)
+                    {
+                        if (this.fixPlayTimeValidValue)
                         {
-                            dtEndValue = Utility.GetPlayDateTime(DateTime.Parse(string.Format("{0}{1}:59:59", dtEndValue.ToString("yyyy-MM-dd "), Utility.ToInt(weekTimes[1]) - 1)));
+                            dtEndValue = this.dtStartValue.AddSeconds(this.FixPlayTime);
+
+                            if (nowTime <= dtEndValue)
+                            {
+                                isOutExectueTime = false;
+                            }
                         }
                     }
                 }
 
-
-                return dtEndValue;
+                return isOutExectueTime;
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("PlayApp", "IsOutExecuteTime", ex);
+                return true;
             }
         }
+
 
 
 
@@ -424,99 +380,148 @@ namespace ToilluminateClient
         /// </summary>
         /// <param name="loopPlayValid">循环有效</param>
         /// <param name="intervalSecond">持续时间(秒)</param>
-        public PlayList(int playListID, bool loopPlayValid, DateTime dtStart, int intervalSecond, int fixPlayTime)
+        public PlayList(int playListID, bool loopPlayValid, bool fixPlayTimeValid, int fixPlayTime)
         {
             playListIDValue = playListID;
             loopPlayValidValue = loopPlayValid;
-            intervalSecondValue = intervalSecond;
 
 
             fixPlayTimeValue = fixPlayTime;
             if (fixPlayTimeValue > 0)
             {
-                fixPlayTimeValidValue = true;
+                fixPlayTimeValidValue = fixPlayTimeValid;
             }
         }
         public PlayList(int playListID, PlayListSettings plsValue)
         {
-            playListIDValue = playListID;
-            plSettings = plsValue;
-
-            loopPlayValidValue = plsValue.Loop == "0" ? true : false;
-
-            fixPlayTimeValue = Utility.ToInt(plsValue.PlayHours) * 3600 + Utility.ToInt(plsValue.PlayMinites) * 60 + Utility.ToInt(plsValue.PlaySeconds);
-            if (fixPlayTimeValue > 0)
+            try
             {
-                fixPlayTimeValidValue = true;
+                playListIDValue = playListID;
+                plSettings = plsValue;
+
+                loopPlayValidValue = plsValue.Loop == "0" ? false : true;
+
+                fixPlayTimeValue = Utility.ToInt(plsValue.PlayHours) * 3600 + Utility.ToInt(plsValue.PlayMinites) * 60 + Utility.ToInt(plsValue.PlaySeconds);
+                if (fixPlayTimeValue > 0)
+                {
+                    fixPlayTimeValidValue = plsValue.Playtime == "0" ? false : true; ;
+                }
+
+
+                if (plSettings.PlaylistItems != null)
+                {
+                    foreach (PlaylistItem pliTemlete in plSettings.PlaylistItems)
+                    {
+                        if (Utility.ToInt(pliTemlete.type) == TempleteType.Image.GetHashCode())
+                        {
+                            #region "Image"
+                            List<string> imageFileList = new List<string> { };
+                            if (pliTemlete.itemData != null)
+                            {
+                                foreach (string url in pliTemlete.itemData.src)
+                                {
+                                    string file = WebApiInfo.DownloadFile(url, "");
+                                    if (string.IsNullOrEmpty(file) == false)
+                                    {
+                                        imageFileList.Add(file);
+                                    }
+                                }
+                            }
+
+                            List<ImageShowStyle> imageStyleList = new List<ImageShowStyle> { };
+                            if (pliTemlete.SildeshowEffects != null)
+                            {
+                                foreach (string style in pliTemlete.SildeshowEffects)
+                                {
+                                    if (string.IsNullOrEmpty(style) == false)
+                                    {
+                                        int styleValue = Utility.ToInt(style);
+                                        if (Enum.IsDefined(typeof(ImageShowStyle), styleValue))
+                                        {
+                                            imageStyleList.Add((ImageShowStyle)styleValue);
+                                        }
+                                    }
+                                }
+                            }
+                            if (imageStyleList.Count == 0)
+                            {
+                                imageStyleList.Add(ImageShowStyle.Random);
+                            }
+
+                            ImageTempleteItem itItem = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), Utility.ToInt(pliTemlete.DisplayIntevalSeconds));
+
+                            this.PlayAddTemplete(itItem);
+                            #endregion
+                        }
+                        else if (Utility.ToInt(pliTemlete.type) == TempleteType.Message.GetHashCode())
+                        {
+                            #region "Message"
+                            List<string> messageList = new List<string> { };
+
+                            string message = pliTemlete.itemTextData;
+                            if (string.IsNullOrEmpty(message) == false)
+                            {
+                                messageList.Add(message);
+                            }
+
+
+                            List<MessageShowStyle> messageStyleList = new List<MessageShowStyle> { };
+                            string style = pliTemlete.TextPostion;
+                            if (string.IsNullOrEmpty(style) == false)
+                            {
+                                int styleValue = Utility.ToInt(style);
+                                if (Enum.IsDefined(typeof(MessageShowStyle), styleValue))
+                                {
+                                    messageStyleList.Add((MessageShowStyle)styleValue);
+                                }
+                            }
+                            if (messageStyleList.Count == 0)
+                            {
+                                messageStyleList.Add(MessageShowStyle.Random);
+                            }
+
+                            MessageTempleteItem itItem = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), Utility.ToInt(pliTemlete.DisplayIntevalSeconds), Utility.ToInt(pliTemlete.SlidingSpeed));
+
+                            this.PlayAddTemplete(itItem);
+                            #endregion
+                        }
+                        else if (Utility.ToInt(pliTemlete.type) == TempleteType.Media.GetHashCode())
+                        {
+                            #region "Media"
+                            List<string> mediaFileList = new List<string> { };
+                            if (pliTemlete.itemData != null)
+                            {
+                                foreach (string url in pliTemlete.itemData.src)
+                                {
+                                    string file = WebApiInfo.DownloadFile(url, "");
+                                    if (string.IsNullOrEmpty(file) == false)
+                                    {
+                                        mediaFileList.Add(file);
+                                    }
+                                }
+                            }
+
+                            int zoomOption = Utility.ToInt(pliTemlete.ZoomOption);
+                            ZoomOptionStyle zoStyle = ZoomOptionStyle.None;
+                            if (Enum.IsDefined(typeof(ZoomOptionStyle), zoomOption))
+                            {
+                                zoStyle = (ZoomOptionStyle)zoomOption;
+                            }
+
+                            if (mediaFileList.Count > 0)
+                            {
+                                MediaTempleteItem itItem = new MediaTempleteItem(mediaFileList[0], zoStyle);
+
+                                this.PlayAddTemplete(itItem);
+                            }
+                            #endregion
+                        }
+                    }
+                }
             }
-
-            intervalSecondValue = Utility.ToInt(plsValue.Playtime);
-
-
-            foreach (PlaylistItem pliTemlete in plSettings.PlaylistItems)
+            catch (Exception ex)
             {
-                if (Utility.ToInt(pliTemlete.type) == TempleteType.Image.GetHashCode())
-                {
-                    #region "Image"
-                    List<string> imageFileList = new List<string> { };
-                    foreach (string url in pliTemlete.itemData.src)
-                    {
-                        string file = WebApiInfo.DownloadFile(url, "");
-                        if (string.IsNullOrEmpty(file) == false)
-                        {
-                            imageFileList.Add(file);
-                        }
-                    }
-
-                    ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Random };
-
-
-                    ImageTempleteItem itItem = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 6);
-
-                    this.PlayAddTemplete(itItem);
-                    #endregion
-                }
-                else if (Utility.ToInt(pliTemlete.type) == TempleteType.Message.GetHashCode())
-                {
-                    #region "Message"
-                    List<string> messageList = new List<string> { };
-                    
-                    string message = pliTemlete.itemTextData;
-                    if (string.IsNullOrEmpty(message) == false)
-                    {
-                        messageList.Add(message);
-                    }
-                    
-
-                    MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Down };
-
-                    MessageTempleteItem itItem = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 0);
-
-                    this.PlayAddTemplete(itItem);
-                    #endregion
-                }
-                else if (Utility.ToInt(pliTemlete.type) == TempleteType.Media.GetHashCode())
-                {
-                    #region "Media"
-                    List<string> mediaFileList = new List<string> { };
-
-                    foreach (string url in pliTemlete.itemData.src)
-                    {
-                        string file = WebApiInfo.DownloadFile(url, "");
-                        if (string.IsNullOrEmpty(file) == false)
-                        {
-                            mediaFileList.Add(file);
-                        }
-                    }
-
-                    if (mediaFileList.Count > 0)
-                    {
-                        MediaTempleteItem itItem = new MediaTempleteItem(mediaFileList[0], MediaShowStyle.None);
-
-                        this.PlayAddTemplete(itItem);
-                    }
-                    #endregion
-                }
+                LogApp.OutputErrorLog("PlayApp", "PlayList", ex);
             }
         }
 
@@ -532,15 +537,27 @@ namespace ToilluminateClient
             this.dtStartValue = this.dtNowValue;
 
             playListStateValue = PlayListStateType.Execute;
+
+            PlayRefreshTemplete();
+        }
+
+        public void PlayLast()
+        {
+            this.dtNowValue = Utility.GetPlayDateTime(DateTime.Now);
+            playListStateValue = PlayListStateType.Last;
+            if (loopPlayValidValue == false)
+            {
+                PlayStop();
+            }
+
+            this.PlayRefreshTemplete();
         }
         public void PlayStop()
         {
             this.dtNowValue = Utility.GetPlayDateTime(DateTime.Now);
-            if (loopPlayValidValue == false)
-            {
-                playListStateValue = PlayListStateType.Stop;
-            }
+            playListStateValue = PlayListStateType.Stop;
         }
+
         public void PlayRefreshTemplete()
         {
             this.currentTempleteItemIndex = 0;
@@ -576,25 +593,33 @@ namespace ToilluminateClient
             {
                 try
                 {
-                    DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
-
-                    DateTime dtEndValue = this.EndDateTime;
-
                     if (playListStateValue == PlayListStateType.Wait)
                     {
-                        if (nowTime <= dtEndValue)
-                        {
-                            playListStateValue = PlayListStateType.Execute;
-                        }
-                    }
-
-                    if (playListStateValue != PlayListStateType.Stop)
-                    {
-                        if (dtEndValue <= nowTime)
+                        if (IsInExecuteTime() == false)
                         {
                             playListStateValue = PlayListStateType.Stop;
                         }
                     }
+                    else if (playListStateValue == PlayListStateType.Execute || playListStateValue == PlayListStateType.Last)
+                    {
+                        if (this.IsOutExecuteTime())
+                        {
+                            playListStateValue = PlayListStateType.Stop;
+                        }
+                    }
+                    else if (playListStateValue == PlayListStateType.Stop)
+                    {
+                        if (IsInExecuteTime())
+                        {
+                            playListStateValue = PlayListStateType.Wait;
+                        }
+                    }
+#if DEBUG
+                    if (this.templeteItemListValue.Count == 0)
+                    {
+                        playListStateValue = PlayListStateType.Stop;
+                    }
+#endif
 
                     return playListStateValue;
                 }
@@ -602,6 +627,72 @@ namespace ToilluminateClient
                 {
                     return PlayListStateType.Stop;
                 }
+            }
+        }
+
+        public bool IsInExecuteTime()
+        {
+            try
+            {
+                if (this.plSettings == null)
+                {
+                    return false;
+                }
+                DateTime nowTime = DateTime.Now;
+                DayOfWeek week = nowTime.DayOfWeek;
+
+                string weekTimeString = string.Empty;
+                if (week == DayOfWeek.Sunday)
+                {
+                    weekTimeString = plSettings.Sunday;
+                }
+                else if (week == DayOfWeek.Monday)
+                {
+                    weekTimeString = plSettings.Monday;
+                }
+                else if (week == DayOfWeek.Tuesday)
+                {
+                    weekTimeString = plSettings.Tuesday;
+                }
+                else if (week == DayOfWeek.Wednesday)
+                {
+                    weekTimeString = plSettings.Wednesday;
+                }
+                else if (week == DayOfWeek.Thursday)
+                {
+                    weekTimeString = plSettings.Thursday;
+                }
+                else if (week == DayOfWeek.Friday)
+                {
+                    weekTimeString = plSettings.Friday;
+                }
+                else if (week == DayOfWeek.Saturday)
+                {
+                    weekTimeString = plSettings.Saturday;
+                }
+
+
+                if (string.IsNullOrEmpty(weekTimeString) == false)
+                {
+                    string[] weekTimes = weekTimeString.Split(';');
+                    if (Utility.ToInt(weekTimes[0]) <= nowTime.Hour && nowTime.Hour <= Utility.ToInt(weekTimes[1]))
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    return true;
+#endif
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("PlayApp", "InExecuteTime", ex);
+                return false;
             }
         }
         #endregion
@@ -622,7 +713,7 @@ namespace ToilluminateClient
 
         protected int currentShowStyleIndex = -1;
 
-        protected MediaShowStyle mediaStyleValue = MediaShowStyle.None;
+        protected ZoomOptionStyle zoomOptionValue = ZoomOptionStyle.None;
 
         protected List<MessageShowStyle> messageStyleListValue = new List<MessageShowStyle>() { };
 
@@ -633,50 +724,24 @@ namespace ToilluminateClient
         protected TempleteStateType templeteStateValue = TempleteStateType.Wait;
 
         /// <summary>
-        /// 持续时间(秒)
+        /// 间隔时间(秒)
         /// </summary>
         protected int intervalSecondValue = 5;
 
-
         /// <summary>
-        /// 开始时间
+        /// 上一个时间
         /// </summary>
-        protected DateTime dtStartValue = DateTime.Now;
+        protected DateTime previousTimeValue = DateTime.Now;
 
-        /// <summary>
-        /// 结束时间
-        /// </summary>
-        protected DateTime dtEndValue = DateTime.Now;
+        private int slidingSpeedValue = 10;
+
         #endregion
 
 
         #region " propert "
 
         /// <summary>
-        /// 开始时间
-        /// </summary>
-        public DateTime StartDateTime
-        {
-            get
-            {
-                return dtStartValue;
-            }
-        }
-
-
-        /// <summary>
-        /// 结束时间
-        /// </summary>
-        public DateTime EndDateTime
-        {
-            get
-            {
-                return dtEndValue;
-            }
-        }
-
-        /// <summary>
-        /// 结束时间
+        /// 类型
         /// </summary>
         public TempleteType TempleteType
         {
@@ -686,6 +751,9 @@ namespace ToilluminateClient
             }
         }
 
+        /// <summary>
+        /// 状态
+        /// </summary>
         public TempleteStateType TempleteState
         {
             get
@@ -699,22 +767,15 @@ namespace ToilluminateClient
                     }
                     else
                     {
-                        if (this.currentIndex > -1)
+                        if (this.currentIndex >= this.fileOrMessageListValue.Count - 1)
                         {
-                            if (nowTime < dtStartValue)
+                            if (nowTime <= previousTimeValue.AddSeconds(intervalSecondValue))
                             {
-                                templeteStateValue = TempleteStateType.Wait;
+                                templeteStateValue = TempleteStateType.Execute;
                             }
                             else
                             {
-                                if (nowTime <= dtEndValue)
-                                {
-                                    templeteStateValue = TempleteStateType.Execute;
-                                }
-                                else
-                                {
-                                    templeteStateValue = TempleteStateType.Stop;
-                                }
+                                templeteStateValue = TempleteStateType.Stop;
                             }
                         }
                     }
@@ -727,11 +788,11 @@ namespace ToilluminateClient
         #endregion
 
 
-        public TempleteItem(string file, MediaShowStyle mediaStyle)
+        public TempleteItem(string file, ZoomOptionStyle zoomOption)
         {
             templeteTypeValue = TempleteType.Media;
             fileOrMessageListValue.Add(file);
-            this.mediaStyleValue = mediaStyle;
+            this.zoomOptionValue = zoomOption;
         }
 
         public TempleteItem(List<string> fileList, List<ImageShowStyle> imageStyleList, int intervalSecond)
@@ -745,10 +806,17 @@ namespace ToilluminateClient
             {
                 imageStyleListValue.Add(style);
             }
-            this.intervalSecondValue = intervalSecond;
+            if (intervalSecond > 0)
+            {
+                this.intervalSecondValue = intervalSecond;
+            }
+            else
+            {
+                this.intervalSecondValue = 5;
+            }
         }
 
-        public TempleteItem(List<string> messageList, List<MessageShowStyle> messageStyle, int intervalSecond)
+        public TempleteItem(List<string> messageList, List<MessageShowStyle> messageStyle, int intervalSecond, int slidingSpeed)
         {
             templeteTypeValue = TempleteType.Message;
             foreach (string message in messageList)
@@ -760,14 +828,16 @@ namespace ToilluminateClient
                 messageStyleListValue.Add(style);
             }
             this.intervalSecondValue = intervalSecond;
+
+            this.slidingSpeedValue = slidingSpeed;
+
         }
 
 
         #region " void and function "
         public void ExecuteRefresh()
         {
-            dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
-            dtEndValue = dtStartValue;
+            previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
 
             templeteStateValue = TempleteStateType.Wait;
 
@@ -791,27 +861,6 @@ namespace ToilluminateClient
 
         #region " propert "
 
-        /// <summary>
-        /// 持续时间(秒)
-        /// </summary>
-        public int DurationSecond
-        {
-            get
-            {
-                return intervalSecondValue * fileOrMessageListValue.Count;
-            }
-        }
-
-        /// <summary>
-        /// 间隔时间(秒)
-        /// </summary>
-        public int IntervalSecond
-        {
-            get
-            {
-                return intervalSecondValue;
-            }
-        }
 
         public int CurrentIndex
         {
@@ -861,14 +910,13 @@ namespace ToilluminateClient
         {
             if (this.TempleteState != TempleteStateType.Execute)
             {
-                dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
-                dtEndValue = dtStartValue.AddSeconds(this.intervalSecondValue * this.fileOrMessageListValue.Count);
+                previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
                 this.currentIndex = -1;
             }
         }
         public void ExecuteStop()
         {
-            dtEndValue = Utility.GetPlayDateTime(DateTime.Now);
+            previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
             this.currentIndex = -1;
             this.currentShowStyleIndex = -1;
         }
@@ -877,28 +925,54 @@ namespace ToilluminateClient
         {
             try
             {
+                if (this.templeteStateValue == TempleteStateType.Stop)
+                {
+                    return false;
+                }
+
                 if (this.fileOrMessageListValue.Count > 0)
                 {
                     DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
 
-                    if (nowTime >= this.dtStartValue && nowTime <= this.dtEndValue)
+                    if (nowTime >= previousTimeValue.AddSeconds(intervalSecondValue))
                     {
                         int nowIndex = this.currentIndex;
-                        if (nowIndex < 0) nowIndex = 0;
-                        while (nowIndex < this.fileOrMessageListValue.Count)
+                        if (nowIndex < 0)
                         {
-                            if (nowTime <= this.dtStartValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
-                            {
-                                break;
-                            }
+                            nowIndex = 0;
+                            this.currentIndex = nowIndex;
+                            return true;
+                        }
+                        else
+                        {
                             nowIndex++;
                         }
-
+                        
                         if (nowIndex >= this.fileOrMessageListValue.Count)
                         {
-                            this.currentIndex = this.fileOrMessageListValue.Count - 1;
+                            this.templeteStateValue = TempleteStateType.Stop;
                             return false;
                         }
+
+                        if (nowTime < previousTimeValue.AddSeconds(this.intervalSecondValue))
+                        {
+                            return false;
+                        }
+
+                        //while (nowIndex < this.fileOrMessageListValue.Count)
+                        //{
+                        //    if (nowTime <= previousTimeValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
+                        //    {
+                        //        break;
+                        //    }
+                        //    nowIndex++;
+                        //}
+
+                        //if (nowIndex >= this.fileOrMessageListValue.Count)
+                        //{
+                        //    this.templeteStateValue = TempleteStateType.Stop;
+                        //    return false;
+                        //}
                         if (nowIndex != this.currentIndex)
                         {
                             this.currentIndex = nowIndex;
@@ -920,6 +994,11 @@ namespace ToilluminateClient
             Bitmap nowBitmap = null;
             try
             {
+                if (this.templeteStateValue == TempleteStateType.Stop)
+                {
+                    return;
+                }
+
                 if (this.currentIndex >= 0 && this.currentIndex < this.fileOrMessageListValue.Count)
                 {
                     currentShowStyleIndex++;
@@ -941,6 +1020,7 @@ namespace ToilluminateClient
 
                     ImageApp.ShowBitmap(nowBitmap, picImage, this.CurrentShowStyle);
 
+                    previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
                 }
             }
             catch (Exception ex)
@@ -969,6 +1049,8 @@ namespace ToilluminateClient
         #region " variable "
 
         private bool loadControlsFlag = false;
+
+
 
         #endregion
 
@@ -1020,8 +1102,7 @@ namespace ToilluminateClient
         }
 
         #endregion
-
-        public MessageTempleteItem(List<string> messageList, List<MessageShowStyle> messageStyleList, int intervalSecond) : base(messageList, messageStyleList, intervalSecond)
+        public MessageTempleteItem(List<string> messageList, List<MessageShowStyle> messageStyleList, int intervalSecond, int slidingSpeed) : base(messageList, messageStyleList, intervalSecond, slidingSpeed)
         {
         }
         #region " void and function "
@@ -1034,7 +1115,7 @@ namespace ToilluminateClient
         {
             if (this.templeteStateValue != TempleteStateType.Execute && this.templeteStateValue != TempleteStateType.Stop)
             {
-                dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
+                previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
                 this.currentIndex = -1;
                 this.currentShowStyleIndex = -1;
                 this.templeteStateValue = TempleteStateType.Execute;
@@ -1062,40 +1143,68 @@ namespace ToilluminateClient
         {
             try
             {
+                if (this.templeteStateValue == TempleteStateType.Stop)
+                {
+                    return false;
+                }
+
                 if (this.fileOrMessageListValue.Count > 0)
                 {
                     DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
 
-                    if (nowTime >= this.dtStartValue && this.currentIndex < this.fileOrMessageListValue.Count)
+                    if (this.intervalSecondValue > 0)
                     {
-                        int nowIndex = this.currentIndex;
-                        if (this.intervalSecondValue > 0)
+                        if (nowTime >= previousTimeValue.AddSeconds(intervalSecondValue))
                         {
-                            if (nowIndex < 0) nowIndex = 0;
-                            while (nowIndex < this.fileOrMessageListValue.Count)
-                            {
-                                if (nowTime <= this.dtStartValue.AddSeconds(this.intervalSecondValue * (nowIndex + 1)))
-                                {
-                                    break;
-                                }
-                                nowIndex++;
-                            }
-                        }
-                        else
-                        {
+                            int nowIndex = this.currentIndex;
                             if (nowIndex < 0)
                             {
                                 nowIndex = 0;
+                                this.currentIndex = nowIndex;
+                                return true;
                             }
                             else
                             {
                                 nowIndex++;
                             }
+                                                      
+
+                            if (nowIndex >= this.fileOrMessageListValue.Count)
+                            {
+                                this.templeteStateValue = TempleteStateType.Stop;
+                                return false;
+                            }
+
+                            if (nowTime < previousTimeValue.AddSeconds(this.intervalSecondValue))
+                            {
+                                return false;
+                            }
+
+
+                            if (nowIndex != this.currentIndex)
+                            {
+                                this.currentIndex = nowIndex;
+                                return true;
+                            }
+
+                        }
+
+                    }
+                    else
+                    {
+                        int nowIndex = this.currentIndex;
+                        if (nowIndex < 0)
+                        {
+                            nowIndex = 0;
+                        }
+                        else
+                        {
+                            nowIndex++;
                         }
 
                         if (nowIndex >= this.fileOrMessageListValue.Count)
                         {
-                            this.currentIndex = this.fileOrMessageListValue.Count - 1;
+                            this.templeteStateValue = TempleteStateType.Stop;
                             return false;
                         }
                         if (nowIndex != this.currentIndex)
@@ -1117,7 +1226,10 @@ namespace ToilluminateClient
         {
             try
             {
-
+                if (this.templeteStateValue == TempleteStateType.Stop)
+                {
+                    return;
+                }
 
                 if (this.loadControlsFlag == false && this.currentIndex >= 0 && this.currentIndex < this.fileOrMessageListValue.Count)
                 {
@@ -1126,37 +1238,25 @@ namespace ToilluminateClient
                     {
                         currentShowStyleIndex = 0;
                     }
-                   
-                    int lblTop = 20;
-                    if (this.messageStyleListValue[currentShowStyleIndex] == MessageShowStyle.Top)
-                    {
-                        lblTop = 20;
-                    }
-                    else if (this.messageStyleListValue[currentShowStyleIndex] == MessageShowStyle.Down)
-                    {
-                        lblTop = objControl.Height - 60;
-                    }
-                    else if (this.messageStyleListValue[currentShowStyleIndex] == MessageShowStyle.Center)
-                    {
-                        lblTop = objControl.Height / 2 - 20;
-                    }
-
-                    int lblLeft = objControl.Width;
-
 
                     DrawMessage dmItem = new DrawMessage(this.fileOrMessageListValue[this.currentIndex]
                         , new Font("MS UI Gothic", 12, System.Drawing.FontStyle.Bold)
                         , System.Drawing.Color.Red
-                        , lblLeft, lblTop
-                        , 0, 0
+                        , objControl.Width, objControl.Height
+                        , this.messageStyleListValue[currentShowStyleIndex]
                         );
                     PlayApp.DrawMessageList.Add(dmItem);
+
+
+                    if (this.intervalSecondValue > 0)
+                    {
+                        previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
+                    }
                 }
 
                 if (this.currentIndex >= this.fileOrMessageListValue.Count - 1)
                 {
                     this.loadControlsFlag = true;
-                    this.templeteStateValue = TempleteStateType.Stop;
                 }
             }
             catch (Exception ex)
@@ -1192,17 +1292,17 @@ namespace ToilluminateClient
         }
 
 
-        public MediaShowStyle CurrentShowStyle
+        public ZoomOptionStyle ZoomOption
         {
             get
             {
-                return mediaStyleValue;
+                return zoomOptionValue;
             }
         }
 
         #endregion
 
-        public MediaTempleteItem(string file, MediaShowStyle mediaStyle) : base(file, mediaStyle)
+        public MediaTempleteItem(string file, ZoomOptionStyle zoomOption) : base(file, zoomOption)
         {
         }
         #region " void and function "
@@ -1217,13 +1317,12 @@ namespace ToilluminateClient
             {
                 this.templeteStateValue = TempleteStateType.Wait;
 
-                dtStartValue = Utility.GetPlayDateTime(DateTime.Now);
-                //  dtEndValue = dtStartValue.AddSeconds(this.intervalSecondValue * this.fileOrMessageListValue.Count);
+                previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
             }
         }
         public void ExecuteStop()
         {
-            dtEndValue = Utility.GetPlayDateTime(DateTime.Now);
+            previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
             this.templeteStateValue = TempleteStateType.Stop;
         }
 
@@ -1233,7 +1332,6 @@ namespace ToilluminateClient
             {
                 if (this.fileOrMessageListValue.Count > 0)
                 {
-                    //DateTime nowTime = Utility.GetPlayDateTime(DateTime.Now);
                     if (this.templeteStateValue == TempleteStateType.Wait)
                     {
                         return true;
@@ -1259,6 +1357,7 @@ namespace ToilluminateClient
                 {
                     axWMP.URL = this.CurrentFile;
                     axWMP.Ctlcontrols.currentPosition = position;
+
                     if (state == WMPLib.WMPPlayState.wmppsPlaying)
                     {
                         axWMP.Ctlcontrols.play();
@@ -1271,6 +1370,16 @@ namespace ToilluminateClient
                     {
                         axWMP.Ctlcontrols.pause();
                     }
+
+                    if (zoomOptionValue == ZoomOptionStyle.None)
+                    {
+                        axWMP.stretchToFit = false;
+                    }
+                    else
+                    {
+                        axWMP.stretchToFit = true;
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -1285,7 +1394,7 @@ namespace ToilluminateClient
 
         #endregion
     }
- 
+
     public class DrawMessage
     {
 
@@ -1297,9 +1406,9 @@ namespace ToilluminateClient
         private int leftValue;
         private int leftMaxValue;
         private int topValue;
-        private int widthValue;
-        private int heigthValue;
-
+        private MessageShowStyle showStyleValue;
+        private int parentHeigthValue;
+        private bool needRefreshTop = false;
         #endregion
 
 
@@ -1341,47 +1450,66 @@ namespace ToilluminateClient
                 return topValue;
             }
         }
-        public int Width
+        public MessageShowStyle ShowStyle
         {
             get
             {
-                return widthValue;
-            }
-        }
-        public int Heigth
-        {
-            get
-            {
-                return heigthValue;
+                return showStyleValue;
             }
         }
 
         #endregion
 
-        public DrawMessage(string message, Font font, Color color, int left, int top, int width, int heigth)
+        public DrawMessage(string message, Font font, Color color, int left, int parentHeigth, MessageShowStyle showStyle)
         {
-            messageValue = message;
-            fontValue = font;
-            colorValue = color;
+            this.messageValue = message;
+            this.fontValue = font;
+            this.colorValue = color;
 
-            leftValue = left;
-            leftMaxValue = left;
-            topValue = top;
-            widthValue = width;
-            heigthValue = heigth;
+            this.leftValue = left;
+            this.leftMaxValue = left;
+            this.showStyleValue = showStyle;
+            this.parentHeigthValue = parentHeigth;
+            this.needRefreshTop = true;
+            RefreshTop();
         }
 
         #region " void and function "
-        
+        public void SetParentHeigth(int parentHeigth)
+        {
+            this.parentHeigthValue = parentHeigth;
+            this.needRefreshTop = true;
+        }
         public void MoveMessage()
         {
-            leftValue = leftValue - 2;
-            if (leftValue <= 0)
+            this.leftValue = this.leftValue - 2;
+            if (this.leftValue <= 0)
             {
-                leftValue = leftMaxValue;
+                this.leftValue = this.leftMaxValue;
             }
-        }        
-
+            if (needRefreshTop)
+            {
+                RefreshTop();
+            }
+        }
+        private void RefreshTop()
+        {
+            int top = 30;
+            if (this.showStyleValue == MessageShowStyle.Top)
+            {
+                top = 30;
+            }
+            else if (this.showStyleValue == MessageShowStyle.Bottom)
+            {
+                top = this.parentHeigthValue - 70;
+            }
+            else if (this.showStyleValue == MessageShowStyle.Middle)
+            {
+                top = this.parentHeigthValue / 2 - 30;
+            }
+            this.topValue = top;
+            this.needRefreshTop = false;
+        }
         #endregion
     }
 
@@ -1403,10 +1531,15 @@ namespace ToilluminateClient
         [EnumDescription("放送")]
         Execute = 1,
         /// <summary>
+        /// 末尾
+        /// </summary>
+        [EnumDescription("末尾")]
+        Last = 2,
+        /// <summary>
         /// 停止
         /// </summary>
         [EnumDescription("停止")]
-        Stop = 2,
+        Stop = 9,
     }
 
     #endregion
@@ -1458,7 +1591,7 @@ namespace ToilluminateClient
         /// 停止
         /// </summary>
         [EnumDescription("停止")]
-        Stop = 2,
+        Stop = 9,
     }
 
     #endregion
