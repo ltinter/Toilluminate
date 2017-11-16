@@ -93,7 +93,7 @@ namespace ToilluminateClient
                     for (int i = 0; i < PlayListArray.Count; i++)
                     {
                         PlayList plItem = PlayListArray[i];
-                        plItem.PlayRefreshTemplete();
+                        plItem.PlayRefreshTempleteWait();
                     }
                 }
 
@@ -539,11 +539,17 @@ namespace ToilluminateClient
             {
                 titem.ExecuteRefresh();
             }
-
-            if (playListStateValue == PlayListStateType.Stop)
+            
+        }
+        public void PlayRefreshTempleteWait()
+        {
+            this.currentTempleteItemIndex = 0;
+            foreach (TempleteItem titem in this.TempleteItemList)
             {
-                playListStateValue = PlayListStateType.Wait;
+                titem.ExecuteRefresh();
             }
+            
+           playListStateValue = PlayListStateType.Wait;
         }
         public void PlayMoveNextTemplete()
         {

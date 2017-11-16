@@ -54,14 +54,14 @@ namespace ToilluminateClient
 
                 PlayApp.Clear();
 
-                PlayList pList1 = new PlayList(1, true, true, 10);
+                PlayList pList1 = new PlayList(1, false, false, 10);
                 PlayApp.PlayListArray.Add(pList1);
                 
                 string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg" };
                 ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Flip_LR, ImageShowStyle.Random };
 
                 ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 2);
-                pList1.PlayAddTemplete(itItem11);
+                //pList1.PlayAddTemplete(itItem11);
                 
                 string[] messageList = new string[] { @"hello world", @"今日は明日の全国に雨が降る。", @"Welcome to use this system。" };
                 MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Top, MessageShowStyle.Bottom, MessageShowStyle.Middle };
