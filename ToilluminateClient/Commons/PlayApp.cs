@@ -418,7 +418,7 @@ namespace ToilluminateClient
                             List<string> imageFileList = new List<string> { };
                             if (pliTemlete.itemData != null)
                             {
-                                foreach (string url in pliTemlete.itemData.src)
+                                foreach (string url in pliTemlete.itemData.fileUrl)
                                 {
                                     string file = WebApiInfo.DownloadFile(url, "");
                                     if (string.IsNullOrEmpty(file) == false)
@@ -491,7 +491,7 @@ namespace ToilluminateClient
                             List<string> mediaFileList = new List<string> { };
                             if (pliTemlete.itemData != null)
                             {
-                                foreach (string url in pliTemlete.itemData.src)
+                                foreach (string url in pliTemlete.itemData.fileUrl)
                                 {
                                     string file = WebApiInfo.DownloadFile(url, "");
                                     if (string.IsNullOrEmpty(file) == false)

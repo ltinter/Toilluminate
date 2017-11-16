@@ -360,6 +360,7 @@ namespace ToilluminateClient
         {
             try
             {
+                this.DoubleBuffered = true;
                 //播放器全屏
                 ////获取屏幕的宽和高
                 //Rectangle screenSize = System.Windows.Forms.SystemInformation.VirtualScreen;
@@ -450,10 +451,12 @@ namespace ToilluminateClient
                 PlayApp.NowImageIsShow = false;
                 this.picImage.Visible = false;
                 this.tmrImage.Stop();
-                //if (this.picImage.Image != null)
-                //{
-                //    this.picImage.Image.Dispose();
-                //}
+                if (this.picImage.Image != null)
+                {
+                    this.picImage.Image.Dispose();
+                }
+
+                PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
             }
             catch (Exception ex)
             {
