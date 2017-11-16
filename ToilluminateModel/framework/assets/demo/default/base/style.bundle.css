@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /**
 $m--root-font: (
     size: (
@@ -14032,12 +14032,12 @@ code {
 
 .jstree-default .jstree-clicked {
   border: 0;
-  background: #ebedf2;
+  /*background: #ebedf2;*/
   box-shadow: none; }
 
 .jstree-default .jstree-hovered {
   border: 0;
-  background-color: #f4f5f8;
+  /*background-color: #f4f5f8;*/
   box-shadow: none; }
 
 .jstree-default .jstree-wholerow-clicked,
