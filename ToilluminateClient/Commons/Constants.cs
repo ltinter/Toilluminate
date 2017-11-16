@@ -376,33 +376,33 @@ namespace ToilluminateClient
     public enum ImageShowStyle
     {
         /// <summary>
-        /// 
+        /// 随机
         /// </summary>
-        None = 0,
-        /// <summary>
-        /// 上下 覆盖
-        /// </summary>
-        TopToDown = 1,
-        /// <summary>
-        /// 下上 覆盖
-        /// </summary>
-        DownToTop = 2,
+        Random = 0,
         /// <summary>
         /// 左右 覆盖
         /// </summary>
-        LeftToRight = 3,
+        LeftToRight = 1,
         /// <summary>
         /// 右左 覆盖
         /// </summary>
-        RightToLeft = 4,
+        RightToLeft = 2,
+        /// <summary>
+        /// 上下 覆盖
+        /// </summary>
+        TopToDown = 3,
+        /// <summary>
+        /// 下上 覆盖
+        /// </summary>
+        DownToTop = 4,
         /// <summary>
         /// 小大 扩散
         /// </summary>
         SmallToLarge = 5,
         /// <summary>
-        /// 
+        /// 淡入效果
         /// </summary>
-        Gradient = 6,
+        Fade = 6,
         /// <summary>
         /// 左右 翻转
         /// </summary>
@@ -411,38 +411,36 @@ namespace ToilluminateClient
         /// 上下 翻转
         /// </summary>
         Flip_TD = 8,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Gradient = 9,
         /// <summary>
         /// 左右 对接
         /// </summary>
-        Docking_LR = 9,
+        Docking_LR = 10,
         /// <summary>
         /// 上下 对接
         /// </summary>
-        Docking_TD = 10,
+        Docking_TD = 11,
         /// <summary>
         /// 左上旋转
         /// </summary>
-        Rotate = 11,
-        /// <summary>
-        /// 淡入效果
-        /// </summary>
-        Fade = 12,
+        Rotate = 12,
         /// <summary>
         /// 分块显示
         /// </summary>
         Block = 13,
-
-
         /// <summary>
         /// 马赛克效果
         /// </summary>
         Special = 14,
 
         /// <summary>
-        /// 随机
+        /// 
         /// </summary>
-        Random = 99,
-
+        None = 99,
     }
     #endregion
 
@@ -513,12 +511,20 @@ namespace ToilluminateClient
     /// <summary>
     /// 视频显示模式
     /// </summary>
-    public enum MediaShowStyle
+    public enum ZoomOptionStyle
     {
         /// <summary>
         /// 
         /// </summary>
         None = 0,
+        /// <summary>
+        /// 
+        /// </summary>
+        Full = 1,
+        /// <summary>
+        /// 
+        /// </summary>
+        Full2 = 2,
     }
     #endregion
 }

@@ -50,43 +50,43 @@ namespace ToilluminateClient
 
 #if DEBUG
             #region " DEBUG DATA"
-            DateTime dtStart = DateTime.Now;
+            if (PlayApp.PlayListArray.Count == 0)
+            {
+
+                PlayApp.Clear();
+                PlayList pList1 = new PlayList(1, true, Utility.GetPlayDateTime(DateTime.Now).AddSeconds(3), 5, 600);
+                PlayApp.PlayListArray.Add(pList1);
+
+                //string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg", @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg"
+                //                                ,@"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg", @"C:\C_Works\Images\A09.jpg", @"C:\C_Works\Images\A10.jpg" };
+                string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg" };
+                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Flip_LR, ImageShowStyle.Random };
+
+                ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 5);
+
+                //pList1.PlayAddTemplete(itItem11);
+
+
+                string[] messageList = new string[] { @"hello world", @"今日は明日の全国に雨が降る。", @"Welcome to use this system。" };
+                MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Top, MessageShowStyle.Down, MessageShowStyle.Center };
+
+                MessageTempleteItem itItem21 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList());
+                pList1.PlayAddTemplete(itItem21);
+
+
+                //ImageTempleteItem itItem12 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 4);
+                //pList1.TempleteItemList.Add(itItem12);
 
 
 
-            PlayApp.Clear();
-            PlayList pList1 = new PlayList(1, true, Utility.GetPlayDateTime(DateTime.Now).AddSeconds(3), 5, 600);
-            PlayApp.PlayListArray.Add(pList1);
+                MediaTempleteItem itItem31 = new MediaTempleteItem(@"C:\C_Works\Medias\mp01.mp4", ZoomOptionStyle.None);
+                pList1.PlayAddTemplete(itItem31);
 
-            //string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg", @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg"
-            //                                ,@"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg", @"C:\C_Works\Images\A09.jpg", @"C:\C_Works\Images\A10.jpg" };
-            string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg"};
-            ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Flip_LR,ImageShowStyle.Random};
-
-            ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 6);
-
-            pList1.PlayAddTemplete(itItem11);
-
-
-            string[] messageList = new string[] { @"hello world", @"今日は明日の全国に雨が降る。", @"Welcome to use this system。" };
-            MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Top, MessageShowStyle.Down, MessageShowStyle.Center };
-
-            MessageTempleteItem itItem21 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 0);
-            pList1.PlayAddTemplete(itItem21);
-
-
-            //ImageTempleteItem itItem12 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 4);
-            //pList1.TempleteItemList.Add(itItem12);
-
-
-
-            MediaTempleteItem itItem31 = new MediaTempleteItem(@"C:\C_Works\Medias\mp01.mp4", MediaShowStyle.None);
-            pList1.PlayAddTemplete(itItem31);
-
-            //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp01.mp4", MediaShowStyle.None));
-            //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp02.mp4", MediaShowStyle.None));
-            //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp03.mp4", MediaShowStyle.None));
-            //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp04.mp4", MediaShowStyle.None));
+                //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp01.mp4", MediaShowStyle.None));
+                //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp02.mp4", MediaShowStyle.None));
+                //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp03.mp4", MediaShowStyle.None));
+                //pItem3.TempleteItemList.Add(new TempleteItem(@"C:\C_Works\Medias\mp04.mp4", MediaShowStyle.None));
+            }
             #endregion
 #endif
 
@@ -197,7 +197,7 @@ namespace ToilluminateClient
                     else if (pList.CurrentTempleteIndex >= pList.TempleteItemList.Count)
                     {
                         pList.PlayRefreshTemplete();
-                        pList.PlayStop();
+                        pList.PlayLast();
                     }
 
                     if (pList.CurrentTempleteItem.TempleteType == TempleteType.Image)
