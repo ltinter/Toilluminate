@@ -141,7 +141,7 @@ namespace ToilluminateClient
         /// </summary>
         public static bool RefreshPlayListInfo()
         {
-            if (PlayApp.RefreshPlayList)
+            if (PlayApp.RefreshPlayList || string.IsNullOrEmpty(IniFileInfo.PlayerID))
             {
                 return false;
             }

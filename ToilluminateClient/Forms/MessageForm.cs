@@ -110,6 +110,7 @@ namespace ToilluminateClient
 
         private void MessageForm_Load(object sender, EventArgs e)
         {
+            this.tmrMessage.Interval = 10;
         }
         private void MessageForm_Shown(object sender, EventArgs e)
         {
@@ -137,52 +138,45 @@ namespace ToilluminateClient
 
         private void ThreadShowMessageVoid()
         {
+            if (showMessageFlag)
+            {
+                return;
+            }
             try
             {
-                if (showMessageFlag == false)
+                showMessageFlag = true;
+                if (PlayApp.ExecutePlayList != null)
                 {
-                    showMessageFlag = true;
-
-                    try
+                    foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
                     {
-                        if (PlayApp.ExecutePlayList != null)
+                        mtItem.ExecuteStart();
+                        if (mtItem.TempleteState != TempleteStateType.Stop)
                         {
-                            foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
+                            if (mtItem.IntervalSecond == 0)
                             {
-                                mtItem.ExecuteStart();
-                                if (mtItem.TempleteState != TempleteStateType.Stop)
+                                while (mtItem.CurrentIsChanged())
                                 {
-                                    if (mtItem.IntervalSecond == 0)
-                                    {
-                                        while (mtItem.CurrentIsChanged())
-                                        {
-                                            ShowMessage(mtItem);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (mtItem.CurrentIsChanged())
-                                        {
-                                            ShowMessage(mtItem);
-                                        }
-                                    }
+                                    ShowMessage(mtItem);
+                                }
+                            }
+                            else
+                            {
+                                if (mtItem.CurrentIsChanged())
+                                {
+                                    ShowMessage(mtItem);
                                 }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                    finally
-                    {
-                        showMessageFlag = false;
                     }
                 }
             }
             catch (Exception ex)
             {
                 LogApp.OutputErrorLog("MessageForm", "ThreadShowMessageVoid", ex);
+            }
+            finally
+            {
+                showMessageFlag = false;
             }
         }
 

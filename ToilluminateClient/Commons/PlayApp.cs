@@ -534,11 +534,14 @@ namespace ToilluminateClient
         {
             this.dtNowValue = Utility.GetPlayDateTime(DateTime.Now);
 
-            this.dtStartValue = this.dtNowValue;
+            if (playListStateValue != PlayListStateType.Execute)
+            {
+                this.dtStartValue = this.dtNowValue;
+                PlayRefreshTemplete();
+            }
 
             playListStateValue = PlayListStateType.Execute;
-
-            PlayRefreshTemplete();
+           
         }
 
         public void PlayLast()
@@ -847,7 +850,7 @@ namespace ToilluminateClient
         #region " void and function "
         public void ExecuteRefresh()
         {            
-            if (this.templeteTypeValue == TempleteType.Image)
+            if (this.templeteTypeValue == TempleteType.Image || this.templeteTypeValue == TempleteType.Media)
             {
                 previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
                 templeteStateValue = TempleteStateType.Wait;
