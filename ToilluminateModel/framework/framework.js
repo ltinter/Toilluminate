@@ -349,7 +349,10 @@
                     return PlayerMaster;
                 }
             }
+            var playerEditDeferredList = [];
             $.each(options.Playerdata, function (index, item) {
+                var tempPlayerEditDrferred = new $.Deferred();
+                playerEditDeferredList.push(tempPlayerEditDrferred);
                 var Player = $(options.Playerdata[index]).data().obj;
                 var newPlayer = PlayerMaster.create();
 
@@ -362,7 +365,7 @@
 
                 var ajaxOptions = {
                     success: function (result) {
-                        options.success(result);
+                        tempPlayerEditDrferred.resolve();
                     },
                     url: 'api/PlayerMasters',
                     format: 'json',
@@ -380,7 +383,9 @@
                     $.insmFramework('ajax', ajaxOptions);
                 }
             });     
-            
+            $.when(playerEditDeferredList).done(function () {
+                options.success();
+            });
             
         },
         getPlayerStaus: function (options) {
