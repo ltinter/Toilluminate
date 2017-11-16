@@ -1024,6 +1024,27 @@
             $("#div_PlaylistEditorContent").append($(playlistItem));
         })
     });
+    $("#playlistItem").sortable({
+        connectWith: ".m-portlet__head",
+        items: "div.m-portlet.m-portlet--mobile.m-portlet--sortable.m-portlet--warning.m-portlet--head-solid-bg",
+        opacity: 0.8,
+        handle: '.m-portlet__head',
+        coneHelperSize: true,
+        placeholder: 'm-portlet--sortable-placeholder',
+        forcePlaceholderSize: true,
+        tolerance: "pointer",
+        helper: "clone",
+        tolerance: "pointer",
+        forcePlaceholderSize: !0,
+        helper: "clone",
+        cancel: ".m-portlet--sortable-empty", // cancel dragging if portlet is in fullscreen mode
+        revert: 250, // animation in milliseconds
+        update: function (b, c) {
+            if (c.item.prev().hasClass("m-portlet--sortable-empty")) {
+                c.item.prev().before(c.item);
+            }
+        }
+    });
     toastr.options = {
         "closeButton": true,
         "debug": false,
