@@ -59,13 +59,13 @@ namespace ToilluminateClient
                 string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg" };
                 ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Flip_LR, ImageShowStyle.Random };
 
-                ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 5);
+                ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 2);
                 pList1.PlayAddTemplete(itItem11);
                 
                 string[] messageList = new string[] { @"hello world", @"今日は明日の全国に雨が降る。", @"Welcome to use this system。" };
                 MessageShowStyle[] messageStyleList = new MessageShowStyle[] { MessageShowStyle.Top, MessageShowStyle.Bottom, MessageShowStyle.Middle };
 
-                MessageTempleteItem itItem21 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 5, 10);
+                MessageTempleteItem itItem21 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 2, 10);
                 pList1.PlayAddTemplete(itItem21);
                                 
 
@@ -386,12 +386,13 @@ namespace ToilluminateClient
                                                                            | System.Windows.Forms.AnchorStyles.Bottom)
                                                                            | System.Windows.Forms.AnchorStyles.Left)
                                                                            | System.Windows.Forms.AnchorStyles.Right)));
-                //this.pnlShow.BackColor = Color.Transparent;
+                this.pnlShow.BackColor = ImageApp.BackClearColor;
 
                 this.picImage.Location = new System.Drawing.Point(0, 0);
                 this.picImage.Size = new System.Drawing.Size(pnlShow.Width, pnlShow.Height);
                 //是图片的大小适应控件PictureBox的大小 
-                picImage.SizeMode = PictureBoxSizeMode.StretchImage;
+                this.picImage.SizeMode = PictureBoxSizeMode.StretchImage;
+                this.picImage.BackColor = ImageApp.BackClearColor;
                 this.picImage.Visible = false;
                 this.picImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top
                                                                             | System.Windows.Forms.AnchorStyles.Bottom)
@@ -474,7 +475,7 @@ namespace ToilluminateClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogApp.OutputErrorLog("", "", ex);
             }
         }
 
@@ -592,7 +593,7 @@ namespace ToilluminateClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogApp.OutputErrorLog("", "", ex);
             }
         }
 
@@ -718,7 +719,7 @@ namespace ToilluminateClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogApp.OutputErrorLog("", "", ex);
             }
         }
         
@@ -770,6 +771,7 @@ namespace ToilluminateClient
                 {
                     if (thisMessageVisible)
                     {
+                        PlayApp.DrawMessageList.Clear();
                         if (VariableInfo.messageFormInstance == null || VariableInfo.messageFormInstance.IsDisposed)
                         {
                             VariableInfo.messageFormInstance = new MessageForm();
@@ -822,7 +824,7 @@ namespace ToilluminateClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogApp.OutputErrorLog("", "", ex);
             }
         }
 
@@ -914,7 +916,7 @@ namespace ToilluminateClient
                     }
                     catch (Exception ex)
                     {
-                        throw ex;
+                        LogApp.OutputErrorLog("", "", ex);
                     }
                     finally
                     {

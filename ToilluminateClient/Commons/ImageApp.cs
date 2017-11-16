@@ -24,7 +24,9 @@ namespace ToilluminateClient
         /// <summary>
         /// 初始为全灰色
         /// </summary>
-        public static Color BackClearColor = Color.Gray;
+        public static Color BackClearColor = Color.Black;
+
+        public static int SepTime=10;
 
         #region " 画图片 "
         /// <summary>
@@ -421,7 +423,7 @@ namespace ToilluminateClient
                     MyBrush.RotateTransform(MyAngle);
                     g.FillRectangle(MyBrush, 0, 0, bmpSource.Width, bmpSource.Height);
                     MyAngle += 1f;
-                    System.Threading.Thread.Sleep(30);
+                    System.Threading.Thread.Sleep(3);
                 }
             }
             catch (Exception ex)
@@ -470,7 +472,7 @@ namespace ToilluminateClient
                     x++;
 
                     MyDrawImage(g, bitmap, 0, 0);
-                    System.Threading.Thread.Sleep(10);
+                    System.Threading.Thread.Sleep(4);
                 }
             }
             catch (Exception ex)
@@ -520,7 +522,7 @@ namespace ToilluminateClient
                     y++;
 
                     MyDrawImage(g, bitmap, left, top);
-                    System.Threading.Thread.Sleep(10);
+                    System.Threading.Thread.Sleep(6);
                 }
             }
             catch (Exception ex)
@@ -573,7 +575,7 @@ namespace ToilluminateClient
                     gBmpOld.DrawImage(bmpOld_LR, DestRect, SrcRect, GraphicsUnit.Pixel);
 
                     MyDrawImage(g, bmpOld, left, top);
-                    System.Threading.Thread.Sleep(5);
+                    System.Threading.Thread.Sleep(3);
 
                     if (addNumIndex >= addNumMax)
                     {
@@ -596,7 +598,7 @@ namespace ToilluminateClient
 
                     MyDrawImage(g, bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
                     
-                    System.Threading.Thread.Sleep(5);
+                    System.Threading.Thread.Sleep(3);
                 }
 
                 MyDrawImage(g, bmpSource, left, top);
@@ -652,7 +654,7 @@ namespace ToilluminateClient
                     gBmpOld.DrawImage(bmpOld_TD, DestRect, SrcRect, GraphicsUnit.Pixel);
 
                     MyDrawImage(g, bmpOld, left, top);
-                    System.Threading.Thread.Sleep(5);
+                    System.Threading.Thread.Sleep(3);
                 }
 
 
@@ -663,7 +665,7 @@ namespace ToilluminateClient
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
 
                     MyDrawImage(g, bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
-                    System.Threading.Thread.Sleep(5);
+                    System.Threading.Thread.Sleep(3);
                 }
 
                 MyDrawImage(g, bmpSource, left, top);
@@ -707,7 +709,7 @@ namespace ToilluminateClient
                     Rectangle DestRect = new Rectangle(width / 2 - i, height / 2 - j, 2 * i, 2 * j);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
                     MyDrawImage(g, bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
-                    System.Threading.Thread.Sleep(10);
+                    System.Threading.Thread.Sleep(3);
                 }
 
                 MyDrawImage(g, bmpSource, left, top);
@@ -751,7 +753,7 @@ namespace ToilluminateClient
                     using (Bitmap bitmap = bmpSource.Clone(new Rectangle(0, y, width, 1), PixelFormat.Format24bppRgb))
                     {
                         MyDrawImage(g, bitmap, left, top + y);
-                        System.Threading.Thread.Sleep(10);
+                        System.Threading.Thread.Sleep(6);
                     }
                 }
                 MyDrawImage(g, bmpSource, left, top);
@@ -794,7 +796,7 @@ namespace ToilluminateClient
                     using (Bitmap bitmap = bmpSource.Clone(new Rectangle(0, y, width, 1), PixelFormat.Format24bppRgb))
                     {
                         MyDrawImage(g, bitmap, left, top + y);
-                        System.Threading.Thread.Sleep(10);
+                        System.Threading.Thread.Sleep(6);
                     }
                 }
                 MyDrawImage(g, bmpSource, left, top);
@@ -837,7 +839,7 @@ namespace ToilluminateClient
                     using (Bitmap bitmap = bmpSource.Clone(new Rectangle(x, 0, 1, height), PixelFormat.Format24bppRgb))
                     {
                         MyDrawImage(g, bitmap, left + x, top);
-                        System.Threading.Thread.Sleep(10);
+                        System.Threading.Thread.Sleep(4);
                     }
                 }
                 MyDrawImage(g, bmpSource, left, top);
@@ -880,7 +882,7 @@ namespace ToilluminateClient
                     using (Bitmap bitmap = bmpSource.Clone(new Rectangle(x, 0, 1, height), PixelFormat.Format24bppRgb))
                     {
                         MyDrawImage(g, bitmap, left + x, top);
-                        System.Threading.Thread.Sleep(10);
+                        System.Threading.Thread.Sleep(4);
                     }
                 }
                 MyDrawImage(g, bmpSource, left, top);
