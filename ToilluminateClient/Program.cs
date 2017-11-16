@@ -18,6 +18,7 @@ namespace ToilluminateClient
 {
     static class Program
     {
+        
         #region EntryPoint
         /// <summary>
         /// The main entry point for the application.
@@ -43,7 +44,7 @@ namespace ToilluminateClient
 
             //共通変数が初期化
             VariableInfo.InitVariableInfo();
-            
+
             // 設定ファイルのオープン
             if (File.Exists(VariableInfo.IniFile) == false)
             {
@@ -64,9 +65,10 @@ namespace ToilluminateClient
             //}
 
             VariableInfo.RefreshPlayListInfo();
-            
+
             // メイン画面起動
             MainForm mainFormInstance = new MainForm();
+
             Application.Run(mainFormInstance);
 
             mutex.ReleaseMutex();

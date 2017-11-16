@@ -75,13 +75,11 @@ namespace ToilluminateClient
             try
             {
                 string file = Utility.GetFullFileName(VariableInfo.FilesPath, Path.GetFileName(url));
-                if (File.Exists(file))
+                if (File.Exists(file) == false)
                 {
-                    File.Delete(file);
+                    WebClient client = new WebClient();
+                    client.DownloadFile(url, file);
                 }
-
-                WebClient client = new WebClient();
-                client.DownloadFile(url, file);
 
                 return file;
             }

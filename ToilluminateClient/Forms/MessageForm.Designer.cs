@@ -1,6 +1,6 @@
 ﻿namespace ToilluminateClient
 {
-    partial class LoginForm
+    partial class MessageForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,21 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.tmrMessage = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
-            // LoginForm
+            // tmrMessage
+            // 
+            this.tmrMessage.Interval = 10;
+            this.tmrMessage.Tick += new System.EventHandler(this.tmrMessage_Tick);
+            // 
+            // MessageForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(894, 408);
-            this.Name = "LoginForm";
-            this.Text = "表示情報";
-            this.Load += new System.EventHandler(this.LoginForm_Load);
+            this.BackColor = System.Drawing.SystemColors.Window;
+            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Name = "MessageForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MessageForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MessageForm_FormClosed);
+            this.Load += new System.EventHandler(this.MessageForm_Load);
+            this.Shown += new System.EventHandler(this.MessageForm_Shown);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        public System.Windows.Forms.Timer tmrMessage;
     }
 }
-

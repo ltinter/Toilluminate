@@ -20,10 +20,94 @@ namespace ToilluminateClient
 {
     public static class ImageApp
     {
+        
         /// <summary>
         /// 初始为全灰色
         /// </summary>
         public static Color BackClearColor = Color.Gray;
+
+        #region " 画图片 "
+        /// <summary>
+        /// 画图片
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="bmp"></param>
+        public static void MyDrawImage(Graphics g, Bitmap bmp, int left, int top)
+        {
+            g.DrawImage(bmp, left, top);
+            MyDrawMessage(VariableInfo.messageFormInstance);
+        }
+        public static void MyDrawImage(Graphics g, Bitmap bmp, Rectangle DestRect, Rectangle SrcRect, GraphicsUnit gUnit)
+        {
+            g.DrawImage(bmp, DestRect, SrcRect, gUnit);
+            MyDrawMessage(VariableInfo.messageFormInstance);
+        }
+        public static void MyDrawImage(Graphics g, Bitmap bmp, Rectangle DestRect, int srcX, int srcY, int srcWidth, int srcHeigth, GraphicsUnit gUnit, ImageAttributes iAttributes)
+        {
+            g.DrawImage(bmp, DestRect, srcX, srcY, srcWidth, srcHeigth, gUnit, iAttributes);
+            MyDrawMessage(VariableInfo.messageFormInstance);
+        }
+        public static void MyDrawMessage(MessageForm messageForm)
+        {
+            if (PlayApp.DrawMessageFlag)
+            {
+                return;
+            }
+
+            Graphics g = null;
+            try
+            {
+                LogApp.OutputProcessLog("ImageApp", "MyDrawMessage", "All Message");
+                PlayApp.DrawMessageFlag = true;
+                g = messageForm.CreateGraphics();
+                foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
+                {
+                    g.DrawString(dmItem.Message, dmItem.Font, new SolidBrush(BackClearColor), dmItem.Left, dmItem.Top);
+                    dmItem.MoveMessage();
+                    g.DrawString(dmItem.Message, dmItem.Font, new SolidBrush(dmItem.Color), dmItem.Left, dmItem.Top);
+                }
+                g.Dispose();
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("ImageApp", "MyDrawMessage", ex);
+            }
+            finally
+            {
+                PlayApp.DrawMessageFlag = false;
+                if (null != g)
+                {
+                    g.Dispose();
+                }
+            }
+        }
+
+        public static void MyDrawBitmap(Graphics g)
+        {
+            if (PlayApp.DrawBitmapFlag)
+            {
+                return;
+            }
+            try
+            {
+                PlayApp.DrawBitmapFlag = true;
+                if (PlayApp.DrawBitmap != null)
+                {
+                    g.DrawImage(PlayApp.DrawBitmap, 0, 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("ImageApp", "MyDrawBitmap", ex);
+            }
+            finally
+            {
+                PlayApp.DrawBitmapFlag = false;
+            }
+        }
+        #endregion
+
+
 
         #region " 获得网络图片 "
         /// <summary>
@@ -224,13 +308,13 @@ namespace ToilluminateClient
                 bmpSource.Clone(block[2],System.Drawing.Imaging.PixelFormat.DontCare),
                 bmpSource.Clone(block[3],System.Drawing.Imaging.PixelFormat.DontCare)};
                 //绘制图片的四个部分，各部分绘制时间间隔为0.5秒                    
-                g.DrawImage(MyBitmapBlack[0], 0, 0);
+                MyDrawImage(g, MyBitmapBlack[0], 0, 0);
                 System.Threading.Thread.Sleep(500);
-                g.DrawImage(MyBitmapBlack[1], width / 2, 0);
+                MyDrawImage(g, MyBitmapBlack[1], width / 2, 0);
                 System.Threading.Thread.Sleep(500);
-                g.DrawImage(MyBitmapBlack[3], width / 2, height / 2);
+                MyDrawImage(g, MyBitmapBlack[3], width / 2, height / 2);
                 System.Threading.Thread.Sleep(500);
-                g.DrawImage(MyBitmapBlack[2], 0, height / 2);
+                MyDrawImage(g, MyBitmapBlack[2], 0, height / 2);
             }
             catch (Exception ex)
             {
@@ -300,7 +384,8 @@ namespace ToilluminateClient
                     matrix.Matrix22 = count;
                     matrix.Matrix33 = count;
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.DrawImage(bmpSource, new Rectangle(0, 0, width, height), 0, 0, width, height, GraphicsUnit.Pixel, attributes);
+                    MyDrawImage(g, bmpSource, new Rectangle(0, 0, width, height), 0, 0, width, height, GraphicsUnit.Pixel, attributes);
+                    
                     System.Threading.Thread.Sleep(200);
                     count = (float)(count + 0.04);
                 }
@@ -384,7 +469,7 @@ namespace ToilluminateClient
                     }
                     x++;
 
-                    g.DrawImage(bitmap, 0, 0);
+                    MyDrawImage(g, bitmap, 0, 0);
                     System.Threading.Thread.Sleep(10);
                 }
             }
@@ -434,7 +519,7 @@ namespace ToilluminateClient
                     }
                     y++;
 
-                    g.DrawImage(bitmap, left, top);
+                    MyDrawImage(g, bitmap, left, top);
                     System.Threading.Thread.Sleep(10);
                 }
             }
@@ -472,6 +557,7 @@ namespace ToilluminateClient
 
                 Bitmap bmpOld = new Bitmap(picBox.Width, picBox.Height);
                 gBmpOld = Graphics.FromImage(bmpOld);
+               
                 //转换成控件在屏幕上的坐标
                 var screenPoint = picBox.Parent.PointToScreen(picBox.Location);
                 gBmpOld.CopyFromScreen(screenPoint, new Point(0, 0), picBox.Size);
@@ -490,7 +576,7 @@ namespace ToilluminateClient
                     gBmpOld.Clear(BackClearColor); //初始为全灰色
                     gBmpOld.DrawImage(bmpOld_LR, DestRect, SrcRect, GraphicsUnit.Pixel);
 
-                    g.DrawImage(bmpOld, left, top);
+                    MyDrawImage(g, bmpOld, left, top);
                     System.Threading.Thread.Sleep(5);
 
                     if (addNumIndex >= addNumMax)
@@ -512,11 +598,12 @@ namespace ToilluminateClient
                     Rectangle DestRect = new Rectangle(width / 2 - i, 0, 2 * i, height);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
 
-                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+                    MyDrawImage(g, bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+                    
                     System.Threading.Thread.Sleep(5);
                 }
 
-                g.DrawImage(bmpSource, left, top);
+                MyDrawImage(g, bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -571,7 +658,7 @@ namespace ToilluminateClient
                     gBmpOld.Clear(BackClearColor); //初始为全灰色
                     gBmpOld.DrawImage(bmpOld_TD, DestRect, SrcRect, GraphicsUnit.Pixel);
 
-                    g.DrawImage(bmpOld, left, top);
+                    MyDrawImage(g, bmpOld, left, top);
                     System.Threading.Thread.Sleep(5);
                 }
 
@@ -582,11 +669,11 @@ namespace ToilluminateClient
                     Rectangle DestRect = new Rectangle(0, height / 2 - i, width, 2 * i);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
 
-                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+                    MyDrawImage(g, bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
                     System.Threading.Thread.Sleep(5);
                 }
 
-                g.DrawImage(bmpSource, left, top);
+                MyDrawImage(g, bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -626,11 +713,11 @@ namespace ToilluminateClient
                     int j = Convert.ToInt32(i * (Convert.ToSingle(height) / Convert.ToSingle(width)));
                     Rectangle DestRect = new Rectangle(width / 2 - i, height / 2 - j, 2 * i, 2 * j);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
-                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+                    MyDrawImage(g, bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
                     System.Threading.Thread.Sleep(10);
                 }
 
-                g.DrawImage(bmpSource, left, top);
+                MyDrawImage(g, bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -670,11 +757,11 @@ namespace ToilluminateClient
                     int y = step;
                     using (Bitmap bitmap = bmpSource.Clone(new Rectangle(0, y, width, 1), PixelFormat.Format24bppRgb))
                     {
-                        g.DrawImage(bitmap, left, top + y);
+                        MyDrawImage(g, bitmap, left, top + y);
                         System.Threading.Thread.Sleep(10);
                     }
                 }
-                g.DrawImage(bmpSource, left, top);
+                MyDrawImage(g, bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -713,11 +800,11 @@ namespace ToilluminateClient
                     int y = height - step;
                     using (Bitmap bitmap = bmpSource.Clone(new Rectangle(0, y, width, 1), PixelFormat.Format24bppRgb))
                     {
-                        g.DrawImage(bitmap, left, top + y);
+                        MyDrawImage(g, bitmap, left, top + y);
                         System.Threading.Thread.Sleep(10);
                     }
                 }
-                g.DrawImage(bmpSource, left, top);
+                MyDrawImage(g, bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -756,11 +843,11 @@ namespace ToilluminateClient
                     int x = step;
                     using (Bitmap bitmap = bmpSource.Clone(new Rectangle(x, 0, 1, height), PixelFormat.Format24bppRgb))
                     {
-                        g.DrawImage(bitmap, left + x, top);
+                        MyDrawImage(g, bitmap, left + x, top);
                         System.Threading.Thread.Sleep(10);
                     }
                 }
-                g.DrawImage(bmpSource, left, top);
+                MyDrawImage(g, bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -799,11 +886,11 @@ namespace ToilluminateClient
                     int x = width - step;
                     using (Bitmap bitmap = bmpSource.Clone(new Rectangle(x, 0, 1, height), PixelFormat.Format24bppRgb))
                     {
-                        g.DrawImage(bitmap, left + x, top);
+                        MyDrawImage(g, bitmap, left + x, top);
                         System.Threading.Thread.Sleep(10);
                     }
                 }
-                g.DrawImage(bmpSource, left, top);
+                MyDrawImage(g, bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -827,10 +914,20 @@ namespace ToilluminateClient
         /// <param name="picBox">PictureBox 对象</param>
         public static void ShowBitmap(Bitmap bmpSource, PictureBox picBox, ImageShowStyle imgShowStyle)
         {
+
+            if (PlayApp.DrawBitmapFlag)
+            {
+                return;
+            }
+            
             Graphics g = null;
             //显示图像
             try
             {
+                PlayApp.DrawBitmapFlag = true;
+
+                LogApp.OutputProcessLog("ImageApp", "ShowBitmap", "this BitMap");
+
                 if (ImageShowStyle.None == imgShowStyle)
                 {
                     int width = bmpSource.Width; //图像宽度    
@@ -839,7 +936,7 @@ namespace ToilluminateClient
                     int top = (picBox.Size.Height - height) / 2; //图像高度
 
                     g = picBox.CreateGraphics();
-                    g.DrawImage(bmpSource, left, top);
+                    MyDrawImage(g, bmpSource, left, top);
                 }
                 else if (ImageShowStyle.TopToDown == imgShowStyle)
                 {
@@ -899,7 +996,6 @@ namespace ToilluminateClient
                 {
                     ShowBitmap_Special(bmpSource, picBox);
                 }
-
                 else
                 {
                     int width = bmpSource.Width; //图像宽度    
@@ -908,9 +1004,12 @@ namespace ToilluminateClient
                     int top = (picBox.Size.Height - height) / 2; //图像高度
 
                     g = picBox.CreateGraphics();
-                    g.DrawImage(bmpSource, left, top);
+                    MyDrawImage(g, bmpSource, left, top);
                 }
 
+
+                RectangleF myRect = new RectangleF(0, 0, bmpSource.Width, bmpSource.Height);
+                PlayApp.DrawBitmap = bmpSource.Clone(myRect, System.Drawing.Imaging.PixelFormat.DontCare);
             }
             catch (Exception ex)
             {
@@ -918,6 +1017,7 @@ namespace ToilluminateClient
             }
             finally
             {
+                PlayApp.DrawBitmapFlag = false;
                 if (null != g)
                 {
                     g.Dispose();
@@ -1015,28 +1115,60 @@ namespace ToilluminateClient
                 }
             }
         }
+
+
+        /// <summary>
+        /// 图像
+        /// </summary>
+        /// <param name="size">Size</param>
+        /// <param name="picBox">PictureBox 对象</param>
+        public static Bitmap GetNewBitmap(Size size)
+        {
+            Graphics g = null;
+            //显示图像
+            try
+            {
+                Bitmap bmpNew = new Bitmap(size.Width, size.Height);
+                g = Graphics.FromImage(bmpNew);
+                g.Clear(BackClearColor);
+                
+                return bmpNew;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (null != g)
+                {
+                    g.Dispose();
+                }
+            }
+        }
         #endregion
 
 
         /// <summary>
-        /// 马赛克效果
+        /// 显示模式
         /// </summary>
-        /// <param name="bmp">Bitmap 对象</param>
-        /// <param name="picBox">PictureBox 对象</param>
+        /// <param name="style">显示模式</param>
         public static ImageShowStyle GetImageShowStyle(ImageShowStyle style)
         {
             ImageShowStyle reStyle = ImageShowStyle.None;
-            //以马赛克效果显示图像
+            List<int> disEnumValueList = new List<int> {
+                    ImageShowStyle.Random.GetHashCode()
+                    , ImageShowStyle.Rotate.GetHashCode() };
             try
             {
                 if (style == ImageShowStyle.Random)
                 {
                     List<string> enumList = new List<string>();
-                    int randomValue = ImageShowStyle.Random.GetHashCode();
+
                     int[] enumValueList = EnumHelper.GetAllEnumValue(typeof(ImageShowStyle));
                     foreach (int enumValue in enumValueList)
                     {
-                        if (enumValue != randomValue)
+                        if (disEnumValueList.Contains(enumValue) == false)
                         {
                             enumList.Add(enumValue.ToString());
                         }
