@@ -62,9 +62,9 @@ namespace ToilluminateClient
                 LogApp.OutputProcessLog("ImageApp", "MyDrawMessage", "All Message");
                 PlayApp.DrawMessageFlag = true;
                 g = messageForm.CreateGraphics();
+                g.Clear(BackClearColor);
                 foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
                 {
-                    g.DrawString(dmItem.Message, dmItem.Font, new SolidBrush(BackClearColor), dmItem.Left, dmItem.Top);
                     dmItem.MoveMessage();
                     g.DrawString(dmItem.Message, dmItem.Font, new SolidBrush(dmItem.Color), dmItem.Left, dmItem.Top);
                 }
