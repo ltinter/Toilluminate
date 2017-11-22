@@ -25,7 +25,7 @@ namespace ToilluminateClient
         private static int currentPlayListID = -1;
         private static int executePlayListID = -1;
 
-        private static bool nowRefreshPlayList = false;
+        private static bool nowLoadPlayList = false;
         private static bool newPlayListExist = false;
 
 
@@ -82,11 +82,11 @@ namespace ToilluminateClient
             }
         }
 
-        public static bool NowRefreshPlayList
+        public static bool NowLoadPlayList
         {
             get
             {
-                return nowRefreshPlayList;
+                return PlayApp.nowLoadPlayList;
             }
         }
 
@@ -101,8 +101,8 @@ namespace ToilluminateClient
 
 
 
-        #region " refresh play list "
-        private static void DebugRefreshPlayListInfo()
+        #region " load play list "
+        private static void DebugLoadPlayListInfo()
         {
 
 #if DEBUG
@@ -111,7 +111,7 @@ namespace ToilluminateClient
             {
                 PlayApp.Clear();
 
-                PlayList pList1 = new PlayList(1, false, false, 60);
+                PlayList pList1 = new PlayList(1, false, true, 10);
                 PlayApp.PlayListArray.Add(pList1);
 
                 string[] imageFileList = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg" };
@@ -135,20 +135,23 @@ namespace ToilluminateClient
                 //pList1.PlayAddTemplete(itItem14);
 
 
-                PlayList pList2 = new PlayList(2, false, true, 1200);
-               // PlayApp.PlayListArray.Add(pList2);
+                PlayList pList2 = new PlayList(2, false, false, 0);
+                PlayApp.PlayListArray.Add(pList2);
 
-                ImageTempleteItem itItem21 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 2);
-                pList2.PlayAddTemplete(itItem21);
+                //ImageTempleteItem itItem21 = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), 2);
+                //pList2.PlayAddTemplete(itItem21);
 
-                MessageTempleteItem itItem22 = new MessageTempleteItem(messageList.ToList(), messageStyleList.ToList(), 2, 10);
+                string[] messageList2 = new string[] { @"<p>AAAAAAAAAAAAAAA</p>"
+                            , @"<p>BBBBBBBBBBB</p>"
+                            , @"<<<<<<<<<<<<<<<<------------" };
+                MessageTempleteItem itItem22 = new MessageTempleteItem(messageList2.ToList(), messageStyleList.ToList(), 2, 10);
                 pList2.PlayAddTemplete(itItem22);
 
 
                 MediaTempleteItem itItem23 = new MediaTempleteItem(@"C:\C_Works\Medias\A01.mp4", ZoomOptionStyle.None);
                 pList2.PlayAddTemplete(itItem23);
-                MediaTempleteItem itItem24 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
-                pList2.PlayAddTemplete(itItem24);
+                //MediaTempleteItem itItem24 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
+                //pList2.PlayAddTemplete(itItem24);
 
                 PlayApp.newPlayListExist = true;
             }
@@ -159,19 +162,19 @@ namespace ToilluminateClient
         /// <summary>
         /// 共通変数が初期化
         /// </summary>
-        public static bool RefreshPlayListInfo()
+        public static bool LoadPlayListInfo()
         {
-            if (PlayApp.NowRefreshPlayList || string.IsNullOrEmpty(IniFileInfo.PlayerID))
+            if (PlayApp.NowLoadPlayList || string.IsNullOrEmpty(IniFileInfo.PlayerID))
             {
-                DebugRefreshPlayListInfo();
+                DebugLoadPlayListInfo();
 
                 return false;
             }
             try
             {
-                PlayApp.nowRefreshPlayList = true;
+                PlayApp.nowLoadPlayList = true;
 
-                LogApp.OutputProcessLog("VariableInfo", "RefreshPlayListInfo", "Begin");
+                LogApp.OutputProcessLog("VariableInfo", "LoadPlayListInfo", "Begin");
 
                 try
                 {
@@ -180,7 +183,7 @@ namespace ToilluminateClient
                 }
                 catch (Exception ex)
                 {
-                    LogApp.OutputErrorLog("VariableInfo", "RefreshPlayListInfo:1", ex);
+                    LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:1", ex);
                 }
 
                 //try
@@ -190,7 +193,7 @@ namespace ToilluminateClient
                 //}
                 //catch (Exception ex)
                 //{
-                //    LogApp.OutputErrorLog("VariableInfo", "RefreshPlayListInfo:2", ex);
+                //    LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:2", ex);
                 //}
 
 
@@ -237,17 +240,38 @@ namespace ToilluminateClient
                 }
                 catch (Exception ex)
                 {
-                    LogApp.OutputErrorLog("VariableInfo", "RefreshPlayListInfo:3", ex);
+                    LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:3", ex);
                 }
 
                 return false;
             }
             finally
             {
-                PlayApp.nowRefreshPlayList = false;
+                PlayApp.nowLoadPlayList = false;
+                LogApp.OutputProcessLog("VariableInfo", "LoadPlayListInfo", "End");
+            }
+        }
+
+
+        /// <summary>
+        /// 共通変数が初期化
+        /// </summary>
+        public static void RefreshPlayListInfo()
+        {
+            try
+            {
+                
+                foreach (PlayList plItem in PlayApp.PlayListArray)
+                {
+                    plItem.PlayRefresh();
+                }
+            }
+            finally
+            {
                 LogApp.OutputProcessLog("VariableInfo", "RefreshPlayListInfo", "End");
             }
         }
+
 
 
         public static string GetUrlFile(string url)
@@ -260,6 +284,8 @@ namespace ToilluminateClient
         {
             if (ExecutePlayListID != CurrentPlayListID)
             {
+                PlayApp.DrawMessageList.Clear();
+
                 executePlayList = CurrentPlayList();
                 executePlayList.PlayStart();
 
@@ -310,7 +336,7 @@ namespace ToilluminateClient
                     for (int i = 0; i < PlayListArray.Count; i++)
                     {
                         PlayList plItem = PlayListArray[i];
-                        plItem.PlayRefreshTempleteWait();
+                        plItem.PlayRefresh();
                     }
 
                     for (int i = CurrentPlayListIndex; i < PlayListArray.Count; i++)
@@ -727,6 +753,12 @@ namespace ToilluminateClient
             playListStateValue = PlayListStateType.Stop;
         }
 
+        public void PlayRefresh()
+        {
+            playListStateValue = PlayListStateType.Wait;
+            this.PlayRefreshTemplete();
+        }
+
         public void PlayRefreshTemplete()
         {
             this.currentTempleteItemIndex = 0;
@@ -735,16 +767,6 @@ namespace ToilluminateClient
                 titem.ExecuteRefresh();
             }
             
-        }
-        public void PlayRefreshTempleteWait()
-        {
-            this.currentTempleteItemIndex = 0;
-            foreach (TempleteItem titem in this.TempleteItemList)
-            {
-                titem.ExecuteRefresh();
-            }
-            
-           playListStateValue = PlayListStateType.Wait;
         }
         public bool CurrentTempleteValid()
         {
@@ -1002,7 +1024,7 @@ namespace ToilluminateClient
         /// </summary>
         public TempleteStateType CheckTempleteState()
         {
-            TempleteStateType stateType = TempleteStateType.Stop;
+            TempleteStateType stateType = TempleteStateType.Wait;
             try
             {
                 if (this.templeteStateValue == TempleteStateType.Stop)
@@ -1152,28 +1174,28 @@ namespace ToilluminateClient
 
         public void ExecuteStop()
         {
-            //if (this.templeteTypeValue == TempleteItemType.Image)
-            //{
-            //    previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
-            //    this.currentIndex = -1;
-            //    this.currentShowStyleIndex = -1;
-            //    this.templeteStateValue = TempleteStateType.Stop;
-            //}
-            //if (this.templeteTypeValue == TempleteItemType.Message)
-            //{
-            //    previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
-            //    this.currentIndex = -1;
-            //    this.currentShowStyleIndex = -1;
-            //    this.templeteStateValue = TempleteStateType.Stop;
-            //    loadControlsFlag = false;
-            //}
-            //if (this.templeteTypeValue == TempleteItemType.Media)
-            //{
-            //    previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
-            //    this.currentIndex = -1;
-            //    this.currentShowStyleIndex = -1;
-            //    this.templeteStateValue = TempleteStateType.Stop;
-            //}
+            if (this.templeteTypeValue == TempleteItemType.Image)
+            {
+                previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
+                this.currentIndex = -1;
+                this.currentShowStyleIndex = -1;
+                this.templeteStateValue = TempleteStateType.Stop;
+            }
+            if (this.templeteTypeValue == TempleteItemType.Message)
+            {
+                previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
+                this.currentIndex = -1;
+                this.currentShowStyleIndex = -1;
+                this.templeteStateValue = TempleteStateType.Stop;
+                loadControlsFlag = false;
+            }
+            if (this.templeteTypeValue == TempleteItemType.Media)
+            {
+                previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
+                this.currentIndex = -1;
+                this.currentShowStyleIndex = -1;
+                this.templeteStateValue = TempleteStateType.Stop;
+            }
         }
 
         public bool CurrentIsChanged()

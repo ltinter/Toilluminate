@@ -45,7 +45,8 @@ namespace ToilluminateClient
         public MainForm()
         {
             InitializeComponent();
-
+            
+            this.GetNowVisible();
 
             this.ControlsInit();
 
@@ -124,9 +125,14 @@ namespace ToilluminateClient
                         {
                             if (PlayApp.ExecutePlayListStart())
                             {
-                                this.SetAllVisibleFalse();
+                                PlayApp.NowMessageIsShow = false;
                                 this.tmrTemplete_Tick(null, null);
                             }
+                        }
+                        else
+                        {
+                            CloseAll();
+                            return;
                         }
                     }
                     else if (eplItem.PlayListState == PlayListStateType.Last)
@@ -134,7 +140,7 @@ namespace ToilluminateClient
                         if (eplItem.LoopPlayValid)
                         {
                             eplItem.PlayStart();
-                            this.SetAllVisibleFalse();
+                            PlayApp.NowMessageIsShow = false;
                             this.tmrTemplete_Tick(null, null);
                         }
                         else
@@ -225,13 +231,6 @@ namespace ToilluminateClient
                     if (mtItem.CurrentIsChanged())
                     {
                         mtItem.ShowCurrent(this.axWMP);
-                    }
-
-                    if (mtItem.TempleteState == TempleteStateType.Stop)
-                    {
-                        mtItem.ExecuteStop();
-                      this.CloseMediaWMP();
-                        return;
                     }
                 }
 
@@ -390,7 +389,7 @@ namespace ToilluminateClient
         private void AxWMP_PlayStateChange(object sender, _WMPOCXEvents_PlayStateChangeEvent e)
         {
             //判断视频是否已停止播放  
-            if (this.axWMP.playState == WMPPlayState.wmppsStopped)
+            if (this.axWMP.playState == WMPPlayState.wmppsStopped || this.axWMP.playState == WMPPlayState.wmppsUndefined)
             {
                 CloseMediaWMP();
             }
@@ -403,6 +402,7 @@ namespace ToilluminateClient
             this.CloseImage();
             this.CloseMediaWMP();
             this.CloseMessage();
+            GetNowVisible();
         }
 
         #region " image "
@@ -434,7 +434,7 @@ namespace ToilluminateClient
         #region " windows media play "
         private bool mediaIsReady()
         {
-            if (this.axWMP.playState != WMPPlayState.wmppsPlaying)
+            if (this.axWMP.playState != WMPPlayState.wmppsPlaying && this.pnlShowMedia.Visible)
             {
                 return true;
             }
@@ -515,9 +515,10 @@ namespace ToilluminateClient
 
                 this.pnlShowMedia.Visible = false;
                 WMPStop();
-
-
-                PlayApp.ExecutePlayList.CurrentTempleteItem.ExecuteStop();
+                
+                MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
+                mtItem.ExecuteStop();
+                
                 PlayApp.NowMediaIsShow = false;
             }
             catch (Exception ex)
@@ -659,14 +660,7 @@ namespace ToilluminateClient
             thisMessageVisible = PlayApp.NowMessageIsShow;
             thisMediaWMPVisible = PlayApp.NowMediaIsShow;
         }
-        private void SetAllVisibleFalse()
-        {
-            PlayApp.NowImageIsShow = false;
-            PlayApp.NowMessageIsShow = false;
-            PlayApp.NowMediaIsShow = false;
-            GetNowVisible();
 
-        }
         private void SetNowVisible()
         {
             try
@@ -790,9 +784,9 @@ namespace ToilluminateClient
         {
             try
             {
-                if (PlayApp.NowRefreshPlayList == false)
+                if (PlayApp.NowLoadPlayList == false)
                 {
-                    PlayApp.RefreshPlayListInfo();
+                    PlayApp.LoadPlayListInfo();
                 }
 
             }
@@ -824,8 +818,6 @@ namespace ToilluminateClient
 
                 try
                 {
-                    this.GetNowVisible();
-
                     if (PlayApp.ExecutePlayList != null && PlayApp.ExecutePlayList.PlayListState == PlayListStateType.Execute)
                     {
                         PlayList pList = PlayApp.ExecutePlayList;
@@ -861,7 +853,6 @@ namespace ToilluminateClient
 
                         if (pList.CheckPlayListState == PlayListStateType.Stop)
                         {
-                            CloseAll();
                             pList.PlayStop();
                             return;
                         }
@@ -891,9 +882,12 @@ namespace ToilluminateClient
 
         private void ThreadShowImage()
         {
-            Thread tmpThread = new Thread(this.ThreadShowImageVoid);
-            tmpThread.IsBackground = true;
-            tmpThread.Start();
+            if (this.pnlShowImage.Visible)
+            {
+                Thread tmpThread = new Thread(this.ThreadShowImageVoid);
+                tmpThread.IsBackground = true;
+                tmpThread.Start();
+            }
         }
 
 
