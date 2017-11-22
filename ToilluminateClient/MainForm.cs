@@ -35,7 +35,7 @@ namespace ToilluminateClient
         private bool executeTempleteFlag = false;
 
         private bool showImageFlag = false;
-
+        private bool showMediaFlag = false;
         #endregion
 
 
@@ -125,7 +125,7 @@ namespace ToilluminateClient
                         {
                             if (PlayApp.ExecutePlayListStart())
                             {
-                                PlayApp.NowMessageIsShow = false;
+                                PlayApp.NowMessageIsRefresh = true;
                                 this.tmrTemplete_Tick(null, null);
                             }
                         }
@@ -140,7 +140,7 @@ namespace ToilluminateClient
                         if (eplItem.LoopPlayValid)
                         {
                             eplItem.PlayStart();
-                            PlayApp.NowMessageIsShow = false;
+                            PlayApp.NowMessageIsRefresh = true;
                             this.tmrTemplete_Tick(null, null);
                         }
                         else
@@ -224,15 +224,7 @@ namespace ToilluminateClient
             {
                 this.tmrMedia.Stop();
 
-                if (mediaIsReady())
-                {
-                    MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
-
-                    if (mtItem.CurrentIsChanged())
-                    {
-                        mtItem.ShowCurrent(this.axWMP);
-                    }
-                }
+                this.ThreadShowMedia();
 
                 this.tmrMedia.Start();
             }
@@ -680,6 +672,7 @@ namespace ToilluminateClient
 
 
                         this.pnlShowImage.Visible = true;
+                        this.ThreadShowImage();
                         this.tmrImage_Tick(null, null);
                     }
                     else
@@ -687,6 +680,21 @@ namespace ToilluminateClient
                         CloseImage();
                     }
 
+                }
+
+                if (PlayApp.NowMessageIsRefresh)
+                {
+                    PlayApp.DrawMessageList.Clear();
+                    if (VariableInfo.messageFormInstance == null || VariableInfo.messageFormInstance.IsDisposed)
+                    {
+                    }
+                    else
+                    {
+                        VariableInfo.messageFormInstance.ThreadShowMessage();
+                        VariableInfo.messageFormInstance.tmrMessage_Tick(null, null);
+                    }
+
+                    PlayApp.NowMessageIsRefresh = false;
                 }
 
                 if (PlayApp.NowMessageIsShow != thisMessageVisible)
@@ -735,6 +743,7 @@ namespace ToilluminateClient
                             PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
                         }
                         this.pnlShowMedia.Visible =true;
+                        this.ThreadShowMedia();
                         this.tmrMedia_Tick(null, null);
                     }
                     else
@@ -928,7 +937,51 @@ namespace ToilluminateClient
         }
 
         #endregion
-        
+        #region " Show Media "
+
+        private void ThreadShowMedia()
+        {
+            if (this.pnlShowMedia.Visible)
+            {
+                Thread tmpThread = new Thread(this.ThreadShowMediaVoid);
+                tmpThread.IsBackground = true;
+                tmpThread.Start();
+            }
+        }
+
+
+        private void ThreadShowMediaVoid()
+        {
+            if (showMediaFlag == false)
+            {
+                showMediaFlag = true;
+
+                try
+                {
+                    if (mediaIsReady())
+                    {
+                        MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
+
+                        if (mtItem.CurrentIsChanged())
+                        {
+                            mtItem.ShowCurrent(this.axWMP);
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    LogApp.OutputErrorLog("MainForm", "ThreadShowMediaVoid", ex);
+                }
+                finally
+                {
+                    showMediaFlag = false;
+                }
+            }
+        }
+
+        #endregion
+
         #endregion
 
     }

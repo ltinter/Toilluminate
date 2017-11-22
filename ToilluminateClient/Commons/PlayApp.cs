@@ -42,6 +42,7 @@ namespace ToilluminateClient
         public static bool NowImageIsShow = false;
         public static bool NowMediaIsShow = false;
         public static bool NowMessageIsShow = false;
+        public static bool NowMessageIsRefresh = false;
 
         public static void Clear()
         {
