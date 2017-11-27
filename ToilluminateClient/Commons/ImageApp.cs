@@ -66,8 +66,17 @@ namespace ToilluminateClient
                 foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
                 {
                     dmItem.MoveMessage();
-                    g.DrawString(dmItem.Message, dmItem.Font, new SolidBrush(dmItem.Color), dmItem.Left, dmItem.Top);
+                    foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
+                    {
+                        if (dmItem.CheckStyleShow(dslItem))
+                        {
+                            g.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dmItem.GetStyleLeft(dslItem.LeftWidth), dmItem.GetStyleTop(dslItem.Heigth));
+                        }
+                    }
                 }
+
+
+
                 g.Dispose();
             }
             catch (Exception ex)
