@@ -5,6 +5,7 @@
     var playListgroup=[];
     var editGroupID;
     var selectedGroupID = null;
+    var selectedGroupIDparents;
     var groupTreeForPlayerEditID = null;
     var div_main = $("#div_main");
     var div_edit = $("#div_edit");
@@ -151,6 +152,7 @@
                 //存储当前选中的区域的名称
                 if (data.node) {
                     selectedGroupID = data.node.id;
+                    selectedGroupIDparents = data.node.parents
                     $.insmGroup('showPlayerDetail', { GroupID: selectedGroupID });
                 }
                 $("#radio_All").click();
@@ -343,8 +345,16 @@
                 return;
             };
             if (editGroupID == groupTreeForPlayerEditID) {
-                toastr.warning("Group ID have same ID!");
-                return;
+                if (selectedGroupIDparents && selectedGroupIDparents.length == 1) {
+                    if (selectedGroupIDparents[0] != '#') {
+                        toastr.warning("Group ID have same ID!");
+                        return;
+                    }
+                } else {
+                    toastr.warning("Group ID have same ID!");
+                    return;
+                }
+                
             };
             var Settings = {};
             Settings = {
@@ -577,6 +587,17 @@
                                 $.insmGroup('showPlaylistForced', { tempForcedPlayList: editplayerPlists[editplayerIds[0]], isGroup: false });
                                 div_main.hide();
                                 div_edit.show();
+                            } else {
+                                $.insmFramework('getForcedPlaylistByGroup', {
+                                    groupID: options.GroupID,
+                                    success: function (forcedPlayList) {
+                                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false, newgroup: options.newgroup });
+                                        div_main.hide();
+                                        div_edit.show();
+                                    },
+                                    error: function () {
+                                    }
+                                })
                             }
                         });
                     } else {
