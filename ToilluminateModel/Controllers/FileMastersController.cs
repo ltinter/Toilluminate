@@ -248,6 +248,8 @@ namespace ToilluminateModel.Controllers
                     fileType == ".mpg" ||
                     fileType == ".avi" ||
                     fileType == ".mpeg" ||
+                    fileType == ".flv" ||
+                    fileType == ".mkv" ||
                     fileType == ".mov") {
                     // save video file
                     file.SaveAs(filePath);
