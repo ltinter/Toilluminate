@@ -37,7 +37,7 @@
 
         form.validate({
             rules: {
-                email: {
+                username: {
                     required: true
                 },
                 password: {
