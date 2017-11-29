@@ -111,6 +111,7 @@ namespace ToilluminateClient
         private void MessageForm_Load(object sender, EventArgs e)
         {
             this.tmrMessage.Interval = 10;
+            
         }
         private void MessageForm_Shown(object sender, EventArgs e)
         {

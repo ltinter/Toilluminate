@@ -104,6 +104,9 @@ namespace ToilluminateClient
 
 
         #region " load play list "
+        /// <summary>
+        /// 
+        /// </summary>
         private static void DebugLoadPlayListInfo()
         {
 
@@ -121,14 +124,14 @@ namespace ToilluminateClient
                 ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Flip_LR, ImageShowStyle.Random };
 
                 string messageString1 = @"<p>hello world</p><br/><span style=""font-family: MS PGothic;font-size: 18px;""><b style=""""><I>今日は明日の全国に雨が降る。</I></b></span><br/><p>Welcome to use this system。</p>";
-                string messageString2 = @"<span style=""font-family: MS PGothic;font-size: 20px;""><b style="""">XXXXXXXXXXXXX</b></span><span style=""font-family: MS PGothic;font-size: 9px;"">YYYYYYY</span><span style=""font-family: MS PGothic;font-size: 18px;color: Blue;""><b style="""">ZZZZZZZZZ</b></span>";
+                string messageString2 = @"<p>AAAAAA<span style=""font-size: 18px; background-color: rgb(247, 173, 107);""><font face=""Comic Sans MS"" style=""""><b style=""font-style: italic;"">B</b><b style=""""><span style=""font-size: 10px;"">XXX<span style=""font-size: 18px;""><b><font color=""#ffd663"">yyy</font></b></span>XXX</span></b><b style=""font-style: italic;"">B</b></font></span>CCCC</p><p>nnn</p><p><font style=""""><span style=""background-color: rgb(255, 255, 255);"">11</span><span style=""background-color: rgb(148, 189, 123);"">1<span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder;""><span style=""font-size: 10px;"">333<span style=""font-size: 18px;""><span style=""font-weight: bolder;""><font color=""#ffd663"">444</font></span></span>333</span></span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span></span></font>555<br></p><p>qqq</p><p><font color=""#cee7f7"">GGG</font></p>";
                 string messageString3 = @"<p>AAAAAAAAAAAAAAA</p><p>BBBBBBBBBBB</p><p><<<<<<<<<<<<<<<<------------</p>";
 
                 //ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList1.ToList(), imageStyleList.ToList(), 2);
                 //pList1.PlayAddTemplete(itItem11);
 
 
-                MessageTempleteItem itItem12 = new MessageTempleteItem(messageString1, MessageShowStyle.Bottom, 2, 60);
+                //MessageTempleteItem itItem12 = new MessageTempleteItem(messageString1, MessageShowStyle.Bottom, 2, 60);
                 //pList1.PlayAddTemplete(itItem12);
 
                 MessageTempleteItem itItem13 = new MessageTempleteItem(messageString2, MessageShowStyle.Bottom, 2, 60);
@@ -1347,105 +1350,119 @@ namespace ToilluminateClient
             {
                 fileOrMessageListValue.Clear();
                 messageStyleListValue.Clear();
-                
+
                 string html = string.Format("<html>{0}</html>", htmlString);
                 HtmlAgilityPack.HtmlDocument htmlDoc = new HtmlAgilityPack.HtmlDocument();
                 htmlDoc.LoadHtml(htmlString);
+
+                MessageFontStyle mfStyle = new MessageFontStyle();
                 foreach (HtmlAgilityPack.HtmlNode node in htmlDoc.DocumentNode.ChildNodes)
                 {
-                    if (string.IsNullOrEmpty(node.InnerText)==false)
+                    ParseHtmlNodeStringFormat(node, mfStyle);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("PlayApp", "ParseHtmlStringFormat", ex);
+            }
+
+        }
+
+
+        private void ParseHtmlNodeStringFormat(HtmlAgilityPack.HtmlNode parentNode, MessageFontStyle parentMFStyle)
+        {
+            try
+            {
+               
+                MessageFontStyle mfStyle = new MessageFontStyle();
+                mfStyle.Copy(parentMFStyle);
+
+                if (parentNode.Name.ToLower() == "b")
+                {
+                    mfStyle.AddFontStyle(FontStyle.Bold);
+                }
+                else if (parentNode.Name.ToLower() == "i")
+                {
+                    mfStyle.AddFontStyle(FontStyle.Italic);
+                }
+
+
+                foreach (HtmlAgilityPack.HtmlAttribute att in parentNode.Attributes)
+                {
+                    string attName = att.Name.ToLower().Trim();
+                    if (attName == "style")
                     {
-                        fileOrMessageListValue.Add(node.InnerText);
-                        string fontFamily = "MS UI Gothic";
-                        string fontSize = "12";
-                        string fontColor = "Red";
-                        FontStyle fontStyle = FontStyle.Regular;
-
-                        foreach (HtmlAgilityPack.HtmlNode nodeChild in node.ChildNodes)
+                        string[] attList = att.Value.Split(';');
+                        foreach (string attValue in attList)
                         {
-                            if (nodeChild.Name.ToLower() == "b")
+                            string[] attValueList = attValue.Split(':');
+                            if (attValueList.Length > 1)
                             {
-                                fontStyle = fontStyle | FontStyle.Bold;
-                                foreach (HtmlAgilityPack.HtmlNode nodeChild2 in nodeChild.ChildNodes)
+                                string styleName = attValueList[0].ToLower().Trim();
+                                string styleValue = attValueList[1].Trim();
+                                if (styleName == "font-family")
                                 {
-                                    if (nodeChild2.Name.ToLower() == "b")
+                                    mfStyle.SetFontFamily(styleValue);
+                                }
+                                else if(styleName == "font-size")
+                                {
+                                    mfStyle.SetFontSize(Utility.ToInt(styleValue.Replace("px", "")));
+                                }
+                                else if (styleName == "font-weight")
+                                {
+                                    if (styleValue.ToLower() == "bolder")
                                     {
-                                        fontStyle = fontStyle | FontStyle.Bold;
-
-                                    }
-                                    else if (nodeChild2.Name.ToLower() == "i")
-                                    {
-                                        fontStyle = fontStyle | FontStyle.Italic;
+                                        mfStyle.AddFontStyle(FontStyle.Bold);
                                     }
                                 }
-                            }
-                            else if (nodeChild.Name.ToLower() == "i")
-                            {
-                                fontStyle = fontStyle | FontStyle.Italic;
-                                foreach (HtmlAgilityPack.HtmlNode nodeChild2 in nodeChild.ChildNodes)
+                                else if (styleName == "font-style")
                                 {
-                                    if (nodeChild2.Name.ToLower() == "b")
+                                    if (styleValue.ToLower() == "italic")
                                     {
-                                        fontStyle = fontStyle | FontStyle.Bold;
-
-                                    }
-                                    else if (nodeChild2.Name.ToLower() == "i")
-                                    {
-                                        fontStyle = fontStyle | FontStyle.Italic;
+                                        mfStyle.AddFontStyle(FontStyle.Italic);
                                     }
                                 }
                             }
                         }
+                    }
+                    else if (attName == "color")
+                    {
+                        mfStyle.SetFontColor(att.Value.Trim());
+                    }
+                    else if (attName == "face")
+                    {
+                        mfStyle.SetFontFamily(att.Value.Trim());
+                    }
+                }
 
-
-                        foreach (HtmlAgilityPack.HtmlAttribute att in node.Attributes)
-                        {
-                            if (att.Name.ToLower() == "style")
-                            {
-                                string[] attList = att.Value.Split(';');
-                                foreach (string attValue in attList)
-                                {
-                                    string[] attValueList = attValue.Split(':');
-                                    if (attValueList.Length > 1)
-                                    {
-                                        if (attValueList[0].ToLower() == "font-size")
-                                        {
-                                            fontSize = attValueList[1].ToLower().Replace("px", "");
-                                        }
-                                        else if (attValueList[0].ToLower() == "font-family")
-                                        {
-                                            fontFamily = attValueList[1];
-                                        }
-                                        else if (attValueList[0].ToLower() == "color")
-                                        {
-                                            fontColor = attValueList[1];
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                        Font font = new Font(fontFamily, Utility.ToInt(fontSize), fontStyle);
+                if (parentNode.ChildNodes.Count == 0)
+                {
+                    if (string.IsNullOrEmpty(parentNode.InnerText) == false)
+                    {
+                        fileOrMessageListValue.Add(parentNode.InnerText);
+                        
                         SizeF size = new SizeF();
-                        Color color = Color.Red;
-                        try
-                        {
-                            color = ColorTranslator.FromHtml(fontColor);                            
-                        }
-                        catch
-                        {
-                        }
 
                         using (Label label = new Label())
                         {
                             label.Padding = new Padding(0);
                             label.Margin = new Padding(0);
-                            size = label.CreateGraphics().MeasureString(node.InnerText, font);
+                            size = label.CreateGraphics().MeasureString(parentNode.InnerText, mfStyle.Font);
                         }
-                        
-                        messageStyleListValue.Add(new MessageStyle(font, color, (int)size.Width, (int)size.Height));
+
+                        messageStyleListValue.Add(new MessageStyle(mfStyle.Font, mfStyle.FontColor, (int)size.Width, (int)size.Height));
+                    }
+
+                }
+                else
+                {
+                    foreach (HtmlAgilityPack.HtmlNode node in parentNode.ChildNodes)
+                    {
+                        ParseHtmlNodeStringFormat(node, mfStyle);
                     }
                 }
+                
 
             }
             catch (Exception ex)
@@ -2049,12 +2066,118 @@ namespace ToilluminateClient
         }
     }
 
-    #region play状态类型
-    /// <summary>
-    /// play状态类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum PlayListStateType
+    public class MessageFontStyle
+    {
+
+        #region " variable "
+        string fontFamilyValue = Constants.MESSAGE_FONT_Family;
+        int fontSizeValue = Constants.MESSAGE_FONT_Size;
+        Color fontColorValue = Constants.MESSAGE_FONT_Color;
+        FontStyle fontStyleValue = FontStyle.Regular;
+        #endregion
+
+
+        #region " propert "
+
+        public string FontFamily
+        {
+            get
+            {
+                return fontFamilyValue;
+            }
+        }
+        public int FontSize
+        {
+            get
+            {
+                return fontSizeValue;
+            }
+        }
+        public Color FontColor
+        {
+            get
+            {
+                return fontColorValue;
+            }
+        }
+        public FontStyle FontStyle
+        {
+            get
+            {
+                return fontStyleValue;
+            }
+        }
+        public Font Font
+        {
+            get
+            {
+                return new Font(fontFamilyValue, fontSizeValue, fontStyleValue);
+            }
+        }
+        
+        #endregion
+
+        public MessageFontStyle()
+        {
+        }
+        public void Copy(MessageFontStyle mfStyle)
+        {
+            SetFontStyle(mfStyle.FontStyle);
+            SetFontFamily(mfStyle.FontFamily);
+            SetFontSize(mfStyle.FontSize);
+            SetFontColor(mfStyle.FontColor);
+        }
+        public void AddFontStyle(FontStyle fontStyle)
+        {
+            fontStyleValue = fontStyleValue | fontStyle;
+        }
+        public void SetFontStyle(FontStyle fontStyle)
+        {
+            fontStyleValue = fontStyle;
+        }
+        public void SetFontFamily(string fontFamily)
+        {
+            try
+            {
+                Font fontTemp = new Font(fontFamily, 10);
+                if (fontTemp.FontFamily.Name == fontFamily)
+                {
+                    fontFamilyValue = fontFamily;
+                }
+            }
+            catch
+            {
+
+            }
+        }
+        public void SetFontSize(int fontSize)
+        {
+            fontSizeValue = fontSize;
+        }
+        public void SetFontColor(string fontColor)
+        {
+            try
+            {
+                Color colorTemp = ColorTranslator.FromHtml(fontColor);
+
+                fontColorValue = colorTemp;
+            }
+            catch
+            {
+            }
+        }
+        public void SetFontColor(Color fontColor)
+        {
+            fontColorValue = fontColor;
+        }
+    }
+
+#region play状态类型
+/// <summary>
+/// play状态类型
+/// </summary>
+/// <remarks></remarks>
+public enum PlayListStateType
     {
         /// <summary>
         /// 等待
