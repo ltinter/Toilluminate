@@ -1,47 +1,80 @@
-﻿login = function (options) {
-    
-    $.insmFramework('login', {
-        username: 'aaa',
-        password: 'bbb',
-        success: function () {
-            document.write('ok');
-            // TODO: Fetch everything in an success array and while it until empty.
-            //while (_plugin.data.successCallbacks.length > 0) {
-            //    _plugin.data.successCallbacks[0]();
-            //    _plugin.data.successCallbacks.shift();
-            //}
-            //_plugin.htmlElements.usernameInput.val('');
-            //_plugin.htmlElements.passwordInput.val('');
-            //_plugin.htmlElements.loginButton.removeAttr('disabled');
-            //_plugin.htmlElements.usernameInput.removeAttr('disabled');
-            //_plugin.htmlElements.passwordInput.removeAttr('disabled');
-            //_plugin.data.loginInProgress = false;
+﻿(function ($) {
+    var selectedFileData = {};
+    var selectedFolderID = null;
+    var actionEnum = { "cut": "cutFile", "copy": "copyFile" };
+    var action = "";
+    var methods = {
+        init: function (options) {
+            selectedFolderID = options.selectedFolderID;
+            $('#datatable_file').prop("outerHTML", "<div class='m_datatable' id='datatable_file'></div>");
+            $.insmFramework('getFilesByFolder', {
+                FolderID: selectedFolderID,
+                success: function (fileData) {
+                    tableData.data.source.data = fileData;
+                    $("#datatable_file").data("datatable", $('#datatable_file').mDatatable(tableData));
+                },
+                error: function () {
+                    //options.error();
+                },
+            });
         },
-        denied: function () {
-            // Global vars
-            document.write('denied');
-        }, error: function (message) {
-            // Global vars
-            document.write('error');
+        uploadFile: function () {
+            if (!selectedFolderID) {
+                return false;
+            }
+        },
+
+
+
+
+    };
+
+    $("#m_login_signin_submit").click(function (e) {
+        
+        e.preventDefault();
+        var btn = $(this);
+        var form = $(this).closest('form');
+
+        form.validate({
+            rules: {
+                email: {
+                    required: true
+                },
+                password: {
+                    required: true
+                }
+            }
+        });
+
+        if (!form.valid()) {
+            return;
         }
+
+        btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
+
+        form.ajaxSubmit({
+            url: '',
+            success: function (response, status, xhr, $form) {
+                // similate 2s delay
+                setTimeout(function () {
+                    btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
+                    showErrorMsg(form, 'danger', 'Incorrect username or password. Please try again.');
+                }, 2000);
+                $("#mainDiv").show();
+                $("#divLogin").hide();
+            }
+        });
     });
 
-}
 
-close = function () {
-    var $this = $('body').eq(0);
-    var _plugin = $this.data('insmLogin');
-    _plugin.htmlElements.container.detach();
-    return $;
-}
-
-destroy= function (options) {
-    var $this = $('body').eq(0);
-    var _plugin = $this.data('insmLogin');
-
-    if (_plugin) {
-        $this.data('insmLogin', null);
-    }
-    // $this.children().detach();
-    return $;
-}
+    $.login = function (method) {
+        if (methods[method]) {
+            return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === 'object' || !method) {
+            return methods.init.apply(this, arguments);
+        } else {
+            $.error('Method ' + method + ' does not exist on $.insmGroup');
+        }
+        return null;
+    };
+})(jQuery);

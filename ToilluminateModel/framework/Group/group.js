@@ -587,17 +587,6 @@
                                 $.insmGroup('showPlaylistForced', { tempForcedPlayList: editplayerPlists[editplayerIds[0]], isGroup: false });
                                 div_main.hide();
                                 div_edit.show();
-                            } else {
-                                $.insmFramework('getForcedPlaylistByGroup', {
-                                    groupID: options.GroupID,
-                                    success: function (forcedPlayList) {
-                                        $.insmGroup('showPlaylistForced', { tempForcedPlayList: forcedPlayList, isGroup: false, newgroup: options.newgroup });
-                                        div_main.hide();
-                                        div_edit.show();
-                                    },
-                                    error: function () {
-                                    }
-                                })
                             }
                         });
                     } else {
