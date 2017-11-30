@@ -1,19 +1,12 @@
-﻿/***********************************************************************
- * Copyright(c) 2015 SUNCREER Co.,ltd. All rights reserved. / Confidential
- * システム名称　：WebApiInfo
- * プログラム名称：データアクセス
- * 作成日・作成者：2017/11/14  張鵬
- ***********************************************************************/
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ToilluminateClient
+namespace ToilluminateApp
 {
     public static class WebApiInfo
     {
@@ -74,7 +67,7 @@ namespace ToilluminateClient
         {
             try
             {
-                string file = Utility.GetFullFileName(VariableInfo.FilesPath, Path.GetFileName(url));
+                string file = VariableInfo.GetFullFileName(VariableInfo.FilesPath, Path.GetFileName(url));
                 if (File.Exists(file) == false)
                 {
                     WebClient client = new WebClient();

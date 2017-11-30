@@ -361,18 +361,18 @@ namespace ToilluminateClient
     /// 填充模式
     /// </summary>
     /// <remarks></remarks>
-    public enum FillMode
+    public enum FillOptionStyle
     {
+        /// <summary>
+        /// 原比例
+        /// </summary>
+        [EnumDescription("原比例")]
+        None = 0,
         /// <summary>
         /// 平铺
         /// </summary>
         [EnumDescription("平铺")]
-        Fill = 0,
-        /// <summary>
-        /// 居中
-        /// </summary>
-        [EnumDescription("居中")]
-        Center = 1,
+        Fill = 1,
         /// <summary>
         /// 缩放
         /// </summary>

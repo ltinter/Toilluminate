@@ -119,22 +119,22 @@ namespace ToilluminateClient
                 PlayList pList1 = new PlayList(1, true, true, 600);
                 PlayApp.PlayListArray.Add(pList1);
 
-                string[] imageFileList1 = new string[] { @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A03.jpg" };
+                string[] imageFileList1 = new string[] {  @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A03.jpg" };
                 string[] imageFileList2 = new string[] { @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg", @"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg" };
-                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Flip_LR, ImageShowStyle.Random };
+                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.DownToTop, ImageShowStyle.Random };
 
                 string messageString1 = @"<p>hello world</p><br/><span style=""font-family: MS PGothic;font-size: 18px;""><b style=""""><I>今日は明日の全国に雨が降る。</I></b></span><br/><p>Welcome to use this system。</p>";
                 string messageString2 = @"<p>AAAAAA<span style=""font-size: 18px; background-color: rgb(247, 173, 107);""><font face=""Comic Sans MS"" style=""""><b style=""font-style: italic;"">B</b><b style=""""><span style=""font-size: 10px;"">XXX<span style=""font-size: 18px;""><b><font color=""#ffd663"">yyy</font></b></span>XXX</span></b><b style=""font-style: italic;"">B</b></font></span>CCCC</p><p>nnn</p><p><font style=""""><span style=""background-color: rgb(255, 255, 255);"">11</span><span style=""background-color: rgb(148, 189, 123);"">1<span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder;""><span style=""font-size: 10px;"">333<span style=""font-size: 18px;""><span style=""font-weight: bolder;""><font color=""#ffd663"">444</font></span></span>333</span></span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span></span></font>555<br></p><p>qqq</p><p><font color=""#cee7f7"">GGG</font></p>";
                 string messageString3 = @"<p>AAAAAAAAAAAAAAA</p><p>BBBBBBBBBBB</p><p><<<<<<<<<<<<<<<<------------</p>";
 
-                //ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList1.ToList(), imageStyleList.ToList(), 2);
-                //pList1.PlayAddTemplete(itItem11);
+                ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList1.ToList(), imageStyleList.ToList(), 2, FillOptionStyle.Fill);
+                pList1.PlayAddTemplete(itItem11);
 
 
-                //MessageTempleteItem itItem12 = new MessageTempleteItem(messageString1, MessageShowStyle.Bottom, 2, 60);
-                //pList1.PlayAddTemplete(itItem12);
+                MessageTempleteItem itItem12 = new MessageTempleteItem(messageString1, MessageShowStyle.Bottom, 300, 2);
+                pList1.PlayAddTemplete(itItem12);
 
-                MessageTempleteItem itItem13 = new MessageTempleteItem(messageString2, MessageShowStyle.Bottom, 2, 60);
+                MessageTempleteItem itItem13 = new MessageTempleteItem(messageString2, MessageShowStyle.Bottom, 180, 5);
                 pList1.PlayAddTemplete(itItem13);
 
 
@@ -151,7 +151,7 @@ namespace ToilluminateClient
                 //pList2.PlayAddTemplete(itItem21);
 
                 
-                MessageTempleteItem itItem22 = new MessageTempleteItem(messageString3, MessageShowStyle.Top, 2, 10);
+                MessageTempleteItem itItem22 = new MessageTempleteItem(messageString3, MessageShowStyle.Top, 0, 0);
                 pList2.PlayAddTemplete(itItem22);
 
 
@@ -647,7 +647,9 @@ namespace ToilluminateClient
                                 imageStyleList.Add(ImageShowStyle.Random);
                             }
 
-                            ImageTempleteItem itItem = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), Utility.ToInt(pliTemlete.DisplayIntevalSeconds));
+                            FillOptionStyle fillOption = FillOptionStyle.Fill;
+
+                            ImageTempleteItem itItem = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), Utility.ToInt(pliTemlete.DisplayIntevalSeconds), fillOption);
 
                             this.PlayAddTemplete(itItem);
                             #endregion
@@ -988,6 +990,8 @@ namespace ToilluminateClient
 
         protected ZoomOptionStyle zoomOptionValue = ZoomOptionStyle.None;
 
+        protected FillOptionStyle fillOptionValue = FillOptionStyle.None;
+
         protected MessageShowStyle messageShowStyleValue = MessageShowStyle.Bottom;
 
         protected List<MessageStyle> messageStyleListValue = new List<MessageStyle>() { };
@@ -1117,9 +1121,10 @@ namespace ToilluminateClient
             this.zoomOptionValue = zoomOption;
         }
 
-        public TempleteItem(List<string> fileList, List<ImageShowStyle> imageStyleList, int intervalSecond)
+        public TempleteItem(List<string> fileList, List<ImageShowStyle> imageStyleList, int intervalSecond,FillOptionStyle fillOption)
         {
             templeteTypeValue = TempleteItemType.Image;
+            fillOptionValue = fillOption;
             foreach (string file in fileList)
             {
                 fileOrMessageListValue.Add(file);
@@ -1524,7 +1529,7 @@ namespace ToilluminateClient
 
         #endregion
 
-        public ImageTempleteItem(List<string> fileList, List<ImageShowStyle> imageStyleList, int intervalSecond) : base(fileList, imageStyleList, intervalSecond)
+        public ImageTempleteItem(List<string> fileList, List<ImageShowStyle> imageStyleList, int intervalSecond, FillOptionStyle fillOption) : base(fileList, imageStyleList, intervalSecond, fillOption)
         {
         }
         #region " void and function "
@@ -1558,7 +1563,7 @@ namespace ToilluminateClient
 
                     nowBitmap = new Bitmap(nowImageFile);
 
-                    nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size);
+                    nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size, fillOptionValue);
 
                     ImageApp.ShowBitmap(nowBitmap, picImage, this.CurrentShowStyle);
 
@@ -1699,7 +1704,14 @@ namespace ToilluminateClient
                 return zoomOptionValue;
             }
         }
-
+        public FillOptionStyle FillOption
+        {
+            get
+            {
+                return fillOptionValue;
+            }
+        }
+        
         #endregion
 
         public MediaTempleteItem(string file, ZoomOptionStyle zoomOption) : base(file, zoomOption)

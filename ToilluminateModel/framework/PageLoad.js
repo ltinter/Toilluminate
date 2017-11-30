@@ -176,15 +176,15 @@ var textTemplateEditorInit = function () {
 }
 $(document).ready(function ()
 {
-    mApp.blockPage({
-        overlayColor: '#000000',
-        type: 'loader',
-        state: 'success',
-        size: 'lg'
-    });
-    playerStatusShare();
+    //mApp.blockPage({
+    //    overlayColor: '#000000',
+    //    type: 'loader',
+    //    state: 'success',
+    //    size: 'lg'
+    //});
+    //playerStatusShare();
     $.localize({});
-    $.insmGroup({});
+    //$.insmGroup({});
     initTimeOptionsInPlayerEdit();
     
     initSlideEffectDropdown();

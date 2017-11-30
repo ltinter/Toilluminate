@@ -26,35 +26,8 @@
     var temp_GroupTreeData;
     var firstPageload = true;
     
-    var groupJstreeData = {
-        "core": {
-            "themes": {
-                "responsive": true
-            },
-            // so that create works
-            "check_callback": true,
-            'data': {
-                url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID',
-                dataFilter: function (data) {
-                    temp_GroupTreeData = JSON.parse(data);
-                    return data;
-                }
-            }
-        },
-        "types": {
-            "default": {
-                "icon": "fa fa-sitemap m--font-success"
-            },
-            "file": {
-                "icon": "fa fa-sitemap m--font-success"
-            }
-        },
-        "state": {
-            "key": "demo2"
-        },
-        "plugins": ["dnd", "types"]
-
-    };
+    
+    
     var methods = {
         init: function (options) {
             // Global vars
@@ -96,12 +69,7 @@
                 };
                 $this.data('insmGroup', _plugin);
             }
-            $.insmGroup('initGroupTree');
-            div_edit.hide();
-            $.insmGroup('defaultDataSet');
-            $("#PlayerDetail").css('display', 'none');
-
-            $("#button_save").text($.localize('translate', "Save"));
+            
             return $this;
         },
         editgroup: function (options) {
@@ -124,7 +92,43 @@
                 $(item).jstree(true).refresh();
             });
         },
-        initGroupTree: function () {
+        initGroupTree: function (options) {
+            var groupJstreeData = {
+                "core": {
+                    "themes": {
+                        "responsive": true
+                    },
+                    // so that create works
+                    "check_callback": true,
+                    'data': {
+                        url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/5',
+                            //+ options.userGroupId,
+                        dataFilter: function (data) {
+                            temp_GroupTreeData = JSON.parse(data);
+                            return data;
+                        }
+                    }
+                },
+                "types": {
+                    "default": {
+                        "icon": "fa fa-sitemap m--font-success"
+                    },
+                    "file": {
+                        "icon": "fa fa-sitemap m--font-success"
+                    }
+                },
+                "state": {
+                    "key": "demo2"
+                },
+                "plugins": ["dnd", "types"]
+
+            };
+            div_edit.hide();
+            $.insmGroup('defaultDataSet');
+            $("#PlayerDetail").css('display', 'none');
+
+            $("#button_save").text($.localize('translate', "Save"));
+
             var tree = $('.tree-demo.groupTree');
             tree.jstree(groupJstreeData);
 
@@ -143,10 +147,6 @@
                     firstPageload = false;
                 }
             })
-
-            //if (selectedGroupID != null) {
-            //    div_groupTree.jstree('select_node', 'ul > li:first');
-            //}
 
             div_groupTree.on("changed.jstree", function (e, data) {
                 //存储当前选中的区域的名称
