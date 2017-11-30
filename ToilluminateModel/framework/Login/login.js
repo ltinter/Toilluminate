@@ -54,14 +54,16 @@
 
 
         $.insmFramework('userlogin', {
-            userName: 'test',
+            userName: 'test2',
             password: 'admin',
-            success: function (response, status, xhr, $form) {
+            success: function (response, status, xhr, $form,data) {
                 // similate 2s delay
                 setTimeout(function () {
                     btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
-                    showErrorMsg(form, 'danger', 'Incorrect username or password. Please try again.');
+                    //showErrorMsg(form, 'danger', 'Incorrect username or password. Please try again.');
                 }, 2000);
+                $.insmGroup('initGroupTree',{userGroupId:response.GroupID});
+                
                 $("#mainDiv").show();
                 $("#divLogin").hide();
             }
@@ -125,7 +127,7 @@
 
             $.insmFramework('creatUser', {
                 userName: 'test',
-                groupID: 1,
+                groupID: 5,
                 password: 'admin',
                 emailAddress: '',
                 comments: '',

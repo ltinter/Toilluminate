@@ -94,6 +94,7 @@
                 create: function () {
                     UserName: "";
                     Password: '';
+                    return User;
                 }
             }
             var loginUser = User.create();
