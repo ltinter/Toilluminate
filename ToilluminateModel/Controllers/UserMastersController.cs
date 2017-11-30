@@ -83,6 +83,7 @@ namespace ToilluminateModel.Controllers
 
             userMaster.UpdateDate = DateTime.Now;
             userMaster.InsertDate = DateTime.Now;
+            userMaster.Password = PublicMethods.MD5(userMaster.Password);
             db.UserMaster.Add(userMaster);
             await db.SaveChangesAsync();
 
@@ -103,6 +104,18 @@ namespace ToilluminateModel.Controllers
             await db.SaveChangesAsync();
 
             return Ok(userMaster);
+        }
+
+        [HttpPost, Route("api/UserMasters/MatchUserInfo")]
+        public async Task<IHttpActionResult> MatchUserInfo(UserMaster userMaster)
+        {
+            List<UserMaster> userList = await db.UserMaster.Where(a => a.UserName == userMaster.UserName && a.Password == PublicMethods.MD5(userMaster.Password)).ToListAsync();
+            if (userList.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(userList[0]);
         }
 
         protected override void Dispose(bool disposing)

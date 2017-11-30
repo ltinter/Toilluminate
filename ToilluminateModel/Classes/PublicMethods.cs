@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Security;
 
 namespace ToilluminateModel
 {
@@ -85,6 +86,12 @@ namespace ToilluminateModel
                 }
             }
             return true;
+        }
+        public static string MD5(string source)
+        {
+
+            return FormsAuthentication.HashPasswordForStoringInConfigFile(source, "MD5"); ;
+
         }
     }
 }

@@ -33,7 +33,7 @@
             // so that create works
             "check_callback": true,
             'data': {
-                url: 'api/GroupMasters/GetJSTreeData',
+                url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID',
                 dataFilter: function (data) {
                     temp_GroupTreeData = JSON.parse(data);
                     return data;
