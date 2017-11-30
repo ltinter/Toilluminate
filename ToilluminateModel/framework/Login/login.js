@@ -52,8 +52,10 @@
 
         btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
 
-        form.ajaxSubmit({
-            url: '',
+
+        $.insmFramework('userlogin', {
+            userName: 'test',
+            password: 'admin',
             success: function (response, status, xhr, $form) {
                 // similate 2s delay
                 setTimeout(function () {
@@ -63,7 +65,20 @@
                 $("#mainDiv").show();
                 $("#divLogin").hide();
             }
-        });
+        })
+
+        //form.ajaxSubmit({
+        //    url: '',
+        //    success: function (response, status, xhr, $form) {
+        //        // similate 2s delay
+        //        setTimeout(function () {
+        //            btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
+        //            showErrorMsg(form, 'danger', 'Incorrect username or password. Please try again.');
+        //        }, 2000);
+        //        $("#mainDiv").show();
+        //        $("#divLogin").hide();
+        //    }
+        //});
     });
 
     $('#m_login_signup').click(function (e) {
