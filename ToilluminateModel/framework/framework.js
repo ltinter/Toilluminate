@@ -86,16 +86,36 @@
             });
             return $this;
         },
-        loggedIn: function (options) {
+        userlogin: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
 
-            if ($.isEmptyObject(_plugin.settings.user)) {
-                return false;
+            var User = {
+                create: function () {
+                    UserName: "";
+                    Password: '';
+                }
             }
-            else {
-                return true;
+            var loginUser = User.create();
+
+            loginUser.UserName = options.userName;
+            loginUser.Password = options.password;
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/UserMasters/MatchUserInfo',
+                format: 'json',
+                data: JSON.stringify(loginUser),
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
             }
+            return $.insmFramework('ajax', ajaxOptions);
         },
         creatUser: function (options) {
             var $this = $('html').eq(0);
