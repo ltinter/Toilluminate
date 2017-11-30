@@ -109,7 +109,8 @@ namespace ToilluminateModel.Controllers
         [HttpPost, Route("api/UserMasters/MatchUserInfo")]
         public async Task<IHttpActionResult> MatchUserInfo(UserMaster userMaster)
         {
-            List<UserMaster> userList = await db.UserMaster.Where(a => a.UserName == userMaster.UserName && a.Password == PublicMethods.MD5(userMaster.Password)).ToListAsync();
+            var pwForMatch = PublicMethods.MD5(userMaster.Password);
+            List<UserMaster> userList = await db.UserMaster.Where(a => a.UserName == userMaster.UserName && a.Password == pwForMatch).ToListAsync();
             if (userList.Count == 0)
             {
                 return NotFound();
