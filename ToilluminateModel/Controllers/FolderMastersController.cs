@@ -111,8 +111,8 @@ namespace ToilluminateModel.Controllers
             return Ok(folderMaster);
         }
 
-        [HttpGet, Route("api/FolderMasters/GetJSTreeData/{GroupID}")]
-        public async Task<IList<DataModel>> GetJSTreeData(int GroupID)
+        [HttpGet, Route("api/FolderMasters/GetFolderJSTreeDataByGroupID/{GroupID}")]
+        public async Task<IList<DataModel>> GetFolderJSTreeDataByGroupID(int GroupID)
         {
             List<DataModel> jdmList = new List<DataModel>();
             DataModel jdm;

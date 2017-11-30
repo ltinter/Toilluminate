@@ -31,9 +31,6 @@ namespace ToilluminateModel
         public virtual DbSet<PlayerMaster> PlayerMaster { get; set; }
         public virtual DbSet<PlayerPlayListLinkTable> PlayerPlayListLinkTable { get; set; }
         public virtual DbSet<PlayListMaster> PlayListMaster { get; set; }
-        public virtual DbSet<TemplatTypeMaster> TemplatTypeMaster { get; set; }
-        public virtual DbSet<TempleFileLinkTable> TempleFileLinkTable { get; set; }
-        public virtual DbSet<TempletMaster> TempletMaster { get; set; }
         public virtual DbSet<UserMaster> UserMaster { get; set; }
         public virtual DbSet<GroupPlayListLinkTable> GroupPlayListLinkTable { get; set; }
     }

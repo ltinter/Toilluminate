@@ -26,5 +26,6 @@ namespace ToilluminateModel
         public Nullable<System.DateTime> InsertDate { get; set; }
         public string ErrorFlag { get; set; }
         public string PlayerLog { get; set; }
+        public Nullable<bool> UseFlag { get; set; }
     }
 }
