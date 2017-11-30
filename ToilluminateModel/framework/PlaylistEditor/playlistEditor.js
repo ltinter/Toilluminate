@@ -467,7 +467,7 @@
         var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
         var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
         var div_li = $('<li />').addClass('m-portlet__nav-item');
-        var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+        var href = $('<a href="#"/>').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
         div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemPicture<br>(Picture)')));
@@ -597,7 +597,7 @@
         var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
         var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
         var div_li = $('<li />').addClass('m-portlet__nav-item');
-        var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+        var href = $('<a href="#"/>').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
         div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemText<br>(Text)')));
@@ -723,7 +723,7 @@
         var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
         var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
         var div_li = $('<li />').addClass('m-portlet__nav-item');
-        var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+        var href = $('<a href="#"/>').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
         var href_i = $('<i />').addClass("la la-close");
         span_head_title.append(span_i);
         div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemVideo<br>(video)')));

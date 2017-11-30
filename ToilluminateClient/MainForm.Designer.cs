@@ -30,29 +30,39 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.pnlShow = new System.Windows.Forms.Panel();
+            this.pnlShowImage = new System.Windows.Forms.Panel();
+            this.pnlShowMedia = new System.Windows.Forms.Panel();
             this.picImage = new System.Windows.Forms.PictureBox();
             this.tmrImage = new System.Windows.Forms.Timer(this.components);
             this.tmrPlayList = new System.Windows.Forms.Timer(this.components);
             this.tmrMedia = new System.Windows.Forms.Timer(this.components);
             this.tmrTemplete = new System.Windows.Forms.Timer(this.components);
-            this.chkRefresh = new System.Windows.Forms.CheckBox();
             this.axWMP = new AxWMPLib.AxWindowsMediaPlayer();
-            this.pnlShow.SuspendLayout();
+            this.pnlShowImage.SuspendLayout();
+            this.pnlShowMedia.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWMP)).BeginInit();
             this.SuspendLayout();
             // 
-            // pnlShow
+            // pnlShowImage
             // 
-            this.pnlShow.BackColor = System.Drawing.Color.White;
-            this.pnlShow.Controls.Add(this.axWMP);
-            this.pnlShow.Controls.Add(this.picImage);
-            this.pnlShow.Location = new System.Drawing.Point(0, 0);
-            this.pnlShow.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlShow.Name = "pnlShow";
-            this.pnlShow.Size = new System.Drawing.Size(620, 392);
-            this.pnlShow.TabIndex = 0;
+            this.pnlShowImage.BackColor = System.Drawing.Color.White;
+            this.pnlShowImage.Controls.Add(this.picImage);
+            this.pnlShowImage.Location = new System.Drawing.Point(0, 0);
+            this.pnlShowImage.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlShowImage.Name = "pnlShowImage";
+            this.pnlShowImage.Size = new System.Drawing.Size(620, 392);
+            this.pnlShowImage.TabIndex = 0;
+            // 
+            // pnlShowMedia
+            // 
+            this.pnlShowMedia.BackColor = System.Drawing.Color.White;
+            this.pnlShowMedia.Controls.Add(this.axWMP);
+            this.pnlShowMedia.Location = new System.Drawing.Point(0, 0);
+            this.pnlShowMedia.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlShowMedia.Name = "pnlShowMedia";
+            this.pnlShowMedia.Size = new System.Drawing.Size(620, 392);
+            this.pnlShowMedia.TabIndex = 1;
             // 
             // picImage
             // 
@@ -81,18 +91,6 @@
             this.tmrTemplete.Interval = 500;
             this.tmrTemplete.Tick += new System.EventHandler(this.tmrTemplete_Tick);
             // 
-            // chkRefresh
-            // 
-            this.chkRefresh.AutoSize = true;
-            this.chkRefresh.Location = new System.Drawing.Point(762, 343);
-            this.chkRefresh.Name = "chkRefresh";
-            this.chkRefresh.Size = new System.Drawing.Size(96, 16);
-            this.chkRefresh.TabIndex = 2;
-            this.chkRefresh.Text = "新しいPlayList";
-            this.chkRefresh.UseVisualStyleBackColor = true;
-            this.chkRefresh.Visible = false;
-            this.chkRefresh.CheckedChanged += new System.EventHandler(this.chkRefresh_CheckedChanged);
-            // 
             // axWMP
             // 
             this.axWMP.Enabled = true;
@@ -107,13 +105,14 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1013, 518);
-            this.Controls.Add(this.chkRefresh);
-            this.Controls.Add(this.pnlShow);
+            this.Controls.Add(this.pnlShowImage);
+            this.Controls.Add(this.pnlShowMedia);
             this.Name = "MainForm";
             this.Text = "表示情報";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Move += new System.EventHandler(this.MainForm_Move);
-            this.pnlShow.ResumeLayout(false);
+            this.pnlShowImage.ResumeLayout(false);
+            this.pnlShowMedia.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWMP)).EndInit();
             this.ResumeLayout(false);
@@ -123,13 +122,13 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel pnlShow;
+        private System.Windows.Forms.Panel pnlShowImage;
+        private System.Windows.Forms.Panel pnlShowMedia;
         private System.Windows.Forms.PictureBox picImage;
         private System.Windows.Forms.Timer tmrImage;
         private System.Windows.Forms.Timer tmrPlayList;
         private System.Windows.Forms.Timer tmrMedia;
         private System.Windows.Forms.Timer tmrTemplete;
-        private System.Windows.Forms.CheckBox chkRefresh;
         private AxWMPLib.AxWindowsMediaPlayer axWMP;
     }
 }

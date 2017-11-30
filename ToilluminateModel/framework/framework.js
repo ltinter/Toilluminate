@@ -195,7 +195,12 @@
                 newGroup.GroupID = options.groupID;
             }
             newGroup.GroupName = options.newGroupName;
-            newGroup.GroupParentID = options.newGroupNameParentID;
+            if (options.newGroupNameParentID == '#') {
+                newGroup.GroupParentID = '';
+            } else {
+                newGroup.GroupParentID = options.newGroupNameParentID;
+            }
+            
             newGroup.ActiveFlag = options.active;
             newGroup.OnlineFlag = options.onlineUnits;
             newGroup.Comments = options.note;

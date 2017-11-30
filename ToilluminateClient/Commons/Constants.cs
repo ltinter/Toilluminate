@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -76,7 +77,20 @@ namespace ToilluminateClient
         /// </summary>
         public static readonly int READ_FILE_BYTE_MAX_LENGTH = 3096;
         #endregion Output
-        
+
+
+        #region Message 
+#if DEBUG
+        public static readonly string MESSAGE_FONT_Family = "poppins";
+        public static readonly int MESSAGE_FONT_Size = 12;
+        public static readonly Color MESSAGE_FONT_Color = Color.Red;
+#else
+        public static readonly string MESSAGE_FONT_Family = "poppins";
+        public static readonly int MESSAGE_FONT_Size = 14;
+        public static readonly Color MESSAGE_FONT_Color = Color.Black;
+#endif
+        #endregion Message
+
         #region パスワード
         public const int PASSWORD_LENGTH_MIN = 7;
         
@@ -85,9 +99,9 @@ namespace ToilluminateClient
         /// </summary>
         public const string CRYPT_KEY_FOR_CLIENT_LOGIN = "1710";
 
-        #endregion
+#endregion
 
-        #region API Function
+#region API Function
 
         /// <summary>
         /// 播放器发送心跳包
@@ -105,11 +119,11 @@ namespace ToilluminateClient
         public const string API_PLAYERMASTERS_GET_STATUS = "api/PlayerMasters/GetPlayerStatusReportData";
 
 
-        #endregion
+#endregion
 
-        #region "Default Dictionary"
+#region "Default Dictionary"
 
-        #region "Default Dictionary Message"
+#region "Default Dictionary Message"
         /// <summary>
         /// Message
         /// </summary>
@@ -174,9 +188,9 @@ namespace ToilluminateClient
                                           , new List<string> { "Picture File", "写真ファイル" }
                                             };
 
-        #endregion
+#endregion
 
-        #region "Default Dictionary Client"
+#region "Default Dictionary Client"
         /// <summary>
         /// Message
         /// </summary>
@@ -250,9 +264,9 @@ namespace ToilluminateClient
                                             };
 
 
-        #endregion
+#endregion
 
-        #region "Default Dictionary Enum"
+#region "Default Dictionary Enum"
         /// <summary>
         /// Message
         /// </summary>
@@ -260,14 +274,14 @@ namespace ToilluminateClient
                                             new List<string> { "male", "Man" }
                                           , new List<string> { "female", "Woman" } };
 
-        #endregion
+#endregion
         
-        #endregion
+#endregion
 
     }
-    #endregion
+#endregion
 
-    #region タイムアウト時間
+#region タイムアウト時間
     /// <summary>
     /// タイムアウト時間
     /// </summary>
@@ -280,10 +294,10 @@ namespace ToilluminateClient
         // 执行
         public static int Execting = 5;
     }
-    #endregion
+#endregion
 
 
-    #region ComboItem対象
+#region ComboItem対象
     public class ComboItem
     {
         public string Text = "";
@@ -300,9 +314,9 @@ namespace ToilluminateClient
             return Text;
         }
     }
-    #endregion
+#endregion
         
-    #region 属性は存在種別
+#region 属性は存在種別
     /// <summary>
     /// 属性は存在種別
     /// </summary>
@@ -319,9 +333,9 @@ namespace ToilluminateClient
         [EnumDescription("Yes")]
         True = 1,
     }
-    #endregion
+#endregion
 
-    #region 認証結果
+#region 認証結果
     /// <summary>
     /// 認証結果列挙
     /// </summary>
@@ -340,9 +354,9 @@ namespace ToilluminateClient
         /// </summary>
         Error,
     }
-    #endregion
+#endregion
     
-    #region 填充模式
+#region 填充模式
     /// <summary>
     /// 填充模式
     /// </summary>
@@ -366,9 +380,9 @@ namespace ToilluminateClient
         Zoom = 2,
     }
 
-    #endregion
+#endregion
 
-    #region 图片显示模式
+#region 图片显示模式
 
     /// <summary>
     /// 图片显示模式
@@ -442,9 +456,9 @@ namespace ToilluminateClient
         /// </summary>
         None = 99,
     }
-    #endregion
+#endregion
 
-    #region 特效模式
+#region 特效模式
     /// <summary>
     /// 特效模式
     /// </summary>
@@ -476,10 +490,10 @@ namespace ToilluminateClient
         //Docking_DT = 14,
 
     }
-    #endregion
+#endregion
 
 
-    #region 信息显示模式
+#region 信息显示模式
 
     /// <summary>
     /// 信息显示模式
@@ -504,10 +518,10 @@ namespace ToilluminateClient
         Random = 99,
        
     }
-    #endregion
+#endregion
 
 
-    #region 视频显示模式
+#region 视频显示模式
 
     /// <summary>
     /// 视频显示模式
@@ -527,6 +541,6 @@ namespace ToilluminateClient
         /// </summary>
         Full2 = 2,
     }
-    #endregion
+#endregion
 }
 

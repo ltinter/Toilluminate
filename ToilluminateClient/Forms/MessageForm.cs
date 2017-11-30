@@ -111,6 +111,7 @@ namespace ToilluminateClient
         private void MessageForm_Load(object sender, EventArgs e)
         {
             this.tmrMessage.Interval = 10;
+            
         }
         private void MessageForm_Shown(object sender, EventArgs e)
         {
@@ -149,23 +150,14 @@ namespace ToilluminateClient
                 {
                     foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
                     {
-                        mtItem.ExecuteStart();
                         if (mtItem.TempleteState != TempleteStateType.Stop)
                         {
-                            if (mtItem.IntervalSecond == 0)
+                            if (mtItem.TempleteState == TempleteStateType.Wait)
                             {
-                                while (mtItem.CurrentIsChanged())
-                                {
-                                    ShowMessage(mtItem);
-                                }
+                                mtItem.ExecuteStart();
                             }
-                            else
-                            {
-                                if (mtItem.CurrentIsChanged())
-                                {
-                                    ShowMessage(mtItem);
-                                }
-                            }
+                            mtItem.ShowCurrent(this); 
+                            break;
                         }
                     }
                 }
@@ -184,19 +176,7 @@ namespace ToilluminateClient
         /// 显示信息
         /// </summary>
         /// <param name="mtItem"></param>
-        private void ShowMessage(MessageTempleteItem mtItem)
-        {
-            try
-            {
-
-                mtItem.ShowCurrent(this);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "信息提示");
-            }
-        }
+      
         private void CloseMessage()
         {
             try

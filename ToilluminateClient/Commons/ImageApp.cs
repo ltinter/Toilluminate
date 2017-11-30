@@ -62,12 +62,21 @@ namespace ToilluminateClient
                 LogApp.OutputProcessLog("ImageApp", "MyDrawMessage", "All Message");
                 PlayApp.DrawMessageFlag = true;
                 g = messageForm.CreateGraphics();
+                g.Clear(BackClearColor);
                 foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
                 {
-                    g.DrawString(dmItem.Message, dmItem.Font, new SolidBrush(BackClearColor), dmItem.Left, dmItem.Top);
                     dmItem.MoveMessage();
-                    g.DrawString(dmItem.Message, dmItem.Font, new SolidBrush(dmItem.Color), dmItem.Left, dmItem.Top);
+                    foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
+                    {
+                        if (dmItem.CheckStyleShow(dslItem))
+                        {
+                            g.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dmItem.GetStyleLeft(dslItem.LeftWidth), dmItem.GetStyleTop(dslItem.Heigth));
+                        }
+                    }
                 }
+
+
+
                 g.Dispose();
             }
             catch (Exception ex)
@@ -1151,6 +1160,7 @@ namespace ToilluminateClient
             ImageShowStyle reStyle = ImageShowStyle.None;
             List<int> disEnumValueList = new List<int> {
                     ImageShowStyle.Random.GetHashCode()
+                    , ImageShowStyle.Rotate.GetHashCode()
                     , ImageShowStyle.Gradient.GetHashCode()
                     , ImageShowStyle.Docking_LR.GetHashCode()
                     , ImageShowStyle.Docking_TD.GetHashCode()
