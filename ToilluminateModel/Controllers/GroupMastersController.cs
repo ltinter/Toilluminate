@@ -123,7 +123,7 @@ namespace ToilluminateModel.Controllers
                 jdm = new DataModel();
                 jdm.id = gm.GroupID.ToString();
                 jdm.text = gm.GroupName;
-                jdm.parent = gm.GroupParentID == null?"#":gm.GroupParentID.ToString();
+                jdm.parent = gm.GroupID == GroupID ? "#":gm.GroupParentID.ToString();
                 jdm.state = sfjm;
                 jdm.li_attr = gm;
                 jdmList.Add(jdm);

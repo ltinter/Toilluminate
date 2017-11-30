@@ -119,6 +119,10 @@
             <input type="button" value="updatePlaylist" onclick="updatePlaylist();" />
             <div id="rst2" />
         </div>
+        <div>
+            <input type="button" value="GetGroupJSTreeDataWithChildByGroupID" onclick="GetGroupJSTreeDataWithChildByGroupID();" />
+            <div id="rst2" />
+        </div>
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
@@ -348,6 +352,19 @@
         function GetOwnPlayListWithInheritByGroupID() {
             $.ajax({
                 url: 'api/PlayListMasters/GetOwnPlayListWithInheritByGroupID/2',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetGroupJSTreeDataWithChildByGroupID() {
+            $.ajax({
+                url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/5',
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
