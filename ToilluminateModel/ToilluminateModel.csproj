@@ -192,15 +192,6 @@
     <Compile Include="Controllers\PlayListMastersController.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Controllers\TemplatTypeMastersController.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Controllers\TempleFileLinkTablesController.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Controllers\TempletMastersController.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
     <Compile Include="Controllers\UserMastersController.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
@@ -233,15 +224,6 @@
       <DependentUpon>Toilluminate.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TemplatTypeMaster.cs">
-      <DependentUpon>Toilluminate.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TempleFileLinkTable.cs">
-      <DependentUpon>Toilluminate.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TempletMaster.cs">
-      <DependentUpon>Toilluminate.tt</DependentUpon>
-    </Compile>
     <Compile Include="Toilluminate.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

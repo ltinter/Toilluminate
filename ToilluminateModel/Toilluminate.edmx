@@ -19,6 +19,7 @@
           <Property Name="FileThumbnailUrl" Type="nvarchar(max)" />
           <Property Name="Settings" Type="nvarchar(max)" />
           <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UseFlag" Type="bit" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="InsertDate" Type="datetime" />
         </EntityType>
@@ -34,6 +35,7 @@
           <Property Name="Comments" Type="nvarchar(max)" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="InsertDate" Type="datetime" />
+          <Property Name="UseFlag" Type="bit" />
         </EntityType>
         <EntityType Name="GroupMaster">
           <Key>
@@ -46,6 +48,7 @@
           <Property Name="OnlineFlag" Type="varchar" MaxLength="50" />
           <Property Name="Settings" Type="nvarchar(max)" />
           <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UseFlag" Type="bit" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="InsertDate" Type="datetime" />
         </EntityType>
@@ -74,6 +77,7 @@
           <Property Name="PlayerLog" Type="nvarchar(max)" />
           <Property Name="Settings" Type="nvarchar(max)" />
           <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UseFlag" Type="bit" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="InsertDate" Type="datetime" />
         </EntityType>
@@ -100,40 +104,7 @@
           <Property Name="Comments" Type="nvarchar(max)" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="InsertDate" Type="datetime" />
-        </EntityType>
-        <EntityType Name="TemplatTypeMaster">
-          <Key>
-            <PropertyRef Name="TempletTypeID" />
-          </Key>
-          <Property Name="TempletTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TempletTypeName" Type="nvarchar(max)" />
-          <Property Name="Settings" Type="nvarchar(max)" />
-          <Property Name="Comments" Type="nvarchar(max)" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="InsertDate" Type="datetime" />
-        </EntityType>
-        <EntityType Name="TempleFileLinkTable">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Index" Type="int" />
-          <Property Name="TempletID" Type="int" />
-          <Property Name="FileID" Type="int" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="InsertDate" Type="datetime" />
-        </EntityType>
-        <EntityType Name="TempletMaster">
-          <Key>
-            <PropertyRef Name="TempletID" />
-          </Key>
-          <Property Name="TempletID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PlayListID" Type="int" />
-          <Property Name="TempletTypeID" Type="int" />
-          <Property Name="Settings" Type="nvarchar(max)" />
-          <Property Name="Comments" Type="nvarchar(max)" />
-          <Property Name="UpdateDate" Type="datetime" />
-          <Property Name="InsertDate" Type="datetime" />
+          <Property Name="UseFlag" Type="bit" />
         </EntityType>
         <EntityType Name="UserMaster">
           <Key>
@@ -146,6 +117,7 @@
           <Property Name="EmailAddress" Type="nvarchar(max)" />
           <Property Name="Settings" Type="nvarchar(max)" />
           <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UseFlag" Type="bit" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="InsertDate" Type="datetime" />
         </EntityType>
@@ -157,9 +129,6 @@
           <EntitySet Name="PlayerMaster" EntityType="Self.PlayerMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlayerPlayListLinkTable" EntityType="Self.PlayerPlayListLinkTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlayListMaster" EntityType="Self.PlayListMaster" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TemplatTypeMaster" EntityType="Self.TemplatTypeMaster" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TempleFileLinkTable" EntityType="Self.TempleFileLinkTable" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TempletMaster" EntityType="Self.TempletMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserMaster" EntityType="Self.UserMaster" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -173,9 +142,6 @@
           <EntitySet Name="PlayerMaster" EntityType="ToilluminateModel.PlayerMaster" />
           <EntitySet Name="PlayerPlayListLinkTable" EntityType="ToilluminateModel.PlayerPlayListLinkTable" />
           <EntitySet Name="PlayListMaster" EntityType="ToilluminateModel.PlayListMaster" />
-          <EntitySet Name="TemplatTypeMaster" EntityType="ToilluminateModel.TemplatTypeMaster" />
-          <EntitySet Name="TempleFileLinkTable" EntityType="ToilluminateModel.TempleFileLinkTable" />
-          <EntitySet Name="TempletMaster" EntityType="ToilluminateModel.TempletMaster" />
           <EntitySet Name="UserMaster" EntityType="ToilluminateModel.UserMaster" />
           <EntitySet Name="GroupPlayListLinkTable" EntityType="ToilluminateModel.GroupPlayListLinkTable" />
         </EntityContainer>
@@ -195,6 +161,7 @@
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
           <Property Name="GroupID" Type="Int32" />
+          <Property Name="UseFlag" Type="Boolean" />
         </EntityType>
         <EntityType Name="FolderMaster">
           <Key>
@@ -208,6 +175,7 @@
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
+          <Property Name="UseFlag" Type="Boolean" />
         </EntityType>
         <EntityType Name="GroupMaster">
           <Key>
@@ -222,6 +190,7 @@
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
+          <Property Name="UseFlag" Type="Boolean" />
         </EntityType>
         <EntityType Name="PlayerMaster">
           <Key>
@@ -239,6 +208,7 @@
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
           <Property Name="ErrorFlag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PlayerLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UseFlag" Type="Boolean" />
         </EntityType>
         <EntityType Name="PlayerPlayListLinkTable">
           <Key>
@@ -263,40 +233,7 @@
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="TemplatTypeMaster">
-          <Key>
-            <PropertyRef Name="TempletTypeID" />
-          </Key>
-          <Property Name="TempletTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TempletTypeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Settings" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="InsertDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="TempleFileLinkTable">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Index" Type="Int32" />
-          <Property Name="TempletID" Type="Int32" />
-          <Property Name="FileID" Type="Int32" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="InsertDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="TempletMaster">
-          <Key>
-            <PropertyRef Name="TempletID" />
-          </Key>
-          <Property Name="TempletID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PlayListID" Type="Int32" />
-          <Property Name="TempletTypeID" Type="Int32" />
-          <Property Name="Settings" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+          <Property Name="UseFlag" Type="Boolean" />
         </EntityType>
         <EntityType Name="UserMaster">
           <Key>
@@ -311,6 +248,7 @@
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
+          <Property Name="UseFlag" Type="Boolean" />
         </EntityType>
         <EntityType Name="GroupPlayListLinkTable">
           <Key>
@@ -332,6 +270,7 @@
           <EntitySetMapping Name="FileMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.FileMaster">
               <MappingFragment StoreEntitySet="FileMaster">
+                <ScalarProperty Name="UseFlag" ColumnName="UseFlag" />
                 <ScalarProperty Name="GroupID" ColumnName="GroupID" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
@@ -350,6 +289,7 @@
           <EntitySetMapping Name="FolderMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.FolderMaster">
               <MappingFragment StoreEntitySet="FolderMaster">
+                <ScalarProperty Name="UseFlag" ColumnName="UseFlag" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
@@ -364,6 +304,7 @@
           <EntitySetMapping Name="GroupMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.GroupMaster">
               <MappingFragment StoreEntitySet="GroupMaster">
+                <ScalarProperty Name="UseFlag" ColumnName="UseFlag" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
@@ -379,6 +320,7 @@
           <EntitySetMapping Name="PlayerMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.PlayerMaster">
               <MappingFragment StoreEntitySet="PlayerMaster">
+                <ScalarProperty Name="UseFlag" ColumnName="UseFlag" />
                 <ScalarProperty Name="PlayerLog" ColumnName="PlayerLog" />
                 <ScalarProperty Name="ErrorFlag" ColumnName="ErrorFlag" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
@@ -409,6 +351,7 @@
           <EntitySetMapping Name="PlayListMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.PlayListMaster">
               <MappingFragment StoreEntitySet="PlayListMaster">
+                <ScalarProperty Name="UseFlag" ColumnName="UseFlag" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
@@ -420,46 +363,10 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TemplatTypeMaster">
-            <EntityTypeMapping TypeName="ToilluminateModel.TemplatTypeMaster">
-              <MappingFragment StoreEntitySet="TemplatTypeMaster">
-                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="Comments" ColumnName="Comments" />
-                <ScalarProperty Name="Settings" ColumnName="Settings" />
-                <ScalarProperty Name="TempletTypeName" ColumnName="TempletTypeName" />
-                <ScalarProperty Name="TempletTypeID" ColumnName="TempletTypeID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TempleFileLinkTable">
-            <EntityTypeMapping TypeName="ToilluminateModel.TempleFileLinkTable">
-              <MappingFragment StoreEntitySet="TempleFileLinkTable">
-                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="FileID" ColumnName="FileID" />
-                <ScalarProperty Name="TempletID" ColumnName="TempletID" />
-                <ScalarProperty Name="Index" ColumnName="Index" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TempletMaster">
-            <EntityTypeMapping TypeName="ToilluminateModel.TempletMaster">
-              <MappingFragment StoreEntitySet="TempletMaster">
-                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="Comments" ColumnName="Comments" />
-                <ScalarProperty Name="Settings" ColumnName="Settings" />
-                <ScalarProperty Name="TempletTypeID" ColumnName="TempletTypeID" />
-                <ScalarProperty Name="PlayListID" ColumnName="PlayListID" />
-                <ScalarProperty Name="TempletID" ColumnName="TempletID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="UserMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.UserMaster">
               <MappingFragment StoreEntitySet="UserMaster">
+                <ScalarProperty Name="UseFlag" ColumnName="UseFlag" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />

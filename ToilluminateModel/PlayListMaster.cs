@@ -22,5 +22,6 @@ namespace ToilluminateModel
         public string Comments { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
+        public Nullable<bool> UseFlag { get; set; }
     }
 }
