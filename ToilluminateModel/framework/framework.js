@@ -200,7 +200,7 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/GroupMasters/GetJSTreeData',
+                url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID'+options.GroupID,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
@@ -560,7 +560,7 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/FolderMasters/GetJSTreeData/' + options.groupID,
+                url: 'api/FolderMasters/GetFolderJSTreeDataByGroupID/' + options.groupID,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",

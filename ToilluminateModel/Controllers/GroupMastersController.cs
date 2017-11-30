@@ -106,14 +106,19 @@ namespace ToilluminateModel.Controllers
             return Ok(groupMaster);
         }
 
-        [HttpGet, Route("api/GroupMasters/GetJSTreeData")]
-        public IList<DataModel> GetJSTreeData()
+        [HttpGet, Route("api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/{GroupID}")]
+        public IList<DataModel> GetGroupJSTreeDataWithChildByGroupID(int GroupID)
         {
+            List<int> GroupIDList = new List<int>();
+            GroupIDList.Add(GroupID);
+            PublicMethods.GetChildGroupIDs(GroupID, ref GroupIDList, db);
+            int[] groupIDs = GroupIDList.ToArray<int>();
+
             List<DataModel> jdmList = new List<DataModel>();
             DataModel jdm;
             StateForJsonModel sfjm = new StateForJsonModel();
             sfjm.opened = true;
-            List<GroupMaster> gmList = db.GroupMaster.ToList();
+            List<GroupMaster> gmList = db.GroupMaster.Where(a=> groupIDs.Contains(a.GroupID)).ToList();
             foreach (GroupMaster gm in gmList) {
                 jdm = new DataModel();
                 jdm.id = gm.GroupID.ToString();

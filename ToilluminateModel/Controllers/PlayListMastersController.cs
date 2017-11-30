@@ -141,12 +141,13 @@ namespace ToilluminateModel.Controllers
             GroupIDList.Add(GroupID);
             PublicMethods.GetParentGroupIDs(GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
+            string groupIDsStr = string.Join(",", groupIDs.Select(i => i.ToString()).ToArray());
             List<PlayListLinkData> pldList = (from plm in db.PlayListMaster
                                               join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
                                               join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                                               from pv in ProjectV.DefaultIfEmpty()
                                               where groupIDs.Contains((int)gplt.GroupID)
-                                              orderby gplt.GroupID == GroupID?2:1,gplt.Index
+                                              orderby gplt.GroupID == GroupID ? 2 : 1, groupIDsStr.IndexOf(gplt.GroupID.ToString()) descending,gplt.Index 
                                               select new PlayListLinkData
                                               {
                                                   PlayListID = plm.PlayListID,
@@ -170,13 +171,13 @@ namespace ToilluminateModel.Controllers
             GroupIDList.Add((int)pm.GroupID);
             PublicMethods.GetParentGroupIDs((int)pm.GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
-
+            string groupIDsStr = string.Join(",", groupIDs.Select(i => i.ToString()).ToArray());
             List<PlayListLinkData> pldList = (from plm in db.PlayListMaster
                                               join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
                                               join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                                               from pv in ProjectV.DefaultIfEmpty()
                                               where groupIDs.Contains((int)gplt.GroupID)
-                                              orderby gplt.Index
+                                              orderby groupIDsStr.IndexOf(gplt.GroupID.ToString()) descending, gplt.Index
                                               select new PlayListLinkData
                                               {
                                                   PlayListID = plm.PlayListID,
