@@ -97,6 +97,47 @@
                 return true;
             }
         },
+        creatUser: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var UserMaster = {
+                create: function () {
+                    UserName: "";
+                    GroupID: '';
+                    Password: '';
+                    EmailAddress: '';
+                    Settings: '';
+                    Comments: '';
+                    return UserMaster;
+                }
+            }
+            var newUser = UserMaster.create();
+
+            newUser.UserName = options.userName;
+            newUser.GroupID = options.groupID;
+            newUser.Password = options.password;
+            newUser.EmailAddress = options.emailAddress;
+            newUser.Comments = options.comments;
+            newUser.Settings = options.settings;
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/UserMasters',
+                format: 'json',
+                data: JSON.stringify(newUser),
+                contentType: "application/json; charset=utf-8",
+                type: 'POST',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
         getUserGroup: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
