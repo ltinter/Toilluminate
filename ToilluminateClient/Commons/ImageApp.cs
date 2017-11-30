@@ -57,27 +57,35 @@ namespace ToilluminateClient
             }
 
             Graphics g = null;
+            Graphics gBmpBack = null;
             try
             {
                 LogApp.OutputProcessLog("ImageApp", "MyDrawMessage", "All Message");
                 PlayApp.DrawMessageFlag = true;
-                g = messageForm.CreateGraphics();
-                g.Clear(BackClearColor);
-                foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
+
+                using (Bitmap bitmap = new Bitmap(messageForm.Width, messageForm.Height))
                 {
-                    dmItem.MoveMessage();
-                    foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
+                    gBmpBack = Graphics.FromImage(bitmap);
+                    gBmpBack.Clear(BackClearColor);
+
+
+                    foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
                     {
-                        if (dmItem.CheckStyleShow(dslItem))
+                        dmItem.MoveMessage();
+                        foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
                         {
-                            g.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dmItem.GetStyleLeft(dslItem.LeftWidth), dmItem.GetStyleTop(dslItem.Heigth));
+                            if (dmItem.CheckStyleShow(dslItem))
+                            {
+                                gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dmItem.GetStyleLeft(dslItem.LeftWidth), dmItem.GetStyleTop(dslItem.Heigth));
+                            }
                         }
                     }
+
+
+                    g = messageForm.CreateGraphics();
+                    MyDrawImage(g, bitmap, 0, 0);
                 }
-
-
-
-                g.Dispose();
+                
             }
             catch (Exception ex)
             {
@@ -89,6 +97,10 @@ namespace ToilluminateClient
                 if (null != g)
                 {
                     g.Dispose();
+                }
+                if (null != gBmpBack)
+                {
+                    gBmpBack.Dispose();
                 }
             }
         }

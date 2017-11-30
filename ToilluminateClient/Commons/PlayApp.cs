@@ -131,10 +131,10 @@ namespace ToilluminateClient
                 //pList1.PlayAddTemplete(itItem11);
 
 
-                //MessageTempleteItem itItem12 = new MessageTempleteItem(messageString1, MessageShowStyle.Bottom, 2, 60);
-                //pList1.PlayAddTemplete(itItem12);
+                MessageTempleteItem itItem12 = new MessageTempleteItem(messageString1, MessageShowStyle.Bottom, 300, 2);
+                pList1.PlayAddTemplete(itItem12);
 
-                MessageTempleteItem itItem13 = new MessageTempleteItem(messageString2, MessageShowStyle.Bottom, 2, 60);
+                MessageTempleteItem itItem13 = new MessageTempleteItem(messageString2, MessageShowStyle.Bottom, 180, 5);
                 pList1.PlayAddTemplete(itItem13);
 
 
@@ -151,7 +151,7 @@ namespace ToilluminateClient
                 //pList2.PlayAddTemplete(itItem21);
 
                 
-                MessageTempleteItem itItem22 = new MessageTempleteItem(messageString3, MessageShowStyle.Top, 2, 10);
+                MessageTempleteItem itItem22 = new MessageTempleteItem(messageString3, MessageShowStyle.Top, 0, 0);
                 pList2.PlayAddTemplete(itItem22);
 
 
