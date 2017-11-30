@@ -180,57 +180,97 @@ namespace ToilluminateClient
         /// <param name="size"></param>
         /// <param name="fillMode"></param>
         /// <returns></returns>
-        public static Bitmap ResizeBitmap(Bitmap sourceBmp, Size size)
+        public static Bitmap ResizeBitmap(Bitmap sourceBmp, Size size, FillOptionStyle fillOption)
         {
-            return ResizeBitmap(sourceBmp, size, FillMode.Fill);
-        }
-        public static Bitmap ResizeBitmap(Bitmap sourceBmp, Size size, FillMode fillMode)
-        {
-            float xRate = (float)sourceBmp.Width / size.Width;
-            float yRate = (float)sourceBmp.Height / size.Height;
-            if (xRate <= 1 && yRate <= 1 && FillMode.Center == fillMode)
+            Graphics g = null;
+
+            try
             {
-                return sourceBmp;
-            }
-            else
-            {
-                float tRate = (xRate >= yRate) ? xRate : yRate;
-                Graphics g = null;
-                try
+                int newW = size.Width;
+                int newH = size.Height;
+                int srcW = sourceBmp.Width;
+                int srcH = sourceBmp.Height;
+
+                int left = 0;
+                int top = 0;
+
+                Bitmap b = new Bitmap(newW, newH);
+                g = Graphics.FromImage(b);
+                g.Clear(BackClearColor);
+
+                if (FillOptionStyle.None == fillOption)
                 {
-                    int newW = 0;
-                    int newH = 0;
-                    if (FillMode.Zoom == fillMode)
+                    #region
+                    if (newW > srcW)
                     {
-                        newW = (int)(sourceBmp.Width / tRate);
-                        newH = (int)(sourceBmp.Height / tRate);
+                        left = (newW - srcW) / 2;
+                        newW = srcW;
                     }
-                    else //if (FillMode.Zoom== fillMode)
+                    else
                     {
-                        newW = size.Width;
-                        newH = size.Height;
+                        srcW = newW;
                     }
 
-                    Bitmap b = new Bitmap(newW, newH);
-                    g = Graphics.FromImage(b);
-                    g.Clear(BackClearColor);
-                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    g.DrawImage(sourceBmp, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, sourceBmp.Width, sourceBmp.Height), GraphicsUnit.Pixel);
-                    g.Dispose();
-                    return b;
-                }
-                catch
-                {
-                    return null;
-                }
-                finally
-                {
-                    if (null != g)
+
+                    if (newH > srcH)
                     {
-                        g.Dispose();
+                        top = (newH - srcH) / 2;
+                        newH = srcH;
                     }
+                    else
+                    {
+                        srcH = newH;
+                    }
+                    #endregion
+                }
+                else if (FillOptionStyle.Fill == fillOption)
+                {
+                }
+                else if (FillOptionStyle.Zoom == fillOption)
+                {
+                    #region
+                    if (newW != srcW || newH != srcH)
+                    {
+                        float xRate = (float)srcW / newW;
+                        float yRate = (float)srcH / newH;
+                        float tRate = (xRate >= yRate) ? xRate : yRate;
+                        int srcW_tmp = (int)(srcW / tRate);
+                        int srcH_tmp = (int)(srcH / tRate);
+
+                        if (newW > srcW_tmp)
+                        {
+                            left = (newW - srcW_tmp) / 2;
+                            newW = srcW_tmp;
+                        }
+
+
+                        if (newH > srcH_tmp)
+                        {
+                            top = (newH - srcH_tmp) / 2;
+                            newH = srcH_tmp;
+                        }
+                    }
+                    #endregion
+                }
+
+
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(sourceBmp, new Rectangle(left, top, newW, newH), new Rectangle(0, 0, srcW, srcH), GraphicsUnit.Pixel);
+                g.Dispose();
+                return b;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (null != g)
+                {
+                    g.Dispose();
                 }
             }
+
         }
         #endregion
 
