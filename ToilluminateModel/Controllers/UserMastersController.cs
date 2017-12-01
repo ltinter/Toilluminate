@@ -119,6 +119,13 @@ namespace ToilluminateModel.Controllers
             return Ok(userList[0]);
         }
 
+        [HttpGet, Route("api/UserMasters/GetUserByName/{userName}")]
+        public async Task<List<UserMaster>> GetUserByName(string userName)
+        {
+            List<UserMaster> userList = await db.UserMaster.Where(a => a.UserName == userName).ToListAsync();
+            return userList;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

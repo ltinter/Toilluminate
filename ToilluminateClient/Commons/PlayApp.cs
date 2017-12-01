@@ -13,6 +13,10 @@ using WMPLib;
 
 namespace ToilluminateClient
 {
+
+    /// <summary>
+    /// 播放列表
+    /// </summary>
     public static class PlayApp
     {
         public static String CurrentPlayListJsonString = string.Empty;
@@ -121,13 +125,14 @@ namespace ToilluminateClient
 
                 string[] imageFileList1 = new string[] {  @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A03.jpg" };
                 string[] imageFileList2 = new string[] { @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg", @"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg" };
-                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.DownToTop, ImageShowStyle.Random };
+                //                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.DownToTop, ImageShowStyle.Random };
+                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Special };
 
                 string messageString1 = @"<p>hello world</p><br/><span style=""font-family: MS PGothic;font-size: 18px;""><b style=""""><I>今日は明日の全国に雨が降る。</I></b></span><br/><p>Welcome to use this system。</p>";
                 string messageString2 = @"<p>AAAAAA<span style=""font-size: 18px; background-color: rgb(247, 173, 107);""><font face=""Comic Sans MS"" style=""""><b style=""font-style: italic;"">B</b><b style=""""><span style=""font-size: 10px;"">XXX<span style=""font-size: 18px;""><b><font color=""#ffd663"">yyy</font></b></span>XXX</span></b><b style=""font-style: italic;"">B</b></font></span>CCCC</p><p>nnn</p><p><font style=""""><span style=""background-color: rgb(255, 255, 255);"">11</span><span style=""background-color: rgb(148, 189, 123);"">1<span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder;""><span style=""font-size: 10px;"">333<span style=""font-size: 18px;""><span style=""font-weight: bolder;""><font color=""#ffd663"">444</font></span></span>333</span></span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span></span></font>555<br></p><p>qqq</p><p><font color=""#cee7f7"">GGG</font></p>";
                 string messageString3 = @"<p>AAAAAAAAAAAAAAA</p><p>BBBBBBBBBBB</p><p><<<<<<<<<<<<<<<<------------</p>";
 
-                ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList1.ToList(), imageStyleList.ToList(), 2, FillOptionStyle.Fill);
+                ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList1.ToList(), imageStyleList.ToList(),5, FillOptionStyle.Fill);
                 pList1.PlayAddTemplete(itItem11);
 
 
@@ -139,26 +144,26 @@ namespace ToilluminateClient
 
 
                 MediaTempleteItem itItem17 = new MediaTempleteItem(@"C:\C_Works\Medias\A01.mp4", ZoomOptionStyle.None);
-               // pList1.PlayAddTemplete(itItem17);
-                //MediaTempleteItem itItem18 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
-                //pList1.PlayAddTemplete(itItem18);
+                pList1.PlayAddTemplete(itItem17);
+                MediaTempleteItem itItem18 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
+                pList1.PlayAddTemplete(itItem18);
 
 
                 PlayList pList2 = new PlayList(2, false, false, 0);
-                //PlayApp.PlayListArray.Add(pList2);
+                PlayApp.PlayListArray.Add(pList2);
 
-                //ImageTempleteItem itItem21 = new ImageTempleteItem(imageFileList2.ToList(), imageStyleList.ToList(), 2);
-                //pList2.PlayAddTemplete(itItem21);
+                ImageTempleteItem itItem21 = new ImageTempleteItem(imageFileList2.ToList(), imageStyleList.ToList(), 2, FillOptionStyle.Fill);
+                pList2.PlayAddTemplete(itItem21);
 
-                
+
                 MessageTempleteItem itItem22 = new MessageTempleteItem(messageString3, MessageShowStyle.Top, 0, 0);
                 pList2.PlayAddTemplete(itItem22);
 
 
                 MediaTempleteItem itItem27 = new MediaTempleteItem(@"C:\C_Works\Medias\A01.mp4", ZoomOptionStyle.None);
                 pList2.PlayAddTemplete(itItem27);
-                //MediaTempleteItem itItem28 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
-                //pList2.PlayAddTemplete(itItem28);
+                MediaTempleteItem itItem28 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
+                pList2.PlayAddTemplete(itItem28);
 
                 PlayApp.newPlayListExist = true;
             }
@@ -630,11 +635,11 @@ namespace ToilluminateClient
                             List<ImageShowStyle> imageStyleList = new List<ImageShowStyle> { };
                             if (pliTemlete.SildeshowEffects != null)
                             {
-                                foreach (string style in pliTemlete.SildeshowEffects)
+                                foreach (string seStyle in pliTemlete.SildeshowEffects)
                                 {
-                                    if (string.IsNullOrEmpty(style) == false)
+                                    if (string.IsNullOrEmpty(seStyle) == false)
                                     {
-                                        int styleValue = Utility.ToInt(style);
+                                        int styleValue = Utility.ToInt(seStyle);
                                         if (Enum.IsDefined(typeof(ImageShowStyle), styleValue))
                                         {
                                             imageStyleList.Add((ImageShowStyle)styleValue);
@@ -648,6 +653,15 @@ namespace ToilluminateClient
                             }
 
                             FillOptionStyle fillOption = FillOptionStyle.Fill;
+                            string ppStyle = pliTemlete.PicturePostion;
+                            if (string.IsNullOrEmpty(ppStyle) == false)
+                            {
+                                int styleValue = Utility.ToInt(ppStyle);
+                                if (Enum.IsDefined(typeof(FillOptionStyle), styleValue))
+                                {
+                                    fillOption = (FillOptionStyle)styleValue;
+                                }
+                            }
 
                             ImageTempleteItem itItem = new ImageTempleteItem(imageFileList.ToList(), imageStyleList.ToList(), Utility.ToInt(pliTemlete.DisplayIntevalSeconds), fillOption);
 
@@ -662,10 +676,10 @@ namespace ToilluminateClient
                             string message = pliTemlete.itemTextData;
                            
                             MessageShowStyle messageShowStyleValue = MessageShowStyle.Random;
-                            string style = pliTemlete.TextPostion;
-                            if (string.IsNullOrEmpty(style) == false)
+                            string tpStyle = pliTemlete.TextPostion;
+                            if (string.IsNullOrEmpty(tpStyle) == false)
                             {
-                                int styleValue = Utility.ToInt(style);
+                                int styleValue = Utility.ToInt(tpStyle);
                                 if (Enum.IsDefined(typeof(MessageShowStyle), styleValue))
                                 {
                                     messageShowStyleValue =(MessageShowStyle)styleValue;
