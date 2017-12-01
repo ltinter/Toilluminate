@@ -565,24 +565,24 @@
                                                                 </span>
                                                             </li>
                                                             <li class="m-nav__item">
-                                                                <a href="header/profile.html" class="m-nav__link">
+                                                                <a  class="m-nav__link">
                                                                     <i class="m-nav__link-icon flaticon-profile-1"></i>
                                                                     <span class="m-nav__link-title">
                                                                         <span class="m-nav__link-wrap">
                                                                             <span class="m-nav__link-text">
                                                                                 My Profile
                                                                             </span>
-                                                                            <span class="m-nav__link-badge">
+                                                                            <!--<span class="m-nav__link-badge">
                                                                                 <span class="m-badge m-badge--success">
                                                                                     2
                                                                                 </span>
-                                                                            </span>
+                                                                            </span>-->
                                                                         </span>
                                                                     </span>
                                                                 </a>
                                                             </li>
                                                             <li class="m-nav__item">
-                                                                <a href="header/profile.html" class="m-nav__link">
+                                                                <a  class="m-nav__link">
                                                                     <i class="m-nav__link-icon flaticon-share"></i>
                                                                     <span class="m-nav__link-text">
                                                                         Activity
@@ -590,7 +590,7 @@
                                                                 </a>
                                                             </li>
                                                             <li class="m-nav__item">
-                                                                <a href="header/profile.html" class="m-nav__link">
+                                                                <a  class="m-nav__link">
                                                                     <i class="m-nav__link-icon flaticon-chat-1"></i>
                                                                     <span class="m-nav__link-text">
                                                                         Messages
@@ -599,7 +599,7 @@
                                                             </li>
                                                             <li class="m-nav__separator m-nav__separator--fit"></li>
                                                             <li class="m-nav__item">
-                                                                <a href="header/profile.html" class="m-nav__link">
+                                                                <a  class="m-nav__link">
                                                                     <i class="m-nav__link-icon flaticon-info"></i>
                                                                     <span class="m-nav__link-text">
                                                                         FAQ
@@ -607,7 +607,7 @@
                                                                 </a>
                                                             </li>
                                                             <li class="m-nav__item">
-                                                                <a href="header/profile.html" class="m-nav__link">
+                                                                <a  class="m-nav__link">
                                                                     <i class="m-nav__link-icon flaticon-lifebuoy"></i>
                                                                     <span class="m-nav__link-text">
                                                                         Support
@@ -616,7 +616,7 @@
                                                             </li>
                                                             <li class="m-nav__separator m-nav__separator--fit"></li>
                                                             <li class="m-nav__item">
-                                                                <a href="snippets/pages/user/login-1.html" class="btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder">
+                                                                <a href="index.html" class="btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder">
                                                                     Logout
                                                                 </a>
                                                             </li>
@@ -860,7 +860,7 @@
                                         <ul class="m-portlet__nav">
                                             <li class="m-portlet__nav-item">
                                                 <a id="button_save" class="m-portlet__nav-link btn btn-light m-btn m-btn--pill m-btn--air intros">
-                                                    Save
+                                                    <script type="text/javascript">document.write(localize_jap["Save"])</script>
                                                 </a>
                                             </li>
                                             <li class="m-portlet__nav-item">
@@ -2948,12 +2948,12 @@
 							</div>
 							<form class="m-login__form m-form" action="">
 								<div class="form-group m-form__group">
-									<input class="form-control m-input"   type="text" placeholder="UserName" name="username" autocomplete="off">
+									<input class="form-control m-input" type="text" placeholder="UserName" name="username" autocomplete="off" id="login_username">
 								</div>
 								<div class="form-group m-form__group">
-									<input class="form-control m-input m-login__form-input--last" type="password" placeholder="Password" name="password">
+									<input class="form-control m-input m-login__form-input--last" type="password" placeholder="Password" name="password" id="login_password">
 								</div>
-								<div class="row m-login__form-sub">
+								<!--<div class="row m-login__form-sub">
 									<div class="col m--align-left m-login__form-left">
 										<label class="m-checkbox  m-checkbox--light">
 											<input type="checkbox" name="remember">
@@ -2961,12 +2961,12 @@
 											<span></span>
 										</label>
 									</div>
-									<!--<div class="col m--align-right m-login__form-right">
+									<div class="col m--align-right m-login__form-right">
 										<a href="javascript:;" id="m_login_forget_password" class="m-link">
 											Forget Password ?
 										</a>
-									</div>-->
-								</div>
+									</div>
+								</div>-->
 								<div class="m-login__form-action">
 									<button id="m_login_signin_submit" class="btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air  m-login__btn m-login__btn--primary">
 										Sign In
@@ -2984,18 +2984,21 @@
 								</div>
 							</div>
 							<form class="m-login__form m-form" action="">
-								<div class="form-group m-form__group" style="display:none">
+								<!--<div class="form-group m-form__group" style="display:none">
 									<input class="form-control m-input" type="text" placeholder="Fullname" name="fullname">
+								</div>-->
+								<div class="form-group m-form__group">
+									<input class="form-control m-input" type="text" placeholder="UserName" name="username" id="new_username" autocomplete="off">
 								</div>
 								<div class="form-group m-form__group">
-									<input class="form-control m-input" type="text" placeholder="UserName" name="username" autocomplete="off">
-								</div>
-								<div class="form-group m-form__group">
-									<input class="form-control m-input" type="password" placeholder="Password" name="password">
+									<input class="form-control m-input" type="password" placeholder="Password" id="new_password" name="password">
 								</div>
 								<div class="form-group m-form__group">
 									<input class="form-control m-input m-login__form-input--last" type="password" placeholder="Confirm Password" name="rpassword">
 								</div>
+                                <div class="m-portlet__body" style="height:250px;overflow:auto;background-color:navajowhite;margin-top:1.5rem" >
+                                    <div id="newUserGroup" class="tree-demo groupTree"></div>
+                                </div>
 								<div class="row form-group m-form__group m-login__form-sub">
 									<div class="col m--align-left">
 										<label class="m-checkbox m-checkbox--light">

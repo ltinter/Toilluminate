@@ -519,6 +519,21 @@
         div_bodyMain.append(div_col3);
 
 
+        var div_colpicturetype = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var labletype = $('<lable/>').text($.localize('translate', 'Picture Postion:'));
+        div_colpicturetype.append(labletype);
+        div_bodyMain.append(div_colpicturetype);
+
+        var div_coltypedata = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var select_typeoption = $('<select/>');
+        select_typeoption.append("<option value='0'>" + $.localize('translate', 'Top') + "</option>");
+        select_typeoption.append("<option value='1'>" + $.localize('translate', 'Middle') + "</option>");
+        select_typeoption.append("<option value='2'>" + $.localize('translate', 'Bottom') + "</option>");
+        div_coltypedata.append(select_typeoption);
+        div_bodyMain.append(div_coltypedata);
+
+
+
         var div_col4 = $('<div/>').addClass('col-xl-8');
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
@@ -583,6 +598,9 @@
                 if (options.palylistItem.SildeshowEffects) {
                     select_option.val(options.palylistItem.SildeshowEffects).trigger('change');
                 }
+            }
+            if (options.palylistItem) {
+                select_typeoption.val(options.palylistItem.PicturePostion);
             }
         } 
     },
@@ -862,7 +880,7 @@
                 if (playlistItem.type == '0') {
                     playlistItem.DisplayIntevalSeconds = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn').val();
                     playlistItem.SildeshowEffects = $(palylistItem).find('#m_select2_3').val();
-
+                    playlistItem.PicturePostion = $(palylistItem).find('select').eq(1).val();
                     var imageItem = {};
                     var imageId = [];
                     var imagesrc = [];
@@ -959,8 +977,8 @@
     });
     $("#playlist_delete").click(function () {
         if (edit_playlistId) {
-            toastr.warning("Group is used!");
-            return;
+            //toastr.warning("Group is used!");
+            //return;
             $.insmFramework('deletePlaylist', {
                 deletePlaylistId: edit_playlistId,
                 success: function (fileData) {

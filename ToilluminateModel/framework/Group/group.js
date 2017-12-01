@@ -69,7 +69,12 @@
                 };
                 $this.data('insmGroup', _plugin);
             }
-            
+            //$.insmGroup('initGroupTree');
+            div_edit.hide();
+            $.insmGroup('defaultDataSet');
+            $("#PlayerDetail").css('display', 'none');
+
+            $("#button_save").text($.localize('translate', "Save"));
             return $this;
         },
         editgroup: function (options) {
@@ -93,6 +98,7 @@
             });
         },
         initGroupTree: function (options) {
+
             var groupJstreeData = {
                 "core": {
                     "themes": {
@@ -101,8 +107,8 @@
                     // so that create works
                     "check_callback": true,
                     'data': {
-                        url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/5',
-                            //+ options.userGroupId,
+                        url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/' + options.userGroupId,
+                        //+ options.userGroupId,
                         dataFilter: function (data) {
                             temp_GroupTreeData = JSON.parse(data);
                             return data;
@@ -123,11 +129,6 @@
                 "plugins": ["dnd", "types"]
 
             };
-            div_edit.hide();
-            $.insmGroup('defaultDataSet');
-            $("#PlayerDetail").css('display', 'none');
-
-            $("#button_save").text($.localize('translate', "Save"));
 
             var tree = $('.tree-demo.groupTree');
             tree.jstree(groupJstreeData);
@@ -135,6 +136,11 @@
             div_groupTree.bind("refresh.jstree", function (e, data) {
                 div_groupTree.jstree(true).select_node(selectedGroupID);
             });
+            //div_groupTree.on("ready.jstree", function (event, data) {
+            //    $("#1_anchor").css("visibility", "hidden");
+            //    $("li#1").css("position", "relative")
+            //    $(".jstree-last .jstree-icon").first().hide();
+            //});
 
             tree.on('loaded.jstree', function(e, data) {
                 var inst = data.instance;
@@ -771,16 +777,16 @@
         })
     })
     $("#deletegroup").click(function (e) {
-        //$.insmFramework('deleteGroup', {
-        //    deleteGroupId: selectedGroupID,
-        //    success: function (resultdata) {
-        //        div_main.show();
-        //        div_edit.hide();
-        //        $.insmGroup('initGroupTree');
-        //    }
-        //})
-        toastr.warning("Group is used!");
-        return;
+        $.insmFramework('deleteGroup', {
+            deleteGroupId: selectedGroupID,
+            success: function (resultdata) {
+                div_main.show();
+                div_edit.hide();
+                $.insmGroup('initGroupTree');
+            }
+        })
+        //toastr.warning("Group is used!");
+        //return;
     })
     $("#expandAll").click(function () {
         $('#groupTree').jstree('open_all');

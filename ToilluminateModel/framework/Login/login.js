@@ -3,6 +3,36 @@
     var selectedFolderID = null;
     var actionEnum = { "cut": "cutFile", "copy": "copyFile" };
     var action = "";
+    var usergroupJstreeData = {
+        "core": {
+            "themes": {
+                "responsive": true
+            },
+            // so that create works
+            "check_callback": true,
+            'data': {
+                url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/1',
+                //+ options.userGroupId,
+                dataFilter: function (data) {
+                    temp_GroupTreeData = JSON.parse(data);
+                    return data;
+                }
+            }
+        },
+        "types": {
+            "default": {
+                "icon": "fa fa-sitemap m--font-success"
+            },
+            "file": {
+                "icon": "fa fa-sitemap m--font-success"
+            }
+        },
+        "state": {
+            "key": "demo2"
+        },
+        "plugins": ["dnd", "types"]
+
+    };
     var methods = {
         init: function (options) {
             selectedFolderID = options.selectedFolderID;
@@ -30,11 +60,9 @@
     };
     var login = $('#m_login');
     $("#m_login_signin_submit").click(function (e) {
-        
         e.preventDefault();
         var btn = $(this);
         var form = $(this).closest('form');
-
         form.validate({
             rules: {
                 username: {
@@ -49,23 +77,24 @@
         if (!form.valid()) {
             return;
         }
-
         btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
-
-
         $.insmFramework('userlogin', {
-            userName: 'test2',
-            password: 'admin',
+            userName: $("#login_username").val(),
+            password: $("#login_password").val(),
             success: function (response, status, xhr, $form,data) {
                 // similate 2s delay
                 setTimeout(function () {
                     btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
                     //showErrorMsg(form, 'danger', 'Incorrect username or password. Please try again.');
                 }, 2000);
-                $.insmGroup('initGroupTree',{userGroupId:response.GroupID});
-                
+                $.insmGroup('initGroupTree', { userGroupId: response.GroupID });
+                btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
                 $("#mainDiv").show();
                 $("#divLogin").hide();
+            },
+            error: function () {
+                toastr.warning("Incorrect username or password. Please try again.");
+                btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
             }
         })
 
@@ -84,8 +113,18 @@
     });
 
     $('#m_login_signup').click(function (e) {
+        var tree = $('#newUserGroup');
+        tree.jstree(usergroupJstreeData);
+
+        tree.on('loaded.jstree', function (e, data) {
+            var inst = data.instance;
+            var obj = inst.get_node(e.target.firstChild.firstChild.lastChild);
+            inst.select_node(obj);
+            tree.jstree('close_all');
+        })
         e.preventDefault();
         displaySignUpForm();
+        
     });
     var displaySignUpForm = function () {
         login.removeClass('m-login--forget-password');
@@ -124,11 +163,10 @@
 
             btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
 
-
             $.insmFramework('creatUser', {
-                userName: 'test',
-                groupID: 5,
-                password: 'admin',
+                userName: $("#new_username").val(),
+                groupID: $('#newUserGroup').jstree(true).get_selected()[0],
+                password: $("#new_password").val(),
                 emailAddress: '',
                 comments: '',
                 settings: '',
@@ -144,16 +182,11 @@
                         var signInForm = login.find('.m-login__signin form');
                         signInForm.clearForm();
                         signInForm.validate().resetForm();
-
-                        showErrorMsg(signInForm, 'success', 'Thank you. To complete your registration please check your email.');
+                        toastr.warning("Thank you. To complete your registration please check your email.");
+                        //showErrorMsg(signInForm, 'success', 'Thank you. To complete your registration please check your email.');
                     }, 2000);
                 }
             })
-
-            //form.ajaxSubmit({
-            //    url: '',
-                
-            //});
         });
     //}
 

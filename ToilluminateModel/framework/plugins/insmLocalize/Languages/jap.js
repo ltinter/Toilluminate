@@ -72,6 +72,7 @@ var localize_jap =
          "Sildeshow effects:": "切替モード",
          "Zoom option:": "画面サイズ",
          "Text Postion:": "テキスト位置",
+         "Picture Postion:": "画像位置",
          "Select video": "ビデオ選択",
          "Select images": "画像選択",
          "Select File": "ファイル選択",
