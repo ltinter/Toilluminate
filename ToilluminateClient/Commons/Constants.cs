@@ -369,9 +369,9 @@ namespace ToilluminateClient
         [EnumDescription("原比例")]
         None = 0,
         /// <summary>
-        /// 平铺
+        /// 拉伸
         /// </summary>
-        [EnumDescription("平铺")]
+        [EnumDescription("拉伸")]
         Fill = 1,
         /// <summary>
         /// 缩放

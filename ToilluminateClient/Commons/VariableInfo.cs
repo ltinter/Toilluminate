@@ -163,7 +163,9 @@ namespace ToilluminateClient
         public string PlaylistItemName { get; set; }
         public string type { get; set; }
         public string DisplayIntevalSeconds { get; set; }
-        
+
+
+        public string PicturePostion { get; set; }
         public string[] SildeshowEffects { get; set; }
         public PlaylistItemData itemData { get; set; }
         
