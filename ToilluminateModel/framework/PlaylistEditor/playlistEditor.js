@@ -281,12 +281,33 @@
         playlistDefaultvalue: function () {
             $('#playlist_name').val('New Playlist Name');
             $('#playlist_note').val('');
+            //monday
+            $("#label_playlist_monday_value").addClass('active');
+            $("#playlist_monday").attr("checked", true);
             $("#playlist_monday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            //tuesday
+            $("#label_playlist_tuesday_value").addClass('active');
+            $("#playlist_tuesday").attr("checked", true);
             $("#playlist_tuesday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            //wednesday
+            $("#label_playlist_wednesday_value").addClass('active');
+            $("#playlist_wednesday").attr("checked", true);
             $("#playlist_wednesday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            //thursday
+            $("#label_playlist_thursday_value").addClass('active');
+            $("#playlist_thursday").attr("checked", true);
             $("#playlist_thursday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            //friday
+            $("#label_playlist_friday_value").addClass('active');
+            $("#playlist_friday").attr("checked", true);
             $("#playlist_friday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            //saturday
+            $("#label_playlist_saturday_value").addClass('active');
+            $("#playlist_saturday").attr("checked", true);
             $("#playlist_saturday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
+            //sunday
+            $("#label_playlist_sunday_value").addClass('active');
+            $("#playlist_sunday").attr("checked", true);
             $("#playlist_sunday_value").data("ionRangeSlider").update({ from: '0', to: '24' });
             $("#label_loop_0").click();
             $("#label_playtime_0").click();
@@ -316,24 +337,73 @@
                         }
                         if (Settings != null) {
                             if (Object.getOwnPropertyNames(Settings).length > 0) {
+                                //Monday
+                                $("#playlist_monday").attr("checked", Settings.MondayisCheck);
+                                if(Settings.MondayisCheck){
+                                    $("#label_playlist_monday_value").addClass('active');
+                                } else {
+                                    $("#label_playlist_monday_value").removeClass('active');
+                                }
                                 $("#playlist_monday_value").data("ionRangeSlider").update({
                                     from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
                                 });
+                                //Tuesday
+                                $("#playlist_tuesday").attr("checked", Settings.TuesdayisCheck);
+                                if (Settings.TuesdayisCheck) {
+                                    $("#label_playlist_tuesday_value").addClass('active');
+                                } else {
+                                    $("#label_playlist_tuesday_value").removeClass('active');
+                                }
                                 $("#playlist_tuesday_value").data("ionRangeSlider").update({
                                     from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
                                 });
+                                //Wednesday
+                                $("#playlist_tuesday").attr("checked", Settings.WednesdayisCheck);
+                                if (Settings.WednesdayisCheck) {
+                                    $("#label_playlist_wednesday_value").addClass('active');
+                                } else {
+                                    $("#label_playlist_wednesday_value").removeClass('active');
+                                }
                                 $("#playlist_wednesday_value").data("ionRangeSlider").update({
                                     from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
                                 });
+                                //Thursday
+                                $("#playlist_tuesday").attr("checked", Settings.ThursdayisCheck);
+                                if (Settings.ThursdayisCheck) {
+                                    $("#label_playlist_thursday_value").addClass('active');
+                                } else {
+                                    $("#label_playlist_thursday_value").removeClass('active');
+                                }
                                 $("#playlist_thursday_value").data("ionRangeSlider").update({
                                     from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
                                 });
+                                //Friday
+                                $("#playlist_tuesday").attr("checked", Settings.FridayisCheck);
+                                if (Settings.FridayisCheck) {
+                                    $("#label_playlist_friday_value").addClass('active');
+                                } else {
+                                    $("#label_playlist_friday_value").removeClass('active');
+                                }
                                 $("#playlist_friday_value").data("ionRangeSlider").update({
                                     from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
                                 });
+                                //Saturday
+                                $("#playlist_tuesday").attr("checked", Settings.SaturdayisCheck);
+                                if (Settings.SaturdayisCheck) {
+                                    $("#label_playlist_saturday_value").addClass('active');
+                                } else {
+                                    $("#label_playlist_saturday_value").removeClass('active');
+                                }
                                 $("#playlist_saturday_value").data("ionRangeSlider").update({
                                     from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
                                 });
+                                //Sunday
+                                $("#playlist_tuesday").attr("checked", Settings.SundayisCheck);
+                                if (Settings.SundayisCheck) {
+                                    $("#label_playlist_sunday_value").addClass('active');
+                                } else {
+                                    $("#label_playlist_sunday_value").removeClass('active');
+                                }
                                 $("#playlist_sunday_value").data("ionRangeSlider").update({
                                     from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
                                 });
@@ -859,13 +929,27 @@
             PlayHours: $("#m_touchspin_1").val(),
             PlayMinites: $("#m_touchspin_2").val(),
             PlaySeconds: $("#m_touchspin_3").val(),
+            //Monday
             Monday: $("#playlist_monday_value").val(),
+            MondayisCheck: $("#playlist_monday").is(':checked'),
+            //Tuesday
             Tuesday: $("#playlist_tuesday_value").val(),
+            TuesdayisCheck: $("#playlist_tuesday").is(':checked'),
+            //Wednesday
             Wednesday: $("#playlist_wednesday_value").val(),
+            WednesdayisCheck: $("#playlist_wednesday").is(':checked'),
+            //Thursday
             Thursday: $("#playlist_thursday_value").val(),
+            ThursdayisCheck: $("#playlist_thursday").is(':checked'),
+            //Friday
             Friday: $("#playlist_friday_value").val(),
+            FridayisCheck: $("#playlist_friday").is(':checked'),
+            //Saturday
             Saturday: $("#playlist_saturday_value").val(),
-            Sunday: $("#playlist_sunday_value").val()
+            SaturdayisCheck: $("#playlist_saturday").is(':checked'),
+            //Sunday
+            Sunday: $("#playlist_sunday_value").val(),
+            SundayisCheck: $("#playlist_sunday").is(':checked'),
         };
         var palylistItemItemsdata = [];
         if (palylistItemItems.length > 0) {

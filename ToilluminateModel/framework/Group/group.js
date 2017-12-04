@@ -209,6 +209,21 @@
             $("#groupname").val('');
             $("#text_note").val('');
             $("#select_resolution").val('0');
+
+            $("#player_monday").attr("checked", true);
+            $("#label_player_monday_value").addClass('active');
+            $("#player_tuesday").attr("checked", true);
+            $("#label_player_tuesday_value").addClass('active');
+            $("#player_wednesday").attr("checked", true);
+            $("#label_player_wednesday_value").addClass('active');
+            $("#player_thursday").attr("checked", true);
+            $("#label_player_thursday_value").addClass('active');
+            $("#player_friday").attr("checked", true);
+            $("#label_player_friday_value").addClass('active');
+            $("#player_saturday").attr("checked", true);
+            $("#label_player_saturday_value").addClass('active');
+            $("#player_sunday").attr("checked", true);
+            $("#label_player_sunday_value").addClass('active');
         },
         showPlayerDetail: function (options) {
             $("#PlayerDetail").css('display', 'block');
@@ -364,13 +379,20 @@
             };
             var Settings = {};
             Settings = {
-                Monday: $("#group_monday_value").val(),
-                Tuesday: $("#group_tuesday_value").val(),
-                Wednesday: $("#group_wednesday_value").val(),
-                Thursday: $("#group_thursday_value").val(),
-                Friday: $("#group_friday_value").val(),
-                Saturday: $("#group_saturday_value").val(),
-                Sunday: $("#group_sunday_value").val(),
+                MondayisCheck: $("#player_monday").is(':checked'),
+                Monday: $("#palyer_monday_value").val(),
+                TuesdayisCheck: $("#player_monday").is(':checked'),
+                Tuesday: $("#player_tuesday_value").val(),
+                WednesdayisCheck: $("#player_monday").is(':checked'),
+                Wednesday: $("#player_wednesday_value").val(),
+                ThursdayisCheck: $("#player_monday").is(':checked'),
+                Thursday: $("#player_thursday_value").val(),
+                FridayisCheck: $("#player_monday").is(':checked'),
+                Friday: $("#player_friday_value").val(),
+                SaturdayisCheck: $("#player_monday").is(':checked'),
+                Saturday: $("#player_saturday_value").val(),
+                SundayisCheck: $("#player_monday").is(':checked'),
+                Sunday: $("#player_sunday_value").val(),
                 resolution: $("#select_resolution").val()
             };
             $.insmFramework('creatGroup', {
@@ -708,27 +730,27 @@
                     
                     div_forcedplaylists.append(div_Playlist);
                 });
-                $('#forcedplaylists').sortable({
-                    connectWith: ".m-portlet__head",
-                    items: "div.m-portlet:not(.m-portlet--warning.m-portlet--head-solid-bg)",
-                    opacity: 0.8,
-                    handle: '.m-portlet__head',
-                    coneHelperSize: true,
-                    placeholder: 'm-portlet--sortable-placeholder',
-                    forcePlaceholderSize: true,
-                    tolerance: "pointer",
-                    helper: "clone",
-                    tolerance: "pointer",
-                    forcePlaceholderSize: !0,
-                    helper: "clone",
-                    cancel: ".m-portlet--sortable-empty", // cancel dragging if portlet is in fullscreen mode
-                    revert: 250, // animation in milliseconds
-                    update: function (b, c) {
-                        if (c.item.prev().hasClass("m-portlet--sortable-empty")) {
-                            c.item.prev().before(c.item);
-                        }
-                    }
-                });
+                //$('#forcedplaylists').sortable({
+                //    connectWith: ".m-portlet__head",
+                //    items: "div.m-portlet:not(.m-portlet--warning.m-portlet--head-solid-bg)",
+                //    opacity: 0.8,
+                //    handle: '.m-portlet__head',
+                //    coneHelperSize: true,
+                //    placeholder: 'm-portlet--sortable-placeholder',
+                //    forcePlaceholderSize: true,
+                //    tolerance: "pointer",
+                //    helper: "clone",
+                //    tolerance: "pointer",
+                //    forcePlaceholderSize: !0,
+                //    helper: "clone",
+                //    cancel: ".m-portlet--sortable-empty", // cancel dragging if portlet is in fullscreen mode
+                //    revert: 250, // animation in milliseconds
+                //    update: function (b, c) {
+                //        if (c.item.prev().hasClass("m-portlet--sortable-empty")) {
+                //            c.item.prev().before(c.item);
+                //        }
+                //    }
+                //});
             }
         },
     }
@@ -750,14 +772,21 @@
         $.insmGroup('defaultDataSet');
         div_groupTreeForPlayerEdit.jstree(true).deselect_all(true);
         div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
-
-        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        //monday - sunday 
+        $("#label_player_monday_value").addClass('active');
+        $("#palyer_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#label_player_tuesday_value").addClass('active');
+        $("#player_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#label_player_wednesday_value").addClass('active');
+        $("#player_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#label_player_thursday_value").addClass('active');
+        $("#player_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#label_player_friday_value").addClass('active');
+        $("#player_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#label_player_saturday_value").addClass('active');
+        $("#player_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#label_player_sunday_value").addClass('active');
+        $("#player_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
 
         var div_PlaylistEditorContent = $('#group_player_playlist');
         var div_forcedplaylists = $('#forcedplaylists');
@@ -812,13 +841,13 @@
             }
         });
 
-        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#palyer_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
 
         $("#button_save").css('display', 'block').removeClass('m-dropdown__toggle');
         $("#button_save_Player").css('display', 'none');
@@ -836,25 +865,74 @@
                     }
                     if (Settings != null) {
                         if (Object.getOwnPropertyNames(Settings).length > 0) {
-                            $("#group_monday_value").data("ionRangeSlider").update({
+                            //Monday
+                            $("#player_monday").attr("checked", Settings.MondayisCheck);
+                            if (Settings.MondayisCheck) {
+                                $("#label_player_monday_value").addClass('active');
+                            } else {
+                                $("#label_player_monday_value").removeClass('active');
+                            }
+                            $("#palyer_monday_value").data("ionRangeSlider").update({
                                 from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
                             });
-                            $("#group_tuesday_value").data("ionRangeSlider").update({
+                            //Tuesday
+                            $("#player_tuesday").attr("checked", Settings.TuesdayisCheck);
+                            if (Settings.TuesdayisCheck) {
+                                $("#label_player_tuesday_value").addClass('active');
+                            } else {
+                                $("#label_player_tuesday_value").removeClass('active');
+                            }
+                            $("#player_tuesday_value").data("ionRangeSlider").update({
                                 from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
                             });
-                            $("#group_wednesday_value").data("ionRangeSlider").update({
+                            //Wednesday
+                            $("#player_wednesday").attr("checked", Settings.WednesdayisCheck);
+                            if (Settings.WednesdayisCheck) {
+                                $("#label_player_wednesday_value").addClass('active');
+                            } else {
+                                $("#label_player_wednesday_value").removeClass('active');
+                            }
+                            $("#player_wednesday_value").data("ionRangeSlider").update({
                                 from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
                             });
-                            $("#group_thursday_value").data("ionRangeSlider").update({
+                            //Thursday
+                            $("#player_thursday").attr("checked", Settings.ThursdayisCheck);
+                            if (Settings.ThursdayisCheck) {
+                                $("#label_player_thursday_value").addClass('active');
+                            } else {
+                                $("#label_player_thursday_value").removeClass('active');
+                            }
+                            $("#player_thursday_value").data("ionRangeSlider").update({
                                 from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
                             });
-                            $("#group_friday_value").data("ionRangeSlider").update({
+                            //Friday
+                            $("#player_friday").attr("checked", Settings.FridayisCheck);
+                            if (Settings.FridayisCheck) {
+                                $("#label_player_friday_value").addClass('active');
+                            } else {
+                                $("#label_player_friday_value").removeClass('active');
+                            }
+                            $("#player_friday_value").data("ionRangeSlider").update({
                                 from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
                             });
-                            $("#group_saturday_value").data("ionRangeSlider").update({
+                            //Saturday
+                            $("#player_saturday").attr("checked", Settings.SaturdayisCheck);
+                            if (Settings.SaturdayisCheck) {
+                                $("#label_player_saturday_value").addClass('active');
+                            } else {
+                                $("#label_player_saturday_value").removeClass('active');
+                            }
+                            $("#player_saturday_value").data("ionRangeSlider").update({
                                 from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
                             });
-                            $("#group_sunday_value").data("ionRangeSlider").update({
+                            //Sunday
+                            $("#player_sunday").attr("checked", Settings.SundayisCheck);
+                            if (Settings.SundayisCheck) {
+                                $("#label_player_sunday_value").addClass('active');
+                            } else {
+                                $("#label_player_sunday_value").removeClass('active');
+                            }
+                            $("#player_sunday_value").data("ionRangeSlider").update({
                                 from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
                             });
                             if (Settings.resolution) {
@@ -897,13 +975,13 @@
 
     $("#add_player").click(function () {
         $.insmGroup('defaultDataSet');
-        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#palyer_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
 
         editPlayerFlg = false;
         $("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
@@ -926,13 +1004,20 @@
     $("#button_save_Player").click(function () {
         var Settings = {};
         Settings = {
-            Monday: $("#group_monday_value").val(),
-            Tuesday: $("#group_tuesday_value").val(),
-            Wednesday: $("#group_wednesday_value").val(),
-            Thursday: $("#group_thursday_value").val(),
-            Friday: $("#group_friday_value").val(),
-            Saturday: $("#group_saturday_value").val(),
-            Sunday: $("#group_sunday_value").val(),
+            MondayisCheck: $("#player_monday").is(':checked'),
+            Monday: $("#palyer_monday_value").val(),
+            TuesdayisCheck: $("#player_monday").is(':checked'),
+            Tuesday: $("#player_tuesday_value").val(),
+            WednesdayisCheck: $("#player_monday").is(':checked'),
+            Wednesday: $("#player_wednesday_value").val(),
+            ThursdayisCheck: $("#player_monday").is(':checked'),
+            Thursday: $("#player_thursday_value").val(),
+            FridayisCheck: $("#player_monday").is(':checked'),
+            Friday: $("#player_friday_value").val(),
+            SaturdayisCheck: $("#player_monday").is(':checked'),
+            Saturday: $("#player_saturday_value").val(),
+            SundayisCheck: $("#player_monday").is(':checked'),
+            Sunday: $("#player_sunday_value").val(),
             resolution: $("#select_resolution").val(),
             ActiveFlag: $("input[name='radio_Active']:checked").val(),
             OnlineFlag: $("input[name='radio_Online']:checked").val()
@@ -1057,13 +1142,13 @@
 
     var edit_player_click = function (selectPlayer, allPlayerID) {
         $.insmGroup('defaultDataSet');
-        $("#group_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
-        $("#group_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#palyer_monday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_tuesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_wednesday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_thursday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_friday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_saturday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
+        $("#player_sunday_value").data("ionRangeSlider").update({ from: 0, to: 24 });
 
         var allPlayerNames = "";
         $.each(selectPlayer, function (playerIndex, playerItem) {
@@ -1110,28 +1195,78 @@
                     
                 });
                 if (Settings != null) {
+
                     if (Object.getOwnPropertyNames(Settings).length > 0) {
-                        $("#group_monday_value").data("ionRangeSlider").update({
+                        $("#player_monday").attr("checked", Settings.MondayisCheck);
+                        if (Settings.MondayisCheck) {
+                            $("#label_player_monday_value").addClass('active');
+                        } else {
+                            $("#label_player_monday_value").removeClass('active');
+                        }
+                        $("#palyer_monday_value").data("ionRangeSlider").update({
                             from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
                         });
-                        $("#group_tuesday_value").data("ionRangeSlider").update({
+                        //Tuesday
+                        $("#player_tuesday").attr("checked", Settings.TuesdayisCheck);
+                        if (Settings.TuesdayisCheck) {
+                            $("#label_player_tuesday_value").addClass('active');
+                        } else {
+                            $("#label_player_tuesday_value").removeClass('active');
+                        }
+                        $("#player_tuesday_value").data("ionRangeSlider").update({
                             from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
                         });
-                        $("#group_wednesday_value").data("ionRangeSlider").update({
+                        //Wednesday
+                        $("#player_wednesday").attr("checked", Settings.WednesdayisCheck);
+                        if (Settings.WednesdayisCheck) {
+                            $("#label_player_wednesday_value").addClass('active');
+                        } else {
+                            $("#label_player_wednesday_value").removeClass('active');
+                        }
+                        $("#player_wednesday_value").data("ionRangeSlider").update({
                             from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
                         });
-                        $("#group_thursday_value").data("ionRangeSlider").update({
+                        //Thursday
+                        $("#player_thursday").attr("checked", Settings.ThursdayisCheck);
+                        if (Settings.ThursdayisCheck) {
+                            $("#label_player_thursday_value").addClass('active');
+                        } else {
+                            $("#label_player_thursday_value").removeClass('active');
+                        }
+                        $("#player_thursday_value").data("ionRangeSlider").update({
                             from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
                         });
-                        $("#group_friday_value").data("ionRangeSlider").update({
+                        //Friday
+                        $("#player_friday").attr("checked", Settings.FridayisCheck);
+                        if (Settings.FridayisCheck) {
+                            $("#label_player_friday_value").addClass('active');
+                        } else {
+                            $("#label_player_friday_value").removeClass('active');
+                        }
+                        $("#player_friday_value").data("ionRangeSlider").update({
                             from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
                         });
-                        $("#group_saturday_value").data("ionRangeSlider").update({
+                        //Saturday
+                        $("#player_saturday").attr("checked", Settings.SaturdayisCheck);
+                        if (Settings.SaturdayisCheck) {
+                            $("#label_player_saturday_value").addClass('active');
+                        } else {
+                            $("#label_player_saturday_value").removeClass('active');
+                        }
+                        $("#player_saturday_value").data("ionRangeSlider").update({
                             from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
                         });
-                        $("#group_sunday_value").data("ionRangeSlider").update({
+                        //Sunday
+                        $("#player_sunday").attr("checked", Settings.SundayisCheck);
+                        if (Settings.SundayisCheck) {
+                            $("#label_player_sunday_value").addClass('active');
+                        } else {
+                            $("#label_player_sunday_value").removeClass('active');
+                        }
+                        $("#player_sunday_value").data("ionRangeSlider").update({
                             from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
                         });
+
                         if (Settings.resolution) {
                             $('#select_resolution').val(Settings.resolution);
                         }
