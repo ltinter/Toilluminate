@@ -20,6 +20,10 @@ namespace ToilluminateClient
     public static class PlayApp
     {
         public static String CurrentPlayListJsonString = string.Empty;
+        public static String CurrentPlayerJsonString = string.Empty;
+
+        public static PlayerInfo CurrentPlayerInfo = new PlayerInfo();
+
 
         private static PlayList executePlayList;
         public static List<PlayList> PlayListArray = new List<PlayList>();
@@ -198,20 +202,40 @@ namespace ToilluminateClient
                     LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:1", ex);
                 }
 
-                //try
-                //{
-                //    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_GET_STATUS, IniFileInfo.PlayerID));
-                //    string getJsonString = WebApiInfo.HttpGet(urlString);
-                //}
-                //catch (Exception ex)
-                //{
-                //    LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:2", ex);
-                //}
+                try
+                {
+                    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_GET_INFO, IniFileInfo.PlayerID));
+                    string getJsonString = WebApiInfo.HttpGet(urlString);
+
+                    if (PlayApp.CurrentPlayerJsonString != getJsonString)
+                    {
+                        PlayApp.CurrentPlayerJsonString = getJsonString;
+
+
+                        CurrentPlayerInfo = new PlayerInfo();
+
+                        CurrentPlayerInfo = JsonConvert.DeserializeAnonymousType(PlayApp.CurrentPlayerJsonString, CurrentPlayerInfo);
+
+                        CurrentPlayerInfo.playerSettings = JsonConvert.DeserializeAnonymousType(CurrentPlayerInfo.Settings, CurrentPlayerInfo.playerSettings);
+                    }
+
+                    if (CurrentPlayerInfo.IsInExecuteTime() == false)
+                    {
+                        PlayApp.CurrentPlayListJsonString = string.Empty;
+                        PlayApp.Clear();
+                        return true;
+                    }                    
+
+                }
+                catch (Exception ex)
+                {
+                    LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:2", ex);
+                }
 
 
                 try
                 {
-                    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYLISTMASTERS_GET_LIST, IniFileInfo.PlayerID));
+                    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYLISTMASTERS_GET_INFO, IniFileInfo.PlayerID));
                     string getJsonString = WebApiInfo.HttpPost(urlString, "");
 
                     if (PlayApp.CurrentPlayListJsonString != getJsonString)
@@ -931,37 +955,45 @@ namespace ToilluminateClient
                 DayOfWeek week = nowTime.DayOfWeek;
 
                 string weekTimeString = string.Empty;
+                bool weekTimeisCheck = false;
                 if (week == DayOfWeek.Sunday)
                 {
                     weekTimeString = plSettings.Sunday;
+                    weekTimeisCheck = plSettings.SundayisCheck;
                 }
                 else if (week == DayOfWeek.Monday)
                 {
                     weekTimeString = plSettings.Monday;
+                    weekTimeisCheck = plSettings.MondayisCheck;
                 }
                 else if (week == DayOfWeek.Tuesday)
                 {
                     weekTimeString = plSettings.Tuesday;
+                    weekTimeisCheck = plSettings.TuesdayisCheck;
                 }
                 else if (week == DayOfWeek.Wednesday)
                 {
                     weekTimeString = plSettings.Wednesday;
+                    weekTimeisCheck = plSettings.WednesdayisCheck;
                 }
                 else if (week == DayOfWeek.Thursday)
                 {
                     weekTimeString = plSettings.Thursday;
+                    weekTimeisCheck = plSettings.ThursdayisCheck;
                 }
                 else if (week == DayOfWeek.Friday)
                 {
                     weekTimeString = plSettings.Friday;
+                    weekTimeisCheck = plSettings.FridayisCheck;
                 }
                 else if (week == DayOfWeek.Saturday)
                 {
                     weekTimeString = plSettings.Saturday;
+                    weekTimeisCheck = plSettings.SaturdayisCheck;
                 }
 
 
-                if (string.IsNullOrEmpty(weekTimeString) == false)
+                if (string.IsNullOrEmpty(weekTimeString) == false && weekTimeisCheck)
                 {
                     string[] weekTimes = weekTimeString.Split(';');
                     if (Utility.ToInt(weekTimes[0]) <= nowTime.Hour && nowTime.Hour <= Utility.ToInt(weekTimes[1]))

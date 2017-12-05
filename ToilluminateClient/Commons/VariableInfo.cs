@@ -139,6 +139,145 @@ namespace ToilluminateClient
         #endregion
     }
 
+    public class PlayerInfo
+    {
+        public string PlayerID { get; set; }
+        public string GroupID { get; set; }
+        public string PlayerName { get; set; }
+        public string PlayerAddress { get; set; }
+        public string ActiveFlag { get; set; }
+        public string OnlineFlag { get; set; }
+        public string Comments { get; set; }
+        public string UpdateDate { get; set; }
+        public string InsertDate { get; set; }
+        public string ErrorFlag { get; set; }
+        public string PlayerLog { get; set; }
+        public string UseFlag { get; set; }
+
+
+        public string Settings { get; set; }
+
+
+        public PlayerSettings playerSettings { get; set; }
+
+        public bool IsInExecuteTime()
+        {
+            try
+            {
+                bool isInExecuteTime = true;
+                isInExecuteTime = playerSettings.IsInExecuteTime();
+
+
+
+                return isInExecuteTime;
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("PlayerInfo", "InExecuteTime", ex);
+                return false;
+            }
+        }
+    }
+
+    public class PlayerSettings
+    {
+        public string resolution { get; set; }
+        public string ActiveFlag { get; set; }
+        public string OnlineFlag { get; set; }
+
+        public string Monday { get; set; }
+        public string Tuesday { get; set; }
+        public string Wednesday { get; set; }
+        public string Thursday { get; set; }
+        public string Friday { get; set; }
+        public string Saturday { get; set; }
+        public string Sunday { get; set; }
+
+        public bool MondayisCheck { get; set; }
+        public bool TuesdayisCheck { get; set; }
+        public bool WednesdayisCheck { get; set; }
+        public bool ThursdayisCheck { get; set; }
+        public bool FridayisCheck { get; set; }
+        public bool SaturdayisCheck { get; set; }
+        public bool SundayisCheck { get; set; }
+
+
+        public bool IsInExecuteTime()
+        {
+            try
+            {
+                DateTime nowTime = DateTime.Now;
+                DayOfWeek week = nowTime.DayOfWeek;
+
+                string weekTimeString = string.Empty;
+                bool weekTimeisCheck = false;
+                if (week == DayOfWeek.Sunday)
+                {
+                    weekTimeString = this.Sunday;
+                    weekTimeisCheck = this.SundayisCheck;
+                }
+                else if (week == DayOfWeek.Monday)
+                {
+                    weekTimeString = this.Monday;
+                    weekTimeisCheck = this.MondayisCheck;
+                }
+                else if (week == DayOfWeek.Tuesday)
+                {
+                    weekTimeString = this.Tuesday;
+                    weekTimeisCheck = this.TuesdayisCheck;
+                }
+                else if (week == DayOfWeek.Wednesday)
+                {
+                    weekTimeString = this.Wednesday;
+                    weekTimeisCheck = this.WednesdayisCheck;
+                }
+                else if (week == DayOfWeek.Thursday)
+                {
+                    weekTimeString = this.Thursday;
+                    weekTimeisCheck = this.ThursdayisCheck;
+                }
+                else if (week == DayOfWeek.Friday)
+                {
+                    weekTimeString = this.Friday;
+                    weekTimeisCheck = this.FridayisCheck;
+                }
+                else if (week == DayOfWeek.Saturday)
+                {
+                    weekTimeString = this.Saturday;
+                    weekTimeisCheck = this.SaturdayisCheck;
+                }
+
+
+                if (string.IsNullOrEmpty(weekTimeString) == false && weekTimeisCheck)
+                {
+                    string[] weekTimes = weekTimeString.Split(';');
+                    if (Utility.ToInt(weekTimes[0]) <= nowTime.Hour && nowTime.Hour <= Utility.ToInt(weekTimes[1]))
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    return true;
+#endif
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("PlayerSettings", "InExecuteTime", ex);
+                return false;
+            }
+        }
+    }
+
+
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class PlayListSettings
     {
         public string Loop { get; set; }
@@ -154,6 +293,15 @@ namespace ToilluminateClient
         public string Friday { get; set; }
         public string Saturday { get; set; }
         public string Sunday { get; set; }
+
+        public bool MondayisCheck { get; set; }
+        public bool TuesdayisCheck { get; set; }
+        public bool WednesdayisCheck { get; set; }
+        public bool ThursdayisCheck { get; set; }
+        public bool FridayisCheck { get; set; }
+        public bool SaturdayisCheck { get; set; }
+        public bool SundayisCheck { get; set; }
+
 
         public PlaylistItem[] PlaylistItems { get; set; }
 
@@ -185,7 +333,8 @@ namespace ToilluminateClient
         public string[] src { get; set; }
 
         public string[] fileUrl { get; set; }
-        
+
     }
+
 
 }
