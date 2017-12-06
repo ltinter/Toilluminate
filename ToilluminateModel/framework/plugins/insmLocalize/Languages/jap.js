@@ -102,7 +102,7 @@ var localize_jap =
          "Top": "トップ",
          "Middle": "ミドル",
          "Bottom": "ボトム",
-         "": "",
-         "": "",
-         "": "",
+         "Normal": "通常",
+         "Stretch": "ストレッチ",
+         "Fullscreen": "フルスクリーン",
      };

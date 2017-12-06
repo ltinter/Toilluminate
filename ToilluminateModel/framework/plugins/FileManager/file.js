@@ -103,12 +103,13 @@
         remove: function () {
             var datatable = $("#datatable_file").data("datatable");
             if (datatable && datatable.setSelectedRecords().getSelectedRecords().length > 0) {
-                toastr.warning("使用中ですので、削除できない。");
-                return false;
+                //toastr.warning("使用中ですので、削除できない。");
+                //return false;
                 //remove selected files
                 $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
                     $.insmFramework("deleteFile", {
                         fileID: $(item).data().obj.FileID,
+                        fileObj:$(item).data().obj,
                         success: function (fileData) {
                             $.file('removeDataFromTable', item, fileData);
                         },

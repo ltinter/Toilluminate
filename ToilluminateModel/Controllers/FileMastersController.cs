@@ -41,18 +41,13 @@ namespace ToilluminateModel.Controllers
             return Ok(fileMaster);
         }
 
-        // PUT: api/FileMasters/5
+        // PUT: api/FileMasters
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutFileMaster(int id, FileMaster fileMaster)
+        public async Task<IHttpActionResult> PutFileMaster(FileMaster fileMaster)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            if (id != fileMaster.FileID)
-            {
-                return BadRequest();
             }
 
             fileMaster.UpdateDate = DateTime.Now;
@@ -64,17 +59,10 @@ namespace ToilluminateModel.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FileMasterExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(fileMaster);
         }
 
         // POST: api/FileMasters
@@ -115,7 +103,7 @@ namespace ToilluminateModel.Controllers
         [HttpGet, Route("api/FileMasters/GetFilesByFolderID/{FolderID}")]
         public async Task<IQueryable<FileMaster>> GetFilesByFolderID(int FolderID)
         {
-            return db.FileMaster.Where(a => a.FolderID == FolderID);
+            return db.FileMaster.Where(a => a.FolderID == FolderID && a.UseFlag == true);
         }
 
         [HttpPost, Route("api/FileMasters/GetFilesByFolderIDArray")]
@@ -299,6 +287,7 @@ namespace ToilluminateModel.Controllers
                 fileMaster.FileName = fileName;
                 fileMaster.FileUrl = FORLDER  + filePathName;
                 fileMaster.FileThumbnailUrl = THUMBNAILFORLDER + thumbnailFilePathName;
+                fileMaster.UseFlag = true;
                 fileMaster.UpdateDate = DateTime.Now;
                 fileMaster.InsertDate = DateTime.Now;
                 db.FileMaster.Add(fileMaster);
