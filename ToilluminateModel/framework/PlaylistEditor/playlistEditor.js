@@ -1066,8 +1066,8 @@
     });
     $("#playlist_delete").click(function () {
         if (edit_playlistId) {
-            //toastr.warning("Group is used!");
-            //return;
+            toastr.warning("Group is used!");
+            return;
             $.insmFramework('deletePlaylist', {
                 deletePlaylistId: edit_playlistId,
                 deletepalylistItem: select_palylistItem,
