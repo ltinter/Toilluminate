@@ -148,7 +148,7 @@ namespace ToilluminateClient
                         }
                     }
                 }
-                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Random };
+                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Docking_LR, ImageShowStyle.Docking_TD };
                 if (imageFileList.Count > 0)
                 {
                     ImageTempleteItem itItem = new ImageTempleteItem(imageFileList, imageStyleList.ToList(), 3, FillOptionStyle.Zoom);
