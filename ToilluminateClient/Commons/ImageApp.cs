@@ -335,22 +335,22 @@ namespace ToilluminateClient
 
                 g = picBox.CreateGraphics();
 
-                
+
                 int sepFixW = GetShowSepFix3(width);
                 int sepFixH = GetShowSepFix3(height);
-                
+
 
                 int sepMax = width / sepFixW;
 
                 int sepFixWDL = sepFixW + width - (sepFixW * sepMax);
-                int sepFixHDL = sepFixH + height - (sepFixH * sepMax );
+                int sepFixHDL = sepFixH + height - (sepFixH * sepMax);
 
 
                 int sepMaxX = sepMax;
                 int sepMaxY = sepMax;
                 int sepMinX = 1;
                 int sepMinY = 1;
-                int sepX = sepMinX-1;
+                int sepX = sepMinX - 1;
                 int sepY = sepMinY;
                 int x = 0;
                 int y = 0;
@@ -445,10 +445,10 @@ namespace ToilluminateClient
                     g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
 
                     System.Threading.Thread.Sleep(SleepTime * (1000 / SepNumber));
-                }                
+                }
 
                 MyDrawImage(g, bmpSource, left, top);
-                
+
             }
             catch (Exception ex)
             {
@@ -475,33 +475,130 @@ namespace ToilluminateClient
         private static void ShowBitmap_Block(Bitmap bmpSource, PictureBox picBox)
         {
             Graphics g = null;
+            //以马赛克效果显示图像
             try
             {
-                //以分块效果显示图像
+                int width = bmpSource.Width; //图像宽度    
+                int height = bmpSource.Height; //图像高度
+                int left = (picBox.Size.Width - width) / 2; //图像宽度    
+                int top = (picBox.Size.Height - height) / 2; //图像高度
+
                 g = picBox.CreateGraphics();
 
-                int width = bmpSource.Width;
-                int height = bmpSource.Height;
-                //定义将图片切分成四个部分的区域
-                RectangleF[] block ={
-                    new RectangleF(0,0,width/2,height/2),
-                    new RectangleF(width/2,0,width/2,height/2),
-                    new RectangleF(0,height/2,width/2,height/2),
-                    new RectangleF(width/2,height/2,width/2,height/2)};
-                //分别克隆图片的四个部分    
-                Bitmap[] MyBitmapBlack ={
-                bmpSource.Clone(block[0],System.Drawing.Imaging.PixelFormat.DontCare),
-                bmpSource.Clone(block[1],System.Drawing.Imaging.PixelFormat.DontCare),
-                bmpSource.Clone(block[2],System.Drawing.Imaging.PixelFormat.DontCare),
-                bmpSource.Clone(block[3],System.Drawing.Imaging.PixelFormat.DontCare)};
-                //绘制图片的四个部分，各部分绘制时间间隔为0.5秒                    
-                MyDrawImage(g, MyBitmapBlack[0], 0, 0);
-                System.Threading.Thread.Sleep(500);
-                MyDrawImage(g, MyBitmapBlack[1], width / 2, 0);
-                System.Threading.Thread.Sleep(500);
-                MyDrawImage(g, MyBitmapBlack[3], width / 2, height / 2);
-                System.Threading.Thread.Sleep(500);
-                MyDrawImage(g, MyBitmapBlack[2], 0, height / 2);
+
+                int sepFixW = GetShowSepFix3(width);
+                int sepFixH = GetShowSepFix3(height);
+
+
+                int sepMax = width / sepFixW;
+
+                int sepFixWDL = sepFixW + width - (sepFixW * sepMax);
+                int sepFixHDL = sepFixH + height - (sepFixH * sepMax);
+
+
+                int sepMaxX = sepMax;
+                int sepMaxY = sepMax;
+                int sepMinX = 1;
+                int sepMinY = 1;
+                int sepX = sepMinX - 1;
+                int sepY = sepMinY;
+                int x = 0;
+                int y = 0;
+                int sepFixWD = sepFixW;
+                int sepFixHD = sepFixH;
+                int drawState = 1;//1:top, 2:left, 3:bottom, 4:right
+                while (sepMinX < sepMaxX)
+                {
+                    if (drawState == 1)
+                    {
+                        if (sepX < sepMaxX)
+                        {
+                            sepX++;
+                        }
+                        else
+                        {
+                            drawState = 2;
+                            continue;
+                        }
+                    }
+
+                    else if (drawState == 2)
+                    {
+                        if (sepY < sepMaxY)
+                        {
+                            sepY++;
+                        }
+                        else
+                        {
+                            drawState = 3;
+                            continue;
+                        }
+                    }
+
+                    else if (drawState == 3)
+                    {
+                        if (sepX > sepMinX)
+                        {
+                            sepX--;
+                        }
+                        else
+                        {
+                            drawState = 4;
+                            continue;
+                        }
+                    }
+                    else if (drawState == 4)
+                    {
+                        if (sepY > sepMinY)
+                        {
+                            sepY--;
+                        }
+                        else
+                        {
+                            sepMinX++;
+                            sepMinY++;
+                            sepMaxX--;
+                            sepMaxY--;
+                            sepX = sepMinX - 1;
+                            sepY = sepMinY;
+                            drawState = 1;
+                            continue;
+                        }
+                    }
+
+
+
+                    x = sepFixW * (sepX - 1);
+
+                    y = sepFixH * (sepY - 1);
+
+                    if (sepX == sepMax)
+                    {
+                        sepFixWD = sepFixWDL;
+                    }
+                    else
+                    {
+                        sepFixWD = sepFixW;
+                    }
+
+                    if (sepY == sepMax)
+                    {
+                        sepFixHD = sepFixHDL;
+                    }
+                    else
+                    {
+                        sepFixHD = sepFixH;
+                    }
+
+                    Rectangle DestRect = new Rectangle(x, y, sepFixWD, sepFixHD);
+                    Rectangle SrcRect = new Rectangle(x + left, y + top, sepFixWD, sepFixHD);
+                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+
+                    System.Threading.Thread.Sleep(SleepTime * (1000 / SepNumber));
+                }
+
+                MyDrawImage(g, bmpSource, left, top);
+
             }
             catch (Exception ex)
             {
@@ -1402,9 +1499,6 @@ namespace ToilluminateClient
                     ImageShowStyle.Random.GetHashCode()
                     , ImageShowStyle.Rotate.GetHashCode()
                     , ImageShowStyle.Gradient.GetHashCode()
-                    , ImageShowStyle.Docking_LR.GetHashCode()
-                    , ImageShowStyle.Docking_TD.GetHashCode()
-                    , ImageShowStyle.Block.GetHashCode()
                     , ImageShowStyle.Special.GetHashCode()};
 
             try

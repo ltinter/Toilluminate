@@ -124,13 +124,13 @@ namespace ToilluminateClient
             {
                 PlayApp.Clear();
 
-                PlayList pList1 = new PlayList(1, true, true, 600);
+                PlayList pList1 = new PlayList(1, true, true, 36000);
                 PlayApp.PlayListArray.Add(pList1);
 
-                string[] imageFileList1 = new string[] {  @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A03.jpg" };
+                string[] imageFileList1 = new string[] {  @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A03.jpg", @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg", @"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg", @"C:\C_Works\Images\A09.jpg" };
                 string[] imageFileList2 = new string[] { @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg", @"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg" };
-                //                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.DownToTop, ImageShowStyle.Random };
-                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Special };
+                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Random };
+              //ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Rotate ,ImageShowStyle.Special };
 
                 string messageString1 = @"<p>hello world</p><br/><span style=""font-family: MS PGothic;font-size: 18px;""><b style=""""><I>今日は明日の全国に雨が降る。</I></b></span><br/><p>Welcome to use this system。</p>";
                 string messageString2 = @"<p>AAAAAA<span style=""font-size: 18px; background-color: rgb(247, 173, 107);""><font face=""Comic Sans MS"" style=""""><b style=""font-style: italic;"">B</b><b style=""""><span style=""font-size: 10px;"">XXX<span style=""font-size: 18px;""><b><font color=""#ffd663"">yyy</font></b></span>XXX</span></b><b style=""font-style: italic;"">B</b></font></span>CCCC</p><p>nnn</p><p><font style=""""><span style=""background-color: rgb(255, 255, 255);"">11</span><span style=""background-color: rgb(148, 189, 123);"">1<span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder;""><span style=""font-size: 10px;"">333<span style=""font-size: 18px;""><span style=""font-weight: bolder;""><font color=""#ffd663"">444</font></span></span>333</span></span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span></span></font>555<br></p><p>qqq</p><p><font color=""#cee7f7"">GGG</font></p>";
@@ -147,14 +147,14 @@ namespace ToilluminateClient
                 pList1.PlayAddTemplete(itItem13);
 
 
-                MediaTempleteItem itItem17 = new MediaTempleteItem(@"C:\C_Works\Medias\A01.mp4", ZoomOptionStyle.None);
-                pList1.PlayAddTemplete(itItem17);
-                MediaTempleteItem itItem18 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
-                pList1.PlayAddTemplete(itItem18);
+                //MediaTempleteItem itItem17 = new MediaTempleteItem(@"C:\C_Works\Medias\A01.mp4", ZoomOptionStyle.None);
+                //pList1.PlayAddTemplete(itItem17);
+                //MediaTempleteItem itItem18 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
+                //pList1.PlayAddTemplete(itItem18);
 
 
                 PlayList pList2 = new PlayList(2, false, false, 0);
-                PlayApp.PlayListArray.Add(pList2);
+                //PlayApp.PlayListArray.Add(pList2);
 
                 ImageTempleteItem itItem21 = new ImageTempleteItem(imageFileList2.ToList(), imageStyleList.ToList(), 2, FillOptionStyle.Fill);
                 pList2.PlayAddTemplete(itItem21);
