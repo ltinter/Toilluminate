@@ -53,10 +53,6 @@
                 return false;
             }
         },
-
-
-
-
     };
     var login = $('#m_login');
     $("#m_login_signin_submit").click(function (e) {
@@ -89,6 +85,8 @@
                 }, 2000);
                 $.insmGroup('initGroupTree', { userGroupId: response.GroupID });
                 btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
+                $("#login_username").val('');
+                $("#login_password").val('');
                 $("#mainDiv").show();
                 $("#divLogin").hide();
             },
