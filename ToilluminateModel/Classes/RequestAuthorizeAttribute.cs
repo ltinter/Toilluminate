@@ -15,19 +15,11 @@ namespace ToilluminateModel
         {
             //get ticket from httpcontext
             var userticket = actionContext.Request.Headers.GetCookies().Select(a => a["userticket"]).FirstOrDefault().Value;
-            if ((userticket != null) && (userticket != ""))
+            if ((userticket != null) && (userticket != "") && ValidateUserInfo(userticket))
             {
-                ///validate user info from ticket
-                if (ValidateUserInfo(userticket))
-                {
-                    base.IsAuthorized(actionContext);
-                }
-                else
-                {
-                    HandleUnauthorizedRequest(actionContext);
-                }
+                base.IsAuthorized(actionContext);
             }
-            //return 401 without ticket
+            //return 401 without ticket or session timeout
             else
             {
                 var attributes = actionContext.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().OfType<AllowAnonymousAttribute>();
@@ -47,7 +39,7 @@ namespace ToilluminateModel
             var index = strTicket.IndexOf("&");
             string userName = strTicket.Substring(0, index);
 
-            if(HttpContext.Current.Session[userName].Equals(encryptTicket))
+            if(HttpContext.Current.Session[userName] != null && HttpContext.Current.Session[userName].Equals(encryptTicket))
             {
                 return true;
             }
