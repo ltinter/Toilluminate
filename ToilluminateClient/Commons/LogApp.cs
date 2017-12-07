@@ -26,8 +26,9 @@ namespace ToilluminateClient
         /// <summary>
         /// 処理ログファイル格納ディレクトリ
         /// </summary>
-        public static readonly string ERROR_LOG_FILE_DIRECTORY = @"\Log\ErrorLog";
-        public static readonly string PROCESS_LOG_FILE_DIRECTORY = @"\Log\ProcessLog";
+        public static readonly string LOG_FILE_DIRECTORY = @"\Logs";
+        public static readonly string ERROR_LOG_FILE_DIRECTORY = LOG_FILE_DIRECTORY + @"\ErrorLog";
+        public static readonly string PROCESS_LOG_FILE_DIRECTORY = LOG_FILE_DIRECTORY + @"\ProcessLog";
 
         /// <summary>
         /// エラーログファイル名

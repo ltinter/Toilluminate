@@ -77,10 +77,24 @@ namespace ToilluminateClient
         /// </summary>
         private static Boolean canOutputLog = false;
 
+        /// <summary>
+        /// 例表示
+        /// </summary>
+        private static bool showExample = true;
         #endregion 変数
 
         #region publicプロパティ
 
+        /// <summary>
+        /// 例表示
+        /// </summary>
+        public static Boolean ShowExample
+        {
+            get
+            {
+                return showExample;
+            }
+        }
         /// <summary>
         /// logが出力することが
         /// </summary>
@@ -175,6 +189,9 @@ namespace ToilluminateClient
             //CanOutputLog
             canOutputLog = Utility.ToInt(GetIniFileString("MAINTE", "CanOutputLog", file)) == 0 ? false : true;
 
+            //ShowExample
+            showExample = Utility.ToInt(GetIniFileString("MAINTE", "ShowExample", file)) == 0 ? false : true;
+
             //MultilingualDictionaryType
             string multiDictTypeValue = GetIniFileString("MAINTE", "MultilingualDictionaryType", file);
 
@@ -225,6 +242,14 @@ namespace ToilluminateClient
                 {
                     WriteIniFileNotesString("MAINTE", "CanOutputLog", "logが出力することが", file);
                 }
+
+                //例表示
+                WriteIniFileString("MAINTE", "ShowExample", ShowExample ? "1" : "0", file);
+                if (isNewFile)
+                {
+                    WriteIniFileNotesString("MAINTE", "ShowExample", "例表示", file);
+                }
+                
 
                 WriteIniFileString("MAINTE", "MultilingualDictionaryType", EnumHelper.GetDescription(MultiDictType), file);
                 if (isNewFile)

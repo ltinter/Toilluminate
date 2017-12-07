@@ -43,10 +43,7 @@ namespace ToilluminateClient
         /// エクスポートフォルダ
         /// </summary>
         public const string OutputDir = "OutputDir";
-        /// <summary>
-        /// ログフォルダ
-        /// </summary>
-        public const string LogDir = "Log";
+
 
         /// <summary>
         /// 言語辞書のフォルダ

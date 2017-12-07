@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -118,61 +119,104 @@ namespace ToilluminateClient
         private static void DebugLoadPlayListInfo()
         {
 
-#if DEBUG
             #region " DEBUG DATA"
-            if (PlayApp.PlayListArray.Count == 0 && string.IsNullOrEmpty(IniFileInfo.PlayerID))
+
+            PlayApp.Clear();
+
+            PlayList pList1 = new PlayList(1, true, true, 36000);
+            PlayApp.PlayListArray.Add(pList1);
+
+            #region "images"
+            try
             {
-                PlayApp.Clear();
+                List<string> imageFileList = new List<string> { };
+                string imageDir = Utility.GetFullFileName(VariableInfo.TempPath, "Images");
+                if (Directory.Exists(imageDir))
+                {
+                    string[] fileExts = new string[] { "*.jpg", "*.png" };
+                    foreach (string fileExt in fileExts)
+                    {
+                        string[] files = Directory.GetFiles(imageDir, fileExt);
 
-                PlayList pList1 = new PlayList(1, true, true, 36000);
-                PlayApp.PlayListArray.Add(pList1);
-
-                string[] imageFileList1 = new string[] {  @"C:\C_Works\Images\A02.jpg", @"C:\C_Works\Images\A01.jpg", @"C:\C_Works\Images\A03.jpg", @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg", @"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg", @"C:\C_Works\Images\A09.jpg" };
-                string[] imageFileList2 = new string[] { @"C:\C_Works\Images\A04.jpg", @"C:\C_Works\Images\A05.jpg", @"C:\C_Works\Images\A06.jpg", @"C:\C_Works\Images\A07.jpg", @"C:\C_Works\Images\A08.jpg" };
+                        foreach (string file in files)
+                        {
+                            imageFileList.Add(file);
+                        }
+                    }
+                }
                 ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Random };
-              //ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Rotate ,ImageShowStyle.Special };
+                if (imageFileList.Count > 0)
+                {
+                    ImageTempleteItem itItem = new ImageTempleteItem(imageFileList, imageStyleList.ToList(), 3, FillOptionStyle.Zoom);
+                    pList1.PlayAddTemplete(itItem);
+                }
 
-                string messageString1 = @"<p>hello world</p><br/><span style=""font-family: MS PGothic;font-size: 18px;""><b style=""""><I>今日は明日の全国に雨が降る。</I></b></span><br/><p>Welcome to use this system。</p>";
-                string messageString2 = @"<p>AAAAAA<span style=""font-size: 18px; background-color: rgb(247, 173, 107);""><font face=""Comic Sans MS"" style=""""><b style=""font-style: italic;"">B</b><b style=""""><span style=""font-size: 10px;"">XXX<span style=""font-size: 18px;""><b><font color=""#ffd663"">yyy</font></b></span>XXX</span></b><b style=""font-style: italic;"">B</b></font></span>CCCC</p><p>nnn</p><p><font style=""""><span style=""background-color: rgb(255, 255, 255);"">11</span><span style=""background-color: rgb(148, 189, 123);"">1<span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder;""><span style=""font-size: 10px;"">333<span style=""font-size: 18px;""><span style=""font-weight: bolder;""><font color=""#ffd663"">444</font></span></span>333</span></span><span style=""font-family: Comic Sans MS; font-size: 18px; font-weight: bolder; font-style: italic;"">2</span></span></font>555<br></p><p>qqq</p><p><font color=""#cee7f7"">GGG</font></p>";
-                string messageString3 = @"<p>AAAAAAAAAAAAAAA</p><p>BBBBBBBBBBB</p><p><<<<<<<<<<<<<<<<------------</p>";
-
-                ImageTempleteItem itItem11 = new ImageTempleteItem(imageFileList1.ToList(), imageStyleList.ToList(),5, FillOptionStyle.Fill);
-                pList1.PlayAddTemplete(itItem11);
-
-
-                MessageTempleteItem itItem12 = new MessageTempleteItem(messageString1, MessageShowStyle.Bottom, 300, 2);
-                pList1.PlayAddTemplete(itItem12);
-
-                MessageTempleteItem itItem13 = new MessageTempleteItem(messageString2, MessageShowStyle.Bottom, 180, 5);
-                pList1.PlayAddTemplete(itItem13);
-
-
-                //MediaTempleteItem itItem17 = new MediaTempleteItem(@"C:\C_Works\Medias\A01.mp4", ZoomOptionStyle.None);
-                //pList1.PlayAddTemplete(itItem17);
-                //MediaTempleteItem itItem18 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
-                //pList1.PlayAddTemplete(itItem18);
-
-
-                PlayList pList2 = new PlayList(2, false, false, 0);
-                //PlayApp.PlayListArray.Add(pList2);
-
-                ImageTempleteItem itItem21 = new ImageTempleteItem(imageFileList2.ToList(), imageStyleList.ToList(), 2, FillOptionStyle.Fill);
-                pList2.PlayAddTemplete(itItem21);
-
-
-                MessageTempleteItem itItem22 = new MessageTempleteItem(messageString3, MessageShowStyle.Top, 0, 0);
-                pList2.PlayAddTemplete(itItem22);
-
-
-                MediaTempleteItem itItem27 = new MediaTempleteItem(@"C:\C_Works\Medias\A01.mp4", ZoomOptionStyle.None);
-                pList2.PlayAddTemplete(itItem27);
-                MediaTempleteItem itItem28 = new MediaTempleteItem(@"C:\C_Works\Medias\A02.mp4", ZoomOptionStyle.None);
-                pList2.PlayAddTemplete(itItem28);
-
-                PlayApp.newPlayListExist = true;
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("PlayApp", "DebugLoadPlayListInfo:Images", ex);
             }
             #endregion
-#endif
+
+
+            #region "medias"
+            try
+            {
+                List<string> mediaFileList = new List<string> { };
+                string mediaDir = Utility.GetFullFileName(VariableInfo.TempPath, "Medias");
+                if (Directory.Exists(mediaDir))
+                {
+                    string[] fileExts = new string[] { "*.mp4", "*.avi" };
+                    foreach (string fileExt in fileExts)
+                    {
+                        string[] files = Directory.GetFiles(mediaDir, fileExt);
+
+                        foreach (string file in files)
+                        {
+                            MediaTempleteItem mtItem = new MediaTempleteItem(file, ZoomOptionStyle.Full);
+                            pList1.PlayAddTemplete(mtItem);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("PlayApp", "DebugLoadPlayListInfo:Medias", ex);
+            }
+            #endregion
+
+
+            #region "message"
+            try
+            {
+                List<string> imageFileList = new List<string> { };
+                string messageFile = Utility.GetFullFileName(VariableInfo.TempPath, "Message.txt");
+                if (File.Exists(messageFile))
+                {
+
+                    StreamReader sr = new StreamReader(messageFile, Encoding.Default);
+                    string messageString = string.Empty;
+                    String line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        messageString = string.Format("{0}{1}", messageString, line.ToString());
+                    }
+
+                    if (string.IsNullOrEmpty(messageString) == false)
+                    {
+                        MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom, 600, 5);
+                        pList1.PlayAddTemplete(mtItem);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("PlayApp", "DebugLoadPlayListInfo:message", ex);
+            }
+            #endregion
+
+
+            #endregion
 
         }
         /// <summary>
@@ -180,104 +224,116 @@ namespace ToilluminateClient
         /// </summary>
         public static bool LoadPlayListInfo()
         {
-            if (PlayApp.NowLoadPlayList || string.IsNullOrEmpty(IniFileInfo.PlayerID))
+            if (PlayApp.nowLoadPlayList)
             {
-                DebugLoadPlayListInfo();
-
                 return false;
             }
             try
             {
                 PlayApp.nowLoadPlayList = true;
-
-                LogApp.OutputProcessLog("VariableInfo", "LoadPlayListInfo", "Begin");
-
-                try
+                if (string.IsNullOrEmpty(IniFileInfo.PlayerID) == false)
                 {
-                    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_SEND, IniFileInfo.PlayerID));
-                    string getJsonString = WebApiInfo.HttpGet(urlString);
-                }
-                catch (Exception ex)
-                {
-                    LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:1", ex);
-                }
 
-                try
-                {
-                    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_GET_INFO, IniFileInfo.PlayerID));
-                    string getJsonString = WebApiInfo.HttpGet(urlString);
+                    LogApp.OutputProcessLog("VariableInfo", "LoadPlayListInfo", "Begin");
 
-                    if (PlayApp.CurrentPlayerJsonString != getJsonString)
+                    try
                     {
-                        PlayApp.CurrentPlayerJsonString = getJsonString;
-
-
-                        CurrentPlayerInfo = new PlayerInfo();
-
-                        CurrentPlayerInfo = JsonConvert.DeserializeAnonymousType(PlayApp.CurrentPlayerJsonString, CurrentPlayerInfo);
-
-                        CurrentPlayerInfo.playerSettings = JsonConvert.DeserializeAnonymousType(CurrentPlayerInfo.Settings, CurrentPlayerInfo.playerSettings);
+                        string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_SEND, IniFileInfo.PlayerID));
+                        string getJsonString = WebApiInfo.HttpGet(urlString);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:1", ex);
                     }
 
-                    if (CurrentPlayerInfo.IsInExecuteTime() == false)
+                    try
                     {
-                        PlayApp.CurrentPlayListJsonString = string.Empty;
-                        PlayApp.Clear();
-                        return true;
-                    }                    
+                        string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYERMASTERS_GET_INFO, IniFileInfo.PlayerID));
+                        string getJsonString = WebApiInfo.HttpGet(urlString);
 
-                }
-                catch (Exception ex)
-                {
-                    LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:2", ex);
-                }
-
-
-                try
-                {
-                    string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYLISTMASTERS_GET_INFO, IniFileInfo.PlayerID));
-                    string getJsonString = WebApiInfo.HttpPost(urlString, "");
-
-                    if (PlayApp.CurrentPlayListJsonString != getJsonString)
-                    {
-                        PlayApp.CurrentPlayListJsonString = getJsonString;
-                        PlayApp.Clear();
-
-
-                        PlayApp.PlayListMasterArray = new List<PlayListMaster> { };
-
-                        JArray plmArray = (JArray)JsonConvert.DeserializeObject(PlayApp.CurrentPlayListJsonString);
-                        foreach (JObject obj in plmArray)
+                        if (PlayApp.CurrentPlayerJsonString != getJsonString)
                         {
-                            PlayListMaster plmStudent = new PlayListMaster();
+                            PlayApp.CurrentPlayerJsonString = getJsonString;
 
-                            plmStudent = JsonConvert.DeserializeAnonymousType(obj.ToString(), plmStudent);
 
-                            if (string.IsNullOrEmpty(plmStudent.Settings) == false)
+                            CurrentPlayerInfo = new PlayerInfo();
+
+                            CurrentPlayerInfo = JsonConvert.DeserializeAnonymousType(PlayApp.CurrentPlayerJsonString, CurrentPlayerInfo);
+
+                            CurrentPlayerInfo.playerSettings = JsonConvert.DeserializeAnonymousType(CurrentPlayerInfo.Settings, CurrentPlayerInfo.playerSettings);
+                        }
+
+                        if (CurrentPlayerInfo.IsInExecuteTime() == false)
+                        {
+                            PlayApp.CurrentPlayListJsonString = string.Empty;
+                            PlayApp.Clear();
+                            return true;
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:2", ex);
+                    }
+
+
+                    try
+                    {
+                        string urlString = string.Format("http://{0}/{1}", IniFileInfo.WebApiAddress, string.Format(Constants.API_PLAYLISTMASTERS_GET_INFO, IniFileInfo.PlayerID));
+                        string getJsonString = WebApiInfo.HttpPost(urlString, "");
+
+                        if (PlayApp.CurrentPlayListJsonString != getJsonString)
+                        {
+                            PlayApp.CurrentPlayListJsonString = getJsonString;
+                            PlayApp.Clear();
+
+
+                            PlayApp.PlayListMasterArray = new List<PlayListMaster> { };
+
+                            JArray plmArray = (JArray)JsonConvert.DeserializeObject(PlayApp.CurrentPlayListJsonString);
+                            foreach (JObject obj in plmArray)
                             {
-                                PlayApp.PlayListMasterArray.Add(plmStudent);
+                                PlayListMaster plmStudent = new PlayListMaster();
+
+                                plmStudent = JsonConvert.DeserializeAnonymousType(obj.ToString(), plmStudent);
+
+                                if (string.IsNullOrEmpty(plmStudent.Settings) == false)
+                                {
+                                    PlayApp.PlayListMasterArray.Add(plmStudent);
+                                }
                             }
+
+                            foreach (PlayListMaster plmItem in PlayApp.PlayListMasterArray)
+                            {
+                                PlayListSettings plsStudent = new PlayListSettings();
+                                plsStudent = JsonConvert.DeserializeAnonymousType(plmItem.Settings, plsStudent);
+
+                                PlayList plItem = new PlayList(plmItem.PlayListID, plsStudent);
+
+                                PlayApp.PlayListArray.Add(plItem);
+                            }
+
+                            PlayApp.newPlayListExist = true;
+                            return true;
                         }
 
-                        foreach (PlayListMaster plmItem in PlayApp.PlayListMasterArray)
-                        {
-                            PlayListSettings plsStudent = new PlayListSettings();
-                            plsStudent = JsonConvert.DeserializeAnonymousType(plmItem.Settings, plsStudent);
-
-                            PlayList plItem = new PlayList(plmItem.PlayListID, plsStudent);
-
-                            PlayApp.PlayListArray.Add(plItem);
-                        }
-
-                        PlayApp.newPlayListExist = true;
-                        return true;
                     }
+                    catch (Exception ex)
+                    {
+                        LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:3", ex);
+                    }
+                }
 
-                }
-                catch (Exception ex)
+                if (IniFileInfo.ShowExample)
                 {
-                    LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:3", ex);
+                    if (PlayApp.PlayListArray.Count == 0)
+                    {
+                        DebugLoadPlayListInfo();
+
+                        return false;
+                    }
                 }
+
 
                 return false;
             }
