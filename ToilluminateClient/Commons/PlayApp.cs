@@ -123,7 +123,7 @@ namespace ToilluminateClient
 
             PlayApp.Clear();
             PlayListSettings plsStudent = new PlayListSettings();
-            string settings = "{\"Loop\":\"1\",\"Playtime\":\"0\",\"PlayHours\":\"1\",\"PlayMinites\":\"0\",\"PlaySeconds\":\"0\",\"Monday\":\"0; 24\",\"MondayisCheck\":true,\"Tuesday\":\"0; 24\",\"TuesdayisCheck\":true,\"Wednesday\":\"0; 24\",\"WednesdayisCheck\":true,\"Thursday\":\"0; 24\",\"ThursdayisCheck\":true,\"Friday\":\"0; 20\",\"FridayisCheck\":true,\"Saturday\":\"0; 24\",\"SaturdayisCheck\":true,\"Sunday\":\"0; 24\",\"SundayisCheck\":true,\"PlaylistItems\":[]}";
+            string settings = "{\"Loop\":\"1\",\"Playtime\":\"0\",\"PlayHours\":\"10\",\"PlayMinites\":\"0\",\"PlaySeconds\":\"0\",\"Monday\":\"0; 24\",\"MondayisCheck\":true,\"Tuesday\":\"0; 24\",\"TuesdayisCheck\":true,\"Wednesday\":\"0; 24\",\"WednesdayisCheck\":true,\"Thursday\":\"0; 24\",\"ThursdayisCheck\":true,\"Friday\":\"0; 20\",\"FridayisCheck\":true,\"Saturday\":\"0; 24\",\"SaturdayisCheck\":true,\"Sunday\":\"0; 24\",\"SundayisCheck\":true,\"PlaylistItems\":[]}";
             plsStudent = JsonConvert.DeserializeAnonymousType(settings, plsStudent);
             
             PlayList pList1 = new PlayList(0, plsStudent);
@@ -170,7 +170,7 @@ namespace ToilluminateClient
                 string mediaDir = Utility.GetFullFileName(VariableInfo.TempPath, "Medias");
                 if (Directory.Exists(mediaDir))
                 {
-                    string[] fileExts = new string[] { "*.mp4", "*.avi" };
+                    string[] fileExts = new string[] { "*.mp4", "*.avi", "*.mkv", "*.rmvb" };
                     foreach (string fileExt in fileExts)
                     {
                         string[] files = Directory.GetFiles(mediaDir, fileExt);
@@ -1830,7 +1830,6 @@ namespace ToilluminateClient
                 {
                     axWMP.URL = this.CurrentFile;
                     axWMP.Ctlcontrols.currentPosition = position;
-
                     if (state == WMPLib.WMPPlayState.wmppsPlaying)
                     {
                         axWMP.Ctlcontrols.play();
