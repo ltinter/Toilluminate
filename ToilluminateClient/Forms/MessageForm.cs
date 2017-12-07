@@ -95,7 +95,6 @@ namespace ToilluminateClient
                 }
 
 
-                System.Threading.Thread.Sleep(10);
                 this.tmrMessage.Start();
             }
             catch (Exception ex)
@@ -225,7 +224,7 @@ namespace ToilluminateClient
 
             foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
             {
-                dmItem.SetParentHeigth(this.Height);
+                dmItem.SetParentSize(this.Width, this.Height);
             }
         }
 

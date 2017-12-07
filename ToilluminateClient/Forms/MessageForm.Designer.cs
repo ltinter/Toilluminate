@@ -34,7 +34,7 @@
             // 
             // tmrMessage
             // 
-            this.tmrMessage.Interval = 10;
+            this.tmrMessage.Interval = 1;
             this.tmrMessage.Tick += new System.EventHandler(this.tmrMessage_Tick);
             // 
             // MessageForm

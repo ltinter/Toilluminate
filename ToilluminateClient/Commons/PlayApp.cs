@@ -122,8 +122,12 @@ namespace ToilluminateClient
             #region " DEBUG DATA"
 
             PlayApp.Clear();
-
-            PlayList pList1 = new PlayList(1, true, true, 36000);
+            PlayListSettings plsStudent = new PlayListSettings();
+            string settings = "{\"Loop\":\"1\",\"Playtime\":\"0\",\"PlayHours\":\"1\",\"PlayMinites\":\"0\",\"PlaySeconds\":\"0\",\"Monday\":\"0; 24\",\"MondayisCheck\":true,\"Tuesday\":\"0; 24\",\"TuesdayisCheck\":true,\"Wednesday\":\"0; 24\",\"WednesdayisCheck\":true,\"Thursday\":\"0; 24\",\"ThursdayisCheck\":true,\"Friday\":\"0; 20\",\"FridayisCheck\":true,\"Saturday\":\"0; 24\",\"SaturdayisCheck\":true,\"Sunday\":\"0; 24\",\"SundayisCheck\":true,\"PlaylistItems\":[]}";
+            plsStudent = JsonConvert.DeserializeAnonymousType(settings, plsStudent);
+            
+            PlayList pList1 = new PlayList(0, plsStudent);
+            
             PlayApp.PlayListArray.Add(pList1);
 
             #region "images"
@@ -204,9 +208,15 @@ namespace ToilluminateClient
 
                     if (string.IsNullOrEmpty(messageString) == false)
                     {
-                        MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom, 600, 5);
+                        MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom, 600, 1);
                         pList1.PlayAddTemplete(mtItem);
                     }
+                }
+                else
+                {
+                    string messageString = "<span style=\"font-family: MS PGothic; font-size: 18px; \" ><b> テストデータを放送している。</b></span>";
+                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom, 0, 5);
+                    pList1.PlayAddTemplete(mtItem);
                 }
             }
             catch (Exception ex)
@@ -658,24 +668,7 @@ namespace ToilluminateClient
 
 
         #region " Init "
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="loopPlayValid">循环有效</param>
-        /// <param name="intervalSecond">持续时间(秒)</param>
-        public PlayList(int playListID, bool loopPlayValid, bool fixPlayTimeValid, int fixPlayTime)
-        {
-            playListIDValue = playListID;
-            loopPlayValidValue = loopPlayValid;
-
-
-            fixPlayTimeValue = fixPlayTime;
-            if (fixPlayTimeValue > 0)
-            {
-                fixPlayTimeValidValue = fixPlayTimeValid;
-            }
-        }
+        
         public PlayList(int playListID, PlayListSettings plsValue)
         {
             try
@@ -1198,7 +1191,7 @@ namespace ToilluminateClient
                         }
                         else
                         {
-                            stateType = TempleteStateType.Stop;
+                            stateType = TempleteStateType.Execute;
                         }
                     }
                 }
@@ -1650,6 +1643,8 @@ namespace ToilluminateClient
 
                 if (this.currentIndex >= 0 && this.currentIndex < this.fileOrMessageListValue.Count)
                 {
+                    previousTimeValue = Utility.GetPlayDateTime(DateTime.Now).AddMinutes(1);
+
                     currentShowStyleIndex++;
                     if (currentShowStyleIndex >= this.imageStyleListValue.Count)
                     {
@@ -1749,7 +1744,7 @@ namespace ToilluminateClient
 
                 if (this.loadControlsFlag == false)
                 {
-                    DrawMessage dmItem = new DrawMessage(parentControl.Width, parentControl.Height, this);
+                    DrawMessage dmItem = new DrawMessage(parentControl.Width, parentControl.Height,this);
                     for (int messageIndex = 0; messageIndex < this.fileOrMessageListValue.Count; messageIndex++)
                     {
                         dmItem.AddDrawMessage(this.fileOrMessageListValue[messageIndex], this.messageStyleListValue[messageIndex]);
@@ -1889,11 +1884,13 @@ namespace ToilluminateClient
         private int parentWidthValue;
         private int parentHeigthValue;
         private bool needRefreshTop = false;
+
+        private int slidingSpeedValue = 10;
         #endregion
 
 
         #region " propert "
-        
+
         public List<DrawMessageStyle> DrawStyleList
         {
             get
@@ -1930,6 +1927,7 @@ namespace ToilluminateClient
 
             this.parentHeigthValue = parentHeigth;
             this.parentWidthValue = parentWidth;
+            this.slidingSpeedValue = parentTemplete.SlidingSpeed;
 
             this.needRefreshTop = true;
             RefreshTop();
@@ -1942,12 +1940,7 @@ namespace ToilluminateClient
             widthValue = widthValue + drawStyle.Width;
         }
 
-
-        public void SetParentHeigth(int parentHeigth)
-        {
-            this.parentHeigthValue = parentHeigth;
-            this.needRefreshTop = true;
-        }
+        
         public void SetParentSize(int parentWidth, int parentHeigth)
         {
             this.parentHeigthValue = parentHeigth;
@@ -1955,10 +1948,9 @@ namespace ToilluminateClient
             this.needRefreshTop = true;
         }
 
-        public void MoveMessage()
+        public void MoveMessage(int moveNumber)
         {
-            this.leftValue = this.leftValue - 2;
-            if (this.leftValue <=  - this.widthValue)
+            if (this.slidingSpeedValue == 0)
             {
                 if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
                 {
@@ -1966,15 +1958,36 @@ namespace ToilluminateClient
                 }
                 else
                 {
-                    this.leftValue = this.parentWidthValue;
+                    this.leftValue = (this.parentWidthValue - this.widthValue) / 2;
                 }
-                
+            }
+            else
+            {
+                int sepValue = (this.parentWidthValue + this.widthValue) / (moveNumber * this.slidingSpeedValue);
+                if (sepValue < 1)
+                {
+                    sepValue = 1;
+                }
+                this.leftValue = this.leftValue - sepValue;
+                if (this.leftValue <= -this.widthValue)
+                {
+                    if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
+                    {
+                        parentTempleteValue.ExecuteStop();
+                    }
+                    else
+                    {
+                        this.leftValue = this.parentWidthValue;
+                    }
+
+                }
             }
             if (needRefreshTop)
             {
                 RefreshTop();
             }
         }
+
         private void RefreshTop()
         {
             int top = 30;
