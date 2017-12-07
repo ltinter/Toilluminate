@@ -19,7 +19,6 @@ namespace ToilluminateClient
         private static string clientPath = string.Empty;
         private static string tempPath = string.Empty;
         private static string filesPath = string.Empty;
-        private static string logsPath = string.Empty;
 
         
         public static MessageForm messageFormInstance = new MessageForm();
@@ -86,13 +85,7 @@ namespace ToilluminateClient
                 return filesPath;
             }
         }
-        public static string LogsPath
-        {
-            get
-            {
-                return logsPath;
-            }
-        }
+        
 
         #endregion
 
@@ -112,7 +105,7 @@ namespace ToilluminateClient
 
                 tempPath = Utility.GetFullFileName(clientPath, "Temp");
                 filesPath = Utility.GetFullFileName(clientPath, "Files");
-                logsPath = Utility.GetFullFileName(clientPath, "Logs");
+                
 
                 if (Directory.Exists(tempPath) == false)
                 {
@@ -122,7 +115,8 @@ namespace ToilluminateClient
                 {
                     Directory.CreateDirectory(filesPath);
                 }
-
+                
+                string logsPath = Utility.GetFullFileName(clientPath, LogApp.LOG_FILE_DIRECTORY); 
                 if (Directory.Exists(logsPath) == false)
                 {
                     Directory.CreateDirectory(logsPath);

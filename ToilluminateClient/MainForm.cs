@@ -31,7 +31,9 @@ namespace ToilluminateClient
         private bool thisImageVisible = false;
         private bool thisMediaWMPVisible = false;
         private bool thisMessageVisible = false;
+        
 
+            private bool thisSetNowVisible = false;
         private bool executeTempleteFlag = false;
 
         private bool showImageFlag = false;
@@ -667,8 +669,13 @@ namespace ToilluminateClient
 
         private void SetNowVisible()
         {
+            if (thisSetNowVisible)
+            {
+                return;
+            }
             try
             {
+                thisSetNowVisible = true;
                 if (PlayApp.NowImageIsShow != thisImageVisible)
                 {
                     PlayApp.NowImageIsShow = thisImageVisible;
@@ -714,7 +721,6 @@ namespace ToilluminateClient
                     PlayApp.NowMessageIsShow = thisMessageVisible;
                     if (thisMessageVisible)
                     {
-                        PlayApp.DrawMessageList.Clear();
                         if (VariableInfo.messageFormInstance == null || VariableInfo.messageFormInstance.IsDisposed)
                         {
                             VariableInfo.messageFormInstance = new MessageForm();
@@ -768,6 +774,10 @@ namespace ToilluminateClient
             catch (Exception ex)
             {
                 LogApp.OutputErrorLog("MainForm", "SetNowVisible", ex);
+            }
+            finally
+            {
+                thisSetNowVisible = false;
             }
         }
      

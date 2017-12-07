@@ -28,12 +28,7 @@ namespace ToilluminateApp
         /// アプリケーション名
         /// </summary>
         public const string APPLICATION = "ToilluminateApp";
-
-        /// <summary>
-        /// ログフォルダ
-        /// </summary>
-        public const string LogDir = "Log";
-
+        
         /// <summary>
         /// 言語辞書のフォルダ
         /// </summary>
