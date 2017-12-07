@@ -226,6 +226,8 @@
             $("#label_player_saturday_value").addClass('active');
             $("#player_sunday").attr("checked", true);
             $("#label_player_sunday_value").addClass('active');
+            div_groupTreeForPlayerEdit.show();
+            div_groupTreeForPlayerEdit.jstree(true).show_all();
         },
         showPlayerDetail: function (options) {
             $("#PlayerDetail").css('display', 'block');
