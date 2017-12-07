@@ -922,6 +922,7 @@
     });
 
     $("#playlist_save").click(function () {
+        $("#playlist_save").attr('disabled', true);
         var div_AddnewItem = $("#playlistItem");
         var palylistItemItems = div_AddnewItem.find(".m-portlet__body.row");
         var Settings = {};
@@ -1030,6 +1031,10 @@
                     });
                     editplaylistID = null;
                     deletepalylistItem = null;
+                    $("#playlist_save").attr('disabled', false);
+                },
+                error: function () {
+                    $("#playlist_save").attr('disabled', false);
                 }
             })
         } else {
@@ -1049,6 +1054,10 @@
                     });
                     editplaylistID = null;
                     deletepalylistItem = null;
+                    $("#playlist_save").attr('disabled', false);
+                },
+                error: function () {
+                    $("#playlist_save").attr('disabled', false);
                 }
             })
         }

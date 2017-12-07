@@ -432,6 +432,7 @@
                             })
                         },
                         error: function () {
+                            $("#button_save").attr('disabled', false);
                         }
                     })
                     
@@ -439,8 +440,10 @@
                     div_edit.hide();
                     $.insmGroup('refreshTree');
                     editGroupID = undefined;
+                    $("#button_save").attr('disabled', false);
                 },
                 error: function () {
+                    $("#button_save").attr('disabled', false);
                 }
             })
         },
@@ -1022,6 +1025,7 @@
     });
     $("#button_save_Player").click(function () {
         var Settings = {};
+        $("#button_save_Player").attr('disabled', true);
         Settings = {
             MondayisCheck: $("#player_monday").is(':checked'),
             Monday: $("#palyer_monday_value").val(),
@@ -1082,6 +1086,7 @@
                             })
                         },
                         error: function () {
+                            $("#button_save_Player").attr('disabled', false);
                         }
                     })
 
@@ -1089,7 +1094,12 @@
                     div_edit.hide();
                     $.insmGroup('refreshTree');
                     editGroupID = undefined;
+                    $("#button_save_Player").attr('disabled', false);
+                },
+                error: function () {
+                    $("#button_save_Player").attr('disabled', false);
                 }
+
             })
 
             
@@ -1130,6 +1140,7 @@
                                 })
                             },
                             error: function () {
+                                $("#button_save_Player").attr('disabled', false);
                             }
                         })
                     });
@@ -1139,6 +1150,9 @@
                     div_edit.hide();
                     $.insmGroup('refreshTree');
                     editGroupID = undefined;
+                },
+                error: function () {
+                    $("#button_save_Player").attr('disabled', false);
                 }
             })
         }
