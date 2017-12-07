@@ -163,6 +163,10 @@
 
             btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
 
+            if ($("#new_password").val() != $("#new_confirmpassword").val()) {
+                toastr.warning("password is error.");
+                return;
+            }
             $.insmFramework('creatUser', {
                 userName: $("#new_username").val(),
                 groupID: $('#newUserGroup').jstree(true).get_selected()[0],

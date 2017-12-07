@@ -85,6 +85,7 @@
                 onlineUnits: options.OnlineFlag,
                 note: options.Comments,
                 newGroupNameParentID: options.newGroupNameParentID,
+                settings: options.Settings,
                 success: function (data) {
                     $.insmGroup('refreshTree');
                     editGroupID = undefined;
@@ -197,7 +198,8 @@
                         newGroupName: node.text,
                         ActiveFlag: node.li_attr.ActiveFlag,
                         OnlineFlag: node.li_attr.OnlineFlag,
-                        Comments: node.li_attr.Comments
+                        Comments: node.li_attr.Comments,
+                        Settings: node.li_attr.Settings
                     });
                 }
             });
@@ -224,6 +226,8 @@
             $("#label_player_saturday_value").addClass('active');
             $("#player_sunday").attr("checked", true);
             $("#label_player_sunday_value").addClass('active');
+            div_groupTreeForPlayerEdit.show();
+            div_groupTreeForPlayerEdit.jstree(true).show_all();
         },
         showPlayerDetail: function (options) {
             $("#PlayerDetail").css('display', 'block');
@@ -366,16 +370,17 @@
                 return;
             };
             if (editGroupID == groupTreeForPlayerEditID) {
-                if (selectedGroupIDparents && selectedGroupIDparents.length == 1) {
-                    if (selectedGroupIDparents[0] != '#') {
-                        toastr.warning("Group ID have same ID!");
-                        return;
-                    }
-                } else {
-                    toastr.warning("Group ID have same ID!");
-                    return;
-                }
-                
+                //if (selectedGroupIDparents && selectedGroupIDparents.length == 1) {
+                //    if (selectedGroupIDparents[0] != '#') {
+                //        toastr.warning("Group ID have same ID!");
+                //        return;
+                //    }
+                //} else {
+                //    toastr.warning("Group ID have same ID!");
+                //    return;
+                //}
+                toastr.warning("Group ID have same ID!");
+                return;
             };
             var Settings = {};
             Settings = {
@@ -730,27 +735,27 @@
                     
                     div_forcedplaylists.append(div_Playlist);
                 });
-                //$('#forcedplaylists').sortable({
-                //    connectWith: ".m-portlet__head",
-                //    items: "div.m-portlet:not(.m-portlet--warning.m-portlet--head-solid-bg)",
-                //    opacity: 0.8,
-                //    handle: '.m-portlet__head',
-                //    coneHelperSize: true,
-                //    placeholder: 'm-portlet--sortable-placeholder',
-                //    forcePlaceholderSize: true,
-                //    tolerance: "pointer",
-                //    helper: "clone",
-                //    tolerance: "pointer",
-                //    forcePlaceholderSize: !0,
-                //    helper: "clone",
-                //    cancel: ".m-portlet--sortable-empty", // cancel dragging if portlet is in fullscreen mode
-                //    revert: 250, // animation in milliseconds
-                //    update: function (b, c) {
-                //        if (c.item.prev().hasClass("m-portlet--sortable-empty")) {
-                //            c.item.prev().before(c.item);
-                //        }
-                //    }
-                //});
+                $('#forcedplaylists').sortable({
+                    connectWith: ".m-portlet__head",
+                    items: "div.m-portlet:not(.m-portlet--warning.m-portlet--head-solid-bg)",
+                    opacity: 0.8,
+                    handle: '.m-portlet__head',
+                    coneHelperSize: true,
+                    placeholder: 'm-portlet--sortable-placeholder',
+                    forcePlaceholderSize: true,
+                    tolerance: "pointer",
+                    helper: "clone",
+                    tolerance: "pointer",
+                    forcePlaceholderSize: !0,
+                    helper: "clone",
+                    cancel: ".m-portlet--sortable-empty", // cancel dragging if portlet is in fullscreen mode
+                    revert: 250, // animation in milliseconds
+                    update: function (b, c) {
+                        if (c.item.prev().hasClass("m-portlet--sortable-empty")) {
+                            c.item.prev().before(c.item);
+                        }
+                    }
+                });
             }
         },
     }
@@ -806,7 +811,7 @@
         })
     })
     $("#deletegroup").click(function (e) {
-        toastr.warning("Group is used!");
+        toastr.warning("使用中ですので、削除できない。");
         return;
         var deleteGroup = div_groupTree.jstree(true).get_node(div_groupTree.jstree(true).get_selected())
         if (deleteGroup) {
@@ -836,10 +841,18 @@
 
         editGroupFlg = true;
         $.insmGroup('defaultDataSet');
+        div_groupTreeForPlayerEdit.show();
+        div_groupTreeForPlayerEdit.jstree(true).show_all();
         div_groupTreeForPlayerEdit.jstree(true).deselect_all(true);
         $.each(temp_GroupTreeData, function (index, item) {
             if (item.id == div_groupTree.jstree(true).get_selected()) {
                 div_groupTreeForPlayerEdit.jstree(true).select_node(item.parent);
+                if (item.parent == '#') {
+                    div_groupTreeForPlayerEdit.hide();
+                } else {
+                    div_groupTreeForPlayerEdit.jstree(true).hide_node(div_groupTree.jstree(true).get_node(item.id));
+                }
+                
                 groupTreeForPlayerEditID = item.parent;
             }
         });
@@ -948,6 +961,9 @@
                     editGroupID = selectedGroupID;
                     $("#div_edit .m-portlet__head-caption:first").find("h3:first").text(userGroupData.GroupName);
                 };
+
+
+
                 $.insmFramework('getPlaylistByGroup', {
                     GroupID: selectedGroupID,
                     success: function (data) {
