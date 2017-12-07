@@ -374,6 +374,7 @@ namespace ToilluminateClient
 
                 this.axWMP.settings.autoStart=false; //是否自动播放
                 this.axWMP.Visible = true;
+                this.axWMP.settings.volume = 100;
                 this.axWMP.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
 
                 this.axWMP.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top

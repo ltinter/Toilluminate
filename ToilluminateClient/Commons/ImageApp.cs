@@ -787,7 +787,7 @@ namespace ToilluminateClient
                 gBmpBack = Graphics.FromImage(bmpBack);
                 gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-                int sepFix = GetShowSepFix(width) / 2;
+                int sepFix = GetShowSepFix(width) ;
                 int sepNumber = 1;
                 int x = sepFix;
                 while (x < width / 2)
@@ -801,7 +801,7 @@ namespace ToilluminateClient
 
 
                     sepNumber++;
-                    x = sepFix*2 * sepNumber;
+                    x = sepFix * sepNumber;
                 }
 
                 MyDrawImage(g, bmpSource, left, top);
@@ -850,7 +850,7 @@ namespace ToilluminateClient
                 gBmpBack = Graphics.FromImage(bmpBack);
                 gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-                int sepFix = GetShowSepFix(height) / 2;
+                int sepFix = GetShowSepFix(height);
                 int sepNumber = 1;
                 int y = sepFix;
                 while (y < height / 2)
@@ -864,7 +864,7 @@ namespace ToilluminateClient
 
 
                     sepNumber++;
-                    y = sepFix*2 * sepNumber;
+                    y = sepFix * sepNumber;
                 }
 
                 MyDrawImage(g, bmpSource, left, top);
