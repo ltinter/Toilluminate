@@ -1066,7 +1066,7 @@
     });
     $("#playlist_delete").click(function () {
         if (edit_playlistId) {
-            toastr.warning("Group is used!");
+            toastr.warning("使用中ですので、削除できない。");
             return;
             $.insmFramework('deletePlaylist', {
                 deletePlaylistId: edit_playlistId,
