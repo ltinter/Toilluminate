@@ -806,22 +806,25 @@
         })
     })
     $("#deletegroup").click(function (e) {
-        $.insmFramework('deleteGroup', {
-            deleteGroupId: selectedGroupID,
-            success: function (resultdata) {
-                div_main.show();
-                div_edit.hide();
-                $.insmGroup('initGroupTree');
-            }
-        })
-        //toastr.warning("Group is used!");
-        //return;
+        toastr.warning("Group is used!");
+        return;
+        var deleteGroup = div_groupTree.jstree(true).get_node(div_groupTree.jstree(true).get_selected())
+        if (deleteGroup) {
+            $.insmFramework('updateGroupUseFlg', {
+                deleteGroupItem: deleteGroup.li_attr,
+                success: function (resultdata) {
+                    div_main.show();
+                    div_edit.hide();
+                    $.insmGroup('initGroupTree');
+                }
+            })
+        }
     })
     $("#expandAll").click(function () {
-        $('#groupTree').jstree('open_all');
+        div_groupTree.jstree('open_all');
     });
     $("#collapseAll").click(function () {
-        $('#groupTree').jstree('close_all');
+        div_groupTree.jstree('close_all');
     });
     $("#editgroup").click(function () {
         if (!selectedGroupID) {

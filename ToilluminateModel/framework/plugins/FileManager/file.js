@@ -109,6 +109,7 @@
                 $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
                     $.insmFramework("deleteFile", {
                         fileID: $(item).data().obj.FileID,
+                        fileObj:$(item).data().obj,
                         success: function (fileData) {
                             $.file('removeDataFromTable', item, fileData);
                         },

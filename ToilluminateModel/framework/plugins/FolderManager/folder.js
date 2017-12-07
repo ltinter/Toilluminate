@@ -41,14 +41,22 @@
                 "Remove": {
                     "label": "Delete",
                     "action": function (obj) {
-                        $.folder('deleteFolder');
+                        var inst = jQuery.jstree.reference(obj.reference);
+                        var clickedNode = inst.get_node(obj.reference);
+                        inst.edit(obj.reference, clickedNode.val, function (obj, tmp, nv, cancel) {
+                            $.folder('deleteFolder', obj);
+                        });
                     }
+                    //"action": function (obj) {
+                    //    $.folder('deleteFolder', obj);
+                    //}
                 }
             }
         }
     };
     var selectedGroupID = null;
     var selectedFolderID = null;
+    var selectedFolderData = null;
     var div_groupTreeForFileManager = $("#groupTreeForFileManager");
     var div_folderTreeForFileManager = $("#folderTreeForFileManager");
     //folder tree
@@ -70,6 +78,7 @@
                         tree.on("changed.jstree", function (e, data) {
                             if (data.node) {
                                 selectedFolderID = data.node.id;
+                                selectedFolderData = data.node;
                                 $.file('init', {
                                     selectedFolderID: selectedFolderID
                                 });
@@ -126,12 +135,29 @@
                 }
             });
         },
-        deleteFolder: function () {
+        deleteFolder: function (node) {
+            if (node == undefined) {
+                node = selectedFolderData;
+            }
+            if (node == undefined || node == null) { return;}
             var folderRef = div_folderTreeForFileManager.jstree(true),
                 folderSef = folderRef.get_selected();
-            if (!folderSef.length) { return };
-            $.insmFramework("deleteFolder", {
-                folderID: selectedFolderID,
+            //if (!folderSef.length) { return };
+            //$.insmFramework("deleteFolder", {
+            //    folderID: selectedFolderID,
+            //    success: function (data) {
+            //        folderRef.delete_node(folderSef);
+            //        $.file('destroyFileTableData');
+            //    },
+            //    error: function (XMLHttpRequest, textStatus, errorThrown) {
+            //        toastr.warning(XMLHttpRequest.responseJSON.Message);
+            //    }
+            //});
+            $.insmFramework('deleteFolder', {
+                groupID: selectedGroupID,
+                folderID: node.id,
+                folderName: node.text,
+                folderParentID: node.parent,
                 success: function (data) {
                     folderRef.delete_node(folderSef);
                     $.file('destroyFileTableData');

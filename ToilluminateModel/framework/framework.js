@@ -129,6 +129,7 @@
                     EmailAddress: '';
                     Settings: '';
                     Comments: '';
+                    UseFlag: true;
                     return UserMaster;
                 }
             }
@@ -139,6 +140,7 @@
             newUser.Password = options.password;
             newUser.EmailAddress = options.emailAddress;
             newUser.Comments = options.comments;
+            newUser.UseFlag = true;
             newUser.Settings = options.settings;
             var ajaxOptions = {
                 success: function (result) {
@@ -249,6 +251,7 @@
                     OnlineFlag: '';
                     Settings: '';
                     Comments: '';
+                    UseFlag: true;
                     return GroupMaster;
                 }
             }
@@ -267,6 +270,7 @@
             newGroup.OnlineFlag = options.onlineUnits;
             newGroup.Comments = options.note;
             newGroup.Settings = options.settings;
+            newGroup.UseFlag = true;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
@@ -276,6 +280,50 @@
                 data: JSON.stringify(newGroup),
                 contentType: "application/json; charset=utf-8",
                 type: options.groupID == undefined ? 'POST' : 'PUT',
+                denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
+            };
+            return $.insmFramework('ajax', ajaxOptions);
+        },
+
+        updateGroupUseFlg: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            var GroupMaster = {
+                create: function () {
+                    GroupName: "";
+                    GroupParentID: '';
+                    ActiveFlag: '';
+                    OnlineFlag: '';
+                    Settings: '';
+                    Comments: '';
+                    UseFlag: false;
+                    return GroupMaster;
+                }
+            }
+            var newGroup = GroupMaster.create();
+            newGroup.GroupID = options.deleteGroupItem.GroupID;
+            newGroup.GroupName = options.deleteGroupItem.GroupName;
+            newGroup.GroupParentID = options.deleteGroupItem.GroupParentID;
+            newGroup.UseFlag = false;
+            newGroup.ActiveFlag = options.deleteGroupItem.ActiveFlag;
+            newGroup.OnlineFlag = options.deleteGroupItem.OnlineFlag;
+            newGroup.Comments = options.deleteGroupItem.Comments;
+            newGroup.Settings = options.deleteGroupItem.Settings;
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/GroupMasters' + "/" + options.deleteGroupItem.GroupID,
+                format: 'json',
+                data: JSON.stringify(newGroup),
+                contentType: "application/json; charset=utf-8",
+                type: 'PUT',
                 denied: function () {
                     // Just do it again and we should land in the success callback next time
                     //$.insmFramework('getUsers', options);
@@ -492,6 +540,7 @@
                     FolderParentID: '';
                     Settings: '';
                     Comments: '';
+                    UseFlag: true;
                     return FolderMaster;
                 }
             }
@@ -499,6 +548,7 @@
             newFolder.GroupID = options.groupID;
             newFolder.FolderName = options.folderName;
             newFolder.FolderParentID = options.folderParentID;
+            newFolder.UseFlag = true;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
@@ -529,6 +579,7 @@
                     FolderParentID: '';
                     Settings: '';
                     Comments: '';
+                    UseFlag: true;
                     return FolderMaster;
                 }
             }
@@ -537,6 +588,7 @@
             newFolder.GroupID = options.groupID;
             newFolder.FolderName = options.folderName;
             newFolder.FolderParentID = options.folderParentID;
+            newFolder.UseFlag = true;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
@@ -595,22 +647,60 @@
         deleteFolder: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
-
+            var FolderMaster = {
+                create: function () {
+                    FolderID: "";
+                    GroupID: "";
+                    FolderName: '';
+                    FolderParentID: '';
+                    Settings: '';
+                    Comments: '';
+                    UseFlag: false;
+                    return FolderMaster;
+                }
+            }
+            var newFolder = FolderMaster.create();
+            newFolder.FolderID = options.folderID;
+            newFolder.GroupID = options.groupID;
+            newFolder.FolderName = options.folderName;
+            newFolder.FolderParentID = options.folderParentID;
+            newFolder.UseFlag = false;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/FolderMasters' + "/" + options.folderID,
+                url: 'api/FolderMasters/EditTreeNodeFolder',
                 format: 'json',
+                data: JSON.stringify(newFolder),
                 contentType: "application/json; charset=utf-8",
-                type: "DELETE",
+                type: 'POST',
                 denied: function () {
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
                 },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    options.error(XMLHttpRequest, textStatus, errorThrown);
+                error: function () {
+                    options.error();
                 },
             };
             return $.insmFramework('ajax', ajaxOptions);
+            //var $this = $('html').eq(0);
+            //var _plugin = $this.data('insmFramework');
+
+            //var ajaxOptions = {
+            //    success: function (result) {
+            //        options.success(result);
+            //    },
+            //    url: 'api/FolderMasters' + "/" + options.folderID,
+            //    format: 'json',
+            //    contentType: "application/json; charset=utf-8",
+            //    type: "DELETE",
+            //    denied: function () {
+            //    },
+            //    error: function (XMLHttpRequest, textStatus, errorThrown) {
+            //        options.error(XMLHttpRequest, textStatus, errorThrown);
+            //    },
+            //};
+            //return $.insmFramework('ajax', ajaxOptions);
         },
         //Folder End
 
@@ -680,6 +770,30 @@
         deleteFile: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
+            //var FileMaster = {
+            //    create: function () {
+            //        FolderID: "";
+            //        GroupID: "";
+            //        FolderName: '';
+            //        FolderParentID: '';
+            //        Settings: '';
+            //        Comments: '';
+            //        UseFlag: false;
+            //        return FileMaster;
+            //    }
+            //}
+            //var fileMaster = FileMaster.create();
+            //fileMaster.GroupID = options.fileObj.GroupID;
+            //fileMaster.FolderID = options.fileObj.FolderID;
+            //fileMaster.UserID = options.fileObj.UserID;
+            //fileMaster.FileType = options.fileObj.FileType;
+            //fileMaster.FileUrl = options.fileObj.FileUrl;
+            //fileMaster.FileUrl = options.fileObj.FileUrl;
+            //fileMaster.FileThumbnailUrl = options.fileObj.FileThumbnailUrl;
+            options.fileObj.UseFlag = false;
+
+            //var $this = $('html').eq(0);
+            //var _plugin = $this.data('insmFramework');
 
             var ajaxOptions = {
                 success: function (result) {
@@ -687,8 +801,9 @@
                 },
                 url: 'api/FileMasters' + "/" + options.fileID,
                 format: 'json',
+                data: JSON.stringify(options.fileObj),
                 contentType: "application/json; charset=utf-8",
-                type: "DELETE",
+                type: "PUT",
                 denied: function () {
                 }
             };
@@ -705,6 +820,7 @@
                     InheritForced: '';
                     Settings: '';
                     Comments: '';
+                    UseFlag : true;
                     return PlaylistMaster;
                 }
             }
@@ -714,7 +830,7 @@
             newPlaylist.InheritForced = options.InheritForced;
             newPlaylist.Settings = options.Settings;
             newPlaylist.Comments = options.Comments;
-
+            newPlaylist.UseFlag = true;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
@@ -745,6 +861,7 @@
                     Settings: '';
                     Comments: '';
                     PlayListID: '';
+                    UseFlag : true;
                     return PlaylistMaster;
                 }
             }
@@ -755,7 +872,7 @@
             newPlaylist.InheritForced = options.InheritForced;
             newPlaylist.Settings = options.Settings;
             newPlaylist.Comments = options.Comments;
-
+            newPlaylist.UseFlag = true;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
@@ -975,25 +1092,67 @@
             $.when.apply(groupPlayListLinkDeferredList).done(function () {
                 options.success();
             });
-        },
-        
+        },   
         deletePlaylist: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
+            var PlaylistMaster = {
+                create: function () {
+                    GroupID: "";
+                    PlayListName: '';
+                    InheritForced: '';
+                    Settings: '';
+                    Comments: '';
+                    PlayListID: '';
+                    UseFlag: false;
+                    return PlaylistMaster;
+                }
+            }
+            var newPlaylist = PlaylistMaster.create();
+            newPlaylist.GroupID = options.deletepalylistItem.GroupID;
+            newPlaylist.PlayListName = options.deletepalylistItem.PlayListName;
+            newPlaylist.PlayListID = options.deletepalylistItem.PlayListID;
+            newPlaylist.InheritForced = options.deletepalylistItem.InheritForced;
+            newPlaylist.Settings = options.deletepalylistItem.Settings;
+            newPlaylist.Comments = options.deletepalylistItem.Comments;
+            newPlaylist.UseFlag = false;
 
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/PlayListMasters' + "/" + options.deletePlaylistId,
+                url: 'api/PlayListMasters/' + options.deletePlaylistId,
                 format: 'json',
-                data: '',
+                data: JSON.stringify(newPlaylist),
                 contentType: "application/json; charset=utf-8",
-                type: "DELETE",
+                type: 'PUT',
                 denied: function () {
-                }
+                    // Just do it again and we should land in the success callback next time
+                    //$.insmFramework('getUsers', options);
+                },
+                error: function () {
+                    options.error();
+                },
             };
             return $.insmFramework('ajax', ajaxOptions);
+
+
+            //var $this = $('html').eq(0);
+            //var _plugin = $this.data('insmFramework');
+
+            //var ajaxOptions = {
+            //    success: function (result) {
+            //        options.success(result);
+            //    },
+            //    url: 'api/PlayListMasters' + "/" + options.deletePlaylistId,
+            //    format: 'json',
+            //    data: '',
+            //    contentType: "application/json; charset=utf-8",
+            //    type: "DELETE",
+            //    denied: function () {
+            //    }
+            //};
+            //return $.insmFramework('ajax', ajaxOptions);
         },
         deleteGroupPlayListLinkTableByGroupID: function (options) {
             var $this = $('html').eq(0);

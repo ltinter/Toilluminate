@@ -132,6 +132,7 @@
     var selectedFolderID = null;
     var currentNeededFileType = "image";
     var editplaylistID = null;
+    var select_palylistItem = null;
     var methods = {
         init: function (options) {
             // Global vars
@@ -257,8 +258,9 @@
 
                             edit_href.click(function () {
                                 editplaylistID = item.PlayListID;
+                                select_palylistItem = item;
                                 $.playlistEditor('setfolder', { selectedGroupID: tempselectedGroupID });
-                                $.playlistEditor('editPlaylist', { playlistID: item.PlayListID });
+                                $.playlistEditor('editPlaylist', { playlistID: item.PlayListID, playlistDate: item });
                             });
 
                             div_li_edit.append(edit_href);
@@ -596,9 +598,9 @@
 
         var div_coltypedata = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         var select_typeoption = $('<select/>');
-        select_typeoption.append("<option value='0'>" + $.localize('translate', 'Top') + "</option>");
-        select_typeoption.append("<option value='1'>" + $.localize('translate', 'Middle') + "</option>");
-        select_typeoption.append("<option value='2'>" + $.localize('translate', 'Bottom') + "</option>");
+        select_typeoption.append("<option value='0'>" + $.localize('translate', 'Normal') + "</option>");
+        select_typeoption.append("<option value='1'>" + $.localize('translate', 'Stretch') + "</option>");
+        select_typeoption.append("<option value='2'>" + $.localize('translate', 'Fullscreen') + "</option>");
         div_coltypedata.append(select_typeoption);
         div_bodyMain.append(div_coltypedata);
 
@@ -909,6 +911,7 @@
         $.playlistEditor('playlistDefaultvalue');
         div_playlist.show();
         div_Mainplaylist.hide();
+        deletepalylistItem = null;
         editflg = false;
     });
     $("#playlist_expandAll").click(function () {
@@ -1026,6 +1029,7 @@
                         selectedGroupID: tempselectedGroupID
                     });
                     editplaylistID = null;
+                    deletepalylistItem = null;
                 }
             })
         } else {
@@ -1044,6 +1048,7 @@
                         selectedGroupID: tempselectedGroupID
                     });
                     editplaylistID = null;
+                    deletepalylistItem = null;
                 }
             })
         }
@@ -1061,11 +1066,13 @@
     });
     $("#playlist_delete").click(function () {
         if (edit_playlistId) {
-            //toastr.warning("Group is used!");
-            //return;
+            toastr.warning("Group is used!");
+            return;
             $.insmFramework('deletePlaylist', {
                 deletePlaylistId: edit_playlistId,
+                deletepalylistItem: select_palylistItem,
                 success: function (fileData) {
+                    deletepalylistItem = null;
                     div_playlist.hide();
                     div_Mainplaylist.show();
                     $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: tempselectedGroupID });
