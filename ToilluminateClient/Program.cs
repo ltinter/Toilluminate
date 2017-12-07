@@ -18,7 +18,7 @@ namespace ToilluminateClient
 {
     static class Program
     {
-        
+
         #region EntryPoint
         /// <summary>
         /// The main entry point for the application.
@@ -27,49 +27,56 @@ namespace ToilluminateClient
         [STAThread]
         static void Main(string[] args)
         {
-            // 多重起動防止処理
-            Mutex mutex = new Mutex(false, Application.ProductName);
-            if (args.Length == 0)
+            try
             {
-                if (!mutex.WaitOne(0, false))
+                // 多重起動防止処理
+                Mutex mutex = new Mutex(false, Application.ProductName);
+                if (args.Length == 0)
                 {
-                    GC.KeepAlive(mutex);
-                    mutex.Close();
-                    return;
+                    if (!mutex.WaitOne(0, false))
+                    {
+                        GC.KeepAlive(mutex);
+                        mutex.Close();
+                        return;
+                    }
                 }
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+
+                //共通変数が初期化
+                VariableInfo.InitVariableInfo();
+
+                // 設定ファイルのオープン
+                if (File.Exists(VariableInfo.IniFile) == false)
+                {
+                    IniFileInfo.CreateDefaultIniFile(VariableInfo.IniFile);
+                }
+
+                // 設定読み込み
+                IniFileInfo.GetIniInfo(VariableInfo.IniFile);
+                DictionaryInfo.InitMultilingualDictionaryForClient();
+
+                //// ログイン認証
+                //using (LoginForm loginFormInstance = new LoginForm())
+                //{
+                //    if (DialogResult.OK != loginFormInstance.ShowDialog())
+                //    {
+                //        return;
+                //    }
+                //}
+
+                // メイン画面起動
+                MainForm mainFormInstance = new MainForm();
+
+                Application.Run(mainFormInstance);
+
+                mutex.ReleaseMutex();
             }
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            //共通変数が初期化
-            VariableInfo.InitVariableInfo();
-
-            // 設定ファイルのオープン
-            if (File.Exists(VariableInfo.IniFile) == false)
+            catch (Exception ex)
             {
-                IniFileInfo.CreateDefaultIniFile(VariableInfo.IniFile);
+                LogApp.OutputErrorLog("Program", "Main", ex);
             }
-
-            // 設定読み込み
-            IniFileInfo.GetIniInfo(VariableInfo.IniFile);
-            DictionaryInfo.InitMultilingualDictionaryForClient();
-
-            //// ログイン認証
-            //using (LoginForm loginFormInstance = new LoginForm())
-            //{
-            //    if (DialogResult.OK != loginFormInstance.ShowDialog())
-            //    {
-            //        return;
-            //    }
-            //}
-
-            // メイン画面起動
-            MainForm mainFormInstance = new MainForm();
-
-            Application.Run(mainFormInstance);
-
-            mutex.ReleaseMutex();
         }
 
         #endregion

@@ -81,12 +81,24 @@ namespace ToilluminateClient
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Thread tmpThread = new Thread(this.ThreadLoadPlayListVoid);
-            tmpThread.IsBackground = true;
-            tmpThread.Start();
+            try
+            {
+                Thread tmpThread = new Thread(this.ThreadLoadPlayListVoid);
+                tmpThread.IsBackground = true;
+                tmpThread.Start();
 
-            this.tmrPlayList.Start();
+                this.tmrPlayList.Start();
+
+#if !DEBUG
+                MaxShowThis(false);
+#endif
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("MainForm", "MainForm_Load", ex);
+            }
         }
+
         private void MainForm_Move(object sender, EventArgs e)
         {
             if (this.FormBorderStyle == VariableInfo.messageFormInstance.FormBorderStyle)

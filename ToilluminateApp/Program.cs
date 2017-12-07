@@ -24,11 +24,11 @@ namespace ToilluminateApp
                 mutex.Close();
                 return;
             }
-
+            
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+           
 
             // メイン画面起動
             MainForm mainFormInstance = new MainForm();
