@@ -15,7 +15,7 @@ using ToilluminateModel.Models;
 
 namespace ToilluminateModel.Controllers
 {
-    public class GroupMastersController : ApiController
+    public class GroupMastersController : BaseApiController
     {
         private ToilluminateEntities db = new ToilluminateEntities();
 

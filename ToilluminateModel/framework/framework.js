@@ -106,7 +106,7 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/UserMasters/MatchUserInfo',
+                url: 'api/UserMasters/UserLogin',
                 format: 'json',
                 data: JSON.stringify(loginUser),
                 contentType: "application/json; charset=utf-8",

@@ -7,9 +7,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.Security;
 using ToilluminateModel;
+using ToilluminateModel.Models;
 
 namespace ToilluminateModel.Controllers
 {
@@ -106,17 +109,35 @@ namespace ToilluminateModel.Controllers
             return Ok(userMaster);
         }
 
-        [HttpPost, Route("api/UserMasters/MatchUserInfo")]
-        public async Task<IHttpActionResult> MatchUserInfo(UserMaster userMaster)
+        [AllowAnonymous]
+        [HttpPost, Route("api/UserMasters/UserLogin")]
+        public async Task<IHttpActionResult> UserLogin(UserMaster userMaster)
         {
             var pwForMatch = PublicMethods.MD5(userMaster.Password);
-            List<UserMaster> userList = await db.UserMaster.Where(a => a.UserName == userMaster.UserName && a.Password == pwForMatch).ToListAsync();
+            List<UserMaster> userList = await db.UserMaster.Where(a => a.UserName == userMaster.UserName && a.Password == pwForMatch && a.UseFlag == true).ToListAsync();
             if (userList.Count == 0)
             {
                 return NotFound();
             }
+            //save ticket in session
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, userList[0].UserName, DateTime.Now,
+                             DateTime.Now.AddHours(1), true, string.Format("{0}&{1}", userList[0].UserName, userList[0].Password),
+                             FormsAuthentication.FormsCookiePath);
+            var EncryptTicketStr = FormsAuthentication.Encrypt(ticket);
+            HttpContext.Current.Session[userList[0].UserName] = EncryptTicketStr;
 
-            return Ok(userList[0]);
+            UserLoginInfo uli = new UserLoginInfo();
+            uli.Ticket = EncryptTicketStr;
+            uli.UserMaster = userList[0];
+            return Ok(uli);
+        }
+
+        [AllowAnonymous]
+        [HttpPost, Route("api/UserMasters/UserLogout")]
+        public async Task<IHttpActionResult> UserLogout(UserMaster userMaster)
+        {
+            HttpContext.Current.Session.Remove(userMaster.UserName);
+            return Ok();
         }
 
         [HttpGet, Route("api/UserMasters/GetUserByName/{userName}")]
