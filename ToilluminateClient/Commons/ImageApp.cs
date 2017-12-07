@@ -28,7 +28,11 @@ namespace ToilluminateClient
 
         public static int SepNumber = 100;
 
-        public static int SleepTime = 1;
+        public static int SleepTime = 5;
+
+        public static int MessageShowTime = 3000;
+        public static int MessageSleepTime = 1;
+        public static int MessageSepNumber = 30;
 
         #region " 显示递增频度 "
         /// <summary>
@@ -113,7 +117,7 @@ namespace ToilluminateClient
 
                     foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
                     {
-                        dmItem.MoveMessage();
+                        dmItem.MoveMessage(ImageApp.MessageSepNumber);
                         foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
                         {
                             if (dmItem.CheckStyleShow(dslItem))
@@ -128,6 +132,7 @@ namespace ToilluminateClient
                     MyDrawImage(g, bitmap, 0, 0);
                 }
 
+                System.Threading.Thread.Sleep(ImageApp.MessageSleepTime);
             }
             catch (Exception ex)
             {
@@ -317,6 +322,44 @@ namespace ToilluminateClient
         #endregion
 
 
+        #region " 画像をコピーする "
+        /// <summary>
+        /// 画像をコピーする
+        /// </summary>
+        /// <param name="targetBmp"></param>
+        /// <param name="sourceBmp"></param>
+        /// <returns></returns>
+        public static void CopyBitmap(Bitmap targetBmp, Bitmap sourceBmp)
+        {
+            Graphics g = null;
+
+            try
+            {
+                int newW = targetBmp.Width;
+                int newH = targetBmp.Height;
+                int srcW = sourceBmp.Width;
+                int srcH = sourceBmp.Height;
+                
+                g = Graphics.FromImage(targetBmp);
+                g.Clear(BackClearColor);
+                
+
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(sourceBmp, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, srcW, srcH), GraphicsUnit.Pixel);
+            }
+            finally
+            {
+                if (null != g)
+                {
+                    g.Dispose();
+                }
+            }
+
+        }
+        #endregion
+
+
+
         /// <summary>
         /// 马赛克效果
         /// </summary>
@@ -444,7 +487,7 @@ namespace ToilluminateClient
                     Rectangle SrcRect = new Rectangle(x + left, y + top, sepFixWD, sepFixHD);
                     g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
 
-                    System.Threading.Thread.Sleep(SleepTime * (1000 / SepNumber));
+                    System.Threading.Thread.Sleep(SleepTime);
                 }
 
                 MyDrawImage(g, bmpSource, left, top);
@@ -594,7 +637,7 @@ namespace ToilluminateClient
                     Rectangle SrcRect = new Rectangle(x + left, y + top, sepFixWD, sepFixHD);
                     g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
 
-                    System.Threading.Thread.Sleep(SleepTime * (1000 / SepNumber));
+                    System.Threading.Thread.Sleep(SleepTime);
                 }
 
                 MyDrawImage(g, bmpSource, left, top);
@@ -668,7 +711,7 @@ namespace ToilluminateClient
                     matrix.Matrix22 = count;
                     matrix.Matrix33 = count;
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    MyDrawImage(g, bmpSource, new Rectangle(0, 0, width, height), 0, 0, width, height, GraphicsUnit.Pixel, attributes);
+                    g.DrawImage(bmpSource, new Rectangle(0, 0, width, height), 0, 0, width, height, GraphicsUnit.Pixel, attributes);
 
                     System.Threading.Thread.Sleep(SleepTime);
                     count = (float)(count + 1.0 / SepNumber);
@@ -744,7 +787,7 @@ namespace ToilluminateClient
                 gBmpBack = Graphics.FromImage(bmpBack);
                 gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-                int sepFix = GetShowSepFix(width) / 2;
+                int sepFix = GetShowSepFix(width) ;
                 int sepNumber = 1;
                 int x = sepFix;
                 while (x < width / 2)
@@ -753,7 +796,7 @@ namespace ToilluminateClient
 
                     gBmpBack.DrawImage(bmpSource, new Rectangle(width - x - sepFix, 0, sepFix, height), new Rectangle(width - x - sepFix, 0, sepFix, height), GraphicsUnit.Pixel);
 
-                    MyDrawImage(g, bmpBack, left, top);
+                    g.DrawImage(bmpBack, left, top);
                     System.Threading.Thread.Sleep(SleepTime);
 
 
@@ -807,7 +850,7 @@ namespace ToilluminateClient
                 gBmpBack = Graphics.FromImage(bmpBack);
                 gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-                int sepFix = GetShowSepFix(height) / 2;
+                int sepFix = GetShowSepFix(height);
                 int sepNumber = 1;
                 int y = sepFix;
                 while (y < height / 2)
@@ -816,7 +859,7 @@ namespace ToilluminateClient
 
                     gBmpBack.DrawImage(bmpSource, new Rectangle(0, height - y - sepFix, width, sepFix), new Rectangle(0, height - y - sepFix, width, sepFix), GraphicsUnit.Pixel);
 
-                    MyDrawImage(g, bmpBack, left, top);
+                    g.DrawImage(bmpBack, left, top);
                     System.Threading.Thread.Sleep(SleepTime);
 
 
@@ -867,11 +910,11 @@ namespace ToilluminateClient
                 Bitmap bmpOld = ResizeBitmap(PlayApp.DrawBitmap, new Size(picBox.Width, picBox.Height), FillOptionStyle.Fill);
                 Bitmap bmpBack = new Bitmap(picBox.Width, picBox.Height);
                 gBmpBack = Graphics.FromImage(bmpBack);
-                
 
-                int sepFix = GetShowSepFix(width)*2;
+
+                int sepFix = GetShowSepFix(width) * 2;
                 int sepNumber = 1;
-                int x = width- sepFix;
+                int x = width - sepFix;
                 while (x > 0)
                 {
                     Rectangle DestRect = new Rectangle((width - x) / 2, 0, x, height);
@@ -881,12 +924,12 @@ namespace ToilluminateClient
                     gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     gBmpBack.DrawImage(bmpOld, DestRect, SrcRect, GraphicsUnit.Pixel);
 
-                    MyDrawImage(g, bmpBack, left, top);
+                    g.DrawImage(bmpBack, left, top);
                     System.Threading.Thread.Sleep(SleepTime);
 
 
                     sepNumber++;
-                    x = width - sepFix * sepNumber;
+                    x = width - sepFix * 4 * sepNumber;
                 }
 
                 sepNumber = 1;
@@ -895,14 +938,14 @@ namespace ToilluminateClient
                 {
                     Rectangle DestRect = new Rectangle((width - x) / 2, 0, x, height);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
-                    
-                    MyDrawImage(g, bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+
+                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
                     System.Threading.Thread.Sleep(SleepTime);
-                    
+
                     sepNumber++;
-                    x =  sepFix * sepNumber;
+                    x = sepFix * 2 * sepNumber;
                 }
-                
+
 
                 MyDrawImage(g, bmpSource, left, top);
             }
@@ -959,12 +1002,12 @@ namespace ToilluminateClient
                     gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     gBmpBack.DrawImage(bmpOld, DestRect, SrcRect, GraphicsUnit.Pixel);
 
-                    MyDrawImage(g, bmpBack, left, top);
+                    g.DrawImage(bmpBack, left, top);
                     System.Threading.Thread.Sleep(SleepTime);
 
 
                     sepNumber++;
-                    y = height - sepFix * sepNumber;
+                    y = height - sepFix * 4 * sepNumber;
                 }
 
                 sepNumber = 1;
@@ -974,11 +1017,11 @@ namespace ToilluminateClient
                     Rectangle DestRect = new Rectangle(0, (height - y) / 2, width, y);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
 
-                    MyDrawImage(g, bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
                     System.Threading.Thread.Sleep(SleepTime);
 
                     sepNumber++;
-                    y = sepFix * sepNumber;
+                    y = sepFix * 2 * sepNumber;
                 }
 
 
@@ -1027,11 +1070,12 @@ namespace ToilluminateClient
                     int j = Convert.ToInt32(x * (Convert.ToSingle(height) / Convert.ToSingle(width)));
                     Rectangle DestRect = new Rectangle(width / 2 - x, height / 2 - j, 2 * x, 2 * j);
                     Rectangle SrcRect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
-                    MyDrawImage(g, bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+
+                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
                     System.Threading.Thread.Sleep(SleepTime);
 
                     sepNumber++;
-                    x = (int)Math.Ceiling(Math.Pow(sepFix, sepNumber));
+                    x = (int)Math.Ceiling(Math.Pow(sepFix, sepNumber)); 
                 }
 
                 MyDrawImage(g, bmpSource, left, top);
@@ -1074,11 +1118,13 @@ namespace ToilluminateClient
                 int y = sepFix;
                 while (y < height)
                 {
-                    using (Bitmap bitmap = bmpSource.Clone(new Rectangle(0, y, width, sepFix), PixelFormat.Format24bppRgb))
-                    {
-                        MyDrawImage(g, bitmap, left, top + y);
-                        System.Threading.Thread.Sleep(SleepTime);
-                    }
+
+                    Rectangle DestRect = new Rectangle(0, y, width, sepFix);
+                    Rectangle SrcRect = new Rectangle(0, y, width, sepFix);
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+                    System.Threading.Thread.Sleep(SleepTime);
+
 
                     sepNumber++;
                     y = sepFix * sepNumber;
@@ -1124,11 +1170,12 @@ namespace ToilluminateClient
                 int y = height - sepFix;
                 while (y > 0)
                 {
-                    using (Bitmap bitmap = bmpSource.Clone(new Rectangle(0, y, width, sepFix), PixelFormat.Format24bppRgb))
-                    {
-                        MyDrawImage(g, bitmap, left, top + y);
-                        System.Threading.Thread.Sleep(SleepTime);
-                    }
+
+                    Rectangle DestRect = new Rectangle(0, y, width, sepFix);
+                    Rectangle SrcRect = new Rectangle(0, y, width, sepFix);
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+                    System.Threading.Thread.Sleep(SleepTime);
 
                     sepNumber++;
                     y = height - (sepFix * sepNumber);
@@ -1172,11 +1219,12 @@ namespace ToilluminateClient
                 int x = sepFix;
                 while (x < width)
                 {
-                    using (Bitmap bitmap = bmpSource.Clone(new Rectangle(x, 0, sepFix, height), PixelFormat.Format24bppRgb))
-                    {
-                        MyDrawImage(g, bitmap, left + x, top);
-                        System.Threading.Thread.Sleep(SleepTime);
-                    }
+                    Rectangle DestRect = new Rectangle(x, 0, sepFix, height);
+                    Rectangle SrcRect = new Rectangle(x, 0, sepFix, height);
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+
+                    System.Threading.Thread.Sleep(SleepTime);
 
                     sepNumber++;
                     x = sepFix * sepNumber;
@@ -1221,11 +1269,11 @@ namespace ToilluminateClient
                 int x = width - sepFix;
                 while (x > 0)
                 {
-                    using (Bitmap bitmap = bmpSource.Clone(new Rectangle(x, 0, sepFix, height), PixelFormat.Format24bppRgb))
-                    {
-                        MyDrawImage(g, bitmap, left + x, top);
-                        System.Threading.Thread.Sleep(SleepTime);
-                    }
+                    Rectangle DestRect = new Rectangle(x, 0, sepFix, height);
+                    Rectangle SrcRect = new Rectangle(x, 0, sepFix, height);
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(bmpSource, DestRect, SrcRect, GraphicsUnit.Pixel);
+                    System.Threading.Thread.Sleep(SleepTime);
 
                     sepNumber++;
                     x = width - (sepFix * sepNumber);
@@ -1347,8 +1395,10 @@ namespace ToilluminateClient
                 }
 
 
-                RectangleF myRect = new RectangleF(0, 0, bmpSource.Width, bmpSource.Height);
-                PlayApp.DrawBitmap = bmpSource.Clone(myRect, System.Drawing.Imaging.PixelFormat.DontCare);
+                //RectangleF myRect = new RectangleF(0, 0, bmpSource.Width, bmpSource.Height);
+                //PlayApp.DrawBitmap = bmpSource.Clone(myRect, System.Drawing.Imaging.PixelFormat.DontCare);
+                PlayApp.DrawBitmap = new Bitmap(bmpSource.Width, bmpSource.Height);
+                ImageApp.CopyBitmap(PlayApp.DrawBitmap, bmpSource);
             }
             catch (Exception ex)
             {
@@ -1410,10 +1460,10 @@ namespace ToilluminateClient
                     // 黑白剪影特效
                     int i, j, iAvg, iPixel;
                     Color myColor, myNewColor;
-                    RectangleF myRect;
+                   
+                    Bitmap bitmap=new Bitmap (width,height);
+                    ImageApp.CopyBitmap(bitmap, bmpSource);
 
-                    myRect = new RectangleF(0, 0, width, height);
-                    Bitmap bitmap = bmpSource.Clone(myRect, System.Drawing.Imaging.PixelFormat.DontCare);
                     i = 0;
                     while (i < width - 1)
                     {

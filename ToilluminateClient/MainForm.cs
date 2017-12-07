@@ -374,6 +374,7 @@ namespace ToilluminateClient
 
                 this.axWMP.settings.autoStart=false; //是否自动播放
                 this.axWMP.Visible = true;
+                this.axWMP.settings.volume = 100;
                 this.axWMP.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
 
                 this.axWMP.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top
@@ -416,16 +417,18 @@ namespace ToilluminateClient
         {
             try
             {
+                PlayApp.NowImageIsShow = false;
+
                 this.tmrImage.Stop();
 
-                PlayApp.NowImageIsShow = false;
-                this.pnlShowImage.Visible = false;
                 if (this.picImage.Image != null)
                 {
                     this.picImage.Image.Dispose();
                 }
 
                 PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
+
+                this.pnlShowImage.Visible = false;
             }
             catch (Exception ex)
             {
@@ -517,15 +520,16 @@ namespace ToilluminateClient
         {
             try
             {
+                PlayApp.NowMediaIsShow = false;
+
                 this.tmrMedia.Stop();
 
-                this.pnlShowMedia.Visible = false;
                 WMPStop();
                 
                 MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
                 mtItem.ExecuteStop();
                 
-                PlayApp.NowMediaIsShow = false;
+                this.pnlShowMedia.Visible = false;
             }
             catch (Exception ex)
             {
@@ -644,11 +648,10 @@ namespace ToilluminateClient
             try
             {
                 PlayApp.NowMediaIsShow = false;
+                PlayApp.DrawMessageList.Clear();
 
                 VariableInfo.messageFormInstance.Hide();
                 VariableInfo.messageFormInstance.Dispose();
-
-                PlayApp.DrawMessageList.Clear();
             }
             catch (Exception ex)
             {
@@ -666,6 +669,7 @@ namespace ToilluminateClient
             thisMessageVisible = PlayApp.NowMessageIsShow;
             thisMediaWMPVisible = PlayApp.NowMediaIsShow;
         }
+
 
         private void SetNowVisible()
         {
@@ -741,7 +745,7 @@ namespace ToilluminateClient
                         VariableInfo.messageFormInstance.SetParentForm(this);
                         VariableInfo.messageFormInstance.Show();
                         VariableInfo.messageFormInstance.ThreadShowMessage();
-                        VariableInfo.messageFormInstance.tmrMessage_Tick(null,null);
+                        VariableInfo.messageFormInstance.tmrMessage_Tick(null, null);
                     }
                     else
                     {
@@ -760,7 +764,7 @@ namespace ToilluminateClient
                         {
                             PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
                         }
-                        this.pnlShowMedia.Visible =true;
+                        this.pnlShowMedia.Visible = true;
                         this.ThreadShowMedia();
                         this.tmrMedia_Tick(null, null);
                     }
@@ -768,7 +772,38 @@ namespace ToilluminateClient
                     {
                         CloseMediaWMP();
                     }
-                    
+
+                }
+
+                try
+                {
+                    if (PlayApp.NowImageIsShow == false)
+                    {
+                        this.pnlShowImage.Visible = false;
+                    }
+                    else
+                    {
+                        this.pnlShowImage.Visible = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogApp.OutputErrorLog("MainForm", "SetNowVisible", ex);
+                }
+                try
+                {
+                    if (PlayApp.NowMediaIsShow == false)
+                    {
+                        this.pnlShowMedia.Visible = false;
+                    }
+                    else
+                    {
+                        this.pnlShowMedia.Visible = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogApp.OutputErrorLog("MainForm", "SetNowVisible", ex);
                 }
             }
             catch (Exception ex)
