@@ -79,7 +79,7 @@
             userName: $("#login_username").val(),
             password: $("#login_password").val(),
             success: function (response, status, xhr, $form, data) {
-                //$.cookie('userticket', response.Ticket);
+                $.cookie('userticket', response.Ticket);
                 // similate 2s delay
                 setTimeout(function () {
                     btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);

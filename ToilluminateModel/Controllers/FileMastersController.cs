@@ -18,7 +18,7 @@ using ToilluminateModel;
 
 namespace ToilluminateModel.Controllers
 {
-    public class FileMastersController : ApiController
+    public class FileMastersController : BaseApiController
     {
         private ToilluminateEntities db = new ToilluminateEntities();
 
