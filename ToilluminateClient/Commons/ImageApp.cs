@@ -109,10 +109,32 @@ namespace ToilluminateClient
                 LogApp.OutputProcessLog("ImageApp", "MyDrawMessage", "All Message");
                 PlayApp.DrawMessageFlag = true;
 
-                using (Bitmap bitmap = new Bitmap(messageForm.Width, messageForm.Height))
+                int newW = messageForm.Width;
+                int newH = messageForm.Height;
+                int srcW = messageForm.Width;
+                int srcH = messageForm.Height;
+
+                using (Bitmap bitmap = new Bitmap(srcW, srcH))
                 {
                     gBmpBack = Graphics.FromImage(bitmap);
                     gBmpBack.Clear(BackClearColor);
+
+
+                    if (PlayApp.DrawMessageList.Count == 0)
+                    {
+                        if (PlayApp.DownLoadDrawMessage != null && PlayApp.DownLoadDrawMessage.DrawStyleList.Count > 0)
+                        {
+                            DrawMessage dmItem = PlayApp.DownLoadDrawMessage;
+                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
+                            foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
+                            {
+                                if (dmItem.CheckStyleShow(dslItem))
+                                {
+                                    gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dmItem.GetStyleLeft(dslItem.LeftWidth), dmItem.GetStyleTop(dslItem.Heigth));
+                                }
+                            }
+                        }
+                    }
 
 
                     foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
@@ -129,7 +151,9 @@ namespace ToilluminateClient
 
 
                     g = messageForm.CreateGraphics();
-                    MyDrawImage(g, bitmap, 0, 0);
+
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(bitmap, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, srcW, srcH), GraphicsUnit.Pixel);
                 }
 
                 System.Threading.Thread.Sleep(ImageApp.MessageSleepTime);
