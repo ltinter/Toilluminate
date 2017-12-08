@@ -62,7 +62,7 @@ namespace ToilluminateClient
         public static bool NowMessageIsShow = false;
         public static bool NowMessageIsRefresh = false;
 
-        public static int MediaReadaheadTime = 10;
+        public static int MediaReadaheadTime = 30;
 
 
         public static void Clear()
@@ -149,7 +149,7 @@ namespace ToilluminateClient
                 string imageDir = Utility.GetFullFileName(VariableInfo.TempPath, "Images");
                 if (Directory.Exists(imageDir))
                 {
-                    string[] fileExts = new string[] { "*.jpg", "*.png" };
+                    string[] fileExts = new string[] { "*.jpg", "*.png", "*.bmp" };
                     foreach (string fileExt in fileExts)
                     {
                         string[] files = Directory.GetFiles(imageDir, fileExt);
@@ -182,7 +182,7 @@ namespace ToilluminateClient
                 string mediaDir = Utility.GetFullFileName(VariableInfo.TempPath, "Medias");
                 if (Directory.Exists(mediaDir))
                 {
-                    string[] fileExts = new string[] { "*.wmv", "*.mp4", "*.avi", "*.mkv", "*.rmvb", "*.rm", "*.asf", "*.vod", "*.mpg" };
+                    string[] fileExts = new string[] { "*.wmv", "*.mp4", "*.avi", "*.rmvb", "*.asf", "*.vod", "*.mpg" };
                     foreach (string fileExt in fileExts)
                     {
                         string[] files = Directory.GetFiles(mediaDir, fileExt);
@@ -396,7 +396,7 @@ namespace ToilluminateClient
                 if (PlayApp.DownLoadDrawMessage == null || PlayApp.DownLoadDrawMessage.DrawStyleList.Count == 0)
                 {
                     string messageString = "<span style=\"font-family: MS PGothic; font-size: 18px; \" ><b>ファイルダウンロード中。</b></span>";
-                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Top, 0, 5);
+                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom, 0, 0);
 
                     PlayApp.DownLoadDrawMessage = new DrawMessage(VariableInfo.messageFormInstance.Width, VariableInfo.messageFormInstance.Height, mtItem);
 
@@ -405,7 +405,7 @@ namespace ToilluminateClient
                 else
                 {
                     string messageString = string.Format("<span style=\"font-family: MS PGothic; font-size: 18px; \" ><b>ファイルダウンロード中。({0}/{1})</b></span>", PlayApp.DownLoadIndexNumber, PlayApp.DownLoadTotalNumber);
-                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Top, 0, 5);
+                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom, 0, 0);
 
                     PlayApp.DownLoadDrawMessage.SetDrawMessageStyle(mtItem.MessageList[0], mtItem.MessageStyleList[0], 0);
                 }
@@ -1975,14 +1975,8 @@ namespace ToilluminateClient
                     {
                         if (axWMP.playState != WMPPlayState.wmppsPlaying)
                         {
-                            if (axWMP.URL != this.CurrentFile)
-                            {
-                                axWMP.URL = this.CurrentFile;
-                            }
-                            if (position > 0)
-                            {
-                                axWMP.Ctlcontrols.currentPosition = position;
-                            }
+                            axWMP.URL = this.CurrentFile;
+                            axWMP.Ctlcontrols.currentPosition = position;
                             axWMP.Ctlcontrols.play();
                         }
                     }

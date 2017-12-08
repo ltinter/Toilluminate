@@ -118,6 +118,14 @@ namespace ToilluminateClient
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            thisImageVisible = true;
+            thisMediaWMPVisible = true;
+            thisMessageVisible = true;
+
+
+            thisSetNowVisible = true;
+            executeTempleteFlag = true;
+
             CloseAll();
         }
 
