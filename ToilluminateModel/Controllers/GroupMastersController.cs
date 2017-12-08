@@ -131,8 +131,8 @@ namespace ToilluminateModel.Controllers
             return jdmList;
         }
 
-        [HttpPost, Route("api/GroupMasters/DeleteGroupByGroupID/{GroupID}")]
-        public async Task<IHttpActionResult> DeleteGroupByGroupID(int GroupID)
+        [HttpPost, Route("api/GroupMasters/DeleteGroupByID/{GroupID}")]
+        public async Task<IHttpActionResult> DeleteGroupByID(int GroupID)
         {
             List<int> GroupIDList = new List<int>();
             GroupIDList.Add(GroupID);
