@@ -24,7 +24,7 @@ namespace ToilluminateModel.Controllers
         // GET: api/PlayListMasters
         public IQueryable<PlayListMaster> GetPlayListMaster()
         {
-            return db.PlayListMaster;
+            return db.PlayListMaster.Where(a=>a.UseFlag == true);
         }
 
         // GET: api/PlayListMasters/5
@@ -87,6 +87,7 @@ namespace ToilluminateModel.Controllers
 
             playListMaster.UpdateDate = DateTime.Now;
             playListMaster.InsertDate = DateTime.Now;
+            playListMaster.UseFlag = true;
             db.PlayListMaster.Add(playListMaster);
             await db.SaveChangesAsync();
 
@@ -113,7 +114,7 @@ namespace ToilluminateModel.Controllers
         [HttpPost, Route("api/PlayListMasters/GetPlayListByGroupID/{GroupID}")]
         public async Task<IQueryable<PlayListMaster>> GetPlayListByGroupID(int GroupID)
         {
-            return db.PlayListMaster.Where(a=>a.GroupID == GroupID);
+            return db.PlayListMaster.Where(a=>a.GroupID == GroupID && a.UseFlag == true);
         }
 
         //[HttpPost, Route("api/PlayListMasters/GetOwnPlayListByPlayerID/{PlayerID}")]
@@ -146,7 +147,7 @@ namespace ToilluminateModel.Controllers
                                               join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
                                               join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                                               from pv in ProjectV.DefaultIfEmpty()
-                                              where groupIDs.Contains((int)gplt.GroupID)
+                                              where groupIDs.Contains((int)gplt.GroupID) && plm.UseFlag == true
                                               orderby gplt.GroupID == GroupID ? 2 : 1, groupIDsStr.IndexOf(gplt.GroupID.ToString()) descending,gplt.Index 
                                               select new PlayListLinkData
                                               {
@@ -186,7 +187,7 @@ namespace ToilluminateModel.Controllers
                                               join gplt in db.GroupPlayListLinkTable on plm.PlayListID equals gplt.PlayListID
                                               join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                                               from pv in ProjectV.DefaultIfEmpty()
-                                              where groupIDs.Contains((int)gplt.GroupID)
+                                              where groupIDs.Contains((int)gplt.GroupID) && plm.UseFlag == true
                                               orderby groupIDsStr.IndexOf(gplt.GroupID.ToString()) descending, gplt.Index
                                               select new PlayListLinkData
                                               {
@@ -204,7 +205,7 @@ namespace ToilluminateModel.Controllers
                               join pplt in db.PlayerPlayListLinkTable on plm.PlayListID equals pplt.PlayListID
                               join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                               from pv in ProjectV.DefaultIfEmpty()
-                              where pplt.PlayerID == PlayerID
+                              where pplt.PlayerID == PlayerID && plm.UseFlag == true
                               orderby pplt.Index
                               select new PlayListLinkData
                               {
@@ -229,7 +230,7 @@ namespace ToilluminateModel.Controllers
             List<PlayListLinkData> pldList = (from plm in db.PlayListMaster
                             join gm in db.GroupMaster on plm.GroupID equals gm.GroupID into ProjectV
                             from pv in ProjectV.DefaultIfEmpty()
-                            where groupIDs.Contains((int)plm.GroupID)
+                            where groupIDs.Contains((int)plm.GroupID) && plm.UseFlag == true
                             select new PlayListLinkData
                             {
                                 PlayListID = plm.PlayListID,
@@ -253,7 +254,7 @@ namespace ToilluminateModel.Controllers
 
         private bool PlayListMasterExists(int id)
         {
-            return db.PlayListMaster.Count(e => e.PlayListID == id) > 0;
+            return db.PlayListMaster.Count(e => e.PlayListID == id && e.UseFlag == true) > 0;
         }
     }
 }

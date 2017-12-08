@@ -23,7 +23,7 @@ namespace ToilluminateModel.Controllers
         // GET: api/UserMasters
         public IQueryable<UserMaster> GetUserMaster()
         {
-            return db.UserMaster;
+            return db.UserMaster.Where(a=>a.UseFlag == true);
         }
 
         // GET: api/UserMasters/5
@@ -87,6 +87,7 @@ namespace ToilluminateModel.Controllers
             userMaster.UpdateDate = DateTime.Now;
             userMaster.InsertDate = DateTime.Now;
             userMaster.Password = PublicMethods.MD5(userMaster.Password);
+            userMaster.UseFlag = true;
             db.UserMaster.Add(userMaster);
             await db.SaveChangesAsync();
 
@@ -143,7 +144,7 @@ namespace ToilluminateModel.Controllers
         [HttpGet, Route("api/UserMasters/GetUserByName/{userName}")]
         public async Task<List<UserMaster>> GetUserByName(string userName)
         {
-            List<UserMaster> userList = await db.UserMaster.Where(a => a.UserName == userName).ToListAsync();
+            List<UserMaster> userList = await db.UserMaster.Where(a => a.UserName == userName && a.UseFlag == true).ToListAsync();
             return userList;
         }
 
@@ -158,7 +159,7 @@ namespace ToilluminateModel.Controllers
 
         private bool UserMasterExists(int id)
         {
-            return db.UserMaster.Count(e => e.UserID == id) > 0;
+            return db.UserMaster.Count(e => e.UserID == id && e.UseFlag == true) > 0;
         }
     }
 }
