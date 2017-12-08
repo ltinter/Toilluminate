@@ -106,7 +106,6 @@ namespace ToilluminateClient
             Graphics gBmpBack = null;
             try
             {
-                LogApp.OutputProcessLog("ImageApp", "MyDrawMessage", "All Message");
                 PlayApp.DrawMessageFlag = true;
 
                 int newW = messageForm.Width;
