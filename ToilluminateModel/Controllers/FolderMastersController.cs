@@ -21,7 +21,7 @@ namespace ToilluminateModel.Controllers
         // GET: api/FolderMasters
         public IQueryable<FolderMaster> GetFolderMaster()
         {
-            return db.FolderMaster;
+            return db.FolderMaster.Where(a => a.UseFlag == true);
         }
 
         // GET: api/FolderMasters/5
@@ -84,6 +84,7 @@ namespace ToilluminateModel.Controllers
 
             folderMaster.UpdateDate = DateTime.Now;
             folderMaster.InsertDate = DateTime.Now;
+            folderMaster.UseFlag = true;
             db.FolderMaster.Add(folderMaster);
             await db.SaveChangesAsync();
 
@@ -116,7 +117,7 @@ namespace ToilluminateModel.Controllers
         {
             List<DataModel> jdmList = new List<DataModel>();
             DataModel jdm;
-            List<FolderMaster> fmList = db.FolderMaster.Where(a => a.GroupID == GroupID).ToList();
+            List<FolderMaster> fmList = db.FolderMaster.Where(a => a.GroupID == GroupID && a.UseFlag == true).ToList();
             foreach (FolderMaster fm in fmList)
             {
                 jdm = new DataModel();
@@ -135,6 +136,7 @@ namespace ToilluminateModel.Controllers
 
             folderMaster.UpdateDate = DateTime.Now;
             folderMaster.InsertDate = DateTime.Now;
+            folderMaster.UseFlag = true;
             db.FolderMaster.Add(folderMaster);
             await db.SaveChangesAsync();
             DataModel jdm = new DataModel();
@@ -147,6 +149,9 @@ namespace ToilluminateModel.Controllers
         [HttpPost, Route("api/FolderMasters/EditTreeNodeFolder")]
         public async Task<DataModel> EditTreeNodeFolder(FolderMaster folderMaster)
         {
+
+            FolderMaster folderParent = await db.FolderMaster.FindAsync(folderMaster.FolderParentID);
+            if ((bool)folderParent.UseFlag) { return null; }
 
             folderMaster.UpdateDate = DateTime.Now;
             db.Entry(folderMaster).State = EntityState.Modified;
@@ -177,7 +182,7 @@ namespace ToilluminateModel.Controllers
             var jsonList = (from fm in db.FolderMaster
                             join gm in db.GroupMaster on fm.GroupID equals gm.GroupID into ProjectV
                             from pv in ProjectV.DefaultIfEmpty()
-                            where groupIDs.Contains((int)fm.GroupID)
+                            where groupIDs.Contains((int)fm.GroupID) && fm.UseFlag == true
                             select new
                             {
                                 fm,
@@ -232,7 +237,7 @@ namespace ToilluminateModel.Controllers
 
         private bool FolderMasterExists(int id)
         {
-            return db.FolderMaster.Count(e => e.FolderID == id) > 0;
+            return db.FolderMaster.Count(e => e.FolderID == id && e.UseFlag == true) > 0;
         }
     }
 }

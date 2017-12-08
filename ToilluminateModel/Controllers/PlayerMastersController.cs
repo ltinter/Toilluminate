@@ -23,7 +23,7 @@ namespace ToilluminateModel.Controllers
         // GET: api/PlayerMasters
         public IQueryable<PlayerMaster> GetPlayerMaster()
         {
-            return db.PlayerMaster;
+            return db.PlayerMaster.Where(a => a.UseFlag == true);
         }
 
         // GET: api/PlayerMasters/5
@@ -82,6 +82,7 @@ namespace ToilluminateModel.Controllers
 
             playerMaster.UpdateDate = DateTime.Now;
             playerMaster.InsertDate = DateTime.Now;
+            playerMaster.UseFlag = true;
             db.PlayerMaster.Add(playerMaster);
             await db.SaveChangesAsync();
 
@@ -113,8 +114,8 @@ namespace ToilluminateModel.Controllers
             var jsonList = (from pm in db.PlayerMaster
                            join gm in db.GroupMaster on pm.GroupID equals gm.GroupID into ProjectV
                            from pv in ProjectV.DefaultIfEmpty()
-                           where groupIDs.Contains((int)pm.GroupID)
-                           select new { pm.PlayerID,
+                           where groupIDs.Contains((int)pm.GroupID) && pm.UseFlag == true
+                            select new { pm.PlayerID,
                            pm.PlayerName,
                            pm.PlayerAddress,
                            pm.Settings,
@@ -132,7 +133,7 @@ namespace ToilluminateModel.Controllers
         [HttpPost, Route("api/PlayerMasters/GetPlayerByGroupID/{GroupID}")]
         public async Task<IQueryable<PlayerMaster>> GetPlayerByGroupID(int GroupID)
         {
-            return db.PlayerMaster.Where(a => a.GroupID == GroupID);
+            return db.PlayerMaster.Where(a => a.GroupID == GroupID && a.UseFlag == true);
         }
 
         [AllowAnonymous]
@@ -162,7 +163,7 @@ namespace ToilluminateModel.Controllers
             psdList.Add(new Models.PlayerStatusData("Lost", 0));
             psdList.Add(new Models.PlayerStatusData("Offline", 0));
             psdList.Add(new Models.PlayerStatusData("Total", 0));
-            List<PlayerMaster> pmList = db.PlayerMaster.ToList();
+            List<PlayerMaster> pmList = db.PlayerMaster.Where(a=>a.UseFlag == true).ToList();
             foreach (PlayerMaster pm in pmList)
             {
                 //if (PublicMethods.isPlayerActive(pm, db))
@@ -206,7 +207,7 @@ namespace ToilluminateModel.Controllers
 
         private bool PlayerMasterExists(int id)
         {
-            return db.PlayerMaster.Count(e => e.PlayerID == id) > 0;
+            return db.PlayerMaster.Count(e => e.PlayerID == id && e.UseFlag == true) > 0;
         }
     }
 }
