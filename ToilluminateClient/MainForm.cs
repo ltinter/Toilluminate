@@ -85,6 +85,15 @@ namespace ToilluminateClient
         {
             try
             {
+                if (IniFileInfo.ShowExample)
+                {
+                    if (PlayApp.PlayListArray.Count == 0)
+                    {
+                        PlayApp.DebugLoadPlayListInfo();
+                        //PlayApp.ThreadLoadPlayListTimeCurrent = PlayApp.ThreadLoadPlayListTime - 2;
+                    }
+                }
+
                 Thread tmpThread = new Thread(this.ThreadLoadPlayListVoid);
                 tmpThread.IsBackground = true;
                 tmpThread.Start();

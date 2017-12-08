@@ -128,7 +128,7 @@ namespace ToilluminateClient
         /// <summary>
         /// 
         /// </summary>
-        private static void DebugLoadPlayListInfo()
+        public static void DebugLoadPlayListInfo()
         {
 
             #region " DEBUG DATA"
@@ -368,18 +368,7 @@ namespace ToilluminateClient
                         LogApp.OutputErrorLog("VariableInfo", "LoadPlayListInfo:3", ex);
                     }
                 }
-
-                if (IniFileInfo.ShowExample)
-                {
-                    if (PlayApp.PlayListArray.Count == 0)
-                    {
-                        DebugLoadPlayListInfo();
-                        //PlayApp.ThreadLoadPlayListTimeCurrent = PlayApp.ThreadLoadPlayListTime - 2;
-                        return false;
-                    }
-                }
-
-
+                
                 return false;
             }
             finally
