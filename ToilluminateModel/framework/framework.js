@@ -943,7 +943,7 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/PlayListMasters/GetTotalPlayListByPlayerID/' + options.playerId,
+                url: 'api/PlayListMasters/GetTotalPlayListByPlayerIDForWeb/' + options.playerId,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "POST",

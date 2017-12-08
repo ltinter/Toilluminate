@@ -13,7 +13,7 @@ using ToilluminateModel;
 
 namespace ToilluminateModel.Controllers
 {
-    public class PlayerPlayListLinkTablesController : ApiController
+    public class PlayerPlayListLinkTablesController : BaseApiController
     {
         private ToilluminateEntities db = new ToilluminateEntities();
 

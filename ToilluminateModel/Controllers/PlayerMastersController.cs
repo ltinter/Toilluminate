@@ -16,7 +16,7 @@ using ToilluminateModel;
 
 namespace ToilluminateModel.Controllers
 {
-    public class PlayerMastersController : ApiController
+    public class PlayerMastersController : BaseApiController
     {
         private ToilluminateEntities db = new ToilluminateEntities();
 
@@ -27,6 +27,7 @@ namespace ToilluminateModel.Controllers
         }
 
         // GET: api/PlayerMasters/5
+        [AllowAnonymous]
         [ResponseType(typeof(PlayerMaster))]
         public async Task<IHttpActionResult> GetPlayerMaster(int id)
         {
@@ -134,6 +135,7 @@ namespace ToilluminateModel.Controllers
             return db.PlayerMaster.Where(a => a.GroupID == GroupID);
         }
 
+        [AllowAnonymous]
         [HttpGet, Route("api/PlayerMasters/SendHeartBeatPkg/{PlayerID}")]
         public async Task<IHttpActionResult> SendHeartBeatPkg(int PlayerID)
         {

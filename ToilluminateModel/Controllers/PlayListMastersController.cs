@@ -17,7 +17,7 @@ using ToilluminateModel.Models;
 
 namespace ToilluminateModel.Controllers
 {
-    public class PlayListMastersController : ApiController
+    public class PlayListMastersController : BaseApiController
     {
         private ToilluminateEntities db = new ToilluminateEntities();
 
@@ -161,9 +161,19 @@ namespace ToilluminateModel.Controllers
             return pldList;
         }
 
+        [AllowAnonymous]
+        [HttpPost, Route("api/PlayListMasters/GetTotalPlayListByPlayerIDForClient/{PlayerID}")]
+        public Task<List<PlayListLinkData>> GetTotalPlayListByPlayerIDForClient(int PlayerID)
+        {
+            return this.GetTotalPlayListByPlayerID(PlayerID);
+        }
 
-        [HttpPost, Route("api/PlayListMasters/GetTotalPlayListByPlayerID/{PlayerID}")]
-        public async Task<List<PlayListLinkData>> GetTotalPlayListByPlayerID(int PlayerID)
+        [HttpPost, Route("api/PlayListMasters/GetTotalPlayListByPlayerIDForWeb/{PlayerID}")]
+        public Task<List<PlayListLinkData>> GetTotalPlayListByPlayerIDForWeb(int PlayerID)
+        {
+            return this.GetTotalPlayListByPlayerID(PlayerID);
+        }
+        private async Task<List<PlayListLinkData>> GetTotalPlayListByPlayerID(int PlayerID)
         {
             PlayerMaster pm = db.PlayerMaster.Find(PlayerID);
 
