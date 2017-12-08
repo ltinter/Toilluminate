@@ -22,5 +22,8 @@ namespace ToilluminateClient
         public string Comments { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
+
+        public PlayListSettings plsStudent { get; set; }
+        
     }
 }

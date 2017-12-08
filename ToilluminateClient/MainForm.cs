@@ -94,6 +94,8 @@ namespace ToilluminateClient
 #if !DEBUG
                 MaxShowThis(false);
 #endif
+
+                this.ShowMessageForm();
             }
             catch (Exception ex)
             {
@@ -114,6 +116,11 @@ namespace ToilluminateClient
                 VariableInfo.messageFormInstance.Location = new Point(this.Location.X + 8, this.Location.Y + 30);
             }
         }
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            CloseAll();
+        }
+
         private void tmrPlayList_Tick(object sender, EventArgs e)
         {
             this.GetNowVisible();
@@ -428,6 +435,7 @@ namespace ToilluminateClient
 
                 PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
 
+                System.Threading.Thread.Sleep(10);
                 this.pnlShowImage.Visible = false;
             }
             catch (Exception ex)
@@ -528,7 +536,8 @@ namespace ToilluminateClient
                 
                 MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
                 mtItem.ExecuteStop();
-                
+
+                System.Threading.Thread.Sleep(10);
                 this.pnlShowMedia.Visible = false;
             }
             catch (Exception ex)
@@ -650,8 +659,7 @@ namespace ToilluminateClient
                 PlayApp.NowMediaIsShow = false;
                 PlayApp.DrawMessageList.Clear();
 
-                VariableInfo.messageFormInstance.Hide();
-                VariableInfo.messageFormInstance.Dispose();
+                System.Threading.Thread.Sleep(10);
             }
             catch (Exception ex)
             {
@@ -691,7 +699,7 @@ namespace ToilluminateClient
                         {
                             PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
                         }
-                        (pList.CurrentTempleteItem as ImageTempleteItem).ExecuteStart();
+                        pList.CurrentTempleteItem.ExecuteStart();
 
 
                         this.pnlShowImage.Visible = true;
@@ -725,31 +733,11 @@ namespace ToilluminateClient
                     PlayApp.NowMessageIsShow = thisMessageVisible;
                     if (thisMessageVisible)
                     {
-                        if (VariableInfo.messageFormInstance == null || VariableInfo.messageFormInstance.IsDisposed)
-                        {
-                            VariableInfo.messageFormInstance = new MessageForm();
-                        }
-
-                        if (this.FormBorderStyle == VariableInfo.messageFormInstance.FormBorderStyle)
-                        {
-                            VariableInfo.messageFormInstance.Size = this.Size;
-                            VariableInfo.messageFormInstance.Location = this.Location;
-                        }
-                        else
-                        {
-                            VariableInfo.messageFormInstance.Size = new Size(this.Size.Width - 16, this.Size.Height - 38);
-                            VariableInfo.messageFormInstance.Location = new Point(this.Location.X + 8, this.Location.Y + 30);
-                        }
-                        VariableInfo.messageFormInstance.WindowState = this.WindowState;
-
-                        VariableInfo.messageFormInstance.SetParentForm(this);
-                        VariableInfo.messageFormInstance.Show();
-                        VariableInfo.messageFormInstance.ThreadShowMessage();
-                        VariableInfo.messageFormInstance.tmrMessage_Tick(null, null);
+                        this.ShowMessageForm();
                     }
                     else
                     {
-                        CloseMessage();
+                        this.CloseMessage();
                     }
                 }
 
@@ -764,6 +752,8 @@ namespace ToilluminateClient
                         {
                             PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
                         }
+                        pList.CurrentTempleteItem.ExecuteStart();
+
                         this.pnlShowMedia.Visible = true;
                         this.ThreadShowMedia();
                         this.tmrMedia_Tick(null, null);
@@ -815,7 +805,43 @@ namespace ToilluminateClient
                 thisSetNowVisible = false;
             }
         }
-     
+
+
+
+        private void ShowMessageForm()
+        {
+            try
+            {
+                if (VariableInfo.messageFormInstance == null || VariableInfo.messageFormInstance.IsDisposed)
+                {
+                    VariableInfo.messageFormInstance = new MessageForm();
+                }
+
+                if (this.FormBorderStyle == VariableInfo.messageFormInstance.FormBorderStyle)
+                {
+                    VariableInfo.messageFormInstance.Size = this.Size;
+                    VariableInfo.messageFormInstance.Location = this.Location;
+                }
+                else
+                {
+                    VariableInfo.messageFormInstance.Size = new Size(this.Size.Width - 16, this.Size.Height - 38);
+                    VariableInfo.messageFormInstance.Location = new Point(this.Location.X + 8, this.Location.Y + 30);
+                }
+                VariableInfo.messageFormInstance.WindowState = this.WindowState;
+
+                VariableInfo.messageFormInstance.SetParentForm(this);
+                VariableInfo.messageFormInstance.Show();
+                VariableInfo.messageFormInstance.ThreadShowMessage();
+                VariableInfo.messageFormInstance.tmrMessage_Tick(null, null);
+
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("MainForm", "ShowMessageForm", ex);
+            }
+
+        }
+
         #endregion " visible "
 
 
@@ -1018,10 +1044,15 @@ namespace ToilluminateClient
                     if (mediaIsReady())
                     {
                         MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
-
+                        
                         if (mtItem.CurrentIsChanged())
                         {
                             mtItem.ShowCurrent(this.axWMP);
+                        }
+
+                        if (mtItem.ReadaheadOverTime(PlayApp.MediaReadaheadTime))
+                        {
+                           this.CloseMediaWMP();
                         }
                     }
 
