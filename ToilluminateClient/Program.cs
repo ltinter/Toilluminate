@@ -40,7 +40,7 @@ namespace ToilluminateClient
                         return;
                     }
                 }
-
+                
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 

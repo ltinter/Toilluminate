@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Management;
 
 namespace ToilluminateClient
 {
@@ -75,7 +76,7 @@ namespace ToilluminateClient
             try
             {
                 string file = Utility.GetFullFileName(VariableInfo.FilesPath, Path.GetFileName(url));
-                string tempFile =  string.Format("{0}.temp", file);
+                string tempFile = string.Format("{0}.temp", file);
                 if (File.Exists(file) == false)
                 {
                     if (File.Exists(tempFile))
@@ -105,5 +106,31 @@ namespace ToilluminateClient
         }
 
 
+        public static string UniqueMachineId()
+        {
+            try
+            {
+                StringBuilder builder = new StringBuilder();
+
+                String query = "SELECT * FROM Win32_BIOS";
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
+                //  This should only find one
+                foreach (ManagementObject item in searcher.Get())
+                {
+                    Object obj = item["Manufacturer"];
+                    builder.Append(Convert.ToString(obj));
+                    builder.Append(':');
+                    obj = item["SerialNumber"];
+                    builder.Append(Convert.ToString(obj));
+                }
+
+                return builder.ToString();
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("WebApiInfo", "UniqueMachineId", ex);
+                return string.Empty;
+            }
+        }
     }
 }
