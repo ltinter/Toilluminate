@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.Security;
 using ToilluminateModel;
 
 namespace ToilluminateModel.Controllers
@@ -108,7 +109,6 @@ namespace ToilluminateModel.Controllers
             GroupIDList.Add(GroupID);
             PublicMethods.GetChildGroupIDs(GroupID, ref GroupIDList, db);
             int[] groupIDs = GroupIDList.ToArray<int>();
-
             var jsonList = (from pm in db.PlayerMaster
                            join gm in db.GroupMaster on pm.GroupID equals gm.GroupID into ProjectV
                            from pv in ProjectV.DefaultIfEmpty()

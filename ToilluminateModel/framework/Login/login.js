@@ -5,6 +5,7 @@
     var action = "";
     var usergroupJstreeData = {
         "core": {
+            "multiple": false,
             "themes": {
                 "responsive": true
             },
@@ -77,13 +78,14 @@
         $.insmFramework('userlogin', {
             userName: $("#login_username").val(),
             password: $("#login_password").val(),
-            success: function (response, status, xhr, $form,data) {
+            success: function (response, status, xhr, $form, data) {
+                //$.cookie('userticket', response.Ticket);
                 // similate 2s delay
                 setTimeout(function () {
                     btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
                     //showErrorMsg(form, 'danger', 'Incorrect username or password. Please try again.');
                 }, 2000);
-                $.insmGroup('initGroupTree', { userGroupId: response.GroupID });
+                $.insmGroup('initGroupTree', { userGroupId: response.UserMaster.GroupID });
                 btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
                 $("#login_username").val('');
                 $("#login_password").val('');

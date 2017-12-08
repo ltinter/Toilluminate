@@ -102,6 +102,7 @@
 
             var groupJstreeData = {
                 "core": {
+                    "multiple": false,
                     "themes": {
                         "responsive": true
                     },
@@ -1060,6 +1061,8 @@
                 note: $("#text_note").val(),
                 ActivechangeFlg: ActivechangeFlg,
                 OnlinechangeFlg: OnlinechangeFlg,
+                ActiveFlag: $("input[name='radio_Active']:checked").val(),
+                OnlineFlag: $("input[name='radio_Online']:checked").val(),
                 DisplayNamechangeFlg: DisplayNamechangeFlg,
                 NotechangeFlg: DisplayNamechangeFlg,
                 success: function (data) {
