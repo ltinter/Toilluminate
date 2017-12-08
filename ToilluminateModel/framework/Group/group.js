@@ -102,6 +102,7 @@
 
             var groupJstreeData = {
                 "core": {
+                    "multiple": false,
                     "themes": {
                         "responsive": true
                     },

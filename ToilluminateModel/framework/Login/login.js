@@ -5,6 +5,7 @@
     var action = "";
     var usergroupJstreeData = {
         "core": {
+            "multiple": false,
             "themes": {
                 "responsive": true
             },
