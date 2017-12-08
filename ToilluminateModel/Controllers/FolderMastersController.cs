@@ -203,6 +203,24 @@ namespace ToilluminateModel.Controllers
             return jdmList;
         }
 
+
+        [HttpPost, Route("api/FolderMasters/DeleteFolderByID/{FolderID}")]
+        public async Task<IHttpActionResult> DeleteFolderByID(int FolderID)
+        {
+            List<int> FolderIDList = new List<int>();
+            FolderIDList.Add(FolderID);
+            PublicMethods.GetChildFolderIDs(FolderID, ref FolderIDList, db);
+            int[] folderIDs = FolderIDList.ToArray<int>();
+
+            List<FolderMaster> folderList = db.FolderMaster.Where(a => folderIDs.Contains((int)a.FolderID)).ToList();
+            List<FileMaster> fileList = db.FileMaster.Where(a => folderIDs.Contains((int)a.FolderID)).ToList();
+            folderList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+            fileList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+
+            await db.SaveChangesAsync();
+
+            return Ok();
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -25,6 +25,15 @@ namespace ToilluminateModel
                 GetChildGroupIDs(gm.GroupID, ref GroupIDList, db);
             }
         }
+        public static void GetChildFolderIDs(int selfFolderID, ref List<int> FolderIDList, ToilluminateEntities db)
+        {
+            List<FolderMaster> fmChildList = db.FolderMaster.Where(a => a.FolderParentID == selfFolderID).ToList();
+            foreach (FolderMaster fm in fmChildList)
+            {
+                FolderIDList.Add(fm.FolderID);
+                GetChildFolderIDs(fm.FolderID, ref FolderIDList, db);
+            }
+        }
         public enum PlayerStatusType { Active,Online};
         public static string GetPlayerStatusByID(PlayerMaster pm, PlayerStatusType statusType, ToilluminateEntities db) {
             switch (statusType) {

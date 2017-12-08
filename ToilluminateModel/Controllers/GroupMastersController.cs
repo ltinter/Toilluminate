@@ -130,6 +130,31 @@ namespace ToilluminateModel.Controllers
             }
             return jdmList;
         }
+
+        [HttpPost, Route("api/GroupMasters/DeleteGroupByID/{GroupID}")]
+        public async Task<IHttpActionResult> DeleteGroupByID(int GroupID)
+        {
+            List<int> GroupIDList = new List<int>();
+            GroupIDList.Add(GroupID);
+            PublicMethods.GetChildGroupIDs(GroupID, ref GroupIDList, db);
+            int[] groupIDs = GroupIDList.ToArray<int>();
+
+            List<GroupMaster> groupList = db.GroupMaster.Where(a => groupIDs.Contains(a.GroupID)).ToList();
+            List<PlayerMaster> playerList = db.PlayerMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+            List<PlayListMaster> playlistList = db.PlayListMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+            List<FolderMaster> folderList = db.FolderMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+            List<FileMaster> fileList = db.FileMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+            groupList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+            playerList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+            playlistList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+            folderList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+            fileList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+
+            await db.SaveChangesAsync();
+
+            return Ok();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
