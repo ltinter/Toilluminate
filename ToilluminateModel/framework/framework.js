@@ -118,6 +118,26 @@
             }
             return $.insmFramework('ajax', ajaxOptions);
         },
+        userLogout: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                },
+                url: 'api/UserMasters/UserLogout',
+                format: 'json',
+                data: JSON.stringify(options.loginUser),
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                denied: function () { },
+                error: function () {
+                    options.error();
+                },
+            }
+            $.insmFramework('ajax', ajaxOptions);
+        },
         creatUser: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -194,7 +214,13 @@
                 contentType: options.contentType,
                 data: options.data,
                 success: options.success,
-                error: options.error
+				error: function (data) {
+				    if (data.StatusCode) {
+
+				    }
+				}
+                //success: options.success,
+                //error: options.error
             });
         },
         editGroup: function (options) {
@@ -319,7 +345,7 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/GroupMasters' + "/" + options.deleteGroupItem.GroupID,
+                url: 'api/GroupMasters/DeleteGroupByID' + "/" + options.deleteGroupItem.GroupID,
                 format: 'json',
                 data: JSON.stringify(newGroup),
                 contentType: "application/json; charset=utf-8",
