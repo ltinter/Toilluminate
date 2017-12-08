@@ -253,6 +253,10 @@ namespace ToilluminateClient
             try
             {
                 PlayApp.nowLoadPlayList = true;
+
+                // 設定読み込み
+                IniFileInfo.GetIniInfo(VariableInfo.IniFile);
+
                 if (string.IsNullOrEmpty(IniFileInfo.PlayerID) == false)
                 {
 
@@ -370,7 +374,7 @@ namespace ToilluminateClient
                     if (PlayApp.PlayListArray.Count == 0)
                     {
                         DebugLoadPlayListInfo();
-
+                        //PlayApp.ThreadLoadPlayListTimeCurrent = PlayApp.ThreadLoadPlayListTime - 2;
                         return false;
                     }
                 }
