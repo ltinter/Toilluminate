@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
@@ -13,6 +14,7 @@ namespace ToilluminateModel
     {
         public override void OnAuthorization(System.Web.Http.Controllers.HttpActionContext actionContext)
         {
+            if (SkipAuthorization(actionContext)) return;
             //get ticket from httpcontext
             var userticket = actionContext.Request.Headers.GetCookies().Select(a => a["userticket"]).FirstOrDefault().Value;
             if ((userticket != null) && (userticket != "") && ValidateUserInfo(userticket))
@@ -47,6 +49,14 @@ namespace ToilluminateModel
             {
                 return false;
             }
+        }
+
+        private static bool SkipAuthorization(HttpActionContext actionContext)
+        {
+            Contract.Assert(actionContext != null);
+
+            return actionContext.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any()
+                       || actionContext.ControllerContext.ControllerDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any();
         }
     }
 }

@@ -130,6 +130,22 @@ namespace ToilluminateModel.Controllers
             }
             return jdmList;
         }
+
+        //[HttpGet, Route("api/GroupMasters/DeleteGroupByGroupID/{GroupID}")]
+        //public Task<IHttpActionResult> DeleteGroupByGroupID(int GroupID) {
+        //    List<int> GroupIDList = new List<int>();
+        //    GroupIDList.Add(GroupID);
+        //    PublicMethods.GetChildGroupIDs(GroupID, ref GroupIDList, db);
+        //    int[] groupIDs = GroupIDList.ToArray<int>();
+
+        //    List<GroupMaster> groupList = db.GroupMaster.Where(a => groupIDs.Contains(a.GroupID)).ToList();
+        //    List<PlayerMaster> playerList = db.PlayerMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+        //    List<PlayListMaster> playlistList = db.PlayerMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+        //    db.GroupMaster(groupList);
+
+        //    return Ok();
+        //}
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
