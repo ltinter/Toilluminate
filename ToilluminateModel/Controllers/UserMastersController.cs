@@ -148,6 +148,28 @@ namespace ToilluminateModel.Controllers
             return userList;
         }
 
+        [AllowAnonymous]
+        [HttpGet, Route("api/UserMasters/GetUserLoginInfo")]
+        public async Task<IHttpActionResult> GetUserLoginInfo()
+        {
+            HttpCookie cookie = HttpContext.Current.Request.Cookies["userticket"];
+            if (cookie != null) {
+                var userticket = cookie.Value;
+                string userName = PublicMethods.ValidateUserInfo(userticket);
+                if (userName != "")
+                {
+                    List<UserMaster> userList = await GetUserByName(userName);
+                    if (userList.Count > 0)
+                        return Ok(userList[0]);
+                    else
+                        return NotFound();
+                }
+                else
+                    return NotFound();
+            } else
+                return NotFound();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
