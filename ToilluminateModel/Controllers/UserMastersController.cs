@@ -162,12 +162,12 @@ namespace ToilluminateModel.Controllers
                     if (userList.Count > 0)
                         return Ok(userList[0]);
                     else
-                        return BadRequest();
+                        return NotFound();
                 }
                 else
-                    return BadRequest();
+                    return NotFound();
             } else
-                return BadRequest();
+                return NotFound();
         }
 
         protected override void Dispose(bool disposing)
