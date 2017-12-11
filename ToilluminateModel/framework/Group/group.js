@@ -364,10 +364,12 @@
         addNewGroup: function () {
             if ($.trim($("#groupname").val()) == '') {
                 toastr.warning("Group name is empty!");
+                $("#button_save").attr('disabled', false);
                 return;
             };
             if (groupTreeForPlayerEditID == null) {
                 toastr.warning("Please select new group's Parent Group !");
+                $("#button_save").attr('disabled', false);
                 return;
             };
             if (editGroupID == groupTreeForPlayerEditID) {
@@ -381,6 +383,7 @@
                 //    return;
                 //}
                 toastr.warning("Group ID have same ID!");
+                $("#button_save").attr('disabled', false);
                 return;
             };
             var Settings = {};
@@ -410,6 +413,7 @@
                 settings: JSON.stringify(Settings),
                 newGroupNameParentID: groupTreeForPlayerEditID,
                 success: function (data) {
+                    $("#button_save").attr('disabled', true);
                     var div_forcedplaylists = $('#forcedplaylists');
                     var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
                     playListgroup =[];
@@ -815,8 +819,8 @@
         })
     })
     $("#deletegroup").click(function (e) {
-        toastr.warning("使用中ですので、削除できない。");
-        return;
+        //toastr.warning("使用中ですので、削除できない。");
+        //return;
         var deleteGroup = div_groupTree.jstree(true).get_node(div_groupTree.jstree(true).get_selected())
         if (deleteGroup) {
             $.insmFramework('updateGroupUseFlg', {
@@ -824,7 +828,11 @@
                 success: function (resultdata) {
                     div_main.show();
                     div_edit.hide();
-                    $.insmGroup('initGroupTree');
+                    var userGroupId = $.insmFramework('user').GroupID;
+                    //$.insmGroup('initGroupTree', {
+                    //    userGroupId: userGroupId
+                    //});
+                    $.insmGroup('refreshTree');
                 }
             })
         }
@@ -985,7 +993,9 @@
         })
     });
     $("#button_save").click(function (e) {
+        $("#button_save").attr('disabled', true);
         $.insmGroup('addNewGroup');
+        
         console.log("Group Save Button!");
         editGroupID = undefined;
         //$("#forcedplaylists").empty();
@@ -1066,6 +1076,7 @@
                 DisplayNamechangeFlg: DisplayNamechangeFlg,
                 NotechangeFlg: DisplayNamechangeFlg,
                 success: function (data) {
+                    $("#button_save_Player").attr('disabled', false);
                     var div_forcedplaylists = $('#forcedplaylists');
                     var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
                     playListgroup =[];
@@ -1133,6 +1144,7 @@
                         $.insmFramework('deletePlayerPlayListLinkTableByPlayerID', {
                             playerId: editedplayerID,
                             success: function () {
+                                $("#button_save_Player").attr('disabled', false);
                                 $.insmFramework('playerPlayListLinkTables', {
                                     playerId: editedplayerID,
                                     PlayListID: playListgroup,
