@@ -731,7 +731,7 @@ namespace ToilluminateClient
                 {
                     PlayApp.NowImageIsShow = thisImageVisible;
 
-                    if (thisImageVisible)
+                    if (PlayApp.NowImageIsShow)
                     {
                         PlayList pList = PlayApp.ExecutePlayList;
                         if (pList.CurrentTempleteItem.TempleteState == TempleteStateType.Wait)
@@ -770,7 +770,7 @@ namespace ToilluminateClient
                 if (PlayApp.NowMessageIsShow != thisMessageVisible)
                 {
                     PlayApp.NowMessageIsShow = thisMessageVisible;
-                    if (thisMessageVisible)
+                    if (PlayApp.NowMessageIsShow)
                     {
                         this.ShowMessageForm();
                     }
@@ -783,7 +783,7 @@ namespace ToilluminateClient
                 if (PlayApp.NowMediaIsShow != thisMediaWMPVisible)
                 {
                     PlayApp.NowMediaIsShow = thisMediaWMPVisible;
-                    if (thisMediaWMPVisible)
+                    if (PlayApp.NowMediaIsShow)
                     {
                         PlayList pList = PlayApp.ExecutePlayList;
 
@@ -794,6 +794,7 @@ namespace ToilluminateClient
                         pList.CurrentTempleteItem.ExecuteStart();
 
                         this.pnlShowMedia.Visible = true;
+                        System.Threading.Thread.Sleep(300);
                         this.ThreadShowMedia();
                         this.tmrMedia_Tick(null, null);
                     }

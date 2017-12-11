@@ -62,7 +62,7 @@ namespace ToilluminateClient
         public static bool NowMessageIsShow = false;
         public static bool NowMessageIsRefresh = false;
 
-        public static int MediaReadaheadTime = 30;
+        public static int MediaReadaheadTime = 10;
 
 
         public static void Clear()
@@ -135,7 +135,7 @@ namespace ToilluminateClient
 
             PlayApp.Clear();
             PlayListSettings plsStudent = new PlayListSettings();
-            string settings = "{\"Loop\":\"1\",\"Playtime\":\"0\",\"PlayHours\":\"10\",\"PlayMinites\":\"0\",\"PlaySeconds\":\"0\",\"Monday\":\"0; 24\",\"MondayisCheck\":true,\"Tuesday\":\"0; 24\",\"TuesdayisCheck\":true,\"Wednesday\":\"0; 24\",\"WednesdayisCheck\":true,\"Thursday\":\"0; 24\",\"ThursdayisCheck\":true,\"Friday\":\"0; 20\",\"FridayisCheck\":true,\"Saturday\":\"0; 24\",\"SaturdayisCheck\":true,\"Sunday\":\"0; 24\",\"SundayisCheck\":true,\"PlaylistItems\":[]}";
+            string settings = "{\"Loop\":\"1\",\"Playtime\":\"0\",\"PlayHours\":\"20\",\"PlayMinites\":\"0\",\"PlaySeconds\":\"0\",\"Monday\":\"0; 24\",\"MondayisCheck\":true,\"Tuesday\":\"0; 24\",\"TuesdayisCheck\":true,\"Wednesday\":\"0; 24\",\"WednesdayisCheck\":true,\"Thursday\":\"0; 24\",\"ThursdayisCheck\":true,\"Friday\":\"0; 20\",\"FridayisCheck\":true,\"Saturday\":\"0; 24\",\"SaturdayisCheck\":true,\"Sunday\":\"0; 24\",\"SundayisCheck\":true,\"PlaylistItems\":[]}";
             plsStudent = JsonConvert.DeserializeAnonymousType(settings, plsStudent);
 
             PlayList pList1 = new PlayList(0, plsStudent);
@@ -149,15 +149,12 @@ namespace ToilluminateClient
                 string imageDir = Utility.GetFullFileName(VariableInfo.TempPath, "Images");
                 if (Directory.Exists(imageDir))
                 {
-                    string[] fileExts = new string[] { "*.jpg", "*.png", "*.bmp" };
-                    foreach (string fileExt in fileExts)
-                    {
-                        string[] files = Directory.GetFiles(imageDir, fileExt);
+                    string[] files = Directory.GetFiles(imageDir, "*.*",SearchOption.AllDirectories)
+                        .Where(s => s.EndsWith(".jpg") || s.EndsWith(".png") || s.EndsWith(".bmp")).ToArray(); 
 
-                        foreach (string file in files)
-                        {
-                            imageFileList.Add(file);
-                        }
+                    foreach (string file in files)
+                    {
+                        imageFileList.Add(file);
                     }
                 }
                 ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Docking_LR, ImageShowStyle.Docking_TD };
@@ -182,17 +179,17 @@ namespace ToilluminateClient
                 string mediaDir = Utility.GetFullFileName(VariableInfo.TempPath, "Medias");
                 if (Directory.Exists(mediaDir))
                 {
-                    string[] fileExts = new string[] { "*.wmv", "*.mp4", "*.avi", "*.rmvb", "*.asf", "*.vod", "*.mpg" };
-                    foreach (string fileExt in fileExts)
-                    {
-                        string[] files = Directory.GetFiles(mediaDir, fileExt);
+                    string[] files = Directory.GetFiles(mediaDir, "*.*", SearchOption.AllDirectories)
+                                    .Where(s => s.EndsWith(".wmv") || s.EndsWith(".asf") || s.EndsWith(".avi") 
+                                    || s.EndsWith(".rmvb") || s.EndsWith(".mp4") || s.EndsWith(".vod") || s.EndsWith(".mpg")).ToArray();
 
-                        foreach (string file in files)
-                        {
-                            MediaTempleteItem mtItem = new MediaTempleteItem(file, ZoomOptionStyle.Full);
-                            pList1.PlayAddTemplete(mtItem);
-                        }
+
+                    foreach (string file in files)
+                    {
+                        MediaTempleteItem mtItem = new MediaTempleteItem(file, ZoomOptionStyle.Full);
+                        pList1.PlayAddTemplete(mtItem);
                     }
+                    
                 }
             }
             catch (Exception ex)

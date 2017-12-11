@@ -105,8 +105,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1013, 518);
-            this.Controls.Add(this.pnlShowImage);
             this.Controls.Add(this.pnlShowMedia);
+            this.Controls.Add(this.pnlShowImage);
             this.Name = "MainForm";
             this.Text = "表示情報";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
