@@ -136,8 +136,8 @@
             });
         },
         deleteFolder: function (node) {
-            toastr.warning("使用中ですので、削除できない。");
-            return false;
+            //toastr.warning("使用中ですので、削除できない。");
+            //return false;
             if (node == undefined) {
                 node = selectedFolderData;
             }

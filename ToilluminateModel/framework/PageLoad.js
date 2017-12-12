@@ -185,10 +185,12 @@ $(document).ready(function ()
     //playerStatusShare();
     $.localize({});
     //$.insmGroup({});
+    
     initTimeOptionsInPlayerEdit();
     
     initSlideEffectDropdown();
     EnableTouchSpin();
     textTemplateEditorInit();
     $("#div_PlaylistEditorContent").empty();
+    $.insmFramework({});
 });

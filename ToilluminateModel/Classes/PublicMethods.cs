@@ -102,5 +102,25 @@ namespace ToilluminateModel
             return FormsAuthentication.HashPasswordForStoringInConfigFile(source, "MD5"); ;
 
         }
+
+        //validate user info from ticket
+        public static string ValidateUserInfo(string encryptTicket)
+        {
+            //Decrypt Ticket
+            var strTicket = FormsAuthentication.Decrypt(encryptTicket).UserData;
+
+            //get username from ticket
+            var index = strTicket.IndexOf("&");
+            string userName = strTicket.Substring(0, index);
+
+            if (HttpContext.Current.Session[userName] != null && HttpContext.Current.Session[userName].Equals(encryptTicket))
+            {
+                return userName;
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
 }
