@@ -81,6 +81,12 @@ namespace ToilluminateClient
         /// 例表示
         /// </summary>
         private static bool showExample = true;
+
+
+        /// <summary>
+        /// 移动字幕
+        /// </summary>
+        private static bool moveMessage = false;
         #endregion 変数
 
         #region publicプロパティ
@@ -93,6 +99,16 @@ namespace ToilluminateClient
             get
             {
                 return showExample;
+            }
+        }
+        /// <summary>
+        /// 移动字幕
+        /// </summary>
+        public static Boolean MoveMessage
+        {
+            get
+            {
+                return moveMessage;
             }
         }
         /// <summary>

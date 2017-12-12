@@ -56,7 +56,7 @@ namespace ToilluminateClient
                 // 設定読み込み
                 IniFileInfo.GetIniInfo(VariableInfo.IniFile);
                 DictionaryInfo.InitMultilingualDictionaryForClient();
-                
+
                 //LoginForm loginFormInstance = new LoginForm();
                 //Application.Run(loginFormInstance);
                 //return;
