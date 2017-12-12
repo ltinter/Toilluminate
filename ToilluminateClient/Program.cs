@@ -56,15 +56,10 @@ namespace ToilluminateClient
                 // 設定読み込み
                 IniFileInfo.GetIniInfo(VariableInfo.IniFile);
                 DictionaryInfo.InitMultilingualDictionaryForClient();
-
-                //// ログイン認証
-                //using (LoginForm loginFormInstance = new LoginForm())
-                //{
-                //    if (DialogResult.OK != loginFormInstance.ShowDialog())
-                //    {
-                //        return;
-                //    }
-                //}
+                
+                //LoginForm loginFormInstance = new LoginForm();
+                //Application.Run(loginFormInstance);
+                //return;
 
                 // メイン画面起動
                 MainForm mainFormInstance = new MainForm();

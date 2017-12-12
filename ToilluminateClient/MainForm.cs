@@ -38,6 +38,8 @@ namespace ToilluminateClient
 
         private bool showImageFlag = false;
         private bool showMediaFlag = false;
+        private VLCPlayer axVLCPlayer = new ToilluminateClient.VLCPlayer();
+
         #endregion
 
 
@@ -213,7 +215,7 @@ namespace ToilluminateClient
                 
                 this.SetNowVisible();
 
-                Thread.Sleep(100);
+                System.Threading.Thread.Sleep(100);
             }
             catch (Exception ex)
             {
@@ -370,6 +372,7 @@ namespace ToilluminateClient
                                                                            | System.Windows.Forms.AnchorStyles.Right)));
                 this.pnlShowMedia.BackColor = ImageApp.BackClearColor;
                 this.pnlShowMedia.Visible = false;
+                
 
                 this.picImage.Location = new System.Drawing.Point(0, 0);
                 this.picImage.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
@@ -381,6 +384,8 @@ namespace ToilluminateClient
                                                                             | System.Windows.Forms.AnchorStyles.Bottom)
                                                                             | System.Windows.Forms.AnchorStyles.Left)
                                                                             | System.Windows.Forms.AnchorStyles.Right)));
+
+
 
                 // 
                 // axWMP
@@ -406,7 +411,7 @@ namespace ToilluminateClient
 
 
                 this.axWMP.settings.autoStart=false; //是否自动播放
-                this.axWMP.Visible = true;
+                this.axWMP.Visible = false;
                 this.axWMP.settings.volume = 100;
                 this.axWMP.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
 
@@ -414,6 +419,15 @@ namespace ToilluminateClient
                                                                             | System.Windows.Forms.AnchorStyles.Bottom)
                                                                             | System.Windows.Forms.AnchorStyles.Left)
                                                                             | System.Windows.Forms.AnchorStyles.Right)));
+
+                #region 
+
+
+                // 
+                // axVLC
+                // 
+                this.axVLCPlayer.OnStopEvent += AxVLCPlayer_OnStopEvent;
+                #endregion
                 this.tmrPlayList.Interval = 500;
                 this.tmrTemplete.Interval = 500;
                 this.tmrImage.Interval = 200;
@@ -425,13 +439,25 @@ namespace ToilluminateClient
             }
         }
 
-
+        private void AxVLCPlayer_OnStopEvent(object sender, EventArgs e)
+        {
+            try
+            {
+                MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
+                mtItem.ExecuteStop();
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("MainForm", "AxVLCPlayer_OnStopEvent", ex);
+            }
+        }
+        
         private void AxWMP_PlayStateChange(object sender, _WMPOCXEvents_PlayStateChangeEvent e)
         {
             //判断视频是否已停止播放  
             if (this.axWMP.playState == WMPPlayState.wmppsStopped || this.axWMP.playState == WMPPlayState.wmppsUndefined)
             {
-                CloseMediaWMP();
+                CloseMedia();
             }
         }
         #endregion  " public "
@@ -440,7 +466,7 @@ namespace ToilluminateClient
         private void CloseAll()
         {
             this.CloseImage();
-            this.CloseMediaWMP();
+            this.CloseMedia();
             this.CloseMessage();
             GetNowVisible();
         }
@@ -486,7 +512,11 @@ namespace ToilluminateClient
         #region " windows media play "
         private bool mediaIsReady()
         {
-            if (this.axWMP.playState != WMPPlayState.wmppsPlaying && this.pnlShowMedia.Visible)
+            //if (this.axWMP.playState != WMPPlayState.wmppsPlaying && this.pnlShowMedia.Visible)
+            //{
+            //    return true;
+            //}
+            if (this.axVLCPlayer.IsPlaying == false && this.pnlShowMedia.Visible)
             {
                 return true;
             }
@@ -559,19 +589,15 @@ namespace ToilluminateClient
          */
 
 
-        private void CloseMediaWMP()
+        private void CloseMedia()
         {
             try
             {
                 PlayApp.NowMediaIsShow = false;
-
-                this.tmrMedia.Stop();
-
-                WMPStop();
                 
                 MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
                 mtItem.ExecuteStop();
-                
+
                 while (this.pnlShowMedia.Visible)
                 {
                     try
@@ -586,7 +612,7 @@ namespace ToilluminateClient
             }
             catch (Exception ex)
             {
-                LogApp.OutputErrorLog("MainForm", "CloseMediaWMP", ex);
+                LogApp.OutputErrorLog("MainForm", "CloseMedia", ex);
             }
         }
 
@@ -606,7 +632,7 @@ namespace ToilluminateClient
             ////判断视频是否已停止播放  
             //if (this.axWMP.playState == WMPPlayState.wmppsStopped || this.axWMP.playState == WMPPlayState.wmppsUndefined)
             //{
-            //    CloseMediaWMP();
+            //    CloseMedia();
             //}
         }
         //播放
@@ -794,13 +820,13 @@ namespace ToilluminateClient
                         pList.CurrentTempleteItem.ExecuteStart();
 
                         this.pnlShowMedia.Visible = true;
-                        System.Threading.Thread.Sleep(300);
+                        System.Threading.Thread.Sleep(10);
                         this.ThreadShowMedia();
                         this.tmrMedia_Tick(null, null);
                     }
                     else
                     {
-                        CloseMediaWMP();
+                        CloseMedia();
                     }
 
                 }
@@ -852,6 +878,7 @@ namespace ToilluminateClient
         {
             try
             {
+                return;
                 if (VariableInfo.messageFormInstance == null || VariableInfo.messageFormInstance.IsDisposed)
                 {
                     VariableInfo.messageFormInstance = new MessageForm();
@@ -1068,9 +1095,10 @@ namespace ToilluminateClient
         {
             if (this.pnlShowMedia.Visible)
             {
-                Thread tmpThread = new Thread(this.ThreadShowMediaVoid);
-                tmpThread.IsBackground = true;
-                tmpThread.Start();
+                //Thread tmpThread = new Thread(this.ThreadShowMediaVoid);
+                //tmpThread.IsBackground = true;
+                //tmpThread.Start();
+                this.ThreadShowMediaVoid();
             }
         }
 
@@ -1089,12 +1117,18 @@ namespace ToilluminateClient
                         
                         if (mtItem.CurrentIsChanged())
                         {
-                            mtItem.ShowCurrent(this.axWMP);
+                            //mtItem.ShowCurrent(this.axWMP);
+
+                            axVLCPlayer.SetRenderWindow(this.pnlShowMedia.Handle);
+                            axVLCPlayer.LoadFile(mtItem.CurrentFile);//
+
+
+                            axVLCPlayer.Play();//播放
                         }
 
                         if (mtItem.ReadaheadOverTime(PlayApp.MediaReadaheadTime))
                         {
-                           this.CloseMediaWMP();
+                           this.CloseMedia();
                         }
                     }
 

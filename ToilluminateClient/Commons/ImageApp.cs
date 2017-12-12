@@ -80,23 +80,12 @@ namespace ToilluminateClient
         /// </summary>
         /// <param name="g"></param>
         /// <param name="bmp"></param>
-        public static void MyDrawImage(Graphics g, Bitmap bmp, int left, int top)
-        {
-            g.DrawImage(bmp, left, top);
-            MyDrawMessage(VariableInfo.messageFormInstance);
-        }
-        public static void MyDrawImage(Graphics g, Bitmap bmp, Rectangle DestRect, Rectangle SrcRect, GraphicsUnit gUnit)
-        {
-            g.DrawImage(bmp, DestRect, SrcRect, gUnit);
-            MyDrawMessage(VariableInfo.messageFormInstance);
-        }
-        public static void MyDrawImage(Graphics g, Bitmap bmp, Rectangle DestRect, int srcX, int srcY, int srcWidth, int srcHeigth, GraphicsUnit gUnit, ImageAttributes iAttributes)
-        {
-            g.DrawImage(bmp, DestRect, srcX, srcY, srcWidth, srcHeigth, gUnit, iAttributes);
-            MyDrawMessage(VariableInfo.messageFormInstance);
-        }
         public static void MyDrawMessage(MessageForm messageForm)
         {
+            if (PlayApp.NowMediaIsShow)
+            {
+                return;
+            }
             if (PlayApp.DrawMessageFlag)
             {
                 return;
@@ -113,31 +102,21 @@ namespace ToilluminateClient
                 int srcW = messageForm.Width;
                 int srcH = messageForm.Height;
 
-                using (Bitmap bitmap = new Bitmap(srcW, srcH))
+
+                gBmpBack = Graphics.FromImage(PlayApp.MessageBackBitmap);
+                gBmpBack.Clear(BackClearColor);
+
+
+                if (PlayApp.DrawMessageList.Count == 0)
                 {
-                    gBmpBack = Graphics.FromImage(bitmap);
-                    gBmpBack.Clear(BackClearColor);
-
-
-                    if (PlayApp.DrawMessageList.Count == 0)
+                    if (PlayApp.DownLoadDrawMessage != null && PlayApp.DownLoadDrawMessage.DrawStyleList.Count > 0)
                     {
-                        if (PlayApp.DownLoadDrawMessage != null && PlayApp.DownLoadDrawMessage.DrawStyleList.Count > 0)
+                        DrawMessage dmItem = PlayApp.DownLoadDrawMessage;
+
+                        if (dmItem.ShowStyle == MessageShowStyle.Top)
                         {
-                            DrawMessage dmItem = PlayApp.DownLoadDrawMessage;
-                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
-                            foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
-                            {
-                                if (dmItem.CheckStyleShow(dslItem))
-                                {
-                                    gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dmItem.GetStyleLeft(dslItem.LeftWidth), dmItem.GetStyleTop(dslItem.Heigth));
-                                }
-                            }
                         }
-                    }
 
-
-                    foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
-                    {
                         dmItem.MoveMessage(ImageApp.MessageSepNumber);
                         foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
                         {
@@ -147,15 +126,36 @@ namespace ToilluminateClient
                             }
                         }
                     }
-
-
-                    g = messageForm.CreateGraphics();
-
-                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    g.DrawImage(bitmap, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, srcW, srcH), GraphicsUnit.Pixel);
                 }
 
-                System.Threading.Thread.Sleep(ImageApp.MessageSleepTime);
+
+
+                foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
+                {
+                    dmItem.MoveMessage(ImageApp.MessageSepNumber);
+
+                    if (dmItem.ShowStyle == MessageShowStyle.Top)
+                    {
+                    }
+
+                    foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
+                    {
+                        if (dmItem.CheckStyleShow(dslItem))
+                        {
+                            
+                            gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dmItem.GetStyleLeft(dslItem.LeftWidth), dmItem.GetStyleTop(dslItem.Heigth));
+                        }
+                    }
+                }
+
+
+                g = messageForm.CreateGraphics();
+
+                //g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                //g.DrawImage(PlayApp.MessageBackBitmap, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, srcW, srcH), GraphicsUnit.Pixel);
+
+                g.DrawImage(PlayApp.MessageBackBitmap, 0, 0);
+                // System.Threading.Thread.Sleep(ImageApp.MessageSleepTime);
             }
             catch (Exception ex)
             {
@@ -513,7 +513,7 @@ namespace ToilluminateClient
                     System.Threading.Thread.Sleep(SleepTime);
                 }
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
 
             }
             catch (Exception ex)
@@ -663,7 +663,7 @@ namespace ToilluminateClient
                     System.Threading.Thread.Sleep(SleepTime);
                 }
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
 
             }
             catch (Exception ex)
@@ -827,7 +827,7 @@ namespace ToilluminateClient
                     x = sepFix * sepNumber;
                 }
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
 
             }
             catch (Exception ex)
@@ -890,7 +890,7 @@ namespace ToilluminateClient
                     y = sepFix * sepNumber;
                 }
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
 
 
             }
@@ -970,7 +970,7 @@ namespace ToilluminateClient
                 }
 
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -1048,7 +1048,7 @@ namespace ToilluminateClient
                 }
 
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -1101,7 +1101,7 @@ namespace ToilluminateClient
                     x = (int)Math.Ceiling(Math.Pow(sepFix, sepNumber)); 
                 }
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -1154,7 +1154,7 @@ namespace ToilluminateClient
                 }
 
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -1204,7 +1204,7 @@ namespace ToilluminateClient
                     y = height - (sepFix * sepNumber);
                 }
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -1253,7 +1253,7 @@ namespace ToilluminateClient
                     x = sepFix * sepNumber;
                 }
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -1302,7 +1302,7 @@ namespace ToilluminateClient
                     x = width - (sepFix * sepNumber);
                 }
 
-                MyDrawImage(g, bmpSource, left, top);
+                g.DrawImage(bmpSource, left, top);
             }
             catch (Exception ex)
             {
@@ -1348,7 +1348,7 @@ namespace ToilluminateClient
                     int top = (picBox.Size.Height - height) / 2; //图像高度
 
                     g = picBox.CreateGraphics();
-                    MyDrawImage(g, bmpSource, left, top);
+                    g.DrawImage(bmpSource, left, top);
                 }
                 else if (ImageShowStyle.TopToDown == imgShowStyle)
                 {
@@ -1414,7 +1414,7 @@ namespace ToilluminateClient
                     int top = (picBox.Size.Height - height) / 2; //图像高度
 
                     g = picBox.CreateGraphics();
-                    MyDrawImage(g, bmpSource, left, top);
+                    g.DrawImage(bmpSource, left, top);
                 }
 
 

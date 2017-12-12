@@ -34,7 +34,7 @@
             // 
             // tmrMessage
             // 
-            this.tmrMessage.Interval = 1;
+            this.tmrMessage.Interval = 10;
             this.tmrMessage.Tick += new System.EventHandler(this.tmrMessage_Tick);
             // 
             // MessageForm
@@ -43,6 +43,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MessageForm";
             this.ShowInTaskbar = false;

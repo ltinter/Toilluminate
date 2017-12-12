@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using WMPLib;
+using AxAXVLC;
+using AXVLC;
 
 namespace ToilluminateClient
 {
@@ -45,6 +47,8 @@ namespace ToilluminateClient
 
         public static Bitmap DrawBitmap;
         public static bool DrawBitmapFlag = false;
+        
+        public static Bitmap MessageBackBitmap;
 
 
         public static DrawMessage DownLoadDrawMessage = null;
@@ -56,6 +60,8 @@ namespace ToilluminateClient
         public static List<DrawImage> DrawImageList = new List<DrawImage>();
 
         public static bool DrawMessageFlag = false;
+        public static bool DrawMessageMoveFlag = false;
+
 
         public static bool NowImageIsShow = false;
         public static bool NowMediaIsShow = false;
@@ -2001,7 +2007,26 @@ namespace ToilluminateClient
         }
 
 
+        public void ShowCurrent(AxVLCPlugin2 axVLC)
+        {
+            try
+            {
+                //axVLC.BaseURL = this.CurrentFile;
+                axVLC.playlist.add(this.CurrentFile, "", " :mms-caching=1000");
+                axVLC.playlist.play();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                this.templeteStateValue = TempleteStateType.Execute;
+            }
+        }
 
+
+        
         public bool ReadaheadOverTime(int readaheadTime)
         {
             if (this.templeteStateValue == TempleteStateType.Execute)
@@ -2158,6 +2183,13 @@ namespace ToilluminateClient
             }
         }
 
+        public MessageShowStyle ShowStyle
+        {
+            get
+            {
+                return this.parentTempleteValue.ShowStyle;
+            }
+        }
         #endregion
 
         public DrawMessage(int parentWidth, int parentHeigth, MessageTempleteItem parentTemplete)

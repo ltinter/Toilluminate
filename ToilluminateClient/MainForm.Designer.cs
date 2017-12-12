@@ -38,6 +38,7 @@
             this.tmrPlayList = new System.Windows.Forms.Timer(this.components);
             this.tmrMedia = new System.Windows.Forms.Timer(this.components);
             this.tmrTemplete = new System.Windows.Forms.Timer(this.components);
+            this.printDialog1 = new System.Windows.Forms.PrintDialog();
             this.pnlShowImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picImage)).BeginInit();
             this.pnlShowMedia.SuspendLayout();
@@ -100,6 +101,10 @@
             this.tmrTemplete.Interval = 500;
             this.tmrTemplete.Tick += new System.EventHandler(this.tmrTemplete_Tick);
             // 
+            // printDialog1
+            // 
+            this.printDialog1.UseEXDialog = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -107,6 +112,7 @@
             this.ClientSize = new System.Drawing.Size(1013, 518);
             this.Controls.Add(this.pnlShowMedia);
             this.Controls.Add(this.pnlShowImage);
+            this.DoubleBuffered = true;
             this.Name = "MainForm";
             this.Text = "表示情報";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -130,6 +136,7 @@
         private System.Windows.Forms.Timer tmrMedia;
         private System.Windows.Forms.Timer tmrTemplete;
         private AxWMPLib.AxWindowsMediaPlayer axWMP;
+        private System.Windows.Forms.PrintDialog printDialog1;
     }
 }
 

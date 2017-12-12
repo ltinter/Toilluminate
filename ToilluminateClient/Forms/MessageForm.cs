@@ -71,36 +71,6 @@ namespace ToilluminateClient
             {
                 LogApp.OutputErrorLog("MessageForm", "tmrMessage_Tick", ex);
             }
-            try
-            {
-                Graphics g = null;
-                try
-                {
-                    Control objControl = this;
-
-                    g = objControl.CreateGraphics();
-
-                    ImageApp.MyDrawMessage(this);
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (null != g)
-                    {
-                        g.Dispose();
-                    }
-                }
-
-
-                this.tmrMessage.Start();
-            }
-            catch (Exception ex)
-            {
-                LogApp.OutputErrorLog("MessageForm", "tmrMessage_Tick", ex);
-            }
             finally
             {
                 this.tmrMessage.Start();
@@ -114,6 +84,7 @@ namespace ToilluminateClient
         }
         private void MessageForm_Shown(object sender, EventArgs e)
         {
+            PlayApp.MessageBackBitmap = new Bitmap(this.Width, this.Height);
         }
 
         private void MessageForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -145,8 +116,10 @@ namespace ToilluminateClient
             try
             {
                 showMessageFlag = true;
+
                 if (PlayApp.ExecutePlayList != null)
                 {
+
                     foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
                     {
                         if (mtItem.TempleteState != TempleteStateType.Stop)
@@ -160,6 +133,9 @@ namespace ToilluminateClient
                         }
                     }
                 }
+
+                ImageApp.MyDrawMessage(this);
+
             }
             catch (Exception ex)
             {
@@ -221,10 +197,10 @@ namespace ToilluminateClient
 
         private void MessageForm_SizeChanged(object sender, EventArgs e)
         {
-
+            PlayApp.MessageBackBitmap = new Bitmap(this.Width, this.Height);
             foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
             {
-                dmItem.SetParentSize(this.Width, this.Height);
+                dmItem.SetParentSize(this.Width, this.Height);               
             }
         }
 
