@@ -144,7 +144,7 @@ namespace ToilluminateModel.Controllers
             try
             {
                 FolderMaster folderMaster = await db.FolderMaster.FindAsync(folderID);
-                if ((bool)folderMaster.UseFlag) { return NotFound(); }
+                if (!(bool)folderMaster.UseFlag) { return NotFound(); }
 
                 fileMaster.FolderID = folderID;
                 fileMaster.UpdateDate = DateTime.Now;
