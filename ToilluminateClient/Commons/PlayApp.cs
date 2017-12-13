@@ -2216,6 +2216,8 @@ namespace ToilluminateClient
                         }
                     }
                 }
+
+                this.moveState = MoveStateType.NotMove;
             }
         }
 

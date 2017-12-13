@@ -109,14 +109,7 @@ namespace ToilluminateClient
                     {
                         DrawMessage dmItem = PlayApp.DownLoadDrawMessage;
 
-                        if (dmItem.MoveState == MoveStateType.Moving)
-                        {
-                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
-                            controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
-                            drawing = true;
-                        }
-                        else if (dmItem.MoveState == MoveStateType.NotMove)
+                        if (dmItem.MoveState == MoveStateType.NotMove)
                         {
                             newW = dmItem.Width;
                             newH = dmItem.Heigth;
@@ -135,6 +128,13 @@ namespace ToilluminateClient
                             controlTop = dmItem.GetStyleTop(dmItem.Heigth);
                             controlShowStyle = dmItem.ShowStyle;
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
+                        }
+                        else if (dmItem.MoveState == MoveStateType.Moving)
+                        {
+                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
+                            controlLeft = dmItem.Left;
+                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            drawing = true;
                         }
                     }
                 }
@@ -142,15 +142,7 @@ namespace ToilluminateClient
                 {
                     foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
                     {
-                        if (dmItem.MoveState == MoveStateType.Moving)
-                        {
-                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
-                            controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
-                            drawing = true;
-                            break;
-                        }
-                        else if (dmItem.MoveState == MoveStateType.NotMove)
+                        if (dmItem.MoveState == MoveStateType.NotMove)
                         {
                             newW = dmItem.Width;
                             newH = dmItem.Heigth;
@@ -169,6 +161,14 @@ namespace ToilluminateClient
                             controlTop = dmItem.GetStyleTop(dmItem.Heigth);
                             controlShowStyle = dmItem.ShowStyle;
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
+                            break;
+                        }
+                        else if (dmItem.MoveState == MoveStateType.Moving)
+                        {
+                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
+                            controlLeft = dmItem.Left;
+                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            drawing = true;
                             break;
                         }
                     }

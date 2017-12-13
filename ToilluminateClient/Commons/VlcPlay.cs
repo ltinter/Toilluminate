@@ -513,6 +513,26 @@ namespace ToilluminateClient
         [SuppressUnmanagedCodeSecurity]
         public static extern libvlc_state_t libvlc_media_player_get_state(IntPtr libVLCMediaPlayer);
 
+
+        /// <summary>
+        /// 设置字幕
+        /// </summary>
+        [DllImport("libvlc", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [SuppressUnmanagedCodeSecurity]
+        public static extern void libvlc_video_set_marquee_string(IntPtr libVLCMediaPlayer, libvlc_video_marquee_option_t marqueeOption, IntPtr text);
+
+        //libvlc_video_set_marquee_int(m_vlc_media_player, libvlc_marquee_Text, utf8_str);
+        //libvlc_video_set_marquee_int(m_vlc_media_player, libvlc_marquee_Position, 5);
+        //libvlc_video_set_marquee_int(m_vlc_media_player, libvlc_marquee_Opacity,300);
+        //libvlc_video_set_marquee_int(m_vlc_media_player, libvlc_marquee_Refresh,1);
+        //libvlc_video_set_marquee_int(m_vlc_media_player, libvlc_marquee_X,10);
+        //libvlc_video_set_marquee_int(m_vlc_media_player, libvlc_marquee_Y,10);
+        //libvlc_video_set_marquee_int(m_vlc_media_player, libvlc_marquee_Timeout,1000);
+        //libvlc_video_set_marquee_int(m_vlc_media_player, libvlc_marquee_Size, 32);
+        //libvlc_video_set_marquee_int(m_vlc_media_player, libvlc_marquee_Enable, 1);
+
+
+
     }
 
     static class VLCUtil
@@ -583,5 +603,19 @@ namespace ToilluminateClient
         libvlc_Stopped,
         libvlc_Ended,
         libvlc_Error,
+    }
+    public enum libvlc_video_marquee_option_t
+    {
+
+        libvlc_marquee_Enable=0,
+libvlc_marquee_Text,
+libvlc_marquee_Color,
+libvlc_marquee_Opacity,
+libvlc_marquee_Position,
+libvlc_marquee_Refresh,
+libvlc_marquee_Size,
+libvlc_marquee_Timeout,
+libvlc_marquee_X,
+libvlc_marquee_Y,
     }
 }

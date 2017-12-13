@@ -73,10 +73,14 @@ namespace ToilluminateClient
             try
             {
                 this.tmrMessage.Stop();
-                if (PlayApp.ExecutePlayList.PlayListState == PlayListStateType.Stop)
+
+                if (PlayApp.ExecutePlayList != null)
                 {
-                    CloseMessage();
-                    return;
+                    if (PlayApp.ExecutePlayList.PlayListState == PlayListStateType.Stop)
+                    {
+                        CloseMessage();
+                        return;
+                    }
                 }
 
                 ThreadShowMessage();
