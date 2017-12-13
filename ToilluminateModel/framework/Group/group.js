@@ -136,7 +136,8 @@
             tree.jstree(groupJstreeData);
 
             div_groupTree.bind("refresh.jstree", function (e, data) {
-                div_groupTree.jstree(true).select_node(selectedGroupID);
+                var loginUser = $.insmFramework('user');
+                div_groupTree.jstree(true).select_node(loginUser.GroupID);
             });
             //div_groupTree.on("ready.jstree", function (event, data) {
             //    $("#1_anchor").css("visibility", "hidden");
@@ -826,7 +827,9 @@
             return;
         }
         if (deleteGroup) {
-            $.insmFramework('updateGroupUseFlg', {
+            var msg = "削除しても宜しいでしょうか？";
+            if (confirm(msg) == true) {
+                $.insmFramework('updateGroupUseFlg', {
                 deleteGroupItem: deleteGroup.li_attr,
                 success: function (resultdata) {
                     div_main.show();
@@ -838,6 +841,10 @@
                     $.insmGroup('refreshTree');
                 }
             })
+            } else {
+                return false;
+            }
+            
         }
     })
     $("#expandAll").click(function () {

@@ -208,13 +208,14 @@
             }
         },
         del: function () {
-            var msg = "您真的确定要删除吗？\n\n请确认！";
+            //$("#confirmBox").click();
+            var msg = "削除しても宜しいでしょうか？";
             if (confirm(msg) == true) {
                 return true;
             } else {
                 return false;
             }
-        } 
+        } ,
     };
     $("#btn_uploadfile").click(function () {
         return $.file('uploadFile');
@@ -248,4 +249,5 @@
         }
         return null;
     };
+
 })(jQuery);
