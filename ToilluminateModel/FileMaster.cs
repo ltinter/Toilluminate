@@ -27,5 +27,6 @@ namespace ToilluminateModel
         public Nullable<System.DateTime> InsertDate { get; set; }
         public Nullable<int> GroupID { get; set; }
         public Nullable<bool> UseFlag { get; set; }
+        public string FileExtension { get; set; }
     }
 }
