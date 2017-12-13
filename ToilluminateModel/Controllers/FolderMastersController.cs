@@ -151,7 +151,7 @@ namespace ToilluminateModel.Controllers
         {
 
             FolderMaster folderParent = await db.FolderMaster.FindAsync(folderMaster.FolderParentID);
-            if ((bool)folderParent.UseFlag) { return null; }
+            if (!(bool)folderParent.UseFlag) { return null; }
 
             folderMaster.UpdateDate = DateTime.Now;
             db.Entry(folderMaster).State = EntityState.Modified;
