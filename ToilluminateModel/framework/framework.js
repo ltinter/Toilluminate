@@ -792,9 +792,6 @@
             //fileMaster.FileThumbnailUrl = options.fileObj.FileThumbnailUrl;
             options.fileObj.UseFlag = false;
 
-            //var $this = $('html').eq(0);
-            //var _plugin = $this.data('insmFramework');
-
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
