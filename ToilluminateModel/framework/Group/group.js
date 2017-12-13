@@ -819,9 +819,12 @@
         })
     })
     $("#deletegroup").click(function (e) {
-        //toastr.warning("使用中ですので、削除できない。");
-        //return;
-        var deleteGroup = div_groupTree.jstree(true).get_node(div_groupTree.jstree(true).get_selected())
+        var deleteGroup = div_groupTree.jstree(true).get_node(div_groupTree.jstree(true).get_selected());
+        var loginUser = $.insmFramework('user');
+        if (deleteGroup.li_attr.GroupID == loginUser.GroupID) {
+            toastr.warning("所属グループが削除できません。");
+            return;
+        }
         if (deleteGroup) {
             $.insmFramework('updateGroupUseFlg', {
                 deleteGroupItem: deleteGroup.li_attr,

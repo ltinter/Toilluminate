@@ -217,7 +217,7 @@
                 error: function (data) {
                     if (data.status == 401) {
                         $('#Logout').click();
-                    } else if (data.status == 404) {
+                    } else if (data.status == 404 || data.status == 500) {
                         $("#mainDiv").hide();
                         $("#divLogin").show();
                     }

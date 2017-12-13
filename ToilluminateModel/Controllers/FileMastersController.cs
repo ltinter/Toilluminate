@@ -120,6 +120,7 @@ namespace ToilluminateModel.Controllers
                                 fm.FolderID,
                                 fm.FileName,
                                 fm.FileID,
+                                fm.FileExtension,
                                 fm.FileType,
                                 fm.FileUrl,
                                 fm.FileThumbnailUrl,
@@ -143,7 +144,7 @@ namespace ToilluminateModel.Controllers
             try
             {
                 FolderMaster folderMaster = await db.FolderMaster.FindAsync(folderID);
-                if ((bool)folderMaster.UseFlag) { return NotFound(); }
+                if (!(bool)folderMaster.UseFlag) { return NotFound(); }
 
                 fileMaster.FolderID = folderID;
                 fileMaster.UpdateDate = DateTime.Now;
@@ -182,7 +183,7 @@ namespace ToilluminateModel.Controllers
                 }
 
                 string fileNameKey = DateTime.Now.ToString("yyyyMMddHHmmssffff");
-                string filePathName = fileNameKey + fileMaster.FileType;
+                string filePathName = fileNameKey + fileMaster.FileExtension;
                 string thumbnailFilePathName = filePathName.ToLower().Replace(".mp4", ".gif");
                 File.Copy(Path.Combine(ROOT_PATH + fileMaster.FileUrl), Path.Combine(dirFilePath, filePathName), true);
                 File.Copy(Path.Combine(ROOT_PATH + fileMaster.FileThumbnailUrl), Path.Combine(dirThumbnailFilePath, thumbnailFilePathName), true);
@@ -191,6 +192,7 @@ namespace ToilluminateModel.Controllers
                 newFile.GroupID = fileMaster.GroupID;
                 newFile.FolderID = folderID;
                 newFile.UserID = fileMaster.UserID;
+                newFile.FileExtension = fileMaster.FileExtension;
                 newFile.FileType = fileMaster.FileType;
                 newFile.FileName = fileMaster.FileName;
                 newFile.FileUrl = FORLDER + filePathName;
@@ -238,21 +240,23 @@ namespace ToilluminateModel.Controllers
                 HttpPostedFile file = fileUploadData[0];
                 string fileName = file.FileName.Trim('"');
                 FileInfo fileInfo = new FileInfo(fileName);
-                string fileType = fileInfo.Extension.ToLower();
+                string fileExtension = fileInfo.Extension.ToLower();
+                string fileType = "";
                 string fileNameKey = DateTime.Now.ToString("yyyyMMddHHmmssffff");
-                string filePathName = fileNameKey + fileType;
+                string filePathName = fileNameKey + fileExtension;
                 string thumbnailFilePathName = filePathName;
                 string filePath = Path.Combine(dirFilePath, filePathName);
                 string thumbnailFilePath = Path.Combine(dirThumbnailFilePath, thumbnailFilePathName);
-                if (fileType == ".mp4" ||
-                    fileType == ".wmv" ||
-                    fileType == ".mpg" ||
-                    fileType == ".avi" ||
-                    fileType == ".mpeg" ||
-                    fileType == ".flv" ||
-                    fileType == ".mkv" ||
-                    fileType == ".mov") {
+                if (fileExtension == ".mp4" ||
+                    fileExtension == ".wmv" ||
+                    fileExtension == ".mpg" ||
+                    fileExtension == ".avi" ||
+                    fileExtension == ".mpeg" ||
+                    fileExtension == ".flv" ||
+                    fileExtension == ".mkv" ||
+                    fileExtension == ".mov") {
                     // save video file
+                    fileType = "video";
                     file.SaveAs(filePath);
                     // save gif from mp4
                     string ffmpeg = Path.Combine(ROOT_PATH, "bin/ffmpeg.exe");
@@ -260,10 +264,10 @@ namespace ToilluminateModel.Controllers
                     {
                         return BadRequest();
                     }
-                    thumbnailFilePathName = thumbnailFilePathName.ToLower().Replace(fileType, ".gif");
+                    thumbnailFilePathName = thumbnailFilePathName.ToLower().Replace(fileExtension, ".gif");
                     Process pcs = new Process();
                     pcs.StartInfo.FileName = ffmpeg;
-                    pcs.StartInfo.Arguments = " -i " + filePath + " -ss 00:00:00.000 -pix_fmt rgb24 -r 10 -s 320x240 -t 00:00:10.000 " + thumbnailFilePath.Replace(fileType, ".gif");
+                    pcs.StartInfo.Arguments = " -i " + filePath + " -ss 00:00:00.000 -pix_fmt rgb24 -r 10 -s 320x240 -t 00:00:10.000 " + thumbnailFilePath.Replace(fileExtension, ".gif");
                     pcs.StartInfo.UseShellExecute = false;
                     pcs.StartInfo.RedirectStandardError = true;
                     pcs.StartInfo.CreateNoWindow = false;
@@ -286,6 +290,7 @@ namespace ToilluminateModel.Controllers
                 }
                 else {
                     // save image file
+                    fileType = "image";
                     Image originalImg = Image.FromStream(file.InputStream);
                     Image thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, originalImg.Width / 10, originalImg.Height / 10);
                     originalImg.Save(filePath);
@@ -296,6 +301,7 @@ namespace ToilluminateModel.Controllers
                 fileMaster.GroupID = groupID;
                 fileMaster.FolderID = folderID;
                 fileMaster.UserID = userID;
+                fileMaster.FileExtension = fileExtension;
                 fileMaster.FileType = fileType;
                 fileMaster.FileName = fileName;
                 fileMaster.FileUrl = FORLDER  + filePathName;

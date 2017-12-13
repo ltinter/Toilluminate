@@ -13,6 +13,7 @@
           <Property Name="GroupID" Type="int" />
           <Property Name="FolderID" Type="int" />
           <Property Name="UserID" Type="int" />
+          <Property Name="FileExtension" Type="nvarchar" MaxLength="50" />
           <Property Name="FileType" Type="nvarchar" MaxLength="50" />
           <Property Name="FileName" Type="nvarchar(max)" />
           <Property Name="FileUrl" Type="nvarchar(max)" />
@@ -162,6 +163,7 @@
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
           <Property Name="GroupID" Type="Int32" />
           <Property Name="UseFlag" Type="Boolean" />
+          <Property Name="FileExtension" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="FolderMaster">
           <Key>
@@ -270,6 +272,7 @@
           <EntitySetMapping Name="FileMaster">
             <EntityTypeMapping TypeName="ToilluminateModel.FileMaster">
               <MappingFragment StoreEntitySet="FileMaster">
+                <ScalarProperty Name="FileExtension" ColumnName="FileExtension" />
                 <ScalarProperty Name="UseFlag" ColumnName="UseFlag" />
                 <ScalarProperty Name="GroupID" ColumnName="GroupID" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
