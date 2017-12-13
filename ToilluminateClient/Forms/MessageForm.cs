@@ -15,6 +15,8 @@ namespace ToilluminateClient
     {
         private bool showMessageFlag = false;
 
+        private bool showMessageEnd = false;
+
         private MainForm parentForm;
 
         #region " override "
@@ -51,6 +53,19 @@ namespace ToilluminateClient
 
             this.StartPosition = FormStartPosition.Manual;
             this.FormBorderStyle = FormBorderStyle.None;
+
+
+            this.pnlMessage.Left = 0;
+            this.pnlMessage.Top = 0;
+            this.pnlMessage.Width = this.Width;
+            this.pnlMessage.Height = this.Height;
+            this.pnlMessage.BackColor = ImageApp.BackClearColor;
+            this.pnlMessage.SendToBack();
+
+
+            this.pnlTrademark.BackColor = ImageApp.BackClearColor;
+            this.pnlTrademark.BringToFront();
+            this.pnlTrademark.Visible = false;
         }
 
         public void tmrMessage_Tick(object sender, EventArgs e)
@@ -65,7 +80,8 @@ namespace ToilluminateClient
                 }
 
                 ThreadShowMessage();
-                
+
+                ImageApp.MyDrawMessage(this.pnlMessage);
             }
             catch (Exception ex)
             {
@@ -80,7 +96,7 @@ namespace ToilluminateClient
         private void MessageForm_Load(object sender, EventArgs e)
         {
             this.tmrMessage.Interval = 10;
-            
+
         }
         private void MessageForm_Shown(object sender, EventArgs e)
         {
@@ -128,13 +144,11 @@ namespace ToilluminateClient
                             {
                                 mtItem.ExecuteStart();
                             }
-                            mtItem.ShowCurrent(this); 
+                            mtItem.ShowCurrent(this);
                             break;
                         }
                     }
                 }
-
-                ImageApp.MyDrawMessage(this);
 
             }
             catch (Exception ex)
@@ -151,7 +165,7 @@ namespace ToilluminateClient
         /// 显示信息
         /// </summary>
         /// <param name="mtItem"></param>
-      
+
         private void CloseMessage()
         {
             try
@@ -197,10 +211,16 @@ namespace ToilluminateClient
 
         private void MessageForm_SizeChanged(object sender, EventArgs e)
         {
-            PlayApp.MessageBackBitmap = new Bitmap(this.Width, this.Height);
-            foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
+            try
             {
-                dmItem.SetParentSize(this.Width, this.Height);               
+                foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
+                {
+                    dmItem.SetParentSize(this.Width, this.Height);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("MessageForm", "MessageForm_SizeChanged", ex);
             }
         }
 

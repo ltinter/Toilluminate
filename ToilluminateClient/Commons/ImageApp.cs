@@ -80,12 +80,8 @@ namespace ToilluminateClient
         /// </summary>
         /// <param name="g"></param>
         /// <param name="bmp"></param>
-        public static void MyDrawMessage(MessageForm messageForm)
+        public static void MyDrawMessage(Control drawingBoard)
         {
-            if (PlayApp.NowMediaIsShow)
-            {
-                return;
-            }
             if (PlayApp.DrawMessageFlag)
             {
                 return;
@@ -97,14 +93,14 @@ namespace ToilluminateClient
             {
                 PlayApp.DrawMessageFlag = true;
 
-                int newW = messageForm.Width;
-                int newH = messageForm.Height;
-                int srcW = messageForm.Width;
-                int srcH = messageForm.Height;
+                int controlLeft = 0;
+                int controlTop = 0;
+                MessageShowStyle controlShowStyle = MessageShowStyle.Bottom;
+                bool drawNewImage = false;
+                bool drawing = false;
 
-
-                gBmpBack = Graphics.FromImage(PlayApp.MessageBackBitmap);
-                gBmpBack.Clear(BackClearColor);
+                int newW = drawingBoard.Width;
+                int newH = drawingBoard.Height;
 
 
                 if (PlayApp.DrawMessageList.Count == 0)
@@ -113,49 +109,103 @@ namespace ToilluminateClient
                     {
                         DrawMessage dmItem = PlayApp.DownLoadDrawMessage;
 
-                        if (dmItem.ShowStyle == MessageShowStyle.Top)
+                        if (dmItem.MoveState == MoveStateType.Moving)
                         {
+                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
+                            controlLeft = dmItem.Left;
+                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            drawing = true;
                         }
-
-                        dmItem.MoveMessage(ImageApp.MessageSepNumber);
-                        foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
+                        else if (dmItem.MoveState == MoveStateType.NotMove)
                         {
-                            if (dmItem.CheckStyleShow(dslItem))
+                            newW = dmItem.Width;
+                            newH = dmItem.Heigth;
+                            PlayApp.MessageBackBitmap = new Bitmap(newW, newH);
+                            gBmpBack = Graphics.FromImage(PlayApp.MessageBackBitmap);
+                            gBmpBack.Clear(ImageApp.BackClearColor);
+
+                            foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
                             {
-                                gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dmItem.GetStyleLeft(dslItem.LeftWidth), dmItem.GetStyleTop(dslItem.Heigth));
+                                gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dslItem.LeftWidth, 0);
                             }
+
+                            drawNewImage = true;
+                            drawing = true;
+                            controlLeft = dmItem.Left;
+                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlShowStyle = dmItem.ShowStyle;
+                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
                         }
                     }
                 }
-
-
-
-                foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
+                else
                 {
-                    dmItem.MoveMessage(ImageApp.MessageSepNumber);
-
-                    if (dmItem.ShowStyle == MessageShowStyle.Top)
+                    foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
                     {
-                    }
-
-                    foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
-                    {
-                        if (dmItem.CheckStyleShow(dslItem))
+                        if (dmItem.MoveState == MoveStateType.Moving)
                         {
-                            
-                            gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dmItem.GetStyleLeft(dslItem.LeftWidth), dmItem.GetStyleTop(dslItem.Heigth));
+                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
+                            controlLeft = dmItem.Left;
+                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            drawing = true;
+                            break;
+                        }
+                        else if (dmItem.MoveState == MoveStateType.NotMove)
+                        {
+                            newW = dmItem.Width;
+                            newH = dmItem.Heigth;
+                            PlayApp.MessageBackBitmap = new Bitmap(newW, newH);
+                            gBmpBack = Graphics.FromImage(PlayApp.MessageBackBitmap);
+                            gBmpBack.Clear(ImageApp.BackClearColor);
+
+                            foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
+                            {
+                                gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dslItem.LeftWidth, 0);
+                            }
+
+                            drawNewImage = true;
+                            drawing = true;
+                            controlLeft = dmItem.Left;
+                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlShowStyle = dmItem.ShowStyle;
+                            dmItem.MoveMessage(ImageApp.MessageSepNumber);
+                            break;
                         }
                     }
                 }
 
+                if (drawing)
+                {
+                    if (drawNewImage && PlayApp.MessageBackBitmap != null)
+                    {
+                        drawingBoard.Width = PlayApp.MessageBackBitmap.Width;
+                        drawingBoard.Height = PlayApp.MessageBackBitmap.Height;
+                        drawingBoard.BackgroundImage = PlayApp.MessageBackBitmap;
+                        drawingBoard.Left = controlLeft;
+                        drawingBoard.Top = controlTop;
+                    }
+                    else
+                    {
+                        if (drawingBoard.Left != controlLeft)
+                        {
+                            drawingBoard.Left = controlLeft;
+                        }
+                        if (drawingBoard.Top != controlTop)
+                        {
+                            drawingBoard.Top = controlTop;
+                        }
+                    }
+                }
+                else
+                {
+                    if (drawingBoard.BackgroundImage != null)
+                    {
+                        drawingBoard.BackgroundImage = null;
+                        PlayApp.MessageBackBitmap.Dispose();
+                        PlayApp.MessageBackBitmap = null;
+                    }
+                }
 
-                g = messageForm.CreateGraphics();
-
-                //g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                //g.DrawImage(PlayApp.MessageBackBitmap, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, srcW, srcH), GraphicsUnit.Pixel);
-
-                g.DrawImage(PlayApp.MessageBackBitmap, 0, 0);
-                // System.Threading.Thread.Sleep(ImageApp.MessageSleepTime);
             }
             catch (Exception ex)
             {
@@ -362,10 +412,10 @@ namespace ToilluminateClient
                 int newH = targetBmp.Height;
                 int srcW = sourceBmp.Width;
                 int srcH = sourceBmp.Height;
-                
+
                 g = Graphics.FromImage(targetBmp);
                 g.Clear(BackClearColor);
-                
+
 
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.DrawImage(sourceBmp, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, srcW, srcH), GraphicsUnit.Pixel);
@@ -805,14 +855,14 @@ namespace ToilluminateClient
                 int left = (picBox.Size.Width - width) / 2; //图像宽度    
                 int top = (picBox.Size.Height - height) / 2; //图像高度
                 g = picBox.CreateGraphics();
-
-                Bitmap bmpBack = ResizeBitmap(PlayApp.DrawBitmap, new Size(width, height), FillOptionStyle.Fill);
+                
+                    Bitmap bmpBack = ResizeBitmap(PlayApp.DrawBitmap, new Size(width, height), FillOptionStyle.Fill);
                 gBmpBack = Graphics.FromImage(bmpBack);
                 gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-                int sepFix = GetShowSepFix(width) ;
-                int sepNumber = 1;
-                int x = sepFix;
+                int sepFix = GetShowSepFix(width);
+                int sepNumber = 0;
+                int x = 0;
                 while (x < width / 2)
                 {
                     gBmpBack.DrawImage(bmpSource, new Rectangle(x, 0, sepFix, height), new Rectangle(x, 0, sepFix, height), GraphicsUnit.Pixel);
@@ -874,8 +924,8 @@ namespace ToilluminateClient
                 gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
                 int sepFix = GetShowSepFix(height);
-                int sepNumber = 1;
-                int y = sepFix;
+                int sepNumber = 0;
+                int y = 0;
                 while (y < height / 2)
                 {
                     gBmpBack.DrawImage(bmpSource, new Rectangle(0, y, width, sepFix), new Rectangle(0, y, width, sepFix), GraphicsUnit.Pixel);
@@ -930,29 +980,33 @@ namespace ToilluminateClient
 
                 g = picBox.CreateGraphics();
 
-                Bitmap bmpOld = ResizeBitmap(PlayApp.DrawBitmap, new Size(picBox.Width, picBox.Height), FillOptionStyle.Fill);
-                Bitmap bmpBack = new Bitmap(picBox.Width, picBox.Height);
-                gBmpBack = Graphics.FromImage(bmpBack);
-
-
                 int sepFix = GetShowSepFix(width) * 2;
                 int sepNumber = 1;
                 int x = width - sepFix;
-                while (x > 0)
+
+                if (PlayApp.DrawBitmap != null)
                 {
-                    Rectangle DestRect = new Rectangle((width - x) / 2, 0, x, height);
-                    Rectangle SrcRect = new Rectangle(0, 0, bmpBack.Width, bmpBack.Height);
-
-                    gBmpBack.Clear(BackClearColor); //初始为全灰色
-                    gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    gBmpBack.DrawImage(bmpOld, DestRect, SrcRect, GraphicsUnit.Pixel);
-
-                    g.DrawImage(bmpBack, left, top);
-                    System.Threading.Thread.Sleep(SleepTime);
+                    Bitmap bmpOld = ResizeBitmap(PlayApp.DrawBitmap, new Size(picBox.Width, picBox.Height), FillOptionStyle.Fill);
+                    Bitmap bmpBack = new Bitmap(picBox.Width, picBox.Height);
+                    gBmpBack = Graphics.FromImage(bmpBack);
 
 
-                    sepNumber++;
-                    x = width - sepFix * 4 * sepNumber;
+                    while (x > 0)
+                    {
+                        Rectangle DestRect = new Rectangle((width - x) / 2, 0, x, height);
+                        Rectangle SrcRect = new Rectangle(0, 0, bmpBack.Width, bmpBack.Height);
+
+                        gBmpBack.Clear(BackClearColor); //初始为全灰色
+                        gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        gBmpBack.DrawImage(bmpOld, DestRect, SrcRect, GraphicsUnit.Pixel);
+
+                        g.DrawImage(bmpBack, left, top);
+                        System.Threading.Thread.Sleep(SleepTime);
+
+
+                        sepNumber++;
+                        x = width - sepFix * 4 * sepNumber;
+                    }
                 }
 
                 sepNumber = 1;
@@ -1008,29 +1062,31 @@ namespace ToilluminateClient
 
                 g = picBox.CreateGraphics();
 
-                Bitmap bmpOld = ResizeBitmap(PlayApp.DrawBitmap, new Size(picBox.Width, picBox.Height), FillOptionStyle.Fill);
-                Bitmap bmpBack = new Bitmap(picBox.Width, picBox.Height);
-                gBmpBack = Graphics.FromImage(bmpBack);
-
-
                 int sepFix = GetShowSepFix(height) * 2;
                 int sepNumber = 1;
                 int y = height - sepFix;
-                while (y > 0)
+                if (PlayApp.DrawBitmap != null)
                 {
-                    Rectangle DestRect = new Rectangle(0, (height - y) / 2, width, y);
-                    Rectangle SrcRect = new Rectangle(0, 0, bmpBack.Width, bmpBack.Height);
-
-                    gBmpBack.Clear(BackClearColor); //初始为全灰色
-                    gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    gBmpBack.DrawImage(bmpOld, DestRect, SrcRect, GraphicsUnit.Pixel);
-
-                    g.DrawImage(bmpBack, left, top);
-                    System.Threading.Thread.Sleep(SleepTime);
+                    Bitmap bmpOld = ResizeBitmap(PlayApp.DrawBitmap, new Size(picBox.Width, picBox.Height), FillOptionStyle.Fill);
+                    Bitmap bmpBack = new Bitmap(picBox.Width, picBox.Height);
+                    gBmpBack = Graphics.FromImage(bmpBack);
 
 
-                    sepNumber++;
-                    y = height - sepFix * 4 * sepNumber;
+                    while (y > 0)
+                    {
+                        Rectangle DestRect = new Rectangle(0, (height - y) / 2, width, y);
+                        Rectangle SrcRect = new Rectangle(0, 0, bmpBack.Width, bmpBack.Height);
+
+                        gBmpBack.Clear(BackClearColor); //初始为全灰色
+                        gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        gBmpBack.DrawImage(bmpOld, DestRect, SrcRect, GraphicsUnit.Pixel);
+
+                        g.DrawImage(bmpBack, left, top);
+                        System.Threading.Thread.Sleep(SleepTime);
+                        
+                        sepNumber++;
+                        y = height - sepFix * 4 * sepNumber;
+                    }
                 }
 
                 sepNumber = 1;
@@ -1098,7 +1154,7 @@ namespace ToilluminateClient
                     System.Threading.Thread.Sleep(SleepTime);
 
                     sepNumber++;
-                    x = (int)Math.Ceiling(Math.Pow(sepFix, sepNumber)); 
+                    x = (int)Math.Ceiling(Math.Pow(sepFix, sepNumber));
                 }
 
                 g.DrawImage(bmpSource, left, top);
@@ -1483,8 +1539,8 @@ namespace ToilluminateClient
                     // 黑白剪影特效
                     int i, j, iAvg, iPixel;
                     Color myColor, myNewColor;
-                   
-                    Bitmap bitmap=new Bitmap (width,height);
+
+                    Bitmap bitmap = new Bitmap(width, height);
                     ImageApp.CopyBitmap(bitmap, bmpSource);
 
                     i = 0;
