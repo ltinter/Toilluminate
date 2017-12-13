@@ -452,7 +452,7 @@
                     ActiveFlag: '';
                     OnlineFlag: '';
                     Settings: '';
-                    UseFlg;
+                    UseFlag:true;
                     return PlayerMaster;
                 }
             }
@@ -462,7 +462,7 @@
             newPlayer.Comments = options.note;
             newPlayer.ActiveFlag = options.ActiveFlag;
             newPlayer.OnlineFlag = options.OnlineFlag;
-            newPlayer.UseFlg = true;
+            newPlayer.UseFlag = true;
             newPlayer.Settings = options.settings;
             var ajaxOptions = {
                 success: function (result) {
@@ -496,7 +496,7 @@
                     ActiveFlag: '';
                     OnlineFlag: '';
                     Settings: '';
-                    UseFlg: true;
+                    UseFlag: true;
                     return PlayerMaster;
                 }
             }
@@ -514,7 +514,7 @@
                 newPlayer.OnlineFlag = Player.OnlineFlag;
                 newPlayer.GroupID = options.newGroupID;
                 newPlayer.Settings = options.settings;
-                newPlayer.UseFlg = true;
+                newPlayer.UseFlag = true;
                 var ajaxOptions = {
                     success: function (result) {
                         tempPlayerEditDrferred.resolve();

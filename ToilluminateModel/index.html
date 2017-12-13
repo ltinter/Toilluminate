@@ -2675,6 +2675,27 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade show" id="m_modal_2" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="exampleModalLabel" >
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="recipient-name" class="form-control-label">
+                                        削除しても宜しいでしょうか？
+                                    </label>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="return_false">
+                                        Cancel
+                                    </button>
+                                    <button type="button" class="btn btn-primary" id="return_true">
+                                        OK
+                                    </button>
+                                </div>    
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2812,6 +2833,13 @@
             </div>
         </div>
     </div>
+    <div class="m-alert m-alert--icon m-alert--outline alert alert-primary" role="alert" id="deletediv" style="width:600px;display:none">
+        <div class="m-alert__actions" style="width: 350px;">
+            <button type="button" id="confirmBox" class="btn btn-danger" data-toggle="modal" data-target="#m_modal_2">
+                Launch Modal
+            </button>
+        </div>
+    </div>
     <!-- end:: Body -->
     <link href="Framework/plugins/FileManager/file.css" rel="stylesheet" type="text/css" />
     <script src="Framework/assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
@@ -2834,6 +2862,7 @@
     <script src="Framework/plugins/insmLocalize/localize.js" type="text/javascript"></script>
     <script src="Framework/plugins/insmLocalize/Languages/chn.js" type="text/javascript"></script>
     <script src="Framework/plugins/insmLocalize/Languages/eng.js" type="text/javascript"></script>
+    <script src="Framework/plugins/confirmBox/confirmBox.js" type="text/javascript"></script>
     <script>
         $('#SelectionHistory').insmSelectionHistory();
     </script>

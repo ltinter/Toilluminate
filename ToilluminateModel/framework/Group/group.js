@@ -827,7 +827,9 @@
             return;
         }
         if (deleteGroup) {
-            $.insmFramework('updateGroupUseFlg', {
+            var msg = "削除しても宜しいでしょうか？";
+            if (confirm(msg) == true) {
+                $.insmFramework('updateGroupUseFlg', {
                 deleteGroupItem: deleteGroup.li_attr,
                 success: function (resultdata) {
                     div_main.show();
@@ -837,9 +839,12 @@
                     //    userGroupId: userGroupId
                     //});
                     $.insmGroup('refreshTree');
-                    
                 }
             })
+            } else {
+                return false;
+            }
+            
         }
     })
     $("#expandAll").click(function () {

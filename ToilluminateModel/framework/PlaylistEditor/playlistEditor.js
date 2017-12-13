@@ -1077,21 +1077,25 @@
         if (edit_playlistId) {
             //toastr.warning("使用中ですので、削除できない。");
             //return;
-            $.insmFramework('deletePlaylist', {
-                deletePlaylistId: edit_playlistId,
-                deletepalylistItem: select_palylistItem,
-                success: function (fileData) {
-                    deletepalylistItem = null;
-                    div_playlist.hide();
-                    div_Mainplaylist.show();
-                    $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: tempselectedGroupID });
-                    edit_playlistId = null;
-                },
-                error: function () {
-                },
-            });
+            var msg = "削除しても宜しいでしょうか？";
+            if (confirm(msg) == true) {
+                $.insmFramework('deletePlaylist', {
+                    deletePlaylistId: edit_playlistId,
+                    deletepalylistItem: select_palylistItem,
+                    success: function (fileData) {
+                        deletepalylistItem = null;
+                        div_playlist.hide();
+                        div_Mainplaylist.show();
+                        $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: tempselectedGroupID });
+                        edit_playlistId = null;
+                    },
+                    error: function () {
+                    },
+                });
+            } else {
+                return false;
+            }  
         }
-        
     });
 
     $("#playlist_back").click(function () {
