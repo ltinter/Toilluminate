@@ -1,6 +1,7 @@
 ﻿(function ($) {
     var folderJstreeData = {
         "core": {
+            "multiple": false,
             "themes": {
                 "responsive": true
             },
@@ -144,7 +145,7 @@
             if (node == undefined || node == null) { return;}
             var folderRef = div_folderTreeForFileManager.jstree(true),
                 folderSef = folderRef.get_selected();
-            //if (!folderSef.length) { return };
+            if (!folderSef.length) { return };
             //$.insmFramework("deleteFolder", {
             //    folderID: selectedFolderID,
             //    success: function (data) {
