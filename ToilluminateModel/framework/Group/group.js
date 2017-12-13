@@ -303,12 +303,12 @@
                     selector: { class: 'm-checkbox--solid m-checkbox--brand' },
                 }, {
                     field: "PlayerID",
-                    title: "モニターＩＤ",
+                    title: "ディスプレイＩＤ",
                     filterable: false, // disable or enable filtering
-                    width: 85
+                    width: 115
                 }, {
                     field: "PlayerName",
-                    title: "モニター名",
+                    title: "ディスプレイ名",
                     responsive: { visible: 'lg' }
                 }, {
                     field: "GroupName",
