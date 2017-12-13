@@ -1,4 +1,4 @@
-﻿using AxWMPLib;
+﻿using AxAXVLC;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,10 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using WMPLib;
 
 namespace ToilluminateClient
 {
@@ -45,6 +42,8 @@ namespace ToilluminateClient
 
         public static Bitmap DrawBitmap;
         public static bool DrawBitmapFlag = false;
+        
+        public static Bitmap MessageBackBitmap;
 
 
         public static DrawMessage DownLoadDrawMessage = null;
@@ -56,6 +55,8 @@ namespace ToilluminateClient
         public static List<DrawImage> DrawImageList = new List<DrawImage>();
 
         public static bool DrawMessageFlag = false;
+        public static bool DrawMessageMoveFlag = false;
+
 
         public static bool NowImageIsShow = false;
         public static bool NowMediaIsShow = false;
@@ -157,7 +158,7 @@ namespace ToilluminateClient
                         imageFileList.Add(file);
                     }
                 }
-                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Docking_LR, ImageShowStyle.Docking_TD };
+                ImageShowStyle[] imageStyleList = new ImageShowStyle[] { ImageShowStyle.Docking_LR };
                 if (imageFileList.Count > 0)
                 {
                     ImageTempleteItem itItem = new ImageTempleteItem(imageFileList, imageStyleList.ToList(), 3, FillOptionStyle.Zoom);
@@ -224,7 +225,7 @@ namespace ToilluminateClient
                 else
                 {
                     string messageString = "<span style=\"font-family: MS PGothic; font-size: 18px; \" ><b> テストデータを放送している。</b></span>";
-                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom, 0, 5);
+                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom,0, 5);
                     pList1.PlayAddTemplete(mtItem);
                 }
             }
@@ -1949,46 +1950,14 @@ namespace ToilluminateClient
         }
         #region " void and function "
 
-
-        public void ShowCurrent(AxWindowsMediaPlayer axWMP)
-        {
-            ShowCurrent(axWMP, WMPLib.WMPPlayState.wmppsPlaying, 0);
-        }
-
-        public void ShowCurrent(AxWindowsMediaPlayer axWMP, WMPPlayState state, double position)
+        
+        public void ShowCurrent(AxVLCPlugin2 axVLC)
         {
             try
             {
-                if (this.fileOrMessageListValue.Count > 0)
-                {
-                    if (state == WMPLib.WMPPlayState.wmppsPlaying)
-                    {
-                        if (axWMP.playState != WMPPlayState.wmppsPlaying)
-                        {
-                            axWMP.URL = this.CurrentFile;
-                            axWMP.Ctlcontrols.currentPosition = position;
-                            axWMP.Ctlcontrols.play();
-                        }
-                    }
-                    else if (state == WMPLib.WMPPlayState.wmppsStopped)
-                    {
-                        axWMP.Ctlcontrols.stop();
-                    }
-                    else if (state == WMPLib.WMPPlayState.wmppsPaused)
-                    {
-                        axWMP.Ctlcontrols.pause();
-                    }
-
-                    if (zoomOptionValue == ZoomOptionStyle.None)
-                    {
-                        axWMP.stretchToFit = false;
-                    }
-                    else
-                    {
-                        axWMP.stretchToFit = true;
-                    }
-
-                }
+                //axVLC.BaseURL = this.CurrentFile;
+                axVLC.playlist.add(this.CurrentFile, "", " :mms-caching=1000");
+                axVLC.playlist.play();
             }
             catch (Exception ex)
             {
@@ -2001,7 +1970,7 @@ namespace ToilluminateClient
         }
 
 
-
+        
         public bool ReadaheadOverTime(int readaheadTime)
         {
             if (this.templeteStateValue == TempleteStateType.Execute)
@@ -2124,12 +2093,17 @@ namespace ToilluminateClient
         private int leftValue;
         private int topValue;
         private int widthValue;
+        private int heigthValue;
 
         private int parentWidthValue;
         private int parentHeigthValue;
         private bool needRefreshTop = false;
 
         private int slidingSpeedValue = 10;
+
+
+
+        private MoveStateType moveState = MoveStateType.NotMove;
         #endregion
 
 
@@ -2143,11 +2117,26 @@ namespace ToilluminateClient
             }
         }
 
+        public MoveStateType MoveState 
+        {
+            get
+            {
+                return moveState;
+            }
+        }
+
         public int Left
         {
             get
             {
                 return leftValue;
+            }
+        }
+        public int Heigth
+        {
+            get
+            {
+                return heigthValue;
             }
         }
         public int Top
@@ -2158,6 +2147,20 @@ namespace ToilluminateClient
             }
         }
 
+        public int Width
+        {
+            get
+            {
+                return widthValue;
+            }
+        }
+        public MessageShowStyle ShowStyle
+        {
+            get
+            {
+                return this.parentTempleteValue.ShowStyle;
+            }
+        }
         #endregion
 
         public DrawMessage(int parentWidth, int parentHeigth, MessageTempleteItem parentTemplete)
@@ -2182,6 +2185,10 @@ namespace ToilluminateClient
         {
             this.drawStyleListValue.Add(new ToilluminateClient.DrawMessageStyle(message, widthValue, drawStyle.Font, drawStyle.Color, drawStyle.Width, drawStyle.Heigth));
             this.widthValue = this.widthValue + drawStyle.Width;
+            if (this.heigthValue< drawStyle.Heigth)
+            {
+                this.heigthValue = drawStyle.Heigth;
+            }
         }
 
         public void SetDrawMessageStyle(string message, MessageStyle drawStyle, int drawStyleIndex)
@@ -2193,6 +2200,22 @@ namespace ToilluminateClient
                 drawMessageStyle.SetDrawMessageStyle(message, drawStyle.Width);
 
                 this.widthValue = this.widthValue - oldWidthValue + drawMessageStyle.Width;
+
+                if (this.heigthValue < drawStyle.Heigth)
+                {
+                    this.heigthValue = drawStyle.Heigth;
+                }
+                else
+                {
+                    this.heigthValue = 0;
+                    foreach (DrawMessageStyle drawStyleTemp in this.drawStyleListValue)
+                    {
+                        if (this.heigthValue < drawStyleTemp.Heigth)
+                        {
+                            this.heigthValue = drawStyleTemp.Heigth;
+                        }
+                    }
+                }
             }
         }
 
@@ -2206,15 +2229,18 @@ namespace ToilluminateClient
 
         public void MoveMessage(int moveNumber)
         {
-            if (this.slidingSpeedValue == 0)
+
+            if (this.slidingSpeedValue == 0 || IniFileInfo.MoveMessage == false)
             {
                 if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
                 {
+                    moveState = MoveStateType.MoveFinish;
                     parentTempleteValue.ExecuteStop();
                 }
                 else
                 {
                     this.leftValue = (this.parentWidthValue - this.widthValue) / 2;
+                    moveState = MoveStateType.Moving;
                 }
             }
             else
@@ -2229,13 +2255,19 @@ namespace ToilluminateClient
                 {
                     if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
                     {
+                        moveState = MoveStateType.MoveFinish;
                         parentTempleteValue.ExecuteStop();
                     }
                     else
                     {
                         this.leftValue = this.parentWidthValue;
+                        moveState = MoveStateType.Moving;
                     }
 
+                }
+                else
+                {
+                    moveState = MoveStateType.Moving;
                 }
             }
             if (needRefreshTop)
@@ -2903,6 +2935,31 @@ namespace ToilluminateClient
         /// </summary>
         [EnumDescription("停止")]
         Stop = 9,
+    }
+
+    #endregion
+    #region 移动状态类型
+    /// <summary>
+    /// 移动状态类型
+    /// </summary>
+    /// <remarks></remarks>
+    public enum MoveStateType
+    {
+        /// <summary>
+        /// 等待
+        /// </summary>
+        [EnumDescription("等待")]
+        NotMove = 0,
+        /// <summary>
+        /// 移动
+        /// </summary>
+        [EnumDescription("移动")]
+        Moving = 1,
+        /// <summary>
+        /// 结束
+        /// </summary>
+        [EnumDescription("结束")]
+        MoveFinish = 2,
     }
 
     #endregion

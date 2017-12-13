@@ -61,13 +61,15 @@
                     contentType: "application/json; charset=utf-8",
                     type: "GET",
                     denied: function () {
+                        var a =''
                     },
                     error: function () {
-                        options.error();
+                        $("#mainDiv").hide();
+                        $("#divLogin").show();
                     },
                 };
                 $this.data('insmFramework', _plugin);
-                $.insmFramework('ajax', ajaxOptions);
+                return $.insmFramework('ajax', ajaxOptions);
             }
         },
         user: function () {
@@ -215,6 +217,9 @@
                 error: function (data) {
                     if (data.status == 401) {
                         $('#Logout').click();
+                    } else if (data.status == 404 || data.status == 500) {
+                        $("#mainDiv").hide();
+                        $("#divLogin").show();
                     }
                 }
                 //success: options.success,
