@@ -652,17 +652,19 @@
             if (options.palylistItem) {
                 if (options.palylistItem.itemData) {
                     $.each(options.palylistItem.itemData.id, function (index, item) {
+                        var screenshotDiv = $("<div/>").css("display", "inline").draggable();
                         var screenshot = new Image();
                         screenshot.src = options.palylistItem.itemData.fileUrl[index];
                         screenshot.fileUrl = options.palylistItem.itemData.fileUrl[index];
                         screenshot.id = item;
                         $(screenshot).css({ "max-height": "150px", "max-width": "200px", "padding": "5px" });
-                        div_col_image.append(screenshot);
+                        screenshotDiv.append(screenshot);
                         var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
-                            $(screenshot).remove();
+                            $(this).prev().remove();
                             $(this).remove();
                         });
-                        div_col_image.append(deleteImg);
+                        screenshotDiv.append(deleteImg);
+                        div_col_image.append(screenshotDiv);
                     });
                 }
             }
