@@ -123,6 +123,7 @@
                             $.folder('editFolder', obj);
                         });
                     }
+                    toastr.success("操作が完了しました。");
                 }
             });
         },
@@ -133,6 +134,7 @@
                 folderName: node.text,
                 folderParentID: node.parent,
                 success: function (data) {
+                    toastr.success("操作が完了しました。");
                 }
             });
         },
