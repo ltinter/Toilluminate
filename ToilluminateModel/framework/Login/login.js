@@ -174,7 +174,7 @@
                     var signInForm = login.find('.m-login__signin form');
                     signInForm.clearForm();
                     signInForm.validate().resetForm();
-                    toastr.warning("Thank you. To complete your registration please check your email.");
+                    toastr.success("Thank you. To complete your registration please check your email.");
                     //showErrorMsg(signInForm, 'success', 'Thank you. To complete your registration please check your email.');
                 }, 2000);
             }

@@ -494,7 +494,7 @@
                     var tempFileData = [];
                     $.each(fileData, function (fileIndex, fileItem) {
                         var tempFileType = supportedFileTypes[currentNeededFileType.toLowerCase()];
-                        if (tempFileType && $.inArray(fileItem.FileType.toLowerCase().trim(), tempFileType) > -1) {
+                        if (tempFileType && $.inArray(fileItem.FileExtension.toLowerCase().trim(), tempFileType) > -1) {
                             tempFileData.push(fileData[fileIndex]);
                         }
                     });
@@ -1031,6 +1031,7 @@
                     });
                     editplaylistID = null;
                     deletepalylistItem = null;
+                    toastr.success("操作が完了しました。");
                     $("#playlist_save").attr('disabled', false);
                 },
                 error: function () {
@@ -1054,6 +1055,7 @@
                     });
                     editplaylistID = null;
                     deletepalylistItem = null;
+                    toastr.success("操作が完了しました。");
                     $("#playlist_save").attr('disabled', false);
                 },
                 error: function () {
@@ -1077,24 +1079,26 @@
         if (edit_playlistId) {
             //toastr.warning("使用中ですので、削除できない。");
             //return;
-            var msg = "削除しても宜しいでしょうか？";
-            if (confirm(msg) == true) {
-                $.insmFramework('deletePlaylist', {
-                    deletePlaylistId: edit_playlistId,
-                    deletepalylistItem: select_palylistItem,
-                    success: function (fileData) {
-                        deletepalylistItem = null;
-                        div_playlist.hide();
-                        div_Mainplaylist.show();
-                        $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: tempselectedGroupID });
-                        edit_playlistId = null;
-                    },
-                    error: function () {
-                    },
-                });
-            } else {
-                return false;
-            }  
+            $.confirmBox({
+                title: "Warning",
+                message: '削除しても宜しいでしょうか？',
+                onOk: function () {
+                    $.insmFramework('deletePlaylist', {
+                        deletePlaylistId: edit_playlistId,
+                        deletepalylistItem: select_palylistItem,
+                        success: function (fileData) {
+                            deletepalylistItem = null;
+                            div_playlist.hide();
+                            div_Mainplaylist.show();
+                            $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: tempselectedGroupID });
+                            edit_playlistId = null;
+                            toastr.success("操作が完了しました。");
+                        },
+                        error: function () {
+                        },
+                    });
+                }
+            }); 
         }
     });
 

@@ -146,27 +146,24 @@
             var folderRef = div_folderTreeForFileManager.jstree(true),
                 folderSef = folderRef.get_selected();
             if (!folderSef.length) { return };
-            //$.insmFramework("deleteFolder", {
-            //    folderID: selectedFolderID,
-            //    success: function (data) {
-            //        folderRef.delete_node(folderSef);
-            //        $.file('destroyFileTableData');
-            //    },
-            //    error: function (XMLHttpRequest, textStatus, errorThrown) {
-            //        toastr.warning(XMLHttpRequest.responseJSON.Message);
-            //    }
-            //});
-            $.insmFramework('deleteFolder', {
-                groupID: selectedGroupID,
-                folderID: node.id,
-                folderName: node.text,
-                folderParentID: node.parent,
-                success: function (data) {
-                    folderRef.delete_node(folderSef);
-                    $.file('destroyFileTableData');
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    toastr.warning(XMLHttpRequest.responseJSON.Message);
+            $.confirmBox({
+                title: "Warning",
+                message: '削除しても宜しいでしょうか？',
+                onOk: function () {
+                    $.insmFramework('deleteFolder', {
+                        groupID: selectedGroupID,
+                        folderID: node.id,
+                        folderName: node.text,
+                        folderParentID: node.parent,
+                        success: function (data) {
+                            folderRef.delete_node(folderSef);
+                            $.file('destroyFileTableData');
+                            toastr.success("操作が完了しました。");
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            toastr.warning(XMLHttpRequest.responseJSON.Message);
+                        }
+                    });
                 }
             });
         },
