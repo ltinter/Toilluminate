@@ -20,9 +20,9 @@ var rootUI;
                     }, options),
 
                     htmlElements: {
-                        container: $('<div />').addClass('m-alert m-alert--icon m-alert--outline alert alert-primary'),
+                        container: $('<div />').addClass('m-alert m-alert--icon m-alert--outline alert alert-primary').css('top', '40%').css('left', '40%').css('position', 'absolute').css('height','130px').css('width','450px'),
                         title: $('<div />'),
-                        message: $('<p />').addClass('"m-alert__text').css('margin-top','25px'),
+                        message: $('<p />').addClass('"m-alert__text').css('margin-top','55px'),
                         buttonContainer: $('<div />').addClass('m-alert__actions'),
                         okButton: $('<button id="confirm-ok" />').addClass('btn btn-brand btn-sm m-btn m-btn--pill m-btn--wide').text('OK'),
                         cancelButton: $('<button id="confirm-close" />').addClass('btn btn-danger btn-sm m-btn m-btn--pill m-btn--wide').text('Cancel'),
@@ -31,20 +31,23 @@ var rootUI;
                 };
             }
             $this.data('confirmBox', _plugin);
-
+            var mask = $("<div/>").addClass("file-mask").attr("align", "center").css("height", $(window).height()).css("width", $(window).width()).fadeIn(500, function () {
+            });
+            //mask.click(function () {
+            //    mask.remove();
+            //});
             $this.
-				append(_plugin.htmlElements.container.
-					append(_plugin.htmlElements.title.text(_plugin.settings.title)).
+				append(mask.append(_plugin.htmlElements.container.
 					append(_plugin.htmlElements.message.append(_plugin.settings.message)).
 					append(_plugin.htmlElements.buttonContainer.
 						append(_plugin.htmlElements.okButton).
 						append(_plugin.htmlElements.cancelButton)
 					)
-				);
+				));
 
-            $this
-				.append(
-					_plugin.htmlElements.backdropView.append(_plugin.htmlElements.backdropView));
+            //$this
+			//	.append(
+			//		_plugin.htmlElements.backdropView.append(_plugin.htmlElements.backdropView));
 
 
             //$('#deletediv').animate({ 'opacity': '.5' }, 300, 'linear');
@@ -54,10 +57,12 @@ var rootUI;
             _plugin.htmlElements.okButton.on("click", function () {
                 clearLightBox();
                 _plugin.settings.onOk();
+                mask.remove();
             });
 
             _plugin.htmlElements.cancelButton.on("click", function () {
                 clearLightBox();
+                mask.remove();
                 _plugin.settings.onCancel();
             });
 

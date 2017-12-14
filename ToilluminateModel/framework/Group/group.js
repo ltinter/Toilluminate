@@ -89,6 +89,7 @@
                 success: function (data) {
                     $.insmGroup('refreshTree');
                     editGroupID = undefined;
+                    toastr.success("操作が完了しました。");
                 }
             })
         },
@@ -432,6 +433,7 @@
                                 groupID: selectedGroupID,
                                 PlayListID: playListgroup,
                                 success: function (data) {
+                                    toastr.success("操作が完了しました。");
                                 },
                                 error: function () {
                                 }
@@ -827,24 +829,25 @@
             return;
         }
         if (deleteGroup) {
-            var msg = "削除しても宜しいでしょうか？";
-            if (confirm(msg) == true) {
-                $.insmFramework('updateGroupUseFlg', {
-                deleteGroupItem: deleteGroup.li_attr,
-                success: function (resultdata) {
-                    div_main.show();
-                    div_edit.hide();
-                    var userGroupId = $.insmFramework('user').GroupID;
-                    //$.insmGroup('initGroupTree', {
-                    //    userGroupId: userGroupId
-                    //});
-                    $.insmGroup('refreshTree');
+            $.confirmBox({
+                title: "Warning",
+                message: '削除しても宜しいでしょうか？',
+                onOk: function () {
+                    $.insmFramework('updateGroupUseFlg', {
+                        deleteGroupItem: deleteGroup.li_attr,
+                        success: function (resultdata) {
+                            div_main.show();
+                            div_edit.hide();
+                            var userGroupId = $.insmFramework('user').GroupID;
+                            //$.insmGroup('initGroupTree', {
+                            //    userGroupId: userGroupId
+                            //});
+                            $.insmGroup('refreshTree');
+                            toastr.success("操作が完了しました。");
+                        }
+                    })
                 }
-            })
-            } else {
-                return false;
-            }
-            
+            });  
         }
     })
     $("#expandAll").click(function () {
@@ -991,6 +994,7 @@
                     success: function (data) {
                         if (data) {
                             $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID });
+                            toastr.success("操作が完了しました。");
                         }
                     },
                     error: function () {
@@ -1104,6 +1108,7 @@
                                 playerId: data.PlayerID,
                                 PlayListID: playListgroup,
                                 success: function (data) {
+                                    toastr.success("操作が完了しました。");
                                 },
                                 error: function () {
                                 }
@@ -1159,6 +1164,7 @@
                                     playerId: editedplayerID,
                                     PlayListID: playListgroup,
                                     success: function (data) {
+                                        toastr.success("操作が完了しました。");
                                     },
                                     error: function () {
                                     }
