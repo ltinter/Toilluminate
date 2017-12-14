@@ -644,6 +644,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="framework\PlaylistEditor\playlistEditor.js" />
+    <Content Include="framework\plugins\confirmBox\confirmBox.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="framework\plugins\Download\downLoad.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
