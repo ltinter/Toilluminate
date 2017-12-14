@@ -905,8 +905,13 @@
     $("#add_playlist").click(function () {
         if (tempselectedGroupID == null) {
             toastr.warning("Please select playlist's group!");
-                return;
+            return;
         }
+        if ($("#groupTreeForPlaylistEditor").jstree(true).get_selected().length == 0) {
+            toastr.warning("Please select playlist's group!");
+            return;
+        }
+
         $.playlistEditor('setfolder', { selectedGroupID: tempselectedGroupID});
         $.playlistEditor('playlistDefaultvalue');
         div_playlist.show();
