@@ -89,6 +89,7 @@
                 success: function (data) {
                     $.insmGroup('refreshTree');
                     editGroupID = undefined;
+                    toastr.success("操作が完了しました。");
                 }
             })
         },
@@ -102,6 +103,7 @@
 
             var groupJstreeData = {
                 "core": {
+                    "multiple": false,
                     "themes": {
                         "responsive": true
                     },
@@ -135,7 +137,8 @@
             tree.jstree(groupJstreeData);
 
             div_groupTree.bind("refresh.jstree", function (e, data) {
-                div_groupTree.jstree(true).select_node(selectedGroupID);
+                var loginUser = $.insmFramework('user');
+                div_groupTree.jstree(true).select_node(loginUser.GroupID);
             });
             //div_groupTree.on("ready.jstree", function (event, data) {
             //    $("#1_anchor").css("visibility", "hidden");
@@ -302,12 +305,12 @@
                     selector: { class: 'm-checkbox--solid m-checkbox--brand' },
                 }, {
                     field: "PlayerID",
-                    title: "モニターＩＤ",
+                    title: "ディスプレイＩＤ",
                     filterable: false, // disable or enable filtering
-                    width: 85
+                    width: 115
                 }, {
                     field: "PlayerName",
-                    title: "モニター名",
+                    title: "ディスプレイ名",
                     responsive: { visible: 'lg' }
                 }, {
                     field: "GroupName",
@@ -363,10 +366,12 @@
         addNewGroup: function () {
             if ($.trim($("#groupname").val()) == '') {
                 toastr.warning("Group name is empty!");
+                $("#button_save").attr('disabled', false);
                 return;
             };
             if (groupTreeForPlayerEditID == null) {
                 toastr.warning("Please select new group's Parent Group !");
+                $("#button_save").attr('disabled', false);
                 return;
             };
             if (editGroupID == groupTreeForPlayerEditID) {
@@ -380,6 +385,7 @@
                 //    return;
                 //}
                 toastr.warning("Group ID have same ID!");
+                $("#button_save").attr('disabled', false);
                 return;
             };
             var Settings = {};
@@ -409,6 +415,7 @@
                 settings: JSON.stringify(Settings),
                 newGroupNameParentID: groupTreeForPlayerEditID,
                 success: function (data) {
+                    $("#button_save").attr('disabled', true);
                     var div_forcedplaylists = $('#forcedplaylists');
                     var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
                     playListgroup =[];
@@ -426,6 +433,7 @@
                                 groupID: selectedGroupID,
                                 PlayListID: playListgroup,
                                 success: function (data) {
+                                    toastr.success("操作が完了しました。");
                                 },
                                 error: function () {
                                 }
@@ -814,18 +822,32 @@
         })
     })
     $("#deletegroup").click(function (e) {
-        toastr.warning("使用中ですので、削除できない。");
-        return;
-        var deleteGroup = div_groupTree.jstree(true).get_node(div_groupTree.jstree(true).get_selected())
+        var deleteGroup = div_groupTree.jstree(true).get_node(div_groupTree.jstree(true).get_selected());
+        var loginUser = $.insmFramework('user');
+        if (deleteGroup.li_attr.GroupID == loginUser.GroupID) {
+            toastr.warning("所属グループが削除できません。");
+            return;
+        }
         if (deleteGroup) {
-            $.insmFramework('updateGroupUseFlg', {
-                deleteGroupItem: deleteGroup.li_attr,
-                success: function (resultdata) {
-                    div_main.show();
-                    div_edit.hide();
-                    $.insmGroup('initGroupTree');
+            $.confirmBox({
+                title: "Warning",
+                message: '削除しても宜しいでしょうか？',
+                onOk: function () {
+                    $.insmFramework('updateGroupUseFlg', {
+                        deleteGroupItem: deleteGroup.li_attr,
+                        success: function (resultdata) {
+                            div_main.show();
+                            div_edit.hide();
+                            var userGroupId = $.insmFramework('user').GroupID;
+                            //$.insmGroup('initGroupTree', {
+                            //    userGroupId: userGroupId
+                            //});
+                            $.insmGroup('refreshTree');
+                            toastr.success("操作が完了しました。");
+                        }
+                    })
                 }
-            })
+            });  
         }
     })
     $("#expandAll").click(function () {
@@ -972,6 +994,7 @@
                     success: function (data) {
                         if (data) {
                             $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID });
+                            toastr.success("操作が完了しました。");
                         }
                     },
                     error: function () {
@@ -984,7 +1007,9 @@
         })
     });
     $("#button_save").click(function (e) {
+        $("#button_save").attr('disabled', true);
         $.insmGroup('addNewGroup');
+        
         console.log("Group Save Button!");
         editGroupID = undefined;
         //$("#forcedplaylists").empty();
@@ -1060,9 +1085,12 @@
                 note: $("#text_note").val(),
                 ActivechangeFlg: ActivechangeFlg,
                 OnlinechangeFlg: OnlinechangeFlg,
+                ActiveFlag: $("input[name='radio_Active']:checked").val(),
+                OnlineFlag: $("input[name='radio_Online']:checked").val(),
                 DisplayNamechangeFlg: DisplayNamechangeFlg,
                 NotechangeFlg: DisplayNamechangeFlg,
                 success: function (data) {
+                    $("#button_save_Player").attr('disabled', false);
                     var div_forcedplaylists = $('#forcedplaylists');
                     var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
                     playListgroup =[];
@@ -1080,6 +1108,7 @@
                                 playerId: data.PlayerID,
                                 PlayListID: playListgroup,
                                 success: function (data) {
+                                    toastr.success("操作が完了しました。");
                                 },
                                 error: function () {
                                 }
@@ -1130,10 +1159,12 @@
                         $.insmFramework('deletePlayerPlayListLinkTableByPlayerID', {
                             playerId: editedplayerID,
                             success: function () {
+                                $("#button_save_Player").attr('disabled', false);
                                 $.insmFramework('playerPlayListLinkTables', {
                                     playerId: editedplayerID,
                                     PlayListID: playListgroup,
                                     success: function (data) {
+                                        toastr.success("操作が完了しました。");
                                     },
                                     error: function () {
                                     }
@@ -1404,7 +1435,7 @@
         "progressBar": false,
         "positionClass": "toast-top-center",
         "preventDuplicates": false,
-        "onclick": null,
+        "onclick": '',
         "showDuration": "300",
         "hideDuration": "1000",
         "timeOut": "5000",

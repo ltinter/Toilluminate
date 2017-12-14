@@ -16,8 +16,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AxWMPLib;
-using WMPLib;
 
 namespace ToilluminateClient
 {
@@ -29,7 +27,7 @@ namespace ToilluminateClient
         //private delegate void FlushClient();//代理
         
         private bool thisImageVisible = false;
-        private bool thisMediaWMPVisible = false;
+        private bool thisMediaVisible = false;
         private bool thisMessageVisible = false;
         
 
@@ -38,6 +36,8 @@ namespace ToilluminateClient
 
         private bool showImageFlag = false;
         private bool showMediaFlag = false;
+        private VLCPlayer axVLCPlayer = new ToilluminateClient.VLCPlayer();
+
         #endregion
 
 
@@ -85,6 +85,15 @@ namespace ToilluminateClient
         {
             try
             {
+                if (IniFileInfo.ShowExample)
+                {
+                    if (PlayApp.PlayListArray.Count == 0)
+                    {
+                        PlayApp.DebugLoadPlayListInfo();
+                        //PlayApp.ThreadLoadPlayListTimeCurrent = PlayApp.ThreadLoadPlayListTime - 2;
+                    }
+                }
+
                 Thread tmpThread = new Thread(this.ThreadLoadPlayListVoid);
                 tmpThread.IsBackground = true;
                 tmpThread.Start();
@@ -94,6 +103,8 @@ namespace ToilluminateClient
 #if !DEBUG
                 MaxShowThis(false);
 #endif
+
+                this.ShowMessageForm();
             }
             catch (Exception ex)
             {
@@ -114,6 +125,19 @@ namespace ToilluminateClient
                 VariableInfo.messageFormInstance.Location = new Point(this.Location.X + 8, this.Location.Y + 30);
             }
         }
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            thisImageVisible = true;
+            thisMediaVisible = true;
+            thisMessageVisible = true;
+
+
+            thisSetNowVisible = true;
+            executeTempleteFlag = true;
+
+            CloseAll();
+        }
+
         private void tmrPlayList_Tick(object sender, EventArgs e)
         {
             this.GetNowVisible();
@@ -186,10 +210,10 @@ namespace ToilluminateClient
                 this.tmrTemplete.Stop();
 
                 this.ThreadExecuteTemplete();
-
+                
                 this.SetNowVisible();
 
-                Thread.Sleep(100);
+                System.Threading.Thread.Sleep(100);
             }
             catch (Exception ex)
             {
@@ -266,11 +290,15 @@ namespace ToilluminateClient
             }
             if (max)
             {
-                this.FormBorderStyle = FormBorderStyle.Sizable;
-                this.WindowState = FormWindowState.Normal;
-                this.TopMost = false;
+                if (this.FormBorderStyle != FormBorderStyle.Sizable)
+                {
+                    this.FormBorderStyle = FormBorderStyle.Sizable;
+                    this.WindowState = FormWindowState.Normal;
+                    this.TopMost = false;
 
-                Cursor.Show();
+                    Cursor.Show();
+                    
+                }
             }
             else
             {
@@ -278,19 +306,24 @@ namespace ToilluminateClient
                 {
                     return;
                 }
+                if (this.FormBorderStyle != FormBorderStyle.None)
+                {
+               
 
-                //如果不把Border设为None,则无法隐藏Windows的开始任务栏
-                this.FormBorderStyle = FormBorderStyle.None;
-                this.WindowState = FormWindowState.Maximized;
-                this.TopMost = false;
+                    //如果不把Border设为None,则无法隐藏Windows的开始任务栏
+                    this.FormBorderStyle = FormBorderStyle.None;
+                    this.WindowState = FormWindowState.Maximized;
+                    this.TopMost = false;
 
-                //隐藏鼠标
-                Cursor.Hide();
+                    //隐藏鼠标
+                    Cursor.Hide();
+
+                }
             }
+            
 
             if (VariableInfo.messageFormInstance != null && VariableInfo.messageFormInstance.IsDisposed == false)
             {
-                //VariableInfo.messageFormInstance.WindowState = this.WindowState;
                 if (this.FormBorderStyle == VariableInfo.messageFormInstance.FormBorderStyle)
                 {
                     VariableInfo.messageFormInstance.Size = this.Size;
@@ -337,6 +370,7 @@ namespace ToilluminateClient
                                                                            | System.Windows.Forms.AnchorStyles.Right)));
                 this.pnlShowMedia.BackColor = ImageApp.BackClearColor;
                 this.pnlShowMedia.Visible = false;
+                
 
                 this.picImage.Location = new System.Drawing.Point(0, 0);
                 this.picImage.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
@@ -349,41 +383,18 @@ namespace ToilluminateClient
                                                                             | System.Windows.Forms.AnchorStyles.Left)
                                                                             | System.Windows.Forms.AnchorStyles.Right)));
 
+                               
+
                 // 
-                // axWMP
+                // axVLC
                 // 
-                try
-                {
-                    //播放器样式
-                    this.axWMP.uiMode = "none";
-                    //禁用播放器右键菜单
-                    this.axWMP.enableContextMenu = false;
-                }
-                catch (Exception ex)
-                {
-                    LogApp.OutputErrorLog("MainForm", "ControlsInit", ex);
-                }
-               
-                this.pnlShowMedia.Controls.Add(this.axWMP);
-                this.axWMP.Location = new System.Drawing.Point(0, 0);
-                this.axWMP.Name = "axWMP";
-                this.axWMP.PlayStateChange += this.AxWMP_PlayStateChange;
-
-                this.axWMP.StatusChange += this.axWMP_StatusChange;
+                this.axVLCPlayer.OnStopEvent += AxVLCPlayer_OnStopEvent;
 
 
-                this.axWMP.settings.autoStart=false; //是否自动播放
-                this.axWMP.Visible = true;
-                this.axWMP.Size = new System.Drawing.Size(pnlShowImage.Width, pnlShowImage.Height);
-
-                this.axWMP.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top
-                                                                            | System.Windows.Forms.AnchorStyles.Bottom)
-                                                                            | System.Windows.Forms.AnchorStyles.Left)
-                                                                            | System.Windows.Forms.AnchorStyles.Right)));
                 this.tmrPlayList.Interval = 500;
-                this.tmrTemplete.Interval = 500;
-                this.tmrImage.Interval = 200;
-                this.tmrMedia.Interval = 200;
+                this.tmrTemplete.Interval = 100;
+                this.tmrImage.Interval = 100;
+                this.tmrMedia.Interval = 100;
             }
             catch (Exception ex)
             {
@@ -391,22 +402,26 @@ namespace ToilluminateClient
             }
         }
 
-
-        private void AxWMP_PlayStateChange(object sender, _WMPOCXEvents_PlayStateChangeEvent e)
+        private void AxVLCPlayer_OnStopEvent(object sender, EventArgs e)
         {
-            //判断视频是否已停止播放  
-            if (this.axWMP.playState == WMPPlayState.wmppsStopped || this.axWMP.playState == WMPPlayState.wmppsUndefined)
+            try
             {
-                CloseMediaWMP();
+                MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
+                mtItem.ExecuteStop();
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("MainForm", "AxVLCPlayer_OnStopEvent", ex);
             }
         }
+        
         #endregion  " public "
 
         #region " private "
         private void CloseAll()
         {
             this.CloseImage();
-            this.CloseMediaWMP();
+            this.CloseMedia();
             this.CloseMessage();
             GetNowVisible();
         }
@@ -427,7 +442,17 @@ namespace ToilluminateClient
 
                 PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
 
-                this.pnlShowImage.Visible = false;
+                while (this.pnlShowImage.Visible)
+                {
+                    try
+                    { this.pnlShowImage.Visible = false; }
+                    catch { }
+
+                    if (this.pnlShowImage.Visible)
+                    {
+                        System.Threading.Thread.Sleep(10);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -442,7 +467,7 @@ namespace ToilluminateClient
         #region " windows media play "
         private bool mediaIsReady()
         {
-            if (this.axWMP.playState != WMPPlayState.wmppsPlaying && this.pnlShowMedia.Visible)
+            if (this.axVLCPlayer.IsPlaying == false && this.pnlShowMedia.Visible)
             {
                 return true;
             }
@@ -515,129 +540,33 @@ namespace ToilluminateClient
          */
 
 
-        private void CloseMediaWMP()
+        private void CloseMedia()
         {
             try
             {
                 PlayApp.NowMediaIsShow = false;
-
-                this.tmrMedia.Stop();
-
-                WMPStop();
                 
                 MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
                 mtItem.ExecuteStop();
-                
-                this.pnlShowMedia.Visible = false;
+
+                while (this.pnlShowMedia.Visible)
+                {
+                    try
+                    { this.pnlShowMedia.Visible = false; }
+                    catch { }
+
+                    if (this.pnlShowMedia.Visible)
+                    {
+                        System.Threading.Thread.Sleep(10);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                LogApp.OutputErrorLog("MainForm", "CloseMediaWMP", ex);
+                LogApp.OutputErrorLog("MainForm", "CloseMedia", ex);
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="mediaFile"></param>
-     
-        
-
-        private IWMPPlaylist WMPList;//创建播放列表
-        private bool IsLoop = true;//视频是否循环
-
-        //播放状态改变时发生
-        private void axWMP_StatusChange(object sender, EventArgs e)
-        {
-            //判断视频是否已停止播放  
-            if (this.axWMP.playState == WMPPlayState.wmppsStopped)
-            {
-                //停顿2秒钟再重新播放  
-                //System.Threading.Thread.Sleep(2000);
-                //重新播放  
-                this.axWMP.Ctlcontrols.play();
-            }
-        }
-        //播放
-        public void WMPStart()
-        {
-            this.axWMP.Ctlcontrols.play();
-        }
-        //列表播放
-        public void WMPListStart()
-        {
-            WMPPlayList();//重新获取播放列表
-            this.axWMP.Ctlcontrols.play();
-        }
-        //暂停
-        public void WMPPause()
-        {
-            this.axWMP.Ctlcontrols.pause();
-        }
-        //重播
-        public void WMPReplay()
-        {
-            WMPStop();
-            WMPStart();
-        }
-        //列表重播
-        public void WMPListReplay()
-        {
-            this.axWMP.currentPlaylist = WMPList;//重新载入播放列表
-            WMPStart();
-        }
-        //停止播放
-        public void WMPStop()
-        {
-            this.axWMP.Ctlcontrols.stop();
-            this.axWMP.currentPlaylist.clear();//清除列表
-        }
-        //视频静音
-        public void WMPMute(bool t)
-        {
-            this.axWMP.settings.mute = t;
-        }
-        //播放下一个视频
-        public void WMPNext()
-        {
-            //判断当前所播放的视频是否是列表的最后一个
-            if (this.axWMP.currentMedia.name == this.axWMP.currentPlaylist.Item[this.axWMP.currentPlaylist.count - 1].name)
-            {
-            }
-            else
-            {
-                this.axWMP.Ctlcontrols.next();//播放下一个
-            }
-        }
-        //播放上一个媒体
-        public void WMPPrevious()
-        {  //判断当前所播放的视频是否是列表的第一个
-            if (this.axWMP.currentMedia.name == this.axWMP.currentPlaylist.Item[0].name)
-            {
-            }
-            else
-            {
-                this.axWMP.Ctlcontrols.previous();//播放上一个
-            }
-        }
-
-        //获取播放类表及初始化
-        public void WMPPlayList()
-        {
-            WMPList = this.axWMP.playlistCollection.newPlaylist("one");//创建播放列表
-            string path = @".\data\video";//媒体路径
-            DirectoryInfo dir = new DirectoryInfo(path);
-            foreach (FileSystemInfo fsi in dir.GetFileSystemInfos())
-            {
-                if (fsi is FileInfo)
-                {
-                    FileInfo fi = (FileInfo)fsi;
-                    WMPList.appendItem(this.axWMP.newMedia(fi.FullName));
-                }
-            }
-            this.axWMP.currentPlaylist = WMPList;//查找到视频、播放类表
-            this.axWMP.settings.setMode("loop", IsLoop);//设置类表循环播放
-        }
 
         #endregion
 
@@ -648,9 +577,6 @@ namespace ToilluminateClient
             {
                 PlayApp.NowMediaIsShow = false;
                 PlayApp.DrawMessageList.Clear();
-
-                VariableInfo.messageFormInstance.Hide();
-                VariableInfo.messageFormInstance.Dispose();
             }
             catch (Exception ex)
             {
@@ -666,13 +592,13 @@ namespace ToilluminateClient
         {
             thisImageVisible = PlayApp.NowImageIsShow;
             thisMessageVisible = PlayApp.NowMessageIsShow;
-            thisMediaWMPVisible = PlayApp.NowMediaIsShow;
+            thisMediaVisible = PlayApp.NowMediaIsShow;
         }
 
 
         private void SetNowVisible()
         {
-            if (thisSetNowVisible)
+            if (thisSetNowVisible && executeTempleteFlag)
             {
                 return;
             }
@@ -683,14 +609,14 @@ namespace ToilluminateClient
                 {
                     PlayApp.NowImageIsShow = thisImageVisible;
 
-                    if (thisImageVisible)
+                    if (PlayApp.NowImageIsShow)
                     {
                         PlayList pList = PlayApp.ExecutePlayList;
                         if (pList.CurrentTempleteItem.TempleteState == TempleteStateType.Wait)
                         {
                             PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
                         }
-                        (pList.CurrentTempleteItem as ImageTempleteItem).ExecuteStart();
+                        pList.CurrentTempleteItem.ExecuteStart();
 
 
                         this.pnlShowImage.Visible = true;
@@ -722,40 +648,20 @@ namespace ToilluminateClient
                 if (PlayApp.NowMessageIsShow != thisMessageVisible)
                 {
                     PlayApp.NowMessageIsShow = thisMessageVisible;
-                    if (thisMessageVisible)
+                    if (PlayApp.NowMessageIsShow)
                     {
-                        if (VariableInfo.messageFormInstance == null || VariableInfo.messageFormInstance.IsDisposed)
-                        {
-                            VariableInfo.messageFormInstance = new MessageForm();
-                        }
-
-                        if (this.FormBorderStyle == VariableInfo.messageFormInstance.FormBorderStyle)
-                        {
-                            VariableInfo.messageFormInstance.Size = this.Size;
-                            VariableInfo.messageFormInstance.Location = this.Location;
-                        }
-                        else
-                        {
-                            VariableInfo.messageFormInstance.Size = new Size(this.Size.Width - 16, this.Size.Height - 38);
-                            VariableInfo.messageFormInstance.Location = new Point(this.Location.X + 8, this.Location.Y + 30);
-                        }
-                        VariableInfo.messageFormInstance.WindowState = this.WindowState;
-
-                        VariableInfo.messageFormInstance.SetParentForm(this);
-                        VariableInfo.messageFormInstance.Show();
-                        VariableInfo.messageFormInstance.ThreadShowMessage();
-                        VariableInfo.messageFormInstance.tmrMessage_Tick(null, null);
+                        this.ShowMessageForm();
                     }
                     else
                     {
-                        CloseMessage();
+                        this.CloseMessage();
                     }
                 }
 
-                if (PlayApp.NowMediaIsShow != thisMediaWMPVisible)
+                if (PlayApp.NowMediaIsShow != thisMediaVisible)
                 {
-                    PlayApp.NowMediaIsShow = thisMediaWMPVisible;
-                    if (thisMediaWMPVisible)
+                    PlayApp.NowMediaIsShow = thisMediaVisible;
+                    if (PlayApp.NowMediaIsShow)
                     {
                         PlayList pList = PlayApp.ExecutePlayList;
 
@@ -763,13 +669,16 @@ namespace ToilluminateClient
                         {
                             PlayApp.DrawBitmap = ImageApp.GetNewBitmap(this.picImage.Size);
                         }
+                        pList.CurrentTempleteItem.ExecuteStart();
+
                         this.pnlShowMedia.Visible = true;
+                        System.Threading.Thread.Sleep(10);
                         this.ThreadShowMedia();
                         this.tmrMedia_Tick(null, null);
                     }
                     else
                     {
-                        CloseMediaWMP();
+                        CloseMedia();
                     }
 
                 }
@@ -814,7 +723,43 @@ namespace ToilluminateClient
                 thisSetNowVisible = false;
             }
         }
-     
+
+
+
+        private void ShowMessageForm()
+        {
+            try
+            {
+                if (VariableInfo.messageFormInstance == null || VariableInfo.messageFormInstance.IsDisposed)
+                {
+                    VariableInfo.messageFormInstance = new MessageForm();
+                }
+
+                if (this.FormBorderStyle == VariableInfo.messageFormInstance.FormBorderStyle)
+                {
+                    VariableInfo.messageFormInstance.Size = this.Size;
+                    VariableInfo.messageFormInstance.Location = this.Location;
+                }
+                else
+                {
+                    VariableInfo.messageFormInstance.Size = new Size(this.Size.Width - 16, this.Size.Height - 38);
+                    VariableInfo.messageFormInstance.Location = new Point(this.Location.X + 8, this.Location.Y + 30);
+                }
+                VariableInfo.messageFormInstance.WindowState = this.WindowState;
+
+                VariableInfo.messageFormInstance.SetParentForm(this);
+                VariableInfo.messageFormInstance.Show();
+                VariableInfo.messageFormInstance.ThreadShowMessage();
+                VariableInfo.messageFormInstance.tmrMessage_Tick(null, null);
+
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("MainForm", "ShowMessageForm", ex);
+            }
+
+        }
+
         #endregion " visible "
 
 
@@ -877,67 +822,69 @@ namespace ToilluminateClient
 
         private void ThreadExecuteTempleteVoid()
         {
-            if (executeTempleteFlag == false)
+            if (executeTempleteFlag)
+            {
+                return;
+            }
+
+            try
             {
                 executeTempleteFlag = true;
 
-                try
+                if (PlayApp.ExecutePlayList != null && PlayApp.ExecutePlayList.PlayListState == PlayListStateType.Execute)
                 {
-                    if (PlayApp.ExecutePlayList != null && PlayApp.ExecutePlayList.PlayListState == PlayListStateType.Execute)
+                    PlayList pList = PlayApp.ExecutePlayList;
+
+                    if (pList.CurrentTempleteValid())
                     {
-                        PlayList pList = PlayApp.ExecutePlayList;
-
-                        if (pList.CurrentTempleteValid())
+                        if (pList.CurrentTempleteItem.TempleteType == TempleteItemType.Image)
                         {
-                            if (pList.CurrentTempleteItem.TempleteType == TempleteItemType.Image)
-                            {
-                                thisImageVisible = true;
-                                thisMediaWMPVisible = false;
-                            }
-                            else if (pList.CurrentTempleteItem.TempleteType == TempleteItemType.Media)
-                            {
-                                thisMediaWMPVisible = true;
-                                thisImageVisible = false;
-                            }
+                            thisImageVisible = true;
+                            thisMediaVisible = false;
                         }
-
-                        if (pList.MessageTempleteItemList.Count > 0)
+                        else if (pList.CurrentTempleteItem.TempleteType == TempleteItemType.Media)
                         {
-                            thisMessageVisible = true;
+                            thisMediaVisible = true;
+                            thisImageVisible = false;
                         }
-                        else
-                        {
-                            thisMessageVisible = false;
-                        }
+                    }
 
-                        if (pList.CurrentTempleteItem.CheckTempleteState() == TempleteStateType.Stop)
-                        {
-                            pList.CurrentTempleteItem.ExecuteStop();
-                        }
-
-
-                        if (pList.CheckPlayListState == PlayListStateType.Stop)
-                        {
-                            pList.PlayStop();
-                            return;
-                        }
+                    if (pList.MessageTempleteItemList.Count > 0)
+                    {
+                        thisMessageVisible = true;
                     }
                     else
                     {
-                        thisMediaWMPVisible = false;
-                        thisImageVisible = false;
                         thisMessageVisible = false;
                     }
-                    
+
+                    if (pList.CurrentTempleteItem.CheckTempleteState() == TempleteStateType.Stop)
+                    {
+                        pList.CurrentTempleteItem.ExecuteStop();
+                    }
+
+
+                    if (pList.CheckPlayListState == PlayListStateType.Stop)
+                    {
+                        pList.PlayStop();
+                        return;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    LogApp.OutputErrorLog("MainForm", "ThreadExecuteTempleteVoid", ex);
+                    thisMediaVisible = false;
+                    thisImageVisible = false;
+                    thisMessageVisible = false;
                 }
-                finally
-                {
-                    executeTempleteFlag = false;
-                }
+
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("MainForm", "ThreadExecuteTempleteVoid", ex);
+            }
+            finally
+            {
+                executeTempleteFlag = false;
             }
         }
 
@@ -999,9 +946,10 @@ namespace ToilluminateClient
         {
             if (this.pnlShowMedia.Visible)
             {
-                Thread tmpThread = new Thread(this.ThreadShowMediaVoid);
-                tmpThread.IsBackground = true;
-                tmpThread.Start();
+                //Thread tmpThread = new Thread(this.ThreadShowMediaVoid);
+                //tmpThread.IsBackground = true;
+                //tmpThread.Start();
+                this.ThreadShowMediaVoid();
             }
         }
 
@@ -1017,10 +965,19 @@ namespace ToilluminateClient
                     if (mediaIsReady())
                     {
                         MediaTempleteItem mtItem = PlayApp.ExecutePlayList.CurrentTempleteItem as MediaTempleteItem;
-
+                        
                         if (mtItem.CurrentIsChanged())
                         {
-                            mtItem.ShowCurrent(this.axWMP);
+                            axVLCPlayer.SetRenderWindow(this.pnlShowMedia.Handle);
+                            axVLCPlayer.LoadFile(mtItem.CurrentFile);//
+
+
+                            axVLCPlayer.Play();//播放
+                        }
+
+                        if (mtItem.ReadaheadOverTime(PlayApp.MediaReadaheadTime))
+                        {
+                           this.CloseMedia();
                         }
                     }
 

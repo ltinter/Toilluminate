@@ -18,14 +18,14 @@ using ToilluminateModel;
 
 namespace ToilluminateModel.Controllers
 {
-    public class FileMastersController : ApiController
+    public class FileMastersController : BaseApiController
     {
         private ToilluminateEntities db = new ToilluminateEntities();
 
         // GET: api/FileMasters
         public IQueryable<FileMaster> GetFileMaster()
         {
-            return db.FileMaster;
+            return db.FileMaster.Where(a=>a.UseFlag == true);
         }
 
         // GET: api/FileMasters/5
@@ -76,6 +76,7 @@ namespace ToilluminateModel.Controllers
 
             fileMaster.UpdateDate = DateTime.Now;
             fileMaster.InsertDate = DateTime.Now;
+            fileMaster.UseFlag = true;
             db.FileMaster.Add(fileMaster);
             await db.SaveChangesAsync();
 
@@ -113,12 +114,13 @@ namespace ToilluminateModel.Controllers
             var jsonList = (from fm in db.FileMaster
                             join gm in db.GroupMaster on fm.GroupID equals gm.GroupID into ProjectV
                             from pv in ProjectV.DefaultIfEmpty()
-                            where folderIDs.Contains(fm.FolderID.ToString())
+                            where folderIDs.Contains(fm.FolderID.ToString()) && fm.UseFlag == true
                             select new
                             {
                                 fm.FolderID,
                                 fm.FileName,
                                 fm.FileID,
+                                fm.FileExtension,
                                 fm.FileType,
                                 fm.FileUrl,
                                 fm.FileThumbnailUrl,
@@ -133,7 +135,7 @@ namespace ToilluminateModel.Controllers
         [HttpPost, Route("api/FileMasters/GetFilesByFileIDArray")]
         public async Task<IQueryable<FileMaster>> GetFilesByFileIDArray(string[] fileIDs)
         {
-            return db.FileMaster.Where(a => fileIDs.Contains(a.FileID.ToString()));
+            return db.FileMaster.Where(a => fileIDs.Contains(a.FileID.ToString()) && a.UseFlag == true);
         }
 
         [HttpPost, Route("api/FileMasters/CutFile/{folderID}")]
@@ -141,6 +143,9 @@ namespace ToilluminateModel.Controllers
         {
             try
             {
+                FolderMaster folderMaster = await db.FolderMaster.FindAsync(folderID);
+                if (!(bool)folderMaster.UseFlag) { return NotFound(); }
+
                 fileMaster.FolderID = folderID;
                 fileMaster.UpdateDate = DateTime.Now;
                 db.Entry(fileMaster).State = EntityState.Modified;
@@ -157,10 +162,12 @@ namespace ToilluminateModel.Controllers
         private static readonly string THUMBNAILFORLDER = FORLDER + "Thumbnail/";
         private static readonly string ROOT_PATH = HttpContext.Current.Server.MapPath("~/");
         [HttpPost, Route("api/FileMasters/CopyFile/{folderID}")]
-        public async Task<IHttpActionResult> CopyFile(int folderID,FileMaster fileMaster)
+        public async Task<IHttpActionResult> CopyFile(int folderID, FileMaster fileMaster)
         {
             try
             {
+                FolderMaster folderMaster = await db.FolderMaster.FindAsync(folderID);
+                if (!(bool)folderMaster.UseFlag) { return NotFound(); }
                 // save original file path
                 string dirFilePath = Path.Combine(ROOT_PATH + FORLDER);
                 if (!Directory.Exists(dirFilePath))
@@ -176,8 +183,8 @@ namespace ToilluminateModel.Controllers
                 }
 
                 string fileNameKey = DateTime.Now.ToString("yyyyMMddHHmmssffff");
-                string filePathName = fileNameKey + fileMaster.FileType;
-                string thumbnailFilePathName = filePathName.ToLower().Replace(".mp4",".gif");
+                string filePathName = fileNameKey + fileMaster.FileExtension;
+                string thumbnailFilePathName = filePathName.ToLower().Replace(".mp4", ".gif");
                 File.Copy(Path.Combine(ROOT_PATH + fileMaster.FileUrl), Path.Combine(dirFilePath, filePathName), true);
                 File.Copy(Path.Combine(ROOT_PATH + fileMaster.FileThumbnailUrl), Path.Combine(dirThumbnailFilePath, thumbnailFilePathName), true);
 
@@ -185,6 +192,7 @@ namespace ToilluminateModel.Controllers
                 newFile.GroupID = fileMaster.GroupID;
                 newFile.FolderID = folderID;
                 newFile.UserID = fileMaster.UserID;
+                newFile.FileExtension = fileMaster.FileExtension;
                 newFile.FileType = fileMaster.FileType;
                 newFile.FileName = fileMaster.FileName;
                 newFile.FileUrl = FORLDER + filePathName;
@@ -207,6 +215,13 @@ namespace ToilluminateModel.Controllers
         {
             try
             {
+                int userID = int.Parse(HttpContext.Current.Request["UserID"]);
+                int groupID = int.Parse(HttpContext.Current.Request["GroupID"]);
+                int folderID = int.Parse(HttpContext.Current.Request["FolderID"]);
+                FolderMaster folderMaster = await db.FolderMaster.FindAsync(folderID);
+                GroupMaster groupMaster = await db.GroupMaster.FindAsync(groupID);
+                if (!(bool)folderMaster.UseFlag || !(bool)groupMaster.UseFlag) { return NotFound(); }
+
                 // save original file path
                 string dirFilePath = Path.Combine(ROOT_PATH + FORLDER);
                 if (!Directory.Exists(dirFilePath))
@@ -225,21 +240,23 @@ namespace ToilluminateModel.Controllers
                 HttpPostedFile file = fileUploadData[0];
                 string fileName = file.FileName.Trim('"');
                 FileInfo fileInfo = new FileInfo(fileName);
-                string fileType = fileInfo.Extension.ToLower();
+                string fileExtension = fileInfo.Extension.ToLower();
+                string fileType = "";
                 string fileNameKey = DateTime.Now.ToString("yyyyMMddHHmmssffff");
-                string filePathName = fileNameKey + fileType;
+                string filePathName = fileNameKey + fileExtension;
                 string thumbnailFilePathName = filePathName;
                 string filePath = Path.Combine(dirFilePath, filePathName);
                 string thumbnailFilePath = Path.Combine(dirThumbnailFilePath, thumbnailFilePathName);
-                if (fileType == ".mp4" ||
-                    fileType == ".wmv" ||
-                    fileType == ".mpg" ||
-                    fileType == ".avi" ||
-                    fileType == ".mpeg" ||
-                    fileType == ".flv" ||
-                    fileType == ".mkv" ||
-                    fileType == ".mov") {
+                if (fileExtension == ".mp4" ||
+                    fileExtension == ".wmv" ||
+                    fileExtension == ".mpg" ||
+                    fileExtension == ".avi" ||
+                    fileExtension == ".mpeg" ||
+                    fileExtension == ".flv" ||
+                    fileExtension == ".mkv" ||
+                    fileExtension == ".mov") {
                     // save video file
+                    fileType = "video";
                     file.SaveAs(filePath);
                     // save gif from mp4
                     string ffmpeg = Path.Combine(ROOT_PATH, "bin/ffmpeg.exe");
@@ -247,10 +264,10 @@ namespace ToilluminateModel.Controllers
                     {
                         return BadRequest();
                     }
-                    thumbnailFilePathName = thumbnailFilePathName.ToLower().Replace(fileType, ".gif");
+                    thumbnailFilePathName = thumbnailFilePathName.ToLower().Replace(fileExtension, ".gif");
                     Process pcs = new Process();
                     pcs.StartInfo.FileName = ffmpeg;
-                    pcs.StartInfo.Arguments = " -i " + filePath + " -ss 00:00:00.000 -pix_fmt rgb24 -r 10 -s 320x240 -t 00:00:10.000 " + thumbnailFilePath.Replace(fileType, ".gif");
+                    pcs.StartInfo.Arguments = " -i " + filePath + " -ss 00:00:00.000 -pix_fmt rgb24 -r 10 -s 320x240 -t 00:00:10.000 " + thumbnailFilePath.Replace(fileExtension, ".gif");
                     pcs.StartInfo.UseShellExecute = false;
                     pcs.StartInfo.RedirectStandardError = true;
                     pcs.StartInfo.CreateNoWindow = false;
@@ -273,6 +290,7 @@ namespace ToilluminateModel.Controllers
                 }
                 else {
                     // save image file
+                    fileType = "image";
                     Image originalImg = Image.FromStream(file.InputStream);
                     Image thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, originalImg.Width / 10, originalImg.Height / 10);
                     originalImg.Save(filePath);
@@ -280,9 +298,10 @@ namespace ToilluminateModel.Controllers
                 }
 
                 FileMaster fileMaster = new FileMaster();
-                fileMaster.GroupID = int.Parse(HttpContext.Current.Request["GroupID"]);
-                fileMaster.FolderID = int.Parse(HttpContext.Current.Request["FolderID"]);
-                fileMaster.UserID = int.Parse(HttpContext.Current.Request["UserID"]);
+                fileMaster.GroupID = groupID;
+                fileMaster.FolderID = folderID;
+                fileMaster.UserID = userID;
+                fileMaster.FileExtension = fileExtension;
                 fileMaster.FileType = fileType;
                 fileMaster.FileName = fileName;
                 fileMaster.FileUrl = FORLDER  + filePathName;
@@ -311,7 +330,7 @@ namespace ToilluminateModel.Controllers
 
         private bool FileMasterExists(int id)
         {
-            return db.FileMaster.Count(e => e.FileID == id) > 0;
+            return db.FileMaster.Count(e => e.FileID == id && e.UseFlag == true) > 0;
         }
     }
 }

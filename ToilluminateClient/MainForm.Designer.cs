@@ -29,19 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.pnlShowImage = new System.Windows.Forms.Panel();
-            this.pnlShowMedia = new System.Windows.Forms.Panel();
             this.picImage = new System.Windows.Forms.PictureBox();
+            this.pnlShowMedia = new System.Windows.Forms.Panel();
             this.tmrImage = new System.Windows.Forms.Timer(this.components);
             this.tmrPlayList = new System.Windows.Forms.Timer(this.components);
             this.tmrMedia = new System.Windows.Forms.Timer(this.components);
             this.tmrTemplete = new System.Windows.Forms.Timer(this.components);
-            this.axWMP = new AxWMPLib.AxWindowsMediaPlayer();
+            this.printDialog1 = new System.Windows.Forms.PrintDialog();
             this.pnlShowImage.SuspendLayout();
-            this.pnlShowMedia.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picImage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWMP)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlShowImage
@@ -54,16 +51,6 @@
             this.pnlShowImage.Size = new System.Drawing.Size(620, 392);
             this.pnlShowImage.TabIndex = 0;
             // 
-            // pnlShowMedia
-            // 
-            this.pnlShowMedia.BackColor = System.Drawing.Color.White;
-            this.pnlShowMedia.Controls.Add(this.axWMP);
-            this.pnlShowMedia.Location = new System.Drawing.Point(0, 0);
-            this.pnlShowMedia.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlShowMedia.Name = "pnlShowMedia";
-            this.pnlShowMedia.Size = new System.Drawing.Size(620, 392);
-            this.pnlShowMedia.TabIndex = 1;
-            // 
             // picImage
             // 
             this.picImage.BackColor = System.Drawing.Color.Transparent;
@@ -72,6 +59,15 @@
             this.picImage.Size = new System.Drawing.Size(100, 50);
             this.picImage.TabIndex = 0;
             this.picImage.TabStop = false;
+            // 
+            // pnlShowMedia
+            // 
+            this.pnlShowMedia.BackColor = System.Drawing.Color.White;
+            this.pnlShowMedia.Location = new System.Drawing.Point(0, 0);
+            this.pnlShowMedia.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlShowMedia.Name = "pnlShowMedia";
+            this.pnlShowMedia.Size = new System.Drawing.Size(620, 392);
+            this.pnlShowMedia.TabIndex = 1;
             // 
             // tmrImage
             // 
@@ -91,32 +87,26 @@
             this.tmrTemplete.Interval = 500;
             this.tmrTemplete.Tick += new System.EventHandler(this.tmrTemplete_Tick);
             // 
-            // axWMP
+            // printDialog1
             // 
-            this.axWMP.Enabled = true;
-            this.axWMP.Location = new System.Drawing.Point(234, 103);
-            this.axWMP.Name = "axWMP";
-            this.axWMP.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWMP.OcxState")));
-            this.axWMP.Size = new System.Drawing.Size(292, 230);
-            this.axWMP.TabIndex = 2;
+            this.printDialog1.UseEXDialog = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1013, 518);
-            this.Controls.Add(this.pnlShowImage);
             this.Controls.Add(this.pnlShowMedia);
+            this.Controls.Add(this.pnlShowImage);
+            this.DoubleBuffered = true;
             this.Name = "MainForm";
             this.Text = "表示情報";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Move += new System.EventHandler(this.MainForm_Move);
             this.pnlShowImage.ResumeLayout(false);
-            this.pnlShowMedia.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picImage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWMP)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -129,7 +119,7 @@
         private System.Windows.Forms.Timer tmrPlayList;
         private System.Windows.Forms.Timer tmrMedia;
         private System.Windows.Forms.Timer tmrTemplete;
-        private AxWMPLib.AxWindowsMediaPlayer axWMP;
+        private System.Windows.Forms.PrintDialog printDialog1;
     }
 }
 

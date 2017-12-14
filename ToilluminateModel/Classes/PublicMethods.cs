@@ -25,6 +25,15 @@ namespace ToilluminateModel
                 GetChildGroupIDs(gm.GroupID, ref GroupIDList, db);
             }
         }
+        public static void GetChildFolderIDs(int selfFolderID, ref List<int> FolderIDList, ToilluminateEntities db)
+        {
+            List<FolderMaster> fmChildList = db.FolderMaster.Where(a => a.FolderParentID == selfFolderID).ToList();
+            foreach (FolderMaster fm in fmChildList)
+            {
+                FolderIDList.Add(fm.FolderID);
+                GetChildFolderIDs(fm.FolderID, ref FolderIDList, db);
+            }
+        }
         public enum PlayerStatusType { Active,Online};
         public static string GetPlayerStatusByID(PlayerMaster pm, PlayerStatusType statusType, ToilluminateEntities db) {
             switch (statusType) {
@@ -92,6 +101,26 @@ namespace ToilluminateModel
 
             return FormsAuthentication.HashPasswordForStoringInConfigFile(source, "MD5"); ;
 
+        }
+
+        //validate user info from ticket
+        public static string ValidateUserInfo(string encryptTicket)
+        {
+            //Decrypt Ticket
+            var strTicket = FormsAuthentication.Decrypt(encryptTicket).UserData;
+
+            //get username from ticket
+            var index = strTicket.IndexOf("&");
+            string userName = strTicket.Substring(0, index);
+
+            if (HttpContext.Current.Session[userName] != null && HttpContext.Current.Session[userName].Equals(encryptTicket))
+            {
+                return userName;
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 }

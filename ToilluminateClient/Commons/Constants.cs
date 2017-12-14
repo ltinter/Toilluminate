@@ -108,20 +108,13 @@ namespace ToilluminateClient
         /// <summary>
         /// 得到所有播放器的playlist调用
         /// </summary>
-        public const string API_PLAYLISTMASTERS_GET_INFO = "api/PlayListMasters/GetTotalPlayListByPlayerID/{0}";
-
+        public const string API_PLAYLISTMASTERS_GET_INFO = "api/PlayListMasters/GetTotalPlayListByPlayerIDForClient/{0}";
 
         /// <summary>
         /// 得到player调用
         /// </summary>
         public const string API_PLAYERMASTERS_GET_INFO = "api/PlayerMasters/{0}";
         
-
-        /// <summary>
-        /// 得到播放器状态数据
-        /// </summary>
-        public const string API_PLAYERMASTERS_GET_STATUS = "api/PlayerMasters/GetPlayerStatusReportData";
-
 
 #endregion
 

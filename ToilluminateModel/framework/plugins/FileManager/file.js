@@ -57,8 +57,9 @@
             width: 244,
             sortable: true,
             // basic templating support for column rendering,
-            template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" style="max-width:244px;max-height:160px;"/></a>'
-        }, {
+            //template: '<a href="{{FileUrl}}" target="_blank"><img src="{{FileThumbnailUrl}}" class="file-img" style="max-width:244px;max-height:160px;"/></a>'
+            template: '<img src="{{FileThumbnailUrl}}" class="file-img" style="max-width:244px;max-height:160px;" onclick="$.file(\'onImgClick\',\'{{FileUrl}}\',\'{{FileType}}\')"/>'
+        },{
             field: "FileName",
             title: "ファイル名",
             sortable: true,
@@ -100,23 +101,54 @@
         editFile: function (node) {
 
         },
+        onImgClick: function (fileUrl, fileType) {
+            var displayElement = $('<div />');
+            if (fileType == "image")
+                displayElement = $("<img/>").attr("src", fileUrl).css("max-width", $(window).width()).css("max-height", $(window).height()).addClass("file-mask-img");
+            else {
+                displayElement = $("<video controls/>").attr("src", fileUrl).css("max-width", $(window).width()).css("max-height", $(window).height()).addClass("file-mask-img").attr("preload", "auto");
+                displayElement.get(0).onloadeddata = function (e) {
+                    displayElement.get(0).play();
+                };
+                displayElement.get(0).onerror = function () {
+                    alert("error");
+                };
+            }
+            var mask = $("<div/>").addClass("file-mask").attr("align", "center").css("height", $(window).height()).css("width", $(window).width()).fadeIn(500, function () {
+                $(this).append(displayElement);
+            });
+            mask.click(function () {
+                $(this).fadeOut(500, function() {
+                    $(this).remove();
+                });
+            });
+            $('html').eq(0).append(mask);
+            mask.show();
+        },
         remove: function () {
             var datatable = $("#datatable_file").data("datatable");
             if (datatable && datatable.setSelectedRecords().getSelectedRecords().length > 0) {
-                toastr.warning("使用中ですので、削除できない。");
-                return false;
+                //toastr.warning("使用中ですので、削除できない。");
+                //return false;
                 //remove selected files
-                $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
-                    $.insmFramework("deleteFile", {
-                        fileID: $(item).data().obj.FileID,
-                        fileObj:$(item).data().obj,
-                        success: function (fileData) {
-                            $.file('removeDataFromTable', item, fileData);
-                        },
-                        error: function () {
-                            //invalid = true;
-                        }
-                    });
+                $.confirmBox({
+                    title: "Warning",
+                    message: '削除しても宜しいでしょうか？',
+                    onOk: function () {
+                        $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
+                            $.insmFramework("deleteFile", {
+                                fileID: $(item).data().obj.FileID,
+                                fileObj: $(item).data().obj,
+                                success: function (fileData) {
+                                    $.file('removeDataFromTable', item, fileData);
+                                    toastr.success("操作が完了しました。");
+                                },
+                                error: function () {
+                                    //invalid = true;
+                                }
+                            });
+                        });
+                    }
                 });
             } else {
                 //remove selected folder
@@ -178,8 +210,20 @@
             if ($("#datatable_file").data("datatable")) {
                 $("#datatable_file").data("datatable").destroy();
             }
-        }
-        
+        },
+        del: function () {
+            $.confirmBox({
+                title: "Warning",
+                message: '削除しても宜しいでしょうか？',
+                onOk: function () {}})
+
+            //var msg = "削除しても宜しいでしょうか？";
+            //if (confirm(msg) == true) {
+            //    return true;
+            //} else {
+            //    return false;
+            //}
+        } ,
     };
     $("#btn_uploadfile").click(function () {
         return $.file('uploadFile');
@@ -213,4 +257,5 @@
         }
         return null;
     };
+
 })(jQuery);

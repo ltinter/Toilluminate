@@ -39,52 +39,48 @@
                         retryFlag: false
                     }
                 };
+                var ajaxOptions = {
+                    //success: function (result) {
+                    //    options.success(result);
+                    //},
+                    success: function (user) {
+                        _plugin.settings.user = user;
+
+                        setTimeout(function () {
+                        }, 2000);
+                        $.insmGroup('initGroupTree', {
+                            userGroupId: user.GroupID
+                        });
+                        $("#login_username").val('');
+                        $("#login_password").val('');
+                        $("#mainDiv").show();
+                        $("#divLogin").hide();
+                    },
+                    url: 'api/UserMasters/GetUserLoginInfo',
+                    format: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    type: "GET",
+                    denied: function () {
+                        var a =''
+                    },
+                    error: function () {
+                        $("#mainDiv").hide();
+                        $("#divLogin").show();
+                    },
+                };
                 $this.data('insmFramework', _plugin);
+                return $.insmFramework('ajax', ajaxOptions);
             }
-
-            if (!_plugin.settings.apiUrl || !_plugin.settings.applicationName || !_plugin.settings.version) {
-                //throw new Error('INSM Framework not initialized correctly');
-                $.insmNotification({
-                    type: "warning",
-                    message: 'INSM Framework not initialized correctly',
-                    text: 'INSM Framework not initialized correctly'
-                });
+        },
+        user: function () {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            if (_plugin.settings.user) {
+                return _plugin.settings.user;
             }
-
-            if (!_plugin.settings.apiUrl.indexOf('http://') == 0 && !_plugin.settings.apiUrl.indexOf('https://') == 0) {
-                //throw new Error('Invalid configuration. API URL has to start with "http://" or "https://".');
-                $.insmNotification({
-                    type: "warning",
-                    message: 'Invalid configuration. API URL has to start with "http://" or "https://".',
-                    text: 'Invalid configuration. API URL has to start with "http://" or "https://".'
-                });
+            else {
+                return null;
             }
-
-            _plugin.settings.apiUrl = _plugin.settings.apiUrl.replace(/\/+$/, "");
-            if (_plugin.settings.session == "null") {
-                _plugin.settings.session = null;
-            }
-            if (!!window.localStorage && typeof (Storage) !== "undefined" && !_plugin.settings.session) {
-                _plugin.settings.session = localStorage.insmFrameworkSession;
-                if (!_plugin.settings.session) {
-                    _plugin.settings.session = '';
-                }
-            }
-
-
-            $.insmFramework('downloadCurrentUser', {
-                success: function (user) {
-                    _plugin.settings.user = user;
-
-                    $.insmFramework('regionTree', {
-                        success: function (regionTree) {
-                            _plugin.settings.user.regionTree = regionTree;
-                            _plugin.data.initialized.resolve();
-                        }
-                    });
-                }
-            });
-            return $this;
         },
         userlogin: function (options) {
             var $this = $('html').eq(0);
@@ -104,19 +100,43 @@
 
             var ajaxOptions = {
                 success: function (result) {
+                    _plugin.settings.user = result.UserMaster;
                     options.success(result);
                 },
-                url: 'api/UserMasters/MatchUserInfo',
+                url: 'api/UserMasters/UserLogin',
                 format: 'json',
                 data: JSON.stringify(loginUser),
                 contentType: "application/json; charset=utf-8",
                 type: "POST",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
             }
             return $.insmFramework('ajax', ajaxOptions);
+        },
+        userLogout: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var ajaxOptions = {
+                success: function (result) {
+                    options.success(result);
+                    window.location.reload();
+                },
+                url: 'api/UserMasters/UserLogout',
+                format: 'json',
+                data: JSON.stringify(options.loginUser),
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                denied: function () {
+                },
+                error: function () {
+                    options.error();
+                },
+            }
+            $.insmFramework('ajax', ajaxOptions);
         },
         creatUser: function (options) {
             var $this = $('html').eq(0);
@@ -182,7 +202,7 @@
                 data: data
             });
             return $this;
-        }, 
+        },
         ajax: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -194,7 +214,16 @@
                 contentType: options.contentType,
                 data: options.data,
                 success: options.success,
-                error: options.error
+                error: function (data) {
+                    if (data.status == 401) {
+                        $('#Logout').click();
+                    } else if (data.status == 404 || data.status == 500) {
+                        $("#mainDiv").hide();
+                        $("#divLogin").show();
+                    }
+                }
+                //success: options.success,
+                //error: options.error
             });
         },
         editGroup: function (options) {
@@ -223,11 +252,12 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID'+options.GroupID,
+                url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID' + options.GroupID,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -265,7 +295,7 @@
             } else {
                 newGroup.GroupParentID = options.newGroupNameParentID;
             }
-            
+
             newGroup.ActiveFlag = options.active;
             newGroup.OnlineFlag = options.onlineUnits;
             newGroup.Comments = options.note;
@@ -275,7 +305,7 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url:options.groupID == undefined ? 'api/GroupMasters' : 'api/GroupMasters' + "/" + options.groupID,
+                url: options.groupID == undefined ? 'api/GroupMasters' : 'api/GroupMasters' + "/" + options.groupID,
                 format: 'json',
                 data: JSON.stringify(newGroup),
                 contentType: "application/json; charset=utf-8",
@@ -319,11 +349,11 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/GroupMasters' + "/" + options.deleteGroupItem.GroupID,
+                url: 'api/GroupMasters/DeleteGroupByID' + "/" + options.deleteGroupItem.GroupID,
                 format: 'json',
-                data: JSON.stringify(newGroup),
+                //data: JSON.stringify(newGroup),
                 contentType: "application/json; charset=utf-8",
-                type: 'PUT',
+                type: 'POST',
                 denied: function () {
                     // Just do it again and we should land in the success callback next time
                     //$.insmFramework('getUsers', options);
@@ -362,32 +392,34 @@
             return _plugin.data.loginDeferred;
         },
         logout: function (options) {
-        // Global vars
-        var $this = $('html').eq(0);
-        var _plugin = $this.data('insmFramework');
-        _plugin.data.previousUsername = _plugin.settings.user.name;
-        var logoutDeferred = $.insmFramework('ajax', {
-            url: _plugin.settings.apiUrl + '/Logout.aspx',
-            data: {
-                success: function () {
-                    // We never get here but if we do in the future we want to do the same as in the denied callback.
-                    _plugin.data.user = {};
-                    delete _plugin.settings.session;
-                    if (!!window.localStorage && typeof (Storage) !== "undefined") {
-                        delete localStorage.insmFrameworkSession;
-                    }
-                },
-                denied: function () {
-                    _plugin.data.user = {};
-                    delete _plugin.settings.session;
-                    if (!!window.localStorage && typeof (Storage) !== "undefined") {
-                        delete localStorage.insmFrameworkSession;
+            // Global vars
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            _plugin.data.previousUsername = _plugin.settings.user.name;
+            var logoutDeferred = $.insmFramework('ajax', {
+                url: _plugin.settings.apiUrl + '/Logout.aspx',
+                data: {
+                    success: function () {
+                        // We never get here but if we do in the future we want to do the same as in the denied callback.
+                        _plugin.data.user = {
+                        };
+                        delete _plugin.settings.session;
+                        if (!!window.localStorage && typeof (Storage) !== "undefined") {
+                            delete localStorage.insmFrameworkSession;
+                        }
+                    },
+                    denied: function () {
+                        _plugin.data.user = {
+                        };
+                        delete _plugin.settings.session;
+                        if (!!window.localStorage && typeof (Storage) !== "undefined") {
+                            delete localStorage.insmFrameworkSession;
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        return logoutDeferred;
+            return logoutDeferred;
         },
         getGroupPlayers: function (options) {
             var $this = $('html').eq(0);
@@ -400,7 +432,8 @@
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -419,6 +452,7 @@
                     ActiveFlag: '';
                     OnlineFlag: '';
                     Settings: '';
+                    UseFlag:true;
                     return PlayerMaster;
                 }
             }
@@ -428,6 +462,7 @@
             newPlayer.Comments = options.note;
             newPlayer.ActiveFlag = options.ActiveFlag;
             newPlayer.OnlineFlag = options.OnlineFlag;
+            newPlayer.UseFlag = true;
             newPlayer.Settings = options.settings;
             var ajaxOptions = {
                 success: function (result) {
@@ -461,6 +496,7 @@
                     ActiveFlag: '';
                     OnlineFlag: '';
                     Settings: '';
+                    UseFlag: true;
                     return PlayerMaster;
                 }
             }
@@ -478,7 +514,7 @@
                 newPlayer.OnlineFlag = Player.OnlineFlag;
                 newPlayer.GroupID = options.newGroupID;
                 newPlayer.Settings = options.settings;
-
+                newPlayer.UseFlag = true;
                 var ajaxOptions = {
                     success: function (result) {
                         tempPlayerEditDrferred.resolve();
@@ -488,21 +524,22 @@
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(newPlayer),
                     type: "PUT",
-                    denied: function () { },
+                    denied: function () {
+                    },
                     error: function () {
                         options.error();
                     },
                 }
-                if (index == options.Playerdata.length-1) {
+                if (index == options.Playerdata.length - 1) {
                     return $.insmFramework('ajax', ajaxOptions);
                 } else {
                     $.insmFramework('ajax', ajaxOptions);
                 }
-            });     
+            });
             $.when.apply(playerEditDeferredList).done(function () {
                 options.success();
             });
-            
+
         },
         getPlayerStaus: function (options) {
             var $this = $('html').eq(0);
@@ -619,7 +656,8 @@
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -637,7 +675,8 @@
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -647,31 +686,12 @@
         deleteFolder: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
-            var FolderMaster = {
-                create: function () {
-                    FolderID: "";
-                    GroupID: "";
-                    FolderName: '';
-                    FolderParentID: '';
-                    Settings: '';
-                    Comments: '';
-                    UseFlag: false;
-                    return FolderMaster;
-                }
-            }
-            var newFolder = FolderMaster.create();
-            newFolder.FolderID = options.folderID;
-            newFolder.GroupID = options.groupID;
-            newFolder.FolderName = options.folderName;
-            newFolder.FolderParentID = options.folderParentID;
-            newFolder.UseFlag = false;
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/FolderMasters/EditTreeNodeFolder',
+                url: 'api/FolderMasters/DeleteFolderByID/' + options.folderID,
                 format: 'json',
-                data: JSON.stringify(newFolder),
                 contentType: "application/json; charset=utf-8",
                 type: 'POST',
                 denied: function () {
@@ -683,24 +703,6 @@
                 },
             };
             return $.insmFramework('ajax', ajaxOptions);
-            //var $this = $('html').eq(0);
-            //var _plugin = $this.data('insmFramework');
-
-            //var ajaxOptions = {
-            //    success: function (result) {
-            //        options.success(result);
-            //    },
-            //    url: 'api/FolderMasters' + "/" + options.folderID,
-            //    format: 'json',
-            //    contentType: "application/json; charset=utf-8",
-            //    type: "DELETE",
-            //    denied: function () {
-            //    },
-            //    error: function (XMLHttpRequest, textStatus, errorThrown) {
-            //        options.error(XMLHttpRequest, textStatus, errorThrown);
-            //    },
-            //};
-            //return $.insmFramework('ajax', ajaxOptions);
         },
         //Folder End
 
@@ -716,7 +718,8 @@
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -792,9 +795,6 @@
             //fileMaster.FileThumbnailUrl = options.fileObj.FileThumbnailUrl;
             options.fileObj.UseFlag = false;
 
-            //var $this = $('html').eq(0);
-            //var _plugin = $this.data('insmFramework');
-
             var ajaxOptions = {
                 success: function (result) {
                     options.success(result);
@@ -820,7 +820,7 @@
                     InheritForced: '';
                     Settings: '';
                     Comments: '';
-                    UseFlag : true;
+                    UseFlag: true;
                     return PlaylistMaster;
                 }
             }
@@ -839,7 +839,7 @@
                 format: 'json',
                 data: JSON.stringify(newPlaylist),
                 contentType: "application/json; charset=utf-8",
-                type:'POST',
+                type: 'POST',
                 denied: function () {
                     // Just do it again and we should land in the success callback next time
                     //$.insmFramework('getUsers', options);
@@ -861,7 +861,7 @@
                     Settings: '';
                     Comments: '';
                     PlayListID: '';
-                    UseFlag : true;
+                    UseFlag: true;
                     return PlaylistMaster;
                 }
             }
@@ -903,7 +903,8 @@
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -917,11 +918,12 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: 'api/PlayListMasters/GetTotalPlayListByPlayerID/' + options.playerId,
+                url: 'api/PlayListMasters/GetTotalPlayListByPlayerIDForWeb/' + options.playerId,
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "POST",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -938,7 +940,8 @@
                 url: 'api/PlayListMasters/GetForcedPlayListByGroupID/' + options.groupID,
                 contentType: "application/json; charset=utf-8",
                 type: "POST",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -956,7 +959,8 @@
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -974,7 +978,8 @@
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -992,7 +997,8 @@
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "POST",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },
@@ -1030,7 +1036,8 @@
                     data: JSON.stringify(newPlayerPlayList),
                     contentType: "application/json; charset=utf-8",
                     type: "POST",
-                    denied: function () { },
+                    denied: function () {
+                    },
                     error: function () {
                         options.error();
                     },
@@ -1059,7 +1066,7 @@
                 }
             };
 
-            var groupPlayListLinkDeferredList = [];        
+            var groupPlayListLinkDeferredList = [];
 
             $.each(options.PlayListID, function (index, objId) {
                 var tempGroupPlayListLinkDrferred = new $.Deferred();
@@ -1078,7 +1085,8 @@
                     data: JSON.stringify(newGroupPlayList),
                     contentType: "application/json; charset=utf-8",
                     type: "POST",
-                    denied: function () { },
+                    denied: function () {
+                    },
                     error: function () {
                         options.error();
                     },
@@ -1092,7 +1100,7 @@
             $.when.apply(groupPlayListLinkDeferredList).done(function () {
                 options.success();
             });
-        },   
+        },
         deletePlaylist: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -1202,7 +1210,8 @@
                 format: 'json',
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
-                denied: function () { },
+                denied: function () {
+                },
                 error: function () {
                     options.error();
                 },

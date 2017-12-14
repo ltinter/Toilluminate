@@ -15,14 +15,14 @@ using ToilluminateModel.Models;
 
 namespace ToilluminateModel.Controllers
 {
-    public class GroupMastersController : ApiController
+    public class GroupMastersController : BaseApiController
     {
         private ToilluminateEntities db = new ToilluminateEntities();
 
         // GET: api/GroupMasters
         public IQueryable<GroupMaster> GetGroupMaster()
         {
-            return db.GroupMaster;
+            return db.GroupMaster.Where(a => a.UseFlag == true);
         }
 
         // GET: api/GroupMasters/5
@@ -84,6 +84,7 @@ namespace ToilluminateModel.Controllers
 
             groupMaster.UpdateDate = DateTime.Now;
             groupMaster.InsertDate = DateTime.Now;
+            groupMaster.UseFlag = true;
             db.GroupMaster.Add(groupMaster);
             await db.SaveChangesAsync();
 
@@ -118,7 +119,7 @@ namespace ToilluminateModel.Controllers
             DataModel jdm;
             StateForJsonModel sfjm = new StateForJsonModel();
             sfjm.opened = true;
-            List<GroupMaster> gmList = db.GroupMaster.Where(a=> groupIDs.Contains(a.GroupID)).ToList();
+            List<GroupMaster> gmList = db.GroupMaster.Where(a=> groupIDs.Contains(a.GroupID) && a.UseFlag == true).ToList();
             foreach (GroupMaster gm in gmList) {
                 jdm = new DataModel();
                 jdm.id = gm.GroupID.ToString();
@@ -130,6 +131,31 @@ namespace ToilluminateModel.Controllers
             }
             return jdmList;
         }
+
+        [HttpPost, Route("api/GroupMasters/DeleteGroupByID/{GroupID}")]
+        public async Task<IHttpActionResult> DeleteGroupByID(int GroupID)
+        {
+            List<int> GroupIDList = new List<int>();
+            GroupIDList.Add(GroupID);
+            PublicMethods.GetChildGroupIDs(GroupID, ref GroupIDList, db);
+            int[] groupIDs = GroupIDList.ToArray<int>();
+
+            List<GroupMaster> groupList = db.GroupMaster.Where(a => groupIDs.Contains(a.GroupID)).ToList();
+            List<PlayerMaster> playerList = db.PlayerMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+            List<PlayListMaster> playlistList = db.PlayListMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+            List<FolderMaster> folderList = db.FolderMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+            List<FileMaster> fileList = db.FileMaster.Where(a => groupIDs.Contains((int)a.GroupID)).ToList();
+            groupList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+            playerList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+            playlistList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+            folderList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+            fileList.ForEach(a => { a.UseFlag = false; a.UpdateDate = DateTime.Now; db.Entry(a).State = EntityState.Modified; });
+
+            await db.SaveChangesAsync();
+
+            return Ok();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -141,7 +167,7 @@ namespace ToilluminateModel.Controllers
 
         private bool GroupMasterExists(int id)
         {
-            return db.GroupMaster.Count(e => e.GroupID == id) > 0;
+            return db.GroupMaster.Count(e => e.GroupID == id && e.UseFlag == true) > 0;
         }
     }
 }
