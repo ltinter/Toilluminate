@@ -514,18 +514,23 @@
                     if (currentNeededFileType === "video") {
                         divselectFile.empty();
                     }
+
+                    var screenshotDiv = $("<li/>").css({ "margin": "3px 3px 3px 0", "padding": "1px", "float": "left", "max-width": "200px", "height": "150px", "font-size": "4em", "text-align": "center", "cursor": "move" }).addClass("ui-state-default");
                     var screenshot = new Image();
                     screenshot.src = $(item).data().obj.FileThumbnailUrl;
                     screenshot.fileUrl = $(item).data().obj.FileUrl;
                     screenshot.id = $(item).data().obj.FileID;
-                    $(screenshot).css({ "max-height": "150px", "max-width": "200px","padding":"5px" });
-                    divselectFile.append(screenshot);
-                    var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
-                        $(screenshot).remove();
-                        $(this).remove();
+                    $(screenshot).css({ "max-height": "140px", "max-width": "190px", "padding": "5px", "vertical-align": "top" });
+                    screenshotDiv.append(screenshot);
+                    var deleteImg = $("<i class='fa fa-remove'></i>").css({ "background-color": "none", "cursor": "pointer", "vertical-align": "top" }).click(function () {
+                        $(this).parent().remove();
                     });
-                    divselectFile.append(deleteImg);
+
+                    screenshotDiv.append(deleteImg);
+                    divselectFile.append(screenshotDiv);
                 });
+                divselectFile.sortable();
+                divselectFile.disableSelection();
             }
         },
     greateNewItemPicture: function (options) {
@@ -610,7 +615,7 @@
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
 
-        var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px').css("line-height", "150px");
+        var div_col_image = $('<ul/>').css({ "list-style-type": "none", "margin": "0", "padding": "0", "width": "100%" });
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select images')).click(function () {
             divselectFile = div_col_image;
             currentNeededFileType = "image";
@@ -652,20 +657,20 @@
             if (options.palylistItem) {
                 if (options.palylistItem.itemData) {
                     $.each(options.palylistItem.itemData.id, function (index, item) {
-                        var screenshotDiv = $("<div/>").css("display", "inline").draggable();
+                        var screenshotDiv = $("<li/>").css({ "margin": "3px 3px 3px 0", "padding": "1px", "float": "left", "max-width": "200px", "height": "150px", "font-size": "4em", "text-align": "center", "cursor": "move" }).addClass("ui-state-default");
                         var screenshot = new Image();
-                        screenshot.src = options.palylistItem.itemData.fileUrl[index];
+                        screenshot.src = options.palylistItem.itemData.src[index];
                         screenshot.fileUrl = options.palylistItem.itemData.fileUrl[index];
                         screenshot.id = item;
-                        $(screenshot).css({ "max-height": "150px", "max-width": "200px", "padding": "5px" });
+                        $(screenshot).css({ "max-height": "140px", "max-width": "185px", "padding": "5px", "vertical-align": "top" });
                         screenshotDiv.append(screenshot);
-                        var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
-                            $(this).prev().remove();
-                            $(this).remove();
+                        var deleteImg = $("<i class='fa fa-remove'></i>").css({ "background-color": "none", "cursor": "pointer", "vertical-align": "top" }).click(function () {
+                            $(this).parent().remove();
                         });
                         screenshotDiv.append(deleteImg);
                         div_col_image.append(screenshotDiv);
                     });
+                    div_col_image.sortable();
                 }
             }
             if (options.palylistItem) {
@@ -849,7 +854,7 @@
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
 
-        var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
+        var div_col_image = $('<ul/>').css({ "list-style-type": "none", "margin": "0", "padding": "0", "width": "100%" });
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select video')).click(function () {
             divselectFile = div_col_image;
             currentNeededFileType = "video";
