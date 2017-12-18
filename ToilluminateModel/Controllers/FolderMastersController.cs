@@ -149,10 +149,6 @@ namespace ToilluminateModel.Controllers
         [HttpPost, Route("api/FolderMasters/EditTreeNodeFolder")]
         public async Task<DataModel> EditTreeNodeFolder(FolderMaster folderMaster)
         {
-
-            FolderMaster folderParent = await db.FolderMaster.FindAsync(folderMaster.FolderParentID);
-            if (!(bool)folderParent.UseFlag) { return null; }
-
             folderMaster.UpdateDate = DateTime.Now;
             db.Entry(folderMaster).State = EntityState.Modified;
 

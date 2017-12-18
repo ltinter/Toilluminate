@@ -130,22 +130,26 @@
             if (datatable && datatable.setSelectedRecords().getSelectedRecords().length > 0) {
                 //toastr.warning("使用中ですので、削除できない。");
                 //return false;
-                if ($.file('del')) {
-                    $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
-                        $.insmFramework("deleteFile", {
-                            fileID: $(item).data().obj.FileID,
-                            fileObj: $(item).data().obj,
-                            success: function (fileData) {
-                                $.file('removeDataFromTable', item, fileData);
-                            },
-                            error: function () {
-                                //invalid = true;
-                            }
-                        });
-                    });
-                }
                 //remove selected files
-                
+                $.confirmBox({
+                    title: "Warning",
+                    message: '削除しても宜しいでしょうか？',
+                    onOk: function () {
+                        $.each(datatable.setSelectedRecords().getSelectedRecords(), function (index, item) {
+                            $.insmFramework("deleteFile", {
+                                fileID: $(item).data().obj.FileID,
+                                fileObj: $(item).data().obj,
+                                success: function (fileData) {
+                                    $.file('removeDataFromTable', item, fileData);
+                                    toastr.success("操作が完了しました。");
+                                },
+                                error: function () {
+                                    //invalid = true;
+                                }
+                            });
+                        });
+                    }
+                });
             } else {
                 //remove selected folder
                 $.folder("deleteFolder");
@@ -208,13 +212,18 @@
             }
         },
         del: function () {
-            var msg = "您真的确定要删除吗？\n\n请确认！";
-            if (confirm(msg) == true) {
-                return true;
-            } else {
-                return false;
-            }
-        } 
+            $.confirmBox({
+                title: "Warning",
+                message: '削除しても宜しいでしょうか？',
+                onOk: function () {}})
+
+            //var msg = "削除しても宜しいでしょうか？";
+            //if (confirm(msg) == true) {
+            //    return true;
+            //} else {
+            //    return false;
+            //}
+        } ,
     };
     $("#btn_uploadfile").click(function () {
         return $.file('uploadFile');
@@ -248,4 +257,5 @@
         }
         return null;
     };
+
 })(jQuery);

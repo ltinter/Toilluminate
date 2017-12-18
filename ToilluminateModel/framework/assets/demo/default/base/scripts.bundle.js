@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @class mApp  Metronic App class
  */
 
@@ -5312,11 +5312,42 @@ jQuery.fn.extend({
                     url: qs.options.source,
                     data: {query: query},
                     dataType: 'html',
-                    success: function(res) {
+                    success: function (res) {
+                        var result = $('<div/>').addClass('m-list-search__results');
+                        var span = $("<span />").addClass('m-list-search__result-category m-list-search__result-category--first').text('グループ');
+                        var href = $('<a href="#"/>').addClass("m-list-search__result-item");
+                        
+                        var span_icon = $("<span />").addClass('m-list-search__result-item-icon');
+                        var href_i = $('<i />').addClass("flaticon-interface-3 m--font-warning");
+                        var span_text = $("<span />").addClass('m-list-search__result-item-text').text('グループ1');
+                        span_icon.append(href_i);
+                        href.append(span_icon, span_text);
+                        result.append(span,href)
+
+                        var span = $("<span />").addClass('m-list-search__result-category m-list-search__result-category--first').text('ディスプレイ');
+                        var href = $('<a href="#"/>').addClass("m-list-search__result-item");
+
+                        var span_icon = $("<span />").addClass('m-list-search__result-item-icon');
+                        var href_i = $('<i />').addClass("flaticon-share m--font-success");
+                        var span_text = $("<span />").addClass('m-list-search__result-item-text').text('ディスプレイ2');
+                        span_icon.append(href_i);
+                        href.append(span_icon, span_text);
+                        result.append(span, href)
+
+                        var span = $("<span />").addClass('m-list-search__result-category m-list-search__result-category--first').text('プレイリスト');
+                        var href = $('<a href="#"/>').addClass("m-list-search__result-item");
+
+                        var span_icon = $("<span />").addClass('m-list-search__result-item-icon');
+                        var href_i = $('<i />').addClass("flaticon-paper-plane m--font-info");
+                        var span_text = $("<span />").addClass('m-list-search__result-item-text').text('プレイリスト3');
+                        span_icon.append(href_i);
+                        href.append(span_icon, span_text);
+                        result.append(span, href)
+
                         qs.processing = false;
                         qs.form.removeClass(qs.options.spinner);
                         Plugin.handleCancelIconVisibility('on');
-                        qs.dropdown.setContent(res).show();
+                        qs.dropdown.setContent(result).show();
                         element.addClass(qs.options.hasResultClass);    
                     },
                     error: function(res) {

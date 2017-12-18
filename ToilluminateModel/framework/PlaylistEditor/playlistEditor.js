@@ -494,7 +494,7 @@
                     var tempFileData = [];
                     $.each(fileData, function (fileIndex, fileItem) {
                         var tempFileType = supportedFileTypes[currentNeededFileType.toLowerCase()];
-                        if (tempFileType && $.inArray(fileItem.FileType.toLowerCase().trim(), tempFileType) > -1) {
+                        if (tempFileType && $.inArray(fileItem.FileExtension.toLowerCase().trim(), tempFileType) > -1) {
                             tempFileData.push(fileData[fileIndex]);
                         }
                     });
@@ -514,18 +514,23 @@
                     if (currentNeededFileType === "video") {
                         divselectFile.empty();
                     }
+
+                    var screenshotDiv = $("<li/>").css({ "margin": "3px 3px 3px 0", "padding": "1px", "float": "left", "max-width": "200px", "height": "150px", "font-size": "4em", "text-align": "center", "cursor": "move" }).addClass("ui-state-default");
                     var screenshot = new Image();
                     screenshot.src = $(item).data().obj.FileThumbnailUrl;
                     screenshot.fileUrl = $(item).data().obj.FileUrl;
                     screenshot.id = $(item).data().obj.FileID;
-                    $(screenshot).css({ "max-height": "150px", "max-width": "200px","padding":"5px" });
-                    divselectFile.append(screenshot);
-                    var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
-                        $(screenshot).remove();
-                        $(this).remove();
+                    $(screenshot).css({ "max-height": "140px", "max-width": "190px", "padding": "5px", "vertical-align": "top" });
+                    screenshotDiv.append(screenshot);
+                    var deleteImg = $("<i class='fa fa-remove'></i>").css({ "background-color": "none", "cursor": "pointer", "vertical-align": "top" }).click(function () {
+                        $(this).parent().remove();
                     });
-                    divselectFile.append(deleteImg);
+
+                    screenshotDiv.append(deleteImg);
+                    divselectFile.append(screenshotDiv);
                 });
+                divselectFile.sortable();
+                divselectFile.disableSelection();
             }
         },
     greateNewItemPicture: function (options) {
@@ -610,7 +615,7 @@
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
 
-        var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px').css("line-height", "150px");
+        var div_col_image = $('<ul/>').css({ "list-style-type": "none", "margin": "0", "padding": "0", "width": "100%" });
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select images')).click(function () {
             divselectFile = div_col_image;
             currentNeededFileType = "image";
@@ -652,18 +657,20 @@
             if (options.palylistItem) {
                 if (options.palylistItem.itemData) {
                     $.each(options.palylistItem.itemData.id, function (index, item) {
+                        var screenshotDiv = $("<li/>").css({ "margin": "3px 3px 3px 0", "padding": "1px", "float": "left", "max-width": "200px", "height": "150px", "font-size": "4em", "text-align": "center", "cursor": "move" }).addClass("ui-state-default");
                         var screenshot = new Image();
-                        screenshot.src = options.palylistItem.itemData.fileUrl[index];
+                        screenshot.src = options.palylistItem.itemData.src[index];
                         screenshot.fileUrl = options.palylistItem.itemData.fileUrl[index];
                         screenshot.id = item;
-                        $(screenshot).css({ "max-height": "150px", "max-width": "200px", "padding": "5px" });
-                        div_col_image.append(screenshot);
-                        var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
-                            $(screenshot).remove();
-                            $(this).remove();
+                        $(screenshot).css({ "max-height": "140px", "max-width": "185px", "padding": "5px", "vertical-align": "top" });
+                        screenshotDiv.append(screenshot);
+                        var deleteImg = $("<i class='fa fa-remove'></i>").css({ "background-color": "none", "cursor": "pointer", "vertical-align": "top" }).click(function () {
+                            $(this).parent().remove();
                         });
-                        div_col_image.append(deleteImg);
+                        screenshotDiv.append(deleteImg);
+                        div_col_image.append(screenshotDiv);
                     });
+                    div_col_image.sortable();
                 }
             }
             if (options.palylistItem) {
@@ -847,7 +854,7 @@
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
 
-        var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
+        var div_col_image = $('<ul/>').css({ "list-style-type": "none", "margin": "0", "padding": "0", "width": "100%" });
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select video')).click(function () {
             divselectFile = div_col_image;
             currentNeededFileType = "video";
@@ -905,8 +912,13 @@
     $("#add_playlist").click(function () {
         if (tempselectedGroupID == null) {
             toastr.warning("Please select playlist's group!");
-                return;
+            return;
         }
+        if ($("#groupTreeForPlaylistEditor").jstree(true).get_selected().length == 0) {
+            toastr.warning("Please select playlist's group!");
+            return;
+        }
+
         $.playlistEditor('setfolder', { selectedGroupID: tempselectedGroupID});
         $.playlistEditor('playlistDefaultvalue');
         div_playlist.show();
@@ -1031,6 +1043,7 @@
                     });
                     editplaylistID = null;
                     deletepalylistItem = null;
+                    toastr.success("操作が完了しました。");
                     $("#playlist_save").attr('disabled', false);
                 },
                 error: function () {
@@ -1054,6 +1067,7 @@
                     });
                     editplaylistID = null;
                     deletepalylistItem = null;
+                    toastr.success("操作が完了しました。");
                     $("#playlist_save").attr('disabled', false);
                 },
                 error: function () {
@@ -1077,21 +1091,27 @@
         if (edit_playlistId) {
             //toastr.warning("使用中ですので、削除できない。");
             //return;
-            $.insmFramework('deletePlaylist', {
-                deletePlaylistId: edit_playlistId,
-                deletepalylistItem: select_palylistItem,
-                success: function (fileData) {
-                    deletepalylistItem = null;
-                    div_playlist.hide();
-                    div_Mainplaylist.show();
-                    $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: tempselectedGroupID });
-                    edit_playlistId = null;
-                },
-                error: function () {
-                },
-            });
+            $.confirmBox({
+                title: "Warning",
+                message: '削除しても宜しいでしょうか？',
+                onOk: function () {
+                    $.insmFramework('deletePlaylist', {
+                        deletePlaylistId: edit_playlistId,
+                        deletepalylistItem: select_palylistItem,
+                        success: function (fileData) {
+                            deletepalylistItem = null;
+                            div_playlist.hide();
+                            div_Mainplaylist.show();
+                            $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: tempselectedGroupID });
+                            edit_playlistId = null;
+                            toastr.success("操作が完了しました。");
+                        },
+                        error: function () {
+                        },
+                    });
+                }
+            }); 
         }
-        
     });
 
     $("#playlist_back").click(function () {

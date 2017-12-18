@@ -292,7 +292,33 @@ namespace ToilluminateModel.Controllers
                     // save image file
                     fileType = "image";
                     Image originalImg = Image.FromStream(file.InputStream);
-                    Image thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, originalImg.Width / 10, originalImg.Height / 10);
+                    int thumbnailMaxWidth = 200;
+                    int thumbnailMaxHeight = 150;
+                    Image thumbnailImg;
+                    if (originalImg.Width > thumbnailMaxWidth && originalImg.Height <= thumbnailMaxHeight)//宽度比目的图片宽度大，长度比目的图片长度小
+                    {
+                        thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, thumbnailMaxWidth, (thumbnailMaxWidth * originalImg.Height) / originalImg.Width);
+                    }
+                    else if (originalImg.Width <= thumbnailMaxWidth && originalImg.Height > thumbnailMaxHeight)//宽度比目的图片宽度小，长度比目的图片长度大
+                    {
+                        thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, (thumbnailMaxHeight * originalImg.Width) / originalImg.Height, thumbnailMaxHeight);
+                    }
+                    else if (originalImg.Width <= thumbnailMaxWidth && originalImg.Height <= thumbnailMaxHeight) //长宽比目的图片长宽都小
+                    {
+                        thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, originalImg.Width, originalImg.Height);
+                    }
+                    else
+                    {
+                        if ((thumbnailMaxWidth * originalImg.Height) / originalImg.Width > thumbnailMaxHeight)
+                        {
+                            thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, (thumbnailMaxHeight * originalImg.Width) / originalImg.Height, thumbnailMaxHeight);
+                        }
+                        else
+                        {
+                            thumbnailImg = ImageHelper.GetThumbnailImage(originalImg, thumbnailMaxWidth, (thumbnailMaxWidth * originalImg.Height) / originalImg.Width);
+                        }
+                    }
+
                     originalImg.Save(filePath);
                     thumbnailImg.Save(thumbnailFilePath);
                 }

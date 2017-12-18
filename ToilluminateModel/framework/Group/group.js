@@ -89,6 +89,7 @@
                 success: function (data) {
                     $.insmGroup('refreshTree');
                     editGroupID = undefined;
+                    toastr.success("操作が完了しました。");
                 }
             })
         },
@@ -136,7 +137,8 @@
             tree.jstree(groupJstreeData);
 
             div_groupTree.bind("refresh.jstree", function (e, data) {
-                div_groupTree.jstree(true).select_node(selectedGroupID);
+                var loginUser = $.insmFramework('user');
+                div_groupTree.jstree(true).select_node(loginUser.GroupID);
             });
             //div_groupTree.on("ready.jstree", function (event, data) {
             //    $("#1_anchor").css("visibility", "hidden");
@@ -303,12 +305,12 @@
                     selector: { class: 'm-checkbox--solid m-checkbox--brand' },
                 }, {
                     field: "PlayerID",
-                    title: "モニターＩＤ",
+                    title: "ディスプレイＩＤ",
                     filterable: false, // disable or enable filtering
-                    width: 85
+                    width: 115
                 }, {
                     field: "PlayerName",
-                    title: "モニター名",
+                    title: "ディスプレイ名",
                     responsive: { visible: 'lg' }
                 }, {
                     field: "GroupName",
@@ -431,6 +433,7 @@
                                 groupID: selectedGroupID,
                                 PlayListID: playListgroup,
                                 success: function (data) {
+                                    toastr.success("操作が完了しました。");
                                 },
                                 error: function () {
                                 }
@@ -826,18 +829,25 @@
             return;
         }
         if (deleteGroup) {
-            $.insmFramework('updateGroupUseFlg', {
-                deleteGroupItem: deleteGroup.li_attr,
-                success: function (resultdata) {
-                    div_main.show();
-                    div_edit.hide();
-                    var userGroupId = $.insmFramework('user').GroupID;
-                    //$.insmGroup('initGroupTree', {
-                    //    userGroupId: userGroupId
-                    //});
-                    $.insmGroup('refreshTree');
+            $.confirmBox({
+                title: "Warning",
+                message: '削除しても宜しいでしょうか？',
+                onOk: function () {
+                    $.insmFramework('updateGroupUseFlg', {
+                        deleteGroupItem: deleteGroup.li_attr,
+                        success: function (resultdata) {
+                            div_main.show();
+                            div_edit.hide();
+                            var userGroupId = $.insmFramework('user').GroupID;
+                            //$.insmGroup('initGroupTree', {
+                            //    userGroupId: userGroupId
+                            //});
+                            $.insmGroup('refreshTree');
+                            toastr.success("操作が完了しました。");
+                        }
+                    })
                 }
-            })
+            });  
         }
     })
     $("#expandAll").click(function () {
@@ -984,6 +994,7 @@
                     success: function (data) {
                         if (data) {
                             $.insmGroup('showPlaylist', { Playlists: data, isGroup: true, GroupID: selectedGroupID });
+                            toastr.success("操作が完了しました。");
                         }
                     },
                     error: function () {
@@ -1097,6 +1108,7 @@
                                 playerId: data.PlayerID,
                                 PlayListID: playListgroup,
                                 success: function (data) {
+                                    toastr.success("操作が完了しました。");
                                 },
                                 error: function () {
                                 }
@@ -1152,6 +1164,7 @@
                                     playerId: editedplayerID,
                                     PlayListID: playListgroup,
                                     success: function (data) {
+                                        toastr.success("操作が完了しました。");
                                     },
                                     error: function () {
                                     }

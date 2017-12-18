@@ -15833,11 +15833,14 @@ select.m-select2 {
           margin: 0 auto; }
           .m-login.m-login--2 .m-login__wrapper .m-login__container .m-login__form .m-form__group .form-control {
             border-radius: 40px;
-            border: none;
+            /*border: none;*/
             padding: 1.5rem 1.5rem;
-            margin-top: 1.5rem; }
+            margin-top: 1.5rem;
+            border-color: #c2acf4;
+            box-shadow: 0px 5px 10px 2px rgba(152, 22, 244, 0.19);
+          }
             .m-login.m-login--2 .m-login__wrapper .m-login__container .m-login__form .m-form__group .form-control.m-login__form-input--last {
-              border: 0; }
+              /*border: 0;*/ }
           .m-login.m-login--2 .m-login__wrapper .m-login__container .m-login__form .m-form__group.has-danger .form-control-feedback {
             font-weight: 400;
             font-size: 0.85rem;
@@ -15955,7 +15958,9 @@ select.m-select2 {
     .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control::-webkit-input-placeholder {
       color: #b295f1; }
     .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control:focus {
-      color: white; }
+      color: white;
+      border-color:white;
+    }
       .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control:focus::-moz-placeholder {
         color: #e3d9fa;
         opacity: 1; }
