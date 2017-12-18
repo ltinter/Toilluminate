@@ -1700,5 +1700,33 @@ namespace ToilluminateClient
             }
         }
         #endregion
+
+        #region " 读取图像 " 
+        /// <summary>
+        /// 从流中读取图像
+        /// </summary>
+        /// <param name="bmpFile"></param>
+        public static Image GetBitmap(string bmpFile)
+        {
+            //显示图像
+            Image Image;
+            try
+            {
+
+                using (FileStream pFileStream = new FileStream(bmpFile, FileMode.Open, FileAccess.Read))
+                {
+                    Image = Image.FromStream(pFileStream);
+                    pFileStream.Close();
+                    pFileStream.Dispose();
+                }
+
+                return Image;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
     }
 }

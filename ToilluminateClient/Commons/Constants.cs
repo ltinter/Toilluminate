@@ -487,13 +487,13 @@ namespace ToilluminateClient
         //Docking_DT = 14,
 
     }
-#endregion
+    #endregion
 
 
-#region 信息显示模式
+    #region 信息显示位置
 
     /// <summary>
-    /// 信息显示模式
+    /// 信息显示位置
     /// </summary>
     public enum MessageShowStyle
     {
@@ -538,6 +538,27 @@ namespace ToilluminateClient
         /// </summary>
         Full2 = 2,
     }
-#endregion
+    #endregion
+
+    #region 商标位置类型
+    /// <summary>
+    /// 商标位置类型
+    /// </summary>
+    /// <remarks></remarks>
+    public enum TrademarkPositionType
+    {
+        None = 0,
+        TopLeft = 1,
+        TopCenter = 2,
+        TopRight = 3,
+        MiddleLeft = 4,
+        MiddleCenter = 5,
+        MiddleRight = 6,
+        BottomLeft = 7,
+        BottomCenter = 8,
+        BottomRight = 9,
+    }
+
+    #endregion
 }
 

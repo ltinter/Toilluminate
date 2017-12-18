@@ -74,15 +74,13 @@ namespace ToilluminateClient
 
         #endregion
 
-        #region " 画图片 "
+        #region " 字幕 "
         /// <summary>
-        /// 画图片
+        /// 字幕
         /// </summary>
-        /// <param name="g"></param>
-        /// <param name="bmp"></param>
         public static void MyDrawMessage(Control drawingBoard)
         {
-            if (PlayApp.DrawMessageFlag)
+            if (ShowApp.DrawMessageFlag)
             {
                 return;
             }
@@ -91,7 +89,7 @@ namespace ToilluminateClient
             Graphics gBmpBack = null;
             try
             {
-                PlayApp.DrawMessageFlag = true;
+                ShowApp.DrawMessageFlag = true;
 
                 int controlLeft = 0;
                 int controlTop = 0;
@@ -103,18 +101,18 @@ namespace ToilluminateClient
                 int newH = drawingBoard.Height;
 
 
-                if (PlayApp.DrawMessageList.Count == 0)
+                if (ShowApp.DrawMessageList.Count == 0)
                 {
-                    if (PlayApp.DownLoadDrawMessage != null && PlayApp.DownLoadDrawMessage.DrawStyleList.Count > 0)
+                    if (ShowApp.DownLoadDrawMessage != null && ShowApp.DownLoadDrawMessage.DrawStyleList.Count > 0)
                     {
-                        DrawMessage dmItem = PlayApp.DownLoadDrawMessage;
+                        DrawMessage dmItem = ShowApp.DownLoadDrawMessage;
 
                         if (dmItem.MoveState == MoveStateType.NotMove)
                         {
                             newW = dmItem.Width;
                             newH = dmItem.Heigth;
-                            PlayApp.MessageBackBitmap = new Bitmap(newW, newH);
-                            gBmpBack = Graphics.FromImage(PlayApp.MessageBackBitmap);
+                            ShowApp.MessageBackBitmap = new Bitmap(newW, newH);
+                            gBmpBack = Graphics.FromImage(ShowApp.MessageBackBitmap);
                             gBmpBack.Clear(ImageApp.BackClearColor);
 
                             foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
@@ -140,14 +138,14 @@ namespace ToilluminateClient
                 }
                 else
                 {
-                    foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
+                    foreach (DrawMessage dmItem in ShowApp.DrawMessageList)
                     {
                         if (dmItem.MoveState == MoveStateType.NotMove)
                         {
                             newW = dmItem.Width;
                             newH = dmItem.Heigth;
-                            PlayApp.MessageBackBitmap = new Bitmap(newW, newH);
-                            gBmpBack = Graphics.FromImage(PlayApp.MessageBackBitmap);
+                            ShowApp.MessageBackBitmap = new Bitmap(newW, newH);
+                            gBmpBack = Graphics.FromImage(ShowApp.MessageBackBitmap);
                             gBmpBack.Clear(ImageApp.BackClearColor);
 
                             foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
@@ -176,11 +174,11 @@ namespace ToilluminateClient
 
                 if (drawing)
                 {
-                    if (drawNewImage && PlayApp.MessageBackBitmap != null)
+                    if (drawNewImage && ShowApp.MessageBackBitmap != null)
                     {
-                        drawingBoard.Width = PlayApp.MessageBackBitmap.Width;
-                        drawingBoard.Height = PlayApp.MessageBackBitmap.Height;
-                        drawingBoard.BackgroundImage = PlayApp.MessageBackBitmap;
+                        drawingBoard.Width = ShowApp.MessageBackBitmap.Width;
+                        drawingBoard.Height = ShowApp.MessageBackBitmap.Height;
+                        drawingBoard.BackgroundImage = ShowApp.MessageBackBitmap;
                         drawingBoard.Left = controlLeft;
                         drawingBoard.Top = controlTop;
                     }
@@ -201,8 +199,8 @@ namespace ToilluminateClient
                     if (drawingBoard.BackgroundImage != null)
                     {
                         drawingBoard.BackgroundImage = null;
-                        PlayApp.MessageBackBitmap.Dispose();
-                        PlayApp.MessageBackBitmap = null;
+                        ShowApp.MessageBackBitmap.Dispose();
+                        ShowApp.MessageBackBitmap = null;
                     }
                 }
 
@@ -213,7 +211,7 @@ namespace ToilluminateClient
             }
             finally
             {
-                PlayApp.DrawMessageFlag = false;
+                ShowApp.DrawMessageFlag = false;
                 if (null != g)
                 {
                     g.Dispose();
@@ -225,18 +223,114 @@ namespace ToilluminateClient
             }
         }
 
+        #endregion
+        #region " 商标 "
+        /// <summary>
+        /// 商标
+        /// </summary>
+        public static void MyDrawTrademark(Control drawingBoard)
+        {
+            if (ShowApp.DrawTrademarkFlag)
+            {
+                return;
+            }
+
+            Graphics g = null;
+            Graphics gBmpBack = null;
+            try
+            {
+                ShowApp.DrawTrademarkFlag = true;
+
+                int controlLeft = 0;
+                int controlTop = 0;
+                bool drawNewImage = false;
+                bool drawing = false;
+
+                int newW = drawingBoard.Width;
+                int newH = drawingBoard.Height;
+
+
+                foreach (DrawTrademark dmItem in ShowApp.DrawTrademarkList)
+                {
+                    if (dmItem.ShowState == ShowStateType.NotShow)
+                    {
+                        newW = dmItem.Width;
+                        newH = dmItem.Heigth;
+                        ShowApp.TrademarkBackBitmap = new Bitmap(newW, newH);
+                        gBmpBack = Graphics.FromImage(ShowApp.TrademarkBackBitmap);
+                        gBmpBack.Clear(ImageApp.BackClearColor);
+
+                        //gBmpBack.DrawString(dmItem.fi.Message, dslItem.Font, new SolidBrush(dslItem.Color), dslItem.LeftWidth, 0);
+
+                        drawNewImage = true;
+                        drawing = true;
+                        controlLeft = dmItem.Left;
+                        controlTop = dmItem.Top;
+                        dmItem.ShowTrademark();
+                        break;
+                    }
+                    else if (dmItem.ShowState == ShowStateType.Showing)
+                    {
+                        drawing = true;
+                        break;
+                    }
+                }
+
+                if (drawing)
+                {
+                    if (drawNewImage)
+                    {
+                        drawingBoard.Width = ShowApp.TrademarkBackBitmap.Width;
+                        drawingBoard.Height = ShowApp.TrademarkBackBitmap.Height;
+                        drawingBoard.BackgroundImage = ShowApp.TrademarkBackBitmap;
+                        drawingBoard.Left = controlLeft;
+                        drawingBoard.Top = controlTop;
+                    }
+                }
+                else
+                {
+                    if (drawingBoard.BackgroundImage != null)
+                    {
+                        drawingBoard.BackgroundImage = null;
+                        ShowApp.TrademarkBackBitmap.Dispose();
+                        ShowApp.TrademarkBackBitmap = null;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("ImageApp", "MyDrawTrademark", ex);
+            }
+            finally
+            {
+                ShowApp.DrawTrademarkFlag = false;
+                if (null != g)
+                {
+                    g.Dispose();
+                }
+                if (null != gBmpBack)
+                {
+                    gBmpBack.Dispose();
+                }
+            }
+        }
+
+        #endregion
+
+        #region " 画图片 "
         public static void MyDrawBitmap(Graphics g)
         {
-            if (PlayApp.DrawBitmapFlag)
+            if (ShowApp.DrawBitmapFlag)
             {
                 return;
             }
             try
             {
-                PlayApp.DrawBitmapFlag = true;
-                if (PlayApp.DrawBitmap != null)
+                ShowApp.DrawBitmapFlag = true;
+                if (ShowApp.DrawBitmap != null)
                 {
-                    g.DrawImage(PlayApp.DrawBitmap, 0, 0);
+                    g.DrawImage(ShowApp.DrawBitmap, 0, 0);
                 }
             }
             catch (Exception ex)
@@ -245,7 +339,7 @@ namespace ToilluminateClient
             }
             finally
             {
-                PlayApp.DrawBitmapFlag = false;
+                ShowApp.DrawBitmapFlag = false;
             }
         }
         #endregion
@@ -856,7 +950,7 @@ namespace ToilluminateClient
                 int top = (picBox.Size.Height - height) / 2; //图像高度
                 g = picBox.CreateGraphics();
                 
-                    Bitmap bmpBack = ResizeBitmap(PlayApp.DrawBitmap, new Size(width, height), FillOptionStyle.Fill);
+                    Bitmap bmpBack = ResizeBitmap(ShowApp.DrawBitmap, new Size(width, height), FillOptionStyle.Fill);
                 gBmpBack = Graphics.FromImage(bmpBack);
                 gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
@@ -919,7 +1013,7 @@ namespace ToilluminateClient
                 Bitmap bitmap = new Bitmap(width, height);
 
 
-                Bitmap bmpBack = ResizeBitmap(PlayApp.DrawBitmap, new Size(width, height), FillOptionStyle.Fill);
+                Bitmap bmpBack = ResizeBitmap(ShowApp.DrawBitmap, new Size(width, height), FillOptionStyle.Fill);
                 gBmpBack = Graphics.FromImage(bmpBack);
                 gBmpBack.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
@@ -984,9 +1078,9 @@ namespace ToilluminateClient
                 int sepNumber = 1;
                 int x = width - sepFix;
 
-                if (PlayApp.DrawBitmap != null)
+                if (ShowApp.DrawBitmap != null)
                 {
-                    Bitmap bmpOld = ResizeBitmap(PlayApp.DrawBitmap, new Size(picBox.Width, picBox.Height), FillOptionStyle.Fill);
+                    Bitmap bmpOld = ResizeBitmap(ShowApp.DrawBitmap, new Size(picBox.Width, picBox.Height), FillOptionStyle.Fill);
                     Bitmap bmpBack = new Bitmap(picBox.Width, picBox.Height);
                     gBmpBack = Graphics.FromImage(bmpBack);
 
@@ -1065,9 +1159,9 @@ namespace ToilluminateClient
                 int sepFix = GetShowSepFix(height) * 2;
                 int sepNumber = 1;
                 int y = height - sepFix;
-                if (PlayApp.DrawBitmap != null)
+                if (ShowApp.DrawBitmap != null)
                 {
-                    Bitmap bmpOld = ResizeBitmap(PlayApp.DrawBitmap, new Size(picBox.Width, picBox.Height), FillOptionStyle.Fill);
+                    Bitmap bmpOld = ResizeBitmap(ShowApp.DrawBitmap, new Size(picBox.Width, picBox.Height), FillOptionStyle.Fill);
                     Bitmap bmpBack = new Bitmap(picBox.Width, picBox.Height);
                     gBmpBack = Graphics.FromImage(bmpBack);
 
@@ -1383,7 +1477,7 @@ namespace ToilluminateClient
         public static void ShowBitmap(Bitmap bmpSource, PictureBox picBox, ImageShowStyle imgShowStyle)
         {
 
-            if (PlayApp.DrawBitmapFlag)
+            if (ShowApp.DrawBitmapFlag)
             {
                 return;
             }
@@ -1392,7 +1486,7 @@ namespace ToilluminateClient
             //显示图像
             try
             {
-                PlayApp.DrawBitmapFlag = true;
+                ShowApp.DrawBitmapFlag = true;
 
                 LogApp.OutputProcessLog("ImageApp", "ShowBitmap", "this BitMap");
 
@@ -1476,8 +1570,8 @@ namespace ToilluminateClient
 
                 //RectangleF myRect = new RectangleF(0, 0, bmpSource.Width, bmpSource.Height);
                 //PlayApp.DrawBitmap = bmpSource.Clone(myRect, System.Drawing.Imaging.PixelFormat.DontCare);
-                PlayApp.DrawBitmap = new Bitmap(bmpSource.Width, bmpSource.Height);
-                ImageApp.CopyBitmap(PlayApp.DrawBitmap, bmpSource);
+                ShowApp.DrawBitmap = new Bitmap(bmpSource.Width, bmpSource.Height);
+                ImageApp.CopyBitmap(ShowApp.DrawBitmap, bmpSource);
             }
             catch (Exception ex)
             {
@@ -1485,7 +1579,7 @@ namespace ToilluminateClient
             }
             finally
             {
-                PlayApp.DrawBitmapFlag = false;
+                ShowApp.DrawBitmapFlag = false;
                 if (null != g)
                 {
                     g.Dispose();

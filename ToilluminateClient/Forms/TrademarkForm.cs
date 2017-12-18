@@ -11,11 +11,11 @@ using System.Windows.Forms;
 
 namespace ToilluminateClient
 {
-    public partial class MessageForm : Form
+    public partial class TrademarkForm : Form
     {
-        private bool showMessageFlag = false;
+        private bool showTrademarkFlag = false;
 
-        private bool showMessageEnd = false;
+        private bool showTrademarkEnd = false;
 
         private MainForm parentForm;
 
@@ -43,7 +43,7 @@ namespace ToilluminateClient
         }
         #endregion
 
-        public MessageForm()
+        public TrademarkForm()
         {
             InitializeComponent();
 
@@ -55,12 +55,13 @@ namespace ToilluminateClient
             this.FormBorderStyle = FormBorderStyle.None;
 
 
-            this.pnlMessage.Left = 0;
-            this.pnlMessage.Top = 0;
-            this.pnlMessage.Width = this.Width;
-            this.pnlMessage.Height = this.Height;
-            this.pnlMessage.BackColor = ImageApp.BackClearColor;
-            this.pnlMessage.SendToBack();
+            this.pnlTrademark.Left = 0;
+            this.pnlTrademark.Top = 0;
+            this.pnlTrademark.Width = this.Width;
+            this.pnlTrademark.Height = this.Height;
+            this.pnlTrademark.BackColor = ImageApp.BackClearColor;
+            this.pnlTrademark.SendToBack();
+
             
         }
 
@@ -74,18 +75,19 @@ namespace ToilluminateClient
                 {
                     if (PlayApp.ExecutePlayList.PlayListState == PlayListStateType.Stop)
                     {
-                        CloseMessage();
+                        CloseTrademark();
                         return;
                     }
                 }
 
                 ThreadShow();
 
-                ImageApp.MyDrawMessage(this.pnlMessage);
+                ImageApp.MyDrawTrademark(this.pnlTrademark);
+               
             }
             catch (Exception ex)
             {
-                LogApp.OutputErrorLog("MessageForm", "tmrMessage_Tick", ex);
+                LogApp.OutputErrorLog("TrademarkForm", "tmrTrademark_Tick", ex);
             }
             finally
             {
@@ -93,50 +95,50 @@ namespace ToilluminateClient
             }
         }
 
-        private void MessageForm_Load(object sender, EventArgs e)
+        private void TrademarkForm_Load(object sender, EventArgs e)
         {
             this.tmrShow.Interval = 10;
 
         }
-        private void MessageForm_Shown(object sender, EventArgs e)
+        private void TrademarkForm_Shown(object sender, EventArgs e)
         {
-            ShowApp.MessageBackBitmap = new Bitmap(this.Width, this.Height);
+            ShowApp.TrademarkBackBitmap = new Bitmap(this.Width, this.Height);
         }
 
-        private void MessageForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void TrademarkForm_FormClosing(object sender, FormClosingEventArgs e)
         {
 
         }
 
-        private void MessageForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void TrademarkForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ShowApp.NowMediaIsShow = false;
+            ShowApp.NowTrademarkIsShow = false;
         }
 
-        #region " Show Message "
+        #region " Show Trademark "
 
         public void ThreadShow()
         {
-            Thread tmpThread = new Thread(this.ThreadShowMessageVoid);
+            Thread tmpThread = new Thread(this.ThreadShowTrademarkVoid);
             tmpThread.IsBackground = true;
             tmpThread.Start();
         }
 
 
-        private void ThreadShowMessageVoid()
+        private void ThreadShowTrademarkVoid()
         {
-            if (showMessageFlag)
+            if (showTrademarkFlag)
             {
                 return;
             }
             try
             {
-                showMessageFlag = true;
+                showTrademarkFlag = true;
 
                 if (PlayApp.ExecutePlayList != null)
                 {
 
-                    foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
+                    foreach (TrademarkTempleteItem mtItem in PlayApp.ExecutePlayList.TrademarkTempleteItemList)
                     {
                         if (mtItem.TempleteState != TempleteStateType.Stop)
                         {
@@ -153,11 +155,11 @@ namespace ToilluminateClient
             }
             catch (Exception ex)
             {
-                LogApp.OutputErrorLog("MessageForm", "ThreadShowMessageVoid", ex);
+                LogApp.OutputErrorLog("TrademarkForm", "ThreadShowTrademarkVoid", ex);
             }
             finally
             {
-                showMessageFlag = false;
+                showTrademarkFlag = false;
             }
         }
 
@@ -166,14 +168,14 @@ namespace ToilluminateClient
         /// </summary>
         /// <param name="mtItem"></param>
 
-        private void CloseMessage()
+        private void CloseTrademark()
         {
             try
             {
-                ShowApp.NowMediaIsShow = false;
+                ShowApp.NowTrademarkIsShow = false;
                 this.tmrShow.Stop();
 
-                foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
+                foreach (TrademarkTempleteItem mtItem in PlayApp.ExecutePlayList.TrademarkTempleteItemList)
                 {
                     mtItem.ExecuteRefresh();
                 }
@@ -209,18 +211,18 @@ namespace ToilluminateClient
 
         #endregion
 
-        private void MessageForm_SizeChanged(object sender, EventArgs e)
+        private void TrademarkForm_SizeChanged(object sender, EventArgs e)
         {
             try
             {
-                foreach (DrawMessage dmItem in ShowApp.DrawMessageList)
+                foreach (DrawTrademark dmItem in ShowApp.DrawTrademarkList)
                 {
                     dmItem.SetParentSize(this.Width, this.Height);
                 }
             }
             catch (Exception ex)
             {
-                LogApp.OutputErrorLog("MessageForm", "MessageForm_SizeChanged", ex);
+                LogApp.OutputErrorLog("TrademarkForm", "TrademarkForm_SizeChanged", ex);
             }
         }
 

@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
@@ -22,6 +23,7 @@ namespace ToilluminateClient
 
         
         public static MessageForm messageFormInstance = new MessageForm();
+        public static TrademarkForm trademarkFormInstance = new TrademarkForm();
 
         /// <summary>
         /// システムのファイル
@@ -129,6 +131,32 @@ namespace ToilluminateClient
             }
         }
 
+
+        public static void ReSizeForm(Form main, Form layer)
+        {
+            try
+            {
+
+                if (layer != null && layer.IsDisposed == false)
+                {
+                    if (main.FormBorderStyle == layer.FormBorderStyle)
+                    {
+                        layer.Size = main.Size;
+                        layer.Location = main.Location;
+                    }
+                    else
+                    {
+                        layer.Size = new Size(main.Size.Width - 16, main.Size.Height - 38);
+                        layer.Location = new Point(main.Location.X + 8, main.Location.Y + 30);
+                    }
+                    layer.WindowState = main.WindowState;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogApp.OutputErrorLog("VariableInfo", "ReSizeForm", ex);
+            }
+        }
 
         #endregion
     }
