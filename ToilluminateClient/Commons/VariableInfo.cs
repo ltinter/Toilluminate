@@ -30,6 +30,11 @@ namespace ToilluminateClient
         /// </summary>
         private static string iniFile = string.Empty;
 
+        /// <summary>
+        /// システムのファイル
+        /// </summary>
+        private static string jsonFile = string.Empty;
+
         #region フィールド
         /// <summary>
         /// 用户ID
@@ -63,13 +68,23 @@ namespace ToilluminateClient
             }
         }
         /// <summary>
-        /// 放送リストID
+        /// ini ファイル
         /// </summary>
         public static string IniFile
         {
             get
             {
                 return iniFile;
+            }
+        }
+        /// <summary>
+        /// Json ファイル
+        /// </summary>
+        public static string JsonFile
+        {
+            get
+            {
+                return jsonFile;
             }
         }
 
@@ -104,6 +119,9 @@ namespace ToilluminateClient
                 clientPath = Application.StartupPath;
 
                 iniFile = clientPath + "\\" + Constants.INI_NAME;
+
+                jsonFile = clientPath + "\\" + Constants.JSON_NAME;
+
 
                 tempPath = Utility.GetFullFileName(clientPath, "Temp");
                 filesPath = Utility.GetFullFileName(clientPath, "Files");

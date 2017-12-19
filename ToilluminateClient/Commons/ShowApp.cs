@@ -37,7 +37,7 @@ namespace ToilluminateClient
         #endregion
 
         #region "Trademark"
-        public static Bitmap TrademarkBackBitmap;
+        public static Bitmap[] TrademarkBackBitmaps = new Bitmap[10];
 
         public static List<DrawTrademark> DrawTrademarkList = new List<DrawTrademark>();
         public static bool DrawTrademarkFlag = false;
@@ -45,15 +45,20 @@ namespace ToilluminateClient
 
         public static bool NowImageIsShow = false;
         public static bool NowMediaIsShow = false;
+
+
+
         public static bool NowMessageIsShow = false;
         public static bool NowTrademarkIsShow = false;
 
 
         public static bool NowMessageIsRefresh = false;
 
+        public static bool NowTrademarkIsRefresh = false;
 
         public static TempleteItemType NowShowTempleteItemType = TempleteItemType.None;
-
+        public static TempleteItemType NextShowTempleteItemType = TempleteItemType.None;
+        
 
         /// <summary>
         /// 刷新下载进度信息
@@ -500,22 +505,14 @@ namespace ToilluminateClient
     {
 
         #region " variable "
-        private MessageTempleteItem parentTempleteValue;
+        private TrademarkTempleteItem parentTempleteValue;
 
         private List<DrawTrademarkStyle> drawStyleListValue = new List<DrawTrademarkStyle> { };
 
-
-        private int leftValue=0;
-        private int topValue=0;
-        private int widthValue = 0;
-        private int heigthValue=0;
         private ShowStateType showStateValue = ShowStateType.NotShow;
 
         private int parentWidthValue=0;
         private int parentHeigthValue=0;
-        private bool needRefreshLocation = false;
-
-        private int slidingSpeedValue = 10;
         #endregion
 
 
@@ -536,60 +533,23 @@ namespace ToilluminateClient
                 return showStateValue;
             }
         }
-
-        public int Left
-        {
-            get
-            {
-                return leftValue;
-            }
-        }
-        public int Top
-        {
-            get
-            {
-                return topValue;
-            }
-        }
-
-        public int Width
-        {
-            get
-            {
-                return widthValue;
-            }
-        }
-        public int Heigth
-        {
-            get
-            {
-                return heigthValue;
-            }
-        }
+        
         #endregion
 
-        public DrawTrademark(int parentWidth, int parentHeigth, MessageTempleteItem parentTemplete)
+        public DrawTrademark(int parentWidth, int parentHeigth, TrademarkTempleteItem parentTemplete)
         {
             drawStyleListValue.Clear();
-            this.widthValue = 0;
 
-            this.leftValue = parentWidth;
             this.parentTempleteValue = parentTemplete;
-
 
             this.parentHeigthValue = parentHeigth;
             this.parentWidthValue = parentWidth;
-            this.slidingSpeedValue = parentTemplete.SlidingSpeed;
-
-            this.needRefreshLocation = true;
-            RefreshTop();
         }
 
         #region " void and function "
-        public void AddDrawTrademark(string file, MessageStyle drawStyle)
+        public void AddDrawTrademark(string file, TrademarkStyle drawStyle)
         {
-            drawStyleListValue.Add(new ToilluminateClient.DrawTrademarkStyle(file, 0, 0, drawStyle.Width, drawStyle.Heigth));
-            widthValue = widthValue + drawStyle.Width;
+            drawStyleListValue.Add(new ToilluminateClient.DrawTrademarkStyle(file, drawStyle.Width, drawStyle.Heigth, drawStyle.TrademarkPosition));
         }
 
 
@@ -597,45 +557,57 @@ namespace ToilluminateClient
         {
             this.parentHeigthValue = parentHeigth;
             this.parentWidthValue = parentWidth;
-            this.needRefreshLocation = true;
         }
+        
 
+        public Point GetStyleLocation(DrawTrademarkStyle style)
+        {            
+            int left = style.Left;
+            int top = style.Top;
 
-        private void RefreshTop()
-        {
-            int top = 30;
-            if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Top)
+            if (style.TrademarkPosition == TrademarkPositionType.TopLeft
+                || style.TrademarkPosition == TrademarkPositionType.TopCenter
+                || style.TrademarkPosition == TrademarkPositionType.TopRight)
             {
                 top = 30;
             }
-            else if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Bottom)
+            else if (style.TrademarkPosition == TrademarkPositionType.MiddleLeft
+                || style.TrademarkPosition == TrademarkPositionType.MiddleCenter
+                || style.TrademarkPosition == TrademarkPositionType.MiddleRight)
             {
-                top = this.parentHeigthValue - 30;
+                top = (this.parentHeigthValue- style.Heigth) / 2; 
             }
-            else if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Middle)
+            else if (style.TrademarkPosition == TrademarkPositionType.BottomLeft
+                || style.TrademarkPosition == TrademarkPositionType.BottomCenter
+                || style.TrademarkPosition == TrademarkPositionType.BottomRight)
             {
-                top = this.parentHeigthValue / 2;
+                top = this.parentHeigthValue - 30 - style.Heigth;
             }
-            this.topValue = top;
-            this.needRefreshLocation = false;
-        }
 
-        public int GetStyleTop(int styleHeigth)
-        {
-            int top = this.topValue;
-            if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Top)
+
+            if (style.TrademarkPosition == TrademarkPositionType.TopLeft
+                || style.TrademarkPosition == TrademarkPositionType.MiddleLeft
+                || style.TrademarkPosition == TrademarkPositionType.BottomLeft)
             {
-                top = this.topValue;
+                left = 30;
             }
-            else if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Bottom)
+            else if (style.TrademarkPosition == TrademarkPositionType.TopCenter
+                || style.TrademarkPosition == TrademarkPositionType.MiddleCenter
+                || style.TrademarkPosition == TrademarkPositionType.BottomCenter)
             {
-                top = this.topValue - styleHeigth;
+                left = (this.parentWidthValue - style.Width) / 2;
             }
-            else if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Middle)
+            else if (style.TrademarkPosition == TrademarkPositionType.TopRight
+                || style.TrademarkPosition == TrademarkPositionType.MiddleRight
+                || style.TrademarkPosition == TrademarkPositionType.BottomRight)
             {
-                top = this.topValue - (styleHeigth / 2);
+                left = this.parentWidthValue - 30 - style.Width;
             }
-            return top;
+
+            if (left < 0) left = 0;
+            if (top < 0) top = 0;
+
+            return new Point(left, top);
         }
 
         public void ShowTrademark()
@@ -714,24 +686,24 @@ namespace ToilluminateClient
         public DrawTrademarkStyle(string file, int width, int heigth, int left, int top)
         {
             this.fileValue = file;
-            this.leftValue = left;
-            this.topValue = top;
-            this.trademarkPositionValue = TrademarkPositionType.None;
-
             this.widthValue = width;
             this.heigthValue = heigth;
 
+
+            this.leftValue = left;
+            this.topValue = top;
+            this.trademarkPositionValue = TrademarkPositionType.None;
         }
         public DrawTrademarkStyle(string file, int width, int heigth, TrademarkPositionType trademarkPosition)
         {
             this.fileValue = file;
-            this.leftValue = 0;
-            this.topValue = 0;
-            this.trademarkPositionValue = trademarkPosition;
-
             this.widthValue = width;
             this.heigthValue = heigth;
 
+
+            this.leftValue = 0;
+            this.topValue = 0;
+            this.trademarkPositionValue = trademarkPosition;
         }
     }
     #endregion

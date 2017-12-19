@@ -33,6 +33,10 @@ namespace ToilluminateClient
         /// 設定ファイルの名
         /// </summary>
         public const string INI_NAME = "ToilluminateClient.ini";
+        /// <summary>
+        /// 設定ファイルの名
+        /// </summary>
+        public const string JSON_NAME = "ToilluminateClient.jsonstring";
 
         /// <summary>
         /// アプリケーション名
@@ -547,16 +551,16 @@ namespace ToilluminateClient
     /// <remarks></remarks>
     public enum TrademarkPositionType
     {
-        None = 0,
-        TopLeft = 1,
-        TopCenter = 2,
-        TopRight = 3,
-        MiddleLeft = 4,
-        MiddleCenter = 5,
-        MiddleRight = 6,
-        BottomLeft = 7,
-        BottomCenter = 8,
-        BottomRight = 9,
+        TopLeft = 0,
+        TopCenter = 1,
+        TopRight = 2,
+        MiddleLeft = 3,
+        MiddleCenter = 4,
+        MiddleRight = 5,
+        BottomLeft = 6,
+        BottomCenter = 7,
+        BottomRight = 8,
+        None = 9,
     }
 
     #endregion

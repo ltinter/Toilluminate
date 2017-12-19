@@ -1,20 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Text;
-using System.Drawing.Text;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
+using System.IO;
 using System.Net;
+using System.Text;
+using System.Windows.Forms;
 
 namespace ToilluminateClient
 {
@@ -228,7 +220,7 @@ namespace ToilluminateClient
         /// <summary>
         /// 商标
         /// </summary>
-        public static void MyDrawTrademark(Control drawingBoard)
+        public static void MyDrawTrademark(Control[] drawingBoards)
         {
             if (ShowApp.DrawTrademarkFlag)
             {
@@ -240,37 +232,58 @@ namespace ToilluminateClient
             try
             {
                 ShowApp.DrawTrademarkFlag = true;
+                int trademarkCount = 10;
 
-                int controlLeft = 0;
-                int controlTop = 0;
+                int[] controlLefts = new int[10] { -10, -10, -10, -10, -10, -10, -10, -10, -10, -10 };
+                int[] controlTops = new int[10] { -10, -10, -10, -10, -10, -10, -10, -10, -10, -10 };
                 bool drawNewImage = false;
                 bool drawing = false;
 
-                int newW = drawingBoard.Width;
-                int newH = drawingBoard.Height;
+                int newW = 0;
+                int newH = 0;
 
 
-                foreach (DrawTrademark dmItem in ShowApp.DrawTrademarkList)
+                foreach (DrawTrademark dtItem in ShowApp.DrawTrademarkList)
                 {
-                    if (dmItem.ShowState == ShowStateType.NotShow)
+                    if (dtItem.ShowState == ShowStateType.NotShow)
                     {
-                        newW = dmItem.Width;
-                        newH = dmItem.Heigth;
-                        ShowApp.TrademarkBackBitmap = new Bitmap(newW, newH);
-                        gBmpBack = Graphics.FromImage(ShowApp.TrademarkBackBitmap);
-                        gBmpBack.Clear(ImageApp.BackClearColor);
+                        foreach (DrawTrademarkStyle dtStyle in dtItem.DrawStyleList)
+                        {
+                            int trademarkBackBitmapIndex = dtStyle.TrademarkPosition.GetHashCode();
+                            newW = dtStyle.Width;
+                            newH = dtStyle.Heigth;
+                            ShowApp.TrademarkBackBitmaps[trademarkBackBitmapIndex] = new Bitmap(newW, newH);
+                            gBmpBack = Graphics.FromImage(ShowApp.TrademarkBackBitmaps[trademarkBackBitmapIndex]);
+                            gBmpBack.Clear(ImageApp.BackClearColor);
 
-                        //gBmpBack.DrawString(dmItem.fi.Message, dslItem.Font, new SolidBrush(dslItem.Color), dslItem.LeftWidth, 0);
+                            //动态添加图片
+                            using (Image imageTemp = ImageApp.GetBitmap(dtStyle.File))
+                            {                                
+                                gBmpBack.DrawImage(imageTemp, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, imageTemp.Width, imageTemp.Height), GraphicsUnit.Pixel);
+                            }
+
+                            Point location = dtItem.GetStyleLocation(dtStyle);
+
+                            controlLefts[trademarkBackBitmapIndex] = location.X;
+                            controlTops[trademarkBackBitmapIndex] = location.Y;
+                        }
 
                         drawNewImage = true;
                         drawing = true;
-                        controlLeft = dmItem.Left;
-                        controlTop = dmItem.Top;
-                        dmItem.ShowTrademark();
+                        dtItem.ShowTrademark();
                         break;
                     }
-                    else if (dmItem.ShowState == ShowStateType.Showing)
+                    else if (dtItem.ShowState == ShowStateType.Showing)
                     {
+                        foreach (DrawTrademarkStyle dtStyle in dtItem.DrawStyleList)
+                        {
+                            int trademarkBackBitmapIndex = dtStyle.TrademarkPosition.GetHashCode();
+                           
+                            Point location = dtItem.GetStyleLocation(dtStyle);
+
+                            controlLefts[trademarkBackBitmapIndex] = location.X;
+                            controlTops[trademarkBackBitmapIndex] = location.Y;
+                        }
                         drawing = true;
                         break;
                     }
@@ -280,20 +293,29 @@ namespace ToilluminateClient
                 {
                     if (drawNewImage)
                     {
-                        drawingBoard.Width = ShowApp.TrademarkBackBitmap.Width;
-                        drawingBoard.Height = ShowApp.TrademarkBackBitmap.Height;
-                        drawingBoard.BackgroundImage = ShowApp.TrademarkBackBitmap;
-                        drawingBoard.Left = controlLeft;
-                        drawingBoard.Top = controlTop;
+                        for (int boardIndex= 0; boardIndex < trademarkCount; boardIndex++)
+                        {
+                            if (ShowApp.TrademarkBackBitmaps[boardIndex] != null)
+                            {
+                                drawingBoards[boardIndex].Width = ShowApp.TrademarkBackBitmaps[boardIndex].Width;
+                                drawingBoards[boardIndex].Height = ShowApp.TrademarkBackBitmaps[boardIndex].Height;
+                                drawingBoards[boardIndex].Left = controlLefts[boardIndex];
+                                drawingBoards[boardIndex].Top = controlTops[boardIndex];
+                                drawingBoards[boardIndex].BackgroundImage = ShowApp.TrademarkBackBitmaps[boardIndex];
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    if (drawingBoard.BackgroundImage != null)
+                    for (int boardIndex = 0; boardIndex < trademarkCount; boardIndex++)
                     {
-                        drawingBoard.BackgroundImage = null;
-                        ShowApp.TrademarkBackBitmap.Dispose();
-                        ShowApp.TrademarkBackBitmap = null;
+                        if (drawingBoards[boardIndex].BackgroundImage != null)
+                        {
+                            drawingBoards[boardIndex].BackgroundImage = null;
+                            ShowApp.TrademarkBackBitmaps[boardIndex].Dispose();
+                            ShowApp.TrademarkBackBitmaps[boardIndex] = null;
+                        }
                     }
                 }
 
@@ -402,6 +424,11 @@ namespace ToilluminateClient
             {
                 int newW = size.Width;
                 int newH = size.Height;
+                if (sourceBmp == null)
+                {
+                    sourceBmp = GetNewBitmap(size);
+                }
+
                 int srcW = sourceBmp.Width;
                 int srcH = sourceBmp.Height;
 
@@ -1567,9 +1594,7 @@ namespace ToilluminateClient
                     g.DrawImage(bmpSource, left, top);
                 }
 
-
-                //RectangleF myRect = new RectangleF(0, 0, bmpSource.Width, bmpSource.Height);
-                //PlayApp.DrawBitmap = bmpSource.Clone(myRect, System.Drawing.Imaging.PixelFormat.DontCare);
+                
                 ShowApp.DrawBitmap = new Bitmap(bmpSource.Width, bmpSource.Height);
                 ImageApp.CopyBitmap(ShowApp.DrawBitmap, bmpSource);
             }
@@ -1677,10 +1702,12 @@ namespace ToilluminateClient
                 }
             }
         }
+        #endregion
 
+        #region " 新建图像 " 
 
         /// <summary>
-        /// 图像
+        /// 新建图像
         /// </summary>
         /// <param name="size">Size</param>
         /// <param name="picBox">PictureBox 对象</param>
@@ -1706,6 +1733,35 @@ namespace ToilluminateClient
                 {
                     g.Dispose();
                 }
+            }
+        }
+        #endregion
+
+        #region " 读取图像 " 
+        /// <summary>
+        /// 从流中读取图像
+        /// </summary>
+        /// <param name="bmpFile"></param>
+        public static Image GetBitmap(string bmpFile)
+        {
+            //显示图像
+            Image Image;
+            try
+            {
+
+                using (FileStream pFileStream = new FileStream(bmpFile, FileMode.Open, FileAccess.Read))
+                {
+                    Image = Image.FromStream(pFileStream);
+
+                    pFileStream.Close();
+                    pFileStream.Dispose();
+                }
+
+                return Image;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
         #endregion

@@ -1576,7 +1576,7 @@ namespace ToilluminateClient
         }
         #endregion
 
-        #region ""
+        #region " ファイルを読む "
         /// <summary>
         /// read file to byte array
         /// </summary>
@@ -1605,10 +1605,10 @@ namespace ToilluminateClient
         }
 
         #endregion
-        
-        #region " "
+
+        #region " 書きファイル "
         /// <summary>
-        /// 
+        /// 書きファイル
         /// </summary>
         /// <param name="file"></param>
         /// <param name="intBuffer"></param>
@@ -1623,6 +1623,64 @@ namespace ToilluminateClient
             }
         }
         #endregion
+
+        #region " 書きファイル "
+        /// <summary>
+        /// 書きファイル
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="writeString"></param>
+        public static void WriterFile(string file, string writeString)
+        {
+            try
+            {
+                // ディレクトリが見つからなかった場合、ディレクトリを作成
+                if (Directory.Exists(Path.GetDirectoryName(file)) == false)
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(file));
+                }
+
+                using (StreamWriter writer = new StreamWriter(file, true, new System.Text.UTF8Encoding(true)))
+                {
+                    writer.WriteLine(writeString);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Utility:" + ex.Message);
+                // 何もしない
+            }
+        }
+        #endregion
+
+        #region " ファイルを読 "
+        /// <summary>
+        /// ファイルを読
+        /// </summary>
+        /// <param name="file"></param>
+        public static string ReaderFile(string file)
+        {
+            try
+            {
+                string readerString = string.Empty;
+                if (File.Exists(file))
+                {
+                    using (StreamReader reader = new StreamReader(file, new System.Text.UTF8Encoding(true)))
+                    {
+                        readerString = reader.ReadLine();
+                    }
+                }
+                return readerString;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Utility:" + ex.Message);
+                return string.Empty;
+                // 何もしない
+            }
+        }
+        #endregion
+        
 
         #region "ファイル 読み取 Base64"
         /// <summary>
@@ -1701,32 +1759,5 @@ namespace ToilluminateClient
         }
         #endregion
 
-        #region " 读取图像 " 
-        /// <summary>
-        /// 从流中读取图像
-        /// </summary>
-        /// <param name="bmpFile"></param>
-        public static Image GetBitmap(string bmpFile)
-        {
-            //显示图像
-            Image Image;
-            try
-            {
-
-                using (FileStream pFileStream = new FileStream(bmpFile, FileMode.Open, FileAccess.Read))
-                {
-                    Image = Image.FromStream(pFileStream);
-                    pFileStream.Close();
-                    pFileStream.Dispose();
-                }
-
-                return Image;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        #endregion
     }
 }

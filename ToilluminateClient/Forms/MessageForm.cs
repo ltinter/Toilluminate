@@ -110,7 +110,6 @@ namespace ToilluminateClient
 
         private void MessageForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ShowApp.NowMediaIsShow = false;
         }
 
         #region " Show Message "
@@ -170,29 +169,14 @@ namespace ToilluminateClient
         {
             try
             {
-                ShowApp.NowMediaIsShow = false;
+                ShowApp.NowMessageIsShow = false;
                 this.tmrShow.Stop();
 
                 foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
                 {
                     mtItem.ExecuteRefresh();
                 }
-
-                Control objControl = this;
-
-                List<string> removeControlName = new List<string> { };
-                foreach (Control con in objControl.Controls)
-                {
-                    if (con.Name.Length > Constants.LabelNameHead.Length && Utility.GetLeftString(con.Name, Constants.LabelNameHead.Length) == Constants.LabelNameHead)
-                    {
-                        con.Visible = false;
-                        removeControlName.Add(con.Name);
-                    }
-                }
-                foreach (string controlName in removeControlName)
-                {
-                    objControl.Controls.RemoveByKey(controlName);
-                }
+                
             }
             catch (Exception ex)
             {

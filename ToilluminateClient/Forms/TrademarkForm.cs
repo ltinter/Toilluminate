@@ -19,6 +19,7 @@ namespace ToilluminateClient
 
         private MainForm parentForm;
 
+        private Control[] trademarkControls;
         #region " override "
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, System.Windows.Forms.Keys keyData)
         {
@@ -54,15 +55,18 @@ namespace ToilluminateClient
             this.StartPosition = FormStartPosition.Manual;
             this.FormBorderStyle = FormBorderStyle.None;
 
+            trademarkControls = new Control[] { this.pnlTrademark0, this.pnlTrademark1, this.pnlTrademark2, this.pnlTrademark3, this.pnlTrademark4, this.pnlTrademark5, this.pnlTrademark6, this.pnlTrademark7, this.pnlTrademark8, this.pnlTrademark9 };
 
-            this.pnlTrademark.Left = 0;
-            this.pnlTrademark.Top = 0;
-            this.pnlTrademark.Width = this.Width;
-            this.pnlTrademark.Height = this.Height;
-            this.pnlTrademark.BackColor = ImageApp.BackClearColor;
-            this.pnlTrademark.SendToBack();
+            foreach (Control pnlTrademark in trademarkControls)
+            {
+                pnlTrademark.Left = -10;
+                pnlTrademark.Top = -10;
+                pnlTrademark.Width = 1;
+                pnlTrademark.Height = 1;
+                pnlTrademark.BackColor = ImageApp.BackClearColor;
+                pnlTrademark.SendToBack();
+            }
 
-            
         }
 
         public void tmrShow_Tick(object sender, EventArgs e)
@@ -82,7 +86,7 @@ namespace ToilluminateClient
 
                 ThreadShow();
 
-                ImageApp.MyDrawTrademark(this.pnlTrademark);
+                ImageApp.MyDrawTrademark(this.trademarkControls);
                
             }
             catch (Exception ex)
@@ -102,7 +106,7 @@ namespace ToilluminateClient
         }
         private void TrademarkForm_Shown(object sender, EventArgs e)
         {
-            ShowApp.TrademarkBackBitmap = new Bitmap(this.Width, this.Height);
+            
         }
 
         private void TrademarkForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -137,16 +141,15 @@ namespace ToilluminateClient
 
                 if (PlayApp.ExecutePlayList != null)
                 {
-
-                    foreach (TrademarkTempleteItem mtItem in PlayApp.ExecutePlayList.TrademarkTempleteItemList)
+                    foreach (TrademarkTempleteItem ttItem in PlayApp.ExecutePlayList.TrademarkTempleteItemList)
                     {
-                        if (mtItem.TempleteState != TempleteStateType.Stop)
+                        if (ttItem.TempleteState != TempleteStateType.Stop)
                         {
-                            if (mtItem.TempleteState == TempleteStateType.Wait)
+                            if (ttItem.TempleteState == TempleteStateType.Wait)
                             {
-                                mtItem.ExecuteStart();
+                                ttItem.ExecuteStart();
                             }
-                            mtItem.ShowCurrent(this);
+                            ttItem.ShowCurrent(this);
                             break;
                         }
                     }
@@ -175,25 +178,25 @@ namespace ToilluminateClient
                 ShowApp.NowTrademarkIsShow = false;
                 this.tmrShow.Stop();
 
-                foreach (TrademarkTempleteItem mtItem in PlayApp.ExecutePlayList.TrademarkTempleteItemList)
+                foreach (TrademarkTempleteItem ttItem in PlayApp.ExecutePlayList.TrademarkTempleteItemList)
                 {
-                    mtItem.ExecuteRefresh();
+                    ttItem.ExecuteRefresh();
                 }
 
-                Control objControl = this;
-
-                List<string> removeControlName = new List<string> { };
-                foreach (Control con in objControl.Controls)
+                foreach (Control board in this.trademarkControls)
                 {
-                    if (con.Name.Length > Constants.LabelNameHead.Length && Utility.GetLeftString(con.Name, Constants.LabelNameHead.Length) == Constants.LabelNameHead)
+                    if (board.BackgroundImage != null)
                     {
-                        con.Visible = false;
-                        removeControlName.Add(con.Name);
+                        board.BackgroundImage = null;
                     }
                 }
-                foreach (string controlName in removeControlName)
+                for (int boardIndex = 0; boardIndex < ShowApp.TrademarkBackBitmaps.Count(); boardIndex++)
                 {
-                    objControl.Controls.RemoveByKey(controlName);
+                    if (ShowApp.TrademarkBackBitmaps[boardIndex] != null)
+                    {
+                        ShowApp.TrademarkBackBitmaps[boardIndex].Dispose();
+                        ShowApp.TrademarkBackBitmaps[boardIndex] = null;
+                    }
                 }
             }
             catch (Exception ex)
@@ -215,9 +218,9 @@ namespace ToilluminateClient
         {
             try
             {
-                foreach (DrawTrademark dmItem in ShowApp.DrawTrademarkList)
+                foreach (DrawTrademark dtItem in ShowApp.DrawTrademarkList)
                 {
-                    dmItem.SetParentSize(this.Width, this.Height);
+                    dtItem.SetParentSize(this.Width, this.Height);
                 }
             }
             catch (Exception ex)
