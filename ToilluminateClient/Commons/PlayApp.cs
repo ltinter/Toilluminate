@@ -195,14 +195,14 @@ namespace ToilluminateClient
 
                     if (string.IsNullOrEmpty(messageString) == false)
                     {
-                        MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Top, 600, 1);
+                        MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessagePositionType.Top, 600, 1);
                         pList1.PlayAddTemplete(mtItem);
                     }
                 }
                 else
                 {
                     string messageString = "<span style=\"font-family: MS PGothic; font-size: 18px; \" ><b color=\"red\"> テストデータを放送している。</b></span>";
-                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Top, 0, 5);
+                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessagePositionType.Top, 0, 5);
                     pList1.PlayAddTemplete(mtItem);
                 }
             }
@@ -807,14 +807,14 @@ namespace ToilluminateClient
 
                             string message = pliTemlete.itemTextData;
 
-                            MessageShowStyle messageShowStyleValue = MessageShowStyle.Random;
+                            MessagePositionType messageShowStyleValue = MessagePositionType.Bottom;
                             string tpStyle = pliTemlete.TextPostion;
                             if (string.IsNullOrEmpty(tpStyle) == false)
                             {
                                 int styleValue = Utility.ToInt(tpStyle);
-                                if (Enum.IsDefined(typeof(MessageShowStyle), styleValue))
+                                if (Enum.IsDefined(typeof(MessagePositionType), styleValue))
                                 {
-                                    messageShowStyleValue = (MessageShowStyle)styleValue;
+                                    messageShowStyleValue = (MessagePositionType)styleValue;
                                 }
                             }
 
@@ -1190,7 +1190,7 @@ namespace ToilluminateClient
 
         protected FillOptionStyle fillOptionValue = FillOptionStyle.None;
 
-        protected MessageShowStyle messageShowStyleValue = MessageShowStyle.Bottom;
+        protected MessagePositionType messageShowStyleValue = MessagePositionType.Bottom;
 
         protected List<MessageStyle> messageStyleListValue = new List<MessageStyle>() { };
 
@@ -1376,7 +1376,7 @@ namespace ToilluminateClient
         /// <param name="messageStyle"></param>
         /// <param name="intervalSecond"></param>
         /// <param name="slidingSpeed"></param>
-        public TempleteItem(string htmlString, MessageShowStyle messageStyle, int intervalSecond, int slidingSpeed)
+        public TempleteItem(string htmlString, MessagePositionType messageStyle, int intervalSecond, int slidingSpeed)
         {
             templeteTypeValue = TempleteItemType.Message;
 
@@ -1903,7 +1903,7 @@ namespace ToilluminateClient
 
         #region " propert "
 
-        public MessageShowStyle ShowStyle
+        public MessagePositionType ShowStyle
         {
             get
             {
@@ -1945,7 +1945,7 @@ namespace ToilluminateClient
         }
 
         #endregion
-        public MessageTempleteItem(string htmlString, MessageShowStyle messageStyle, int intervalSecond, int slidingSpeed) : base(htmlString, messageStyle, intervalSecond, slidingSpeed)
+        public MessageTempleteItem(string htmlString, MessagePositionType messageStyle, int intervalSecond, int slidingSpeed) : base(htmlString, messageStyle, intervalSecond, slidingSpeed)
         {
         }
         #region " void and function "
@@ -2380,100 +2380,6 @@ namespace ToilluminateClient
         }
     }
     
-    #endregion
-
-    #region play状态类型
-    /// <summary>
-    /// play状态类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum PlayListStateType
-    {
-        /// <summary>
-        /// 等待
-        /// </summary>
-        [EnumDescription("等待")]
-        Wait = 0,
-        /// <summary>
-        /// 播放
-        /// </summary>
-        [EnumDescription("放送")]
-        Execute = 1,
-        /// <summary>
-        /// 末尾
-        /// </summary>
-        [EnumDescription("末尾")]
-        Last = 2,
-        /// <summary>
-        /// 停止
-        /// </summary>
-        [EnumDescription("停止")]
-        Stop = 9,
-    }
-
-    #endregion
-
-    #region 模板类型
-    /// <summary>
-    /// 模板类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum TempleteItemType
-    {
-        /// <summary>
-        /// None
-        /// </summary>
-        [EnumDescription("")]
-        None = -1,
-        /// <summary>
-        /// 图片
-        /// </summary>
-        [EnumDescription("写真")]
-        Image = 0,
-        /// <summary>
-        /// 文字消息
-        /// </summary>
-        [EnumDescription("文字")]
-        Message = 1,
-        /// <summary>
-        /// 视频
-        /// </summary>
-        [EnumDescription("映像")]
-        Media = 2,
-        /// <summary>
-        /// 商标
-        /// </summary>
-        [EnumDescription("商标")]
-        Trademark = 3,
-        
-    }
-
-    #endregion
-
-    #region templete状态类型
-    /// <summary>
-    /// templete状态类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum TempleteStateType
-    {
-        /// <summary>
-        /// 等待
-        /// </summary>
-        [EnumDescription("等待")]
-        Wait = 0,
-        /// <summary>
-        /// 播放
-        /// </summary>
-        [EnumDescription("放送")]
-        Execute = 1,
-        /// <summary>
-        /// 停止
-        /// </summary>
-        [EnumDescription("停止")]
-        Stop = 9,
-    }
-
     #endregion
 
 }

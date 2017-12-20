@@ -85,7 +85,7 @@ namespace ToilluminateClient
 
                 int controlLeft = 0;
                 int controlTop = 0;
-                MessageShowStyle controlShowStyle = MessageShowStyle.Bottom;
+                MessagePositionType controlShowStyle = MessagePositionType.Bottom;
                 bool drawNewImage = false;
                 bool drawing = false;
 

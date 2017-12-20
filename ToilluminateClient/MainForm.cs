@@ -72,6 +72,7 @@ namespace ToilluminateClient
 
                         MaxShowThis(false);
                         break;
+                        
                 }
             }
             return false;
@@ -377,11 +378,12 @@ namespace ToilluminateClient
                                                                             | System.Windows.Forms.AnchorStyles.Left)
                                                                             | System.Windows.Forms.AnchorStyles.Right)));
 
-                               
+
 
                 // 
                 // axVLC
                 // 
+                this.axVLCPlayer = new ToilluminateClient.VLCPlayer();
                 this.axVLCPlayer.OnStopEvent += AxVLCPlayer_OnStopEvent;
 
 
@@ -1046,6 +1048,9 @@ namespace ToilluminateClient
 
                         if (mtItem.CurrentIsChanged())
                         {
+                            this.axVLCPlayer.Dispose();
+                            this.axVLCPlayer = new ToilluminateClient.VLCPlayer();
+                            this.axVLCPlayer.OnStopEvent += AxVLCPlayer_OnStopEvent;
                             mtItem.ShowCurrent(axVLCPlayer, this.pnlShowMedia.Handle);
                         }
 

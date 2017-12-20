@@ -70,7 +70,7 @@ namespace ToilluminateClient
                 if (ShowApp.DownLoadDrawMessage == null || ShowApp.DownLoadDrawMessage.DrawStyleList.Count == 0)
                 {
                     string messageString = "<span style=\"font-family: MS PGothic; font-size: 18px; \" ><b>ファイルダウンロード中。</b></span>";
-                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom, 0, 0);
+                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessagePositionType.Bottom, 0, 0);
 
                     ShowApp.DownLoadDrawMessage = new DrawMessage(VariableInfo.messageFormInstance.Width, VariableInfo.messageFormInstance.Height, mtItem);
 
@@ -79,7 +79,7 @@ namespace ToilluminateClient
                 else
                 {
                     string messageString = string.Format("<span style=\"font-family: MS PGothic; font-size: 18px; \" ><b>ファイルダウンロード中。({0}/{1})</b></span>", ShowApp.DownLoadIndexNumber, ShowApp.DownLoadTotalNumber);
-                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Bottom, 0, 0);
+                    MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessagePositionType.Bottom, 0, 0);
 
                     ShowApp.DownLoadDrawMessage.SetDrawMessageStyle(mtItem.MessageList[0], mtItem.MessageStyleList[0], 0);
                 }
@@ -179,7 +179,7 @@ namespace ToilluminateClient
 
         private int slidingSpeedValue = 10;
 
-
+        private MoveDirectionStyle moveDirectionValue = MoveDirectionStyle.RightToLeft;
 
         private MoveStateType moveState = MoveStateType.NotMove;
         #endregion
@@ -232,7 +232,7 @@ namespace ToilluminateClient
                 return widthValue;
             }
         }
-        public MessageShowStyle ShowStyle
+        public MessagePositionType ShowStyle
         {
             get
             {
@@ -359,15 +359,15 @@ namespace ToilluminateClient
         private void RefreshTop()
         {
             int top = 30;
-            if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Top)
+            if (this.parentTempleteValue.ShowStyle == MessagePositionType.Top)
             {
                 top = 30;
             }
-            else if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Bottom)
+            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Bottom)
             {
                 top = this.parentHeigthValue - 30;
             }
-            else if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Middle)
+            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Middle)
             {
                 top = this.parentHeigthValue / 2;
             }
@@ -378,15 +378,15 @@ namespace ToilluminateClient
         public int GetStyleTop(int styleHeigth)
         {
             int top = this.topValue;
-            if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Top)
+            if (this.parentTempleteValue.ShowStyle == MessagePositionType.Top)
             {
                 top = this.topValue;
             }
-            else if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Bottom)
+            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Bottom)
             {
                 top = this.topValue - styleHeigth;
             }
-            else if (this.parentTempleteValue.ShowStyle == MessageShowStyle.Middle)
+            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Middle)
             {
                 top = this.topValue - (styleHeigth / 2);
             }
@@ -709,55 +709,4 @@ namespace ToilluminateClient
     #endregion
     #endregion
 
-    #region 移动状态类型
-    /// <summary>
-    /// 移动状态类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum MoveStateType
-    {
-        /// <summary>
-        /// 等待
-        /// </summary>
-        [EnumDescription("等待")]
-        NotMove = 0,
-        /// <summary>
-        /// 移动
-        /// </summary>
-        [EnumDescription("移动")]
-        Moving = 1,
-        /// <summary>
-        /// 结束
-        /// </summary>
-        [EnumDescription("结束")]
-        MoveFinish = 2,
-    }
-
-    #endregion
-
-    #region 显示状态类型
-    /// <summary>
-    /// 显示状态类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum ShowStateType
-    {
-        /// <summary>
-        /// 等待
-        /// </summary>
-        [EnumDescription("等待")]
-        NotShow = 0,
-        /// <summary>
-        /// 显示
-        /// </summary>
-        [EnumDescription("显示")]
-        Showing = 1,
-        /// <summary>
-        /// 结束
-        /// </summary>
-        [EnumDescription("结束")]
-        ShowFinish = 2,
-    }
-
-    #endregion
 }

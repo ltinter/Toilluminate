@@ -118,6 +118,14 @@ namespace ToilluminateClient
             {
                 clientPath = Application.StartupPath;
 
+#if DEBUG
+                iniFile = clientPath + "\\" + Constants.INI_NAME;
+                if (File.Exists(iniFile) == false)
+                {
+                    clientPath = Utility.GetFullFileName(new DirectoryInfo(Application.StartupPath).Parent.FullName, "Release");
+                }
+#endif
+
                 iniFile = clientPath + "\\" + Constants.INI_NAME;
 
                 jsonFile = clientPath + "\\" + Constants.JSON_NAME;
@@ -176,7 +184,7 @@ namespace ToilluminateClient
             }
         }
 
-        #endregion
+#endregion
     }
 
     public class PlayerInfo
