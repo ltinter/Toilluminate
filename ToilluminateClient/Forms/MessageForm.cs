@@ -14,10 +14,11 @@ namespace ToilluminateClient
     public partial class MessageForm : Form
     {
         private bool showMessageFlag = false;
-
-        private bool showMessageEnd = false;
+        
 
         private MainForm parentForm;
+
+        private Control[] messageControls;
 
         #region " override "
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, System.Windows.Forms.Keys keyData)
@@ -55,13 +56,18 @@ namespace ToilluminateClient
             this.FormBorderStyle = FormBorderStyle.None;
 
 
-            this.pnlMessage.Left = 0;
-            this.pnlMessage.Top = 0;
-            this.pnlMessage.Width = this.Width;
-            this.pnlMessage.Height = this.Height;
-            this.pnlMessage.BackColor = ImageApp.BackClearColor;
-            this.pnlMessage.SendToBack();
-            
+
+            messageControls = new Control[] { this.pnlMessage0, this.pnlMessage1, this.pnlMessage2, this.pnlMessage3, this.pnlMessage4, this.pnlMessage5 };
+
+            foreach (Control pnlMessage in messageControls)
+            {
+                pnlMessage.Left = -10;
+                pnlMessage.Top = -10;
+                pnlMessage.Width = 1;
+                pnlMessage.Height = 1;
+                pnlMessage.BackColor = ImageApp.BackClearColor;
+                pnlMessage.SendToBack();
+            }
         }
 
         public void tmrShow_Tick(object sender, EventArgs e)
@@ -81,7 +87,7 @@ namespace ToilluminateClient
 
                 ThreadShow();
 
-                ImageApp.MyDrawMessage(this.pnlMessage);
+                ImageApp.MyDrawMessage(this.messageControls[0]);
             }
             catch (Exception ex)
             {

@@ -14,8 +14,7 @@ namespace ToilluminateClient
     public partial class TrademarkForm : Form
     {
         private bool showTrademarkFlag = false;
-
-        private bool showTrademarkEnd = false;
+        
 
         private MainForm parentForm;
 
