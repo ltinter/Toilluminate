@@ -208,6 +208,10 @@ namespace ToilluminateClient
             //ShowExample
             showExample = Utility.ToInt(GetIniFileString("MAINTE", "ShowExample", file)) == 0 ? false : true;
 
+            //moveMessage
+            moveMessage = Utility.ToInt(GetIniFileString("MAINTE", "MoveMessage", file)) == 0 ? false : true;
+
+            
             //MultilingualDictionaryType
             string multiDictTypeValue = GetIniFileString("MAINTE", "MultilingualDictionaryType", file);
 
@@ -265,8 +269,14 @@ namespace ToilluminateClient
                 {
                     WriteIniFileNotesString("MAINTE", "ShowExample", "例表示", file);
                 }
-                
 
+                //例表示
+                WriteIniFileString("MAINTE", "MoveMessage", MoveMessage ? "1" : "0", file);
+                if (isNewFile)
+                {
+                    WriteIniFileNotesString("MAINTE", "MoveMessage", "移動字幕", file);
+                }
+                
                 WriteIniFileString("MAINTE", "MultilingualDictionaryType", EnumHelper.GetDescription(MultiDictType), file);
                 if (isNewFile)
                 {

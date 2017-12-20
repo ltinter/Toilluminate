@@ -1037,12 +1037,10 @@ namespace ToilluminateClient
             {
                 try
                 {
-#if DEBUG
                     if (this.templeteItemListValue.Count == 0)
                     {
                         return PlayListStateType.Stop;
                     }
-#endif
 
                     if (this.IsInExecuteTime())
                     {
