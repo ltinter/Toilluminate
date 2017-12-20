@@ -201,7 +201,7 @@ namespace ToilluminateClient
                 }
                 else
                 {
-                    string messageString = "<span style=\"font-family: MS PGothic; font-size: 18px; \" ><b> テストデータを放送している。</b></span>";
+                    string messageString = "<span style=\"font-family: MS PGothic; font-size: 18px; \" ><b color=\"red\"> テストデータを放送している。</b></span>";
                     MessageTempleteItem mtItem = new MessageTempleteItem(messageString, MessageShowStyle.Top, 0, 5);
                     pList1.PlayAddTemplete(mtItem);
                 }

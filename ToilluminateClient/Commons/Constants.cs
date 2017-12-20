@@ -81,15 +81,11 @@ namespace ToilluminateClient
 
 
         #region Message 
-#if DEBUG
-        public static readonly string MESSAGE_FONT_Family = "poppins";
-        public static readonly int MESSAGE_FONT_Size = 12;
-        public static readonly Color MESSAGE_FONT_Color = Color.Red;
-#else
+
         public static readonly string MESSAGE_FONT_Family = "poppins";
         public static readonly int MESSAGE_FONT_Size = 14;
-        public static readonly Color MESSAGE_FONT_Color = Color.Black;
-#endif
+        public static readonly Color MESSAGE_FONT_Color = Color.Red;
+
         #endregion Message
 
         #region パスワード
