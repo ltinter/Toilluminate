@@ -331,7 +331,27 @@ namespace ToilluminateClient
         True = 1,
     }
     #endregion
-    
+
+
+    #region 视频设备種別
+
+    /// <summary>
+    /// 视频设备種別
+    /// </summary>
+    public enum MediaDeivceType
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        [EnumDescription("VideoLAN")]
+        VLC = 0,
+        /// <summary>
+        /// 
+        /// </summary>
+        [EnumDescription("Wodows Media Play")]
+        WMP = 1,
+    }
+    #endregion
 
     #region PlayApp
 
@@ -432,6 +452,8 @@ namespace ToilluminateClient
     #endregion
 
     #region ShowApp
+
+
 
     #region 图片填充模式
     /// <summary>

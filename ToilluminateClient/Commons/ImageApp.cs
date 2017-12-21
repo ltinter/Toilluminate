@@ -170,9 +170,9 @@ namespace ToilluminateClient
                     {
                         drawingBoard.Width = ShowApp.MessageBackBitmap.Width;
                         drawingBoard.Height = ShowApp.MessageBackBitmap.Height;
-                        drawingBoard.BackgroundImage = ShowApp.MessageBackBitmap;
                         drawingBoard.Left = controlLeft;
                         drawingBoard.Top = controlTop;
+                        drawingBoard.BackgroundImage = ShowApp.MessageBackBitmap;
                     }
                     else
                     {

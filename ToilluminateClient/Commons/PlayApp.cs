@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using AxWMPLib;
+using WMPLib;
 
 namespace ToilluminateClient
 {
@@ -237,7 +239,7 @@ namespace ToilluminateClient
                 }
                 if (trademarkFileList.Count > 0)
                 {
-                    TrademarkTempleteItem ttItem = new TrademarkTempleteItem(trademarkFileList.ToList(), trademarkStyleList.ToList(),0);
+                    TrademarkTempleteItem ttItem = new TrademarkTempleteItem(trademarkFileList.ToList(), trademarkStyleList.ToList(), 0);
                     pList1.PlayAddTemplete(ttItem);
                 }
 
@@ -325,7 +327,7 @@ namespace ToilluminateClient
                         {
                             getJsonString = oldJsonString;
                         }
-                        
+
                         if (PlayApp.CurrentPlayListJsonString != getJsonString || PlayApp.CurrentPlayListNeedDownloadFile)
                         {
                             Utility.WriterFile(VariableInfo.JsonFile, getJsonString);
@@ -378,8 +380,6 @@ namespace ToilluminateClient
                                 PlayApp.PlayListArray.Add(plItem);
                             }
 
-
-                            
 
                             PlayApp.newPlayListExist = true;
                             return true;
@@ -514,7 +514,7 @@ namespace ToilluminateClient
 
         private List<MessageTempleteItem> messageListValue = new List<MessageTempleteItem>();
         private List<TrademarkTempleteItem> trademarkListValue = new List<TrademarkTempleteItem>();
-        
+
 
         private List<TempleteItem> templeteItemListValue = new List<TempleteItem>();
 
@@ -878,7 +878,7 @@ namespace ToilluminateClient
                                     ShowApp.DownloadMessageRefresh();
                                 }
                             }
-                            
+
 
                             if (trademarkFileList.Count > 0)
                             {
@@ -1017,7 +1017,7 @@ namespace ToilluminateClient
                 this.trademarkListValue.Add(tItem as TrademarkTempleteItem);
             }
 
-            
+
         }
         #region " void and function "
         /// <summary>
@@ -1186,7 +1186,7 @@ namespace ToilluminateClient
 
         protected ZoomOptionStyle zoomOptionValue = ZoomOptionStyle.None;
 
-        protected List<TrademarkStyle> trademarkStyleListValue = new List<TrademarkStyle>() { };  
+        protected List<TrademarkStyle> trademarkStyleListValue = new List<TrademarkStyle>() { };
 
         protected FillOptionStyle fillOptionValue = FillOptionStyle.None;
 
@@ -1194,7 +1194,7 @@ namespace ToilluminateClient
 
         protected List<MessageStyle> messageStyleListValue = new List<MessageStyle>() { };
 
-        
+
 
         protected TempleteItemType templeteTypeValue = TempleteItemType.Image;
 
@@ -1298,7 +1298,7 @@ namespace ToilluminateClient
                         }
                     }
                 }
-                else if(templeteTypeValue == TempleteItemType.Trademark)
+                else if (templeteTypeValue == TempleteItemType.Trademark)
                 {
                     if (this.loadControlsFlag)
                     {
@@ -1327,7 +1327,7 @@ namespace ToilluminateClient
 
 
         #endregion
-    
+
         /// <summary>
         /// 视频
         /// </summary>
@@ -1475,7 +1475,7 @@ namespace ToilluminateClient
                 this.currentShowStyleIndex = -1;
                 this.templeteStateValue = TempleteStateType.Stop;
             }
-            else if(this.templeteTypeValue == TempleteItemType.Message)
+            else if (this.templeteTypeValue == TempleteItemType.Message)
             {
                 previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
                 this.currentIndex = -1;
@@ -1483,7 +1483,7 @@ namespace ToilluminateClient
                 this.templeteStateValue = TempleteStateType.Stop;
                 loadControlsFlag = false;
             }
-            else if(this.templeteTypeValue == TempleteItemType.Media)
+            else if (this.templeteTypeValue == TempleteItemType.Media)
             {
                 previousTimeValue = Utility.GetPlayDateTime(DateTime.Now);
                 this.currentIndex = -1;
@@ -1857,7 +1857,7 @@ namespace ToilluminateClient
 
                     //动态添加图片
                     nowImageFile = ImageApp.GetBitmap(this.CurrentFile);
-                    
+
                     nowBitmap = new Bitmap(nowImageFile);
 
                     nowBitmap = ImageApp.ResizeBitmap(nowBitmap, picImage.Size, fillOptionValue);
@@ -2039,11 +2039,63 @@ namespace ToilluminateClient
         #region " void and function "
 
 
-        public void ShowCurrent(VLCPlayer axVLCPlayer,IntPtr handle)
+
+        public void ShowCurrent(AxWindowsMediaPlayer axWMP, WMPPlayState state, double position)
         {
             try
             {
-                if (File.Exists(this.CurrentFile)==false)
+                if (File.Exists(this.CurrentFile) == false)
+                {
+                    PlayApp.CurrentPlayListNeedDownloadFile = true;
+                }
+
+                if (this.fileOrMessageListValue.Count > 0)
+                {
+                    if (state == WMPLib.WMPPlayState.wmppsPlaying)
+                    {
+                        if (axWMP.playState != WMPPlayState.wmppsPlaying)
+                        {
+                            axWMP.URL = this.CurrentFile;
+                            axWMP.Ctlcontrols.currentPosition = position;
+                            axWMP.Ctlcontrols.play();
+                        }
+                    }
+                    else if (state == WMPLib.WMPPlayState.wmppsStopped)
+                    {
+                        axWMP.Ctlcontrols.stop();
+                    }
+                    else if (state == WMPLib.WMPPlayState.wmppsPaused)
+                    {
+                        axWMP.Ctlcontrols.pause();
+                    }
+
+                    if (zoomOptionValue == ZoomOptionStyle.None)
+                    {
+                        axWMP.stretchToFit = false;
+                    }
+                    else
+                    {
+                        axWMP.stretchToFit = true;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                this.templeteStateValue = TempleteStateType.Execute;
+            }
+        }
+
+
+        public void ShowCurrent(VLCPlayer axVLCPlayer, IntPtr handle)
+        {
+            try
+            {
+                if (File.Exists(this.CurrentFile) == false)
                 {
                     PlayApp.CurrentPlayListNeedDownloadFile = true;
                 }
@@ -2052,7 +2104,7 @@ namespace ToilluminateClient
 
                 axVLCPlayer.Volume = 100;
                 axVLCPlayer.SetFullScreen(false);
-                
+
                 axVLCPlayer.LoadFile(this.CurrentFile);//
 
 
@@ -2069,7 +2121,7 @@ namespace ToilluminateClient
             }
         }
 
-        
+
         public bool ReadaheadOverTime(int readaheadTime)
         {
             if (this.templeteStateValue == TempleteStateType.Execute)
@@ -2155,7 +2207,7 @@ namespace ToilluminateClient
         }
 
         #endregion
-        
+
     }
 
     #endregion
@@ -2379,7 +2431,7 @@ namespace ToilluminateClient
 
         }
     }
-    
+
     #endregion
 
 }

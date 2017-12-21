@@ -18,7 +18,6 @@ namespace ToilluminateClient
         public static Bitmap DrawBitmap;
         public static bool DrawBitmapFlag = false;
 
-        public static int MediaReadaheadTime = 10;
         #endregion
 
         #region "Message"
@@ -58,7 +57,7 @@ namespace ToilluminateClient
 
         public static TempleteItemType NowShowTempleteItemType = TempleteItemType.None;
         public static TempleteItemType NextShowTempleteItemType = TempleteItemType.None;
-        
+
 
         /// <summary>
         /// 刷新下载进度信息
@@ -511,8 +510,8 @@ namespace ToilluminateClient
 
         private ShowStateType showStateValue = ShowStateType.NotShow;
 
-        private int parentWidthValue=0;
-        private int parentHeigthValue=0;
+        private int parentWidthValue = 0;
+        private int parentHeigthValue = 0;
         #endregion
 
 
@@ -533,7 +532,7 @@ namespace ToilluminateClient
                 return showStateValue;
             }
         }
-        
+
         #endregion
 
         public DrawTrademark(int parentWidth, int parentHeigth, TrademarkTempleteItem parentTemplete)
@@ -558,10 +557,10 @@ namespace ToilluminateClient
             this.parentHeigthValue = parentHeigth;
             this.parentWidthValue = parentWidth;
         }
-        
+
 
         public Point GetStyleLocation(DrawTrademarkStyle style)
-        {            
+        {
             int left = style.Left;
             int top = style.Top;
 
@@ -575,7 +574,7 @@ namespace ToilluminateClient
                 || style.TrademarkPosition == TrademarkPositionType.MiddleCenter
                 || style.TrademarkPosition == TrademarkPositionType.MiddleRight)
             {
-                top = (this.parentHeigthValue- style.Heigth) / 2; 
+                top = (this.parentHeigthValue - style.Heigth) / 2;
             }
             else if (style.TrademarkPosition == TrademarkPositionType.BottomLeft
                 || style.TrademarkPosition == TrademarkPositionType.BottomCenter

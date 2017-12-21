@@ -207,6 +207,10 @@ namespace ToilluminateClient
                 {
                     dmItem.SetParentSize(this.Width, this.Height);
                 }
+                if (ShowApp.DownLoadDrawMessage != null && ShowApp.DownLoadDrawMessage.DrawStyleList.Count > 0)
+                {
+                    ShowApp.DownLoadDrawMessage.SetParentSize(this.Width, this.Height);
+                }
             }
             catch (Exception ex)
             {
