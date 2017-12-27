@@ -102,28 +102,35 @@ namespace ToilluminateClient
                         if (dmItem.MoveState == MoveStateType.NotMove)
                         {
                             newW = dmItem.Width;
-                            newH = dmItem.Heigth;
+                            newH = dmItem.Height;
                             ShowApp.MessageBackBitmap = new Bitmap(newW, newH);
                             gBmpBack = Graphics.FromImage(ShowApp.MessageBackBitmap);
                             gBmpBack.Clear(ImageApp.BackClearColor);
 
                             foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
                             {
-                                gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dslItem.LeftWidth, 0);
+                                if (dmItem.ShowStyle == MessagePositionType.Top || dmItem.ShowStyle == MessagePositionType.Middle || dmItem.ShowStyle == MessagePositionType.Bottom)
+                                {
+                                    gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dslItem.LeftWidth, 0);
+                                }
+                                else if (dmItem.ShowStyle == MessagePositionType.Left || dmItem.ShowStyle == MessagePositionType.Center || dmItem.ShowStyle == MessagePositionType.Right)
+                                {
+                                    gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), new PointF(dslItem.TopHeight, 0), new StringFormat(StringFormatFlags.DirectionVertical));
+                                }
                             }
 
                             drawNewImage = true;
                             drawing = true;
-                            controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlLeft = dmItem.GetStyleLeft();
+                            controlTop = dmItem.GetStyleTop();
                             controlShowStyle = dmItem.ShowStyle;
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
                         }
                         else if (dmItem.MoveState == MoveStateType.Moving)
                         {
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
-                            controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlLeft = dmItem.GetStyleLeft();
+                            controlTop = dmItem.GetStyleTop();
                             drawing = true;
                         }
                     }
@@ -135,20 +142,27 @@ namespace ToilluminateClient
                         if (dmItem.MoveState == MoveStateType.NotMove)
                         {
                             newW = dmItem.Width;
-                            newH = dmItem.Heigth;
+                            newH = dmItem.Height;
                             ShowApp.MessageBackBitmap = new Bitmap(newW, newH);
                             gBmpBack = Graphics.FromImage(ShowApp.MessageBackBitmap);
                             gBmpBack.Clear(ImageApp.BackClearColor);
 
                             foreach (DrawMessageStyle dslItem in dmItem.DrawStyleList)
                             {
-                                gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dslItem.LeftWidth, 0);
+                                if (dmItem.ShowStyle == MessagePositionType.Top || dmItem.ShowStyle == MessagePositionType.Middle || dmItem.ShowStyle == MessagePositionType.Bottom)
+                                {
+                                    gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), dslItem.LeftWidth, 0);
+                                }
+                                else if (dmItem.ShowStyle == MessagePositionType.Left || dmItem.ShowStyle == MessagePositionType.Center || dmItem.ShowStyle == MessagePositionType.Right)
+                                {
+                                    gBmpBack.DrawString(dslItem.Message, dslItem.Font, new SolidBrush(dslItem.Color), new PointF(dslItem.TopHeight, 0), new StringFormat(StringFormatFlags.DirectionVertical));
+                                }
                             }
 
                             drawNewImage = true;
                             drawing = true;
-                            controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlLeft = dmItem.GetStyleLeft();
+                            controlTop = dmItem.GetStyleTop();
                             controlShowStyle = dmItem.ShowStyle;
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
                             break;
@@ -156,8 +170,8 @@ namespace ToilluminateClient
                         else if (dmItem.MoveState == MoveStateType.Moving)
                         {
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
-                            controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlLeft = dmItem.GetStyleLeft();
+                            controlTop = dmItem.GetStyleTop();
                             drawing = true;
                             break;
                         }
@@ -251,7 +265,7 @@ namespace ToilluminateClient
                         {
                             int trademarkBackBitmapIndex = dtStyle.TrademarkPosition.GetHashCode();
                             newW = dtStyle.Width;
-                            newH = dtStyle.Heigth;
+                            newH = dtStyle.Height;
                             ShowApp.TrademarkBackBitmaps[trademarkBackBitmapIndex] = new Bitmap(newW, newH);
                             gBmpBack = Graphics.FromImage(ShowApp.TrademarkBackBitmaps[trademarkBackBitmapIndex]);
                             gBmpBack.Clear(ImageApp.BackClearColor);
