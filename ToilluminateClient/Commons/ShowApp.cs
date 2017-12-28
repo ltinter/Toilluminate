@@ -153,44 +153,6 @@ namespace ToilluminateClient
                 LogApp.OutputErrorLog("PlayApp", "DownloadMessageDispose", ex);
             }
         }
-
-        public static SizeF GetMessageSize(string message, Font font)
-        {
-            return GetMessageSize(message, font, true);
-        }
-        public static SizeF GetMessageSize(string message,Font font,bool horizontal)
-        {
-            SizeF size = new SizeF();
-            try
-            {
-                using (Label label = new Label())
-                {
-                    label.Padding = new Padding(0);
-                    label.Margin = new Padding(0);
-                    if (horizontal)
-                    {
-                        
-                        size = label.CreateGraphics().MeasureString(message, font);
-                    }
-                    else
-                    {
-                        size = label.CreateGraphics().MeasureString(message, font, message.Length, new StringFormat(StringFormatFlags.DirectionVertical));
-                        //label.AutoSize = false;
-                        //label.Height = (int)size.Height;
-                        //label.CreateGraphics().DrawString(message, font, new SolidBrush(label.ForeColor), new PointF(0, 0), new StringFormat(StringFormatFlags.DirectionVertical));
-                    }
-                }
-
-                return size;
-            }
-            catch (Exception ex)
-            {
-                LogApp.OutputErrorLog("PlayApp", "GetMessageSize", ex);
-                return size;
-            }
-        }
-
-
     }
 
 
@@ -208,10 +170,10 @@ namespace ToilluminateClient
         private int leftValue;
         private int topValue;
         private int widthValue;
-        private int heightValue;
+        private int heigthValue;
 
         private int parentWidthValue;
-        private int parentHeightValue;
+        private int parentHeigthValue;
         private bool needRefreshLocation = false;
 
         private int slidingSpeedValue = 10;
@@ -219,40 +181,11 @@ namespace ToilluminateClient
         private MoveDirectionStyle moveDirectionValue = MoveDirectionStyle.RightToLeft;
 
         private MoveStateType moveState = MoveStateType.NotMove;
-
-
-        /// <summary>
-        /// 纵向分隔距离
-        /// </summary>
-        private int verticalRangeValue = 30;
-        /// <summary>
-        /// 横向分隔距离
-        /// </summary>
-        private int horizontalRangeValue = 30;
         #endregion
 
 
         #region " propert "
-        /// <summary>
-        /// 纵向分隔距离
-        /// </summary>
-        public int VerticalRange
-        {
-            get
-            {
-                return verticalRangeValue;
-            }
-        }
-        /// <summary>
-        /// 横向分隔距离
-        /// </summary>
-        public int HorizontalRange
-        {
-            get
-            {
-                return horizontalRangeValue;
-            }
-        }
+
         public List<DrawMessageStyle> DrawStyleList
         {
             get
@@ -276,11 +209,11 @@ namespace ToilluminateClient
                 return leftValue;
             }
         }
-        public int Height
+        public int Heigth
         {
             get
             {
-                return heightValue;
+                return heigthValue;
             }
         }
         public int Top
@@ -307,8 +240,7 @@ namespace ToilluminateClient
         }
         #endregion
 
-
-        public DrawMessage(int parentWidth, int parentHeight, MessageTempleteItem parentTemplete, int verticalRange, int horizontalRange)
+        public DrawMessage(int parentWidth, int parentHeigth, MessageTempleteItem parentTemplete)
         {
             drawStyleListValue.Clear();
             this.widthValue = 0;
@@ -317,129 +249,59 @@ namespace ToilluminateClient
             this.parentTempleteValue = parentTemplete;
 
 
-            this.parentHeightValue = parentHeight;
-            this.parentWidthValue = parentWidth;
-            this.slidingSpeedValue = parentTemplete.SlidingSpeed;
-
-
-            this.verticalRangeValue = verticalRange;
-            this.horizontalRangeValue = horizontalRange;
-
-            this.needRefreshLocation = true;
-            RefreshLocation();
-        }
-        public DrawMessage(int parentWidth, int parentHeight, MessageTempleteItem parentTemplete)
-        {
-            drawStyleListValue.Clear();
-            this.widthValue = 0;
-
-            this.leftValue = parentWidth;
-            this.parentTempleteValue = parentTemplete;
-
-
-            this.parentHeightValue = parentHeight;
+            this.parentHeigthValue = parentHeigth;
             this.parentWidthValue = parentWidth;
             this.slidingSpeedValue = parentTemplete.SlidingSpeed;
 
             this.needRefreshLocation = true;
-            RefreshLocation();
+            RefreshTop();
         }
 
         #region " void and function "
         public void AddDrawMessage(string message, MessageStyle drawStyle)
         {
-            this.drawStyleListValue.Add(new ToilluminateClient.DrawMessageStyle(message, new Size(widthValue, heightValue), drawStyle.Font, drawStyle.Color, drawStyle.Width, drawStyle.Height));
-
-            if (this.ShowStyle == MessagePositionType.Top || this.ShowStyle == MessagePositionType.Middle || this.ShowStyle == MessagePositionType.Bottom)
+            this.drawStyleListValue.Add(new ToilluminateClient.DrawMessageStyle(message, widthValue, drawStyle.Font, drawStyle.Color, drawStyle.Width, drawStyle.Heigth));
+            this.widthValue = this.widthValue + drawStyle.Width;
+            if (this.heigthValue < drawStyle.Heigth)
             {
-
-                this.widthValue = this.widthValue + drawStyle.Width;
-
-
-                if (this.heightValue < drawStyle.Height)
-                {
-                    this.heightValue = drawStyle.Height;
-                }
+                this.heigthValue = drawStyle.Heigth;
             }
-            else if (this.ShowStyle == MessagePositionType.Left || this.ShowStyle == MessagePositionType.Center || this.ShowStyle == MessagePositionType.Right)
-            {
-
-                this.heightValue = this.heightValue + drawStyle.Height;
-
-
-                if (this.widthValue < drawStyle.Width)
-                {
-                    this.widthValue = drawStyle.Width;
-                }
-            }
-
         }
 
         public void SetDrawMessageStyle(string message, MessageStyle drawStyle, int drawStyleIndex)
         {
             if (drawStyleIndex >= 0 && drawStyleIndex < this.drawStyleListValue.Count)
             {
-                if (this.ShowStyle == MessagePositionType.Top || this.ShowStyle == MessagePositionType.Middle || this.ShowStyle == MessagePositionType.Bottom)
+                DrawMessageStyle drawMessageStyle = this.drawStyleListValue[drawStyleIndex];
+                int oldWidthValue = drawMessageStyle.Width;
+                drawMessageStyle.SetDrawMessageStyle(message, drawStyle.Width);
+
+                this.widthValue = this.widthValue - oldWidthValue + drawMessageStyle.Width;
+
+                if (this.heigthValue < drawStyle.Heigth)
                 {
-                    DrawMessageStyle drawMessageStyle = this.drawStyleListValue[drawStyleIndex];
-                    int oldWidthValue = drawMessageStyle.Width;
-                    drawMessageStyle.SetDrawMessageStyle(message, new Size(drawStyle.Width, drawStyle.Height));
-
-                    this.widthValue = this.widthValue - oldWidthValue + drawMessageStyle.Width;
-
-                    if (this.heightValue < drawStyle.Height)
+                    this.heigthValue = drawStyle.Heigth;
+                }
+                else
+                {
+                    this.heigthValue = 0;
+                    foreach (DrawMessageStyle drawStyleTemp in this.drawStyleListValue)
                     {
-                        this.heightValue = drawStyle.Height;
-                    }
-                    else
-                    {
-                        this.heightValue = 0;
-                        foreach (DrawMessageStyle drawStyleTemp in this.drawStyleListValue)
+                        if (this.heigthValue < drawStyleTemp.Heigth)
                         {
-                            if (this.heightValue < drawStyleTemp.Height)
-                            {
-                                this.heightValue = drawStyleTemp.Height;
-                            }
+                            this.heigthValue = drawStyleTemp.Heigth;
                         }
                     }
-
                 }
-                else if (this.ShowStyle == MessagePositionType.Left || this.ShowStyle == MessagePositionType.Center || this.ShowStyle == MessagePositionType.Right)
-                {
-                    DrawMessageStyle drawMessageStyle = this.drawStyleListValue[drawStyleIndex];
-                    int oldHegthValue = drawMessageStyle.Height;
-                    drawMessageStyle.SetDrawMessageStyle(message, new Size(drawStyle.Width, drawStyle.Height));
-
-                    this.heightValue = this.heightValue - oldHegthValue + drawMessageStyle.Height;
-
-                    if (this.widthValue < drawStyle.Width)
-                    {
-                        this.widthValue = drawStyle.Width;
-                    }
-                    else
-                    {
-                        this.widthValue = 0;
-                        foreach (DrawMessageStyle drawStyleTemp in this.drawStyleListValue)
-                        {
-                            if (this.widthValue < drawStyleTemp.Width)
-                            {
-                                this.widthValue = drawStyleTemp.Width;
-                            }
-                        }
-                    }
-
-                }
-
-
 
                 this.moveState = MoveStateType.NotMove;
             }
         }
 
 
-        public void SetParentSize(int parentWidth, int parentHeight)
+        public void SetParentSize(int parentWidth, int parentHeigth)
         {
-            this.parentHeightValue = parentHeight;
+            this.parentHeigthValue = parentHeigth;
             this.parentWidthValue = parentWidth;
             this.needRefreshLocation = true;
         }
@@ -447,9 +309,8 @@ namespace ToilluminateClient
         public void MoveMessage(int moveNumber)
         {
 
-            if (this.slidingSpeedValue == 0 || IniFileInfo.MoveMessage == false || moveDirectionValue == MoveDirectionStyle.None)
+            if (this.slidingSpeedValue == 0 || IniFileInfo.MoveMessage == false)
             {
-                #region "not move"
                 if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
                 {
                     moveState = MoveStateType.MoveFinish;
@@ -460,164 +321,60 @@ namespace ToilluminateClient
                     this.leftValue = (this.parentWidthValue - this.widthValue) / 2;
                     moveState = MoveStateType.Moving;
                 }
-                #endregion
             }
             else
             {
-                #region "right left "
-                if (moveDirectionValue == MoveDirectionStyle.RightToLeft || moveDirectionValue == MoveDirectionStyle.LeftToRight)
+                int sepValue = (this.parentWidthValue + this.widthValue) / (moveNumber * this.slidingSpeedValue);
+                if (sepValue < 1)
                 {
-                    int sepValue = (this.parentWidthValue + this.widthValue) / (moveNumber * this.slidingSpeedValue);
-                    if (sepValue < 1)
-                    {
-                        sepValue = 1;
-                    }
-                    if (moveDirectionValue == MoveDirectionStyle.RightToLeft)
-                    {
-                        #region "right to left "
-                        this.leftValue = this.leftValue - sepValue;
-                        if (this.leftValue <= -this.widthValue)
-                        {
-                            if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
-                            {
-                                moveState = MoveStateType.MoveFinish;
-                                parentTempleteValue.ExecuteStop();
-                            }
-                            else
-                            {
-                                this.leftValue = this.parentWidthValue;
-                                moveState = MoveStateType.Moving;
-                            }
-
-                        }
-                        else
-                        {
-                            moveState = MoveStateType.Moving;
-                        }
-                        #endregion
-                    }
-                    else if (moveDirectionValue == MoveDirectionStyle.LeftToRight)
-                    {
-                        #region "right to left "
-                        this.leftValue = this.leftValue + sepValue;
-                        if (this.leftValue > this.parentWidthValue)
-                        {
-                            if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
-                            {
-                                moveState = MoveStateType.MoveFinish;
-                                parentTempleteValue.ExecuteStop();
-                            }
-                            else
-                            {
-                                this.leftValue = -this.widthValue;
-                                moveState = MoveStateType.Moving;
-                            }
-                        }
-                        else
-                        {
-                            moveState = MoveStateType.Moving;
-                        }
-                        #endregion
-                    }
+                    sepValue = 1;
                 }
-                #endregion
-
-
-                #region "down top "
-                if (moveDirectionValue == MoveDirectionStyle.DownToTop || moveDirectionValue == MoveDirectionStyle.TopToDown)
+                this.leftValue = this.leftValue - sepValue;
+                if (this.leftValue <= -this.widthValue)
                 {
-                    int sepValue = (this.parentHeightValue + this.heightValue) / (moveNumber * this.slidingSpeedValue);
-                    if (sepValue < 1)
+                    if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
                     {
-                        sepValue = 1;
+                        moveState = MoveStateType.MoveFinish;
+                        parentTempleteValue.ExecuteStop();
                     }
-                    if (moveDirectionValue == MoveDirectionStyle.DownToTop)
+                    else
                     {
-                        #region "down to top "
-                        this.topValue = this.topValue - sepValue;
-                        if (this.topValue <= -this.heightValue)
-                        {
-                            if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
-                            {
-                                moveState = MoveStateType.MoveFinish;
-                                parentTempleteValue.ExecuteStop();
-                            }
-                            else
-                            {
-                                this.topValue = this.parentHeightValue;
-                                moveState = MoveStateType.Moving;
-                            }
+                        this.leftValue = this.parentWidthValue;
+                        moveState = MoveStateType.Moving;
+                    }
 
-                        }
-                        else
-                        {
-                            moveState = MoveStateType.Moving;
-                        }
-                        #endregion
-                    }
-                    else if (moveDirectionValue == MoveDirectionStyle.TopToDown)
-                    {
-                        #region "right to left "
-                        this.topValue = this.topValue + sepValue;
-                        if (this.topValue > this.parentHeightValue)
-                        {
-                            if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
-                            {
-                                moveState = MoveStateType.MoveFinish;
-                                parentTempleteValue.ExecuteStop();
-                            }
-                            else
-                            {
-                                this.topValue = -this.heightValue;
-                                moveState = MoveStateType.Moving;
-                            }
-                        }
-                        else
-                        {
-                            moveState = MoveStateType.Moving;
-                        }
-                        #endregion
-                    }
                 }
-                #endregion
+                else
+                {
+                    moveState = MoveStateType.Moving;
+                }
             }
             if (needRefreshLocation)
             {
-                RefreshLocation();
+                RefreshTop();
             }
         }
 
-        private void RefreshLocation()
+        private void RefreshTop()
         {
+            int top = 30;
             if (this.parentTempleteValue.ShowStyle == MessagePositionType.Top)
             {
-                this.topValue = verticalRangeValue;
+                top = 30;
             }
             else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Bottom)
             {
-                this.topValue = this.parentHeightValue - verticalRangeValue;
+                top = this.parentHeigthValue - 30;
             }
             else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Middle)
             {
-                this.topValue = this.parentHeightValue / 2;
+                top = this.parentHeigthValue / 2;
             }
-            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Left)
-            {
-                this.leftValue = horizontalRangeValue;
-            }
-            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Right)
-            {
-                this.leftValue = this.parentWidthValue - verticalRangeValue;
-            }
-            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Center)
-            {
-                this.leftValue = this.parentWidthValue / 2;
-            }
-
+            this.topValue = top;
             this.needRefreshLocation = false;
         }
 
-        public int GetStyleTop()
+        public int GetStyleTop(int styleHeigth)
         {
             int top = this.topValue;
             if (this.parentTempleteValue.ShowStyle == MessagePositionType.Top)
@@ -626,63 +383,30 @@ namespace ToilluminateClient
             }
             else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Bottom)
             {
-                top = this.topValue - this.heightValue;
+                top = this.topValue - styleHeigth;
             }
             else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Middle)
             {
-                top = this.topValue - (this.heightValue / 2);
+                top = this.topValue - (styleHeigth / 2);
             }
-
             return top;
         }
 
-        public int GetStyleLeft()
+        public int GetStyleLeft(int styleLeftWidth)
         {
-            int left = this.leftValue;
-            if (this.parentTempleteValue.ShowStyle == MessagePositionType.Left)
-            {
-                left = this.leftValue;
-            }
-            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Center)
-            {
-                left = this.leftValue - this.widthValue;
-            }
-            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Right)
-            {
-                left = this.leftValue - (this.widthValue / 2);
-            }
-            
+            int left = this.leftValue + styleLeftWidth;
+
             return left;
         }
-
-
-
-
         public bool CheckStyleShow(DrawMessageStyle dmsValue)
         {
-            if (this.parentTempleteValue.ShowStyle == MessagePositionType.Top
-                || this.parentTempleteValue.ShowStyle == MessagePositionType.Middle
-                || this.parentTempleteValue.ShowStyle == MessagePositionType.Bottom)
+            int left = GetStyleLeft(dmsValue.LeftWidth);
 
+            if (left <= this.parentWidthValue && (left + dmsValue.Width) > 0)
             {
-                int left = this.leftValue + dmsValue.LeftWidth;
-
-                if (left <= this.parentWidthValue && (left + dmsValue.Width) > 0)
-                {
-                    return true;
-                }
+                return true;
             }
-            else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Left
-                   || this.parentTempleteValue.ShowStyle == MessagePositionType.Center
-                   || this.parentTempleteValue.ShowStyle == MessagePositionType.Right)
-            {
-                int top = this.topValue + dmsValue.TopHeight;
 
-                if (top <= this.parentHeightValue && (top + dmsValue.Height) > 0)
-                {
-                    return true;
-                }
-            }
             return false;
         }
 
@@ -696,14 +420,12 @@ namespace ToilluminateClient
         #region " variable "
         private string messageValue = string.Empty;
         private int leftWidthValue;
-        private int topHeightValue;
 
 
         private Font fontValue;
         private Color colorValue;
         private int widthValue;
-        private int heightValue;
-
+        private int heigthValue;
 
         #endregion
 
@@ -724,15 +446,6 @@ namespace ToilluminateClient
                 return leftWidthValue;
             }
         }
-        public int TopHeight
-        {
-            get
-            {
-                return topHeightValue;
-            }
-        }
-
-        
         public Font Font
         {
             get
@@ -754,38 +467,35 @@ namespace ToilluminateClient
                 return widthValue;
             }
         }
-        public int Height
+        public int Heigth
         {
             get
             {
-                return heightValue;
+                return heigthValue;
             }
         }
 
         #endregion
 
-        public DrawMessageStyle(string message, Size preSize, Font font, Color color, int width, int height)
+        public DrawMessageStyle(string message, int leftWidth, Font font, Color color, int width, int heigth)
         {
 
             this.messageValue = message;
-            this.leftWidthValue = preSize.Width            ;
-
-            this.topHeightValue = preSize.Height;
+            this.leftWidthValue = leftWidth;
 
             this.fontValue = font;
             this.colorValue = color;
 
             this.widthValue = width;
-            this.heightValue = height;
+            this.heigthValue = heigth;
 
         }
-        public void SetDrawMessageStyle(string message, Size size)
+        public void SetDrawMessageStyle(string message, int width)
         {
 
             this.messageValue = message;
 
-            this.widthValue = size.Width;
-            this.heightValue = size.Height;
+            this.widthValue = width;
         }
     }
     #endregion
@@ -801,40 +511,11 @@ namespace ToilluminateClient
         private ShowStateType showStateValue = ShowStateType.NotShow;
 
         private int parentWidthValue = 0;
-        private int parentHeightValue = 0;
-
-        /// <summary>
-        /// 纵向分隔距离
-        /// </summary>
-        private int verticalRangeValue = 30;
-        /// <summary>
-        /// 横向分隔距离
-        /// </summary>
-        private int horizontalRangeValue = 30;
+        private int parentHeigthValue = 0;
         #endregion
 
 
         #region " propert "
-        /// <summary>
-        /// 纵向分隔距离
-        /// </summary>
-        public int VerticalRange
-        {
-            get
-            {
-                return verticalRangeValue;
-            }
-        }
-        /// <summary>
-        /// 横向分隔距离
-        /// </summary>
-        public int HorizontalRange
-        {
-            get
-            {
-                return horizontalRangeValue;
-            }
-        }
 
         public List<DrawTrademarkStyle> DrawStyleList
         {
@@ -854,41 +535,26 @@ namespace ToilluminateClient
 
         #endregion
 
-        public DrawTrademark(int parentWidth, int parentHeight, TrademarkTempleteItem parentTemplete)
+        public DrawTrademark(int parentWidth, int parentHeigth, TrademarkTempleteItem parentTemplete)
         {
             drawStyleListValue.Clear();
 
             this.parentTempleteValue = parentTemplete;
 
-            this.parentHeightValue = parentHeight;
+            this.parentHeigthValue = parentHeigth;
             this.parentWidthValue = parentWidth;
-            
-
         }
-        public DrawTrademark(int parentWidth, int parentHeight, TrademarkTempleteItem parentTemplete, int verticalRange, int horizontalRange)
-        {
-            drawStyleListValue.Clear();
-
-            this.parentTempleteValue = parentTemplete;
-
-            this.parentHeightValue = parentHeight;
-            this.parentWidthValue = parentWidth;
-
-            this.verticalRangeValue = verticalRange;
-            this.horizontalRangeValue = horizontalRange;
-
-    }
 
         #region " void and function "
         public void AddDrawTrademark(string file, TrademarkStyle drawStyle)
         {
-            drawStyleListValue.Add(new ToilluminateClient.DrawTrademarkStyle(file, drawStyle.Width, drawStyle.Height, drawStyle.TrademarkPosition));
+            drawStyleListValue.Add(new ToilluminateClient.DrawTrademarkStyle(file, drawStyle.Width, drawStyle.Heigth, drawStyle.TrademarkPosition));
         }
 
 
-        public void SetParentSize(int parentWidth, int parentHeight)
+        public void SetParentSize(int parentWidth, int parentHeigth)
         {
-            this.parentHeightValue = parentHeight;
+            this.parentHeigthValue = parentHeigth;
             this.parentWidthValue = parentWidth;
         }
 
@@ -897,24 +563,24 @@ namespace ToilluminateClient
         {
             int left = style.Left;
             int top = style.Top;
-            
+
             if (style.TrademarkPosition == TrademarkPositionType.TopLeft
                 || style.TrademarkPosition == TrademarkPositionType.TopCenter
                 || style.TrademarkPosition == TrademarkPositionType.TopRight)
             {
-                top = verticalRangeValue;
+                top = 30;
             }
             else if (style.TrademarkPosition == TrademarkPositionType.MiddleLeft
                 || style.TrademarkPosition == TrademarkPositionType.MiddleCenter
                 || style.TrademarkPosition == TrademarkPositionType.MiddleRight)
             {
-                top = (this.parentHeightValue - style.Height) / 2;
+                top = (this.parentHeigthValue - style.Heigth) / 2;
             }
             else if (style.TrademarkPosition == TrademarkPositionType.BottomLeft
                 || style.TrademarkPosition == TrademarkPositionType.BottomCenter
                 || style.TrademarkPosition == TrademarkPositionType.BottomRight)
             {
-                top = this.parentHeightValue - verticalRangeValue - style.Height;
+                top = this.parentHeigthValue - 30 - style.Heigth;
             }
 
 
@@ -922,7 +588,7 @@ namespace ToilluminateClient
                 || style.TrademarkPosition == TrademarkPositionType.MiddleLeft
                 || style.TrademarkPosition == TrademarkPositionType.BottomLeft)
             {
-                left = horizontalRangeValue;
+                left = 30;
             }
             else if (style.TrademarkPosition == TrademarkPositionType.TopCenter
                 || style.TrademarkPosition == TrademarkPositionType.MiddleCenter
@@ -934,7 +600,7 @@ namespace ToilluminateClient
                 || style.TrademarkPosition == TrademarkPositionType.MiddleRight
                 || style.TrademarkPosition == TrademarkPositionType.BottomRight)
             {
-                left = this.parentWidthValue - horizontalRangeValue - style.Width;
+                left = this.parentWidthValue - 30 - style.Width;
             }
 
             if (left < 0) left = 0;
@@ -963,7 +629,7 @@ namespace ToilluminateClient
 
 
         private int widthValue = 0;
-        private int heightValue = 0;
+        private int heigthValue = 0;
 
         private TrademarkPositionType trademarkPositionValue;
         #endregion
@@ -1006,32 +672,32 @@ namespace ToilluminateClient
                 return widthValue;
             }
         }
-        public int Height
+        public int Heigth
         {
             get
             {
-                return heightValue;
+                return heigthValue;
             }
         }
 
         #endregion
 
-        public DrawTrademarkStyle(string file, int width, int height, int left, int top)
+        public DrawTrademarkStyle(string file, int width, int heigth, int left, int top)
         {
             this.fileValue = file;
             this.widthValue = width;
-            this.heightValue = height;
+            this.heigthValue = heigth;
 
 
             this.leftValue = left;
             this.topValue = top;
             this.trademarkPositionValue = TrademarkPositionType.None;
         }
-        public DrawTrademarkStyle(string file, int width, int height, TrademarkPositionType trademarkPosition)
+        public DrawTrademarkStyle(string file, int width, int heigth, TrademarkPositionType trademarkPosition)
         {
             this.fileValue = file;
             this.widthValue = width;
-            this.heightValue = height;
+            this.heigthValue = heigth;
 
 
             this.leftValue = 0;
