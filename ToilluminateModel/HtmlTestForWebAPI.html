@@ -1,0 +1,510 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>NBA App</title>
+</head>
+<body>
+
+    <div>
+        <h2>All Players</h2>
+        <ul id="players" />
+    </div>
+    <div>
+        <h2>Search by ID</h2>
+        <input type="text" id="prodId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="player" />
+    </div>
+    <div>
+        <div>
+            <h2>Add File</h2>
+            <table>
+                <tr>
+                    <td>
+                        <label>FILE NAME :</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_filename" size="5" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>FILE TYPE ID :</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_filetypeid" size="5" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>GROUP ID :</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_groupid" size="5" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>FILE URL:</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_fileurl" size="5" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>FILE COMMENTS:</label>
+                    </td>
+                    <td>
+                        <input type="text" id="txt_comments" size="5" />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td>
+                        <input type="file" id="file_fileupload" name="fileupload" multiple="multiple" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <input type="button" value="SAVE FILE" onclick="fileUpload();" />
+        </div>
+        <div>
+            <input type="button" value="GET PLAYLIST BY GROUPID" onclick="GetPlayListByGroupID();"/>
+            <div id="rst1"/>
+        </div>
+        <div>
+            <input type="button" value="GET INHERITFORCED PLAYLIST BY GROUPID" onclick="GetPlayListWithInheritForcedByGroupID();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="ADD NEW GROUPID" onclick="AddNewGroup();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="EDIT GROUPID" onclick="EditGroup();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="GetTotalPlayListByPlayerID" onclick="GetTotalPlayListByPlayerID();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="GetForcedPlayListByGroupID" onclick="GetForcedPlayListByGroupID();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="GetOwnPlayListByPlayerID" onclick="GetOwnPlayListByPlayerID();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="GetOwnPlayListWithInheritByGroupID" onclick="GetOwnPlayListWithInheritByGroupID();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="DeleteGroupPlayListLinkTableByGroupID" onclick="DeleteGroupPlayListLinkTableByGroupID();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="GET FILES BY FOLDER IDS" onclick="getFilesByFolders();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="CREATE PLAYLIST" onclick="createPlayList();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="text" id="txt_playlistid" value="" />
+            <input type="button" value="updatePlaylist" onclick="updatePlaylist();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="GetGroupJSTreeDataWithChildByGroupID" onclick="GetGroupJSTreeDataWithChildByGroupID();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="DeleteGroupByGroupID" onclick="DeleteGroupByGroupID();" />
+            <div id="rst2" />
+        </div>
+        <div>
+            <input type="button" value="GetUserLoginInfo" onclick="GetUserLoginInfo();" />
+            <div id="rst2" />
+        </div>
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var url = 'api/FileMasters';
+        var Settings = {
+            create: function () {
+                url:"";
+                type:"";
+                contentType: "application/json; charset=utf-8";
+                success: "";
+                error: "";
+                return Settings;
+            }
+        }
+        var FileMaster = {
+            create: function () {
+                FileName: "";
+                FileTypeID: "";
+                FolderID: "";
+                FileUrl: "";
+                FileData:"";
+                Comments: "";
+                return FileMaster;
+            }
+        }
+        var GroupMaster = {
+            create: function () {
+                GroupID: "";
+                GroupName: "";
+                GroupParentID: "";
+                return GroupMaster;
+            }
+        }
+        var PlayListMaster = {
+            create: function () {
+                GroupID: "";
+                PlayListName: "";
+                Settings: "";
+                return PlayListMaster;
+            }
+        }
+        $(document).ready(function () {
+            pageInit();
+        });
+        function addElementToPlayer(item) {
+            var player = $('#players');
+            $('<li>', { text: formatItem(item) }).append(
+            $('<img>', { src: item.FileThumbnailUrl }).width('200px').fadeIn(),
+            $('<input type="button" value = "Delete" onclick="deleteFile(this,' + item.FileID + ')">').width('50px')).appendTo(player);
+        }
+        function pageInit() {
+            var newSettings = Settings.create();
+            newSettings.url = url;
+            newSettings.type = "GET";
+            newSettings.success = function (data) {
+                $('#players').empty();
+                $.each(data, function (key, item) {
+                    addElementToPlayer(item);
+                });
+            };
+            newSettings.error = function () {
+                alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+            }
+            ajax(newSettings);
+        }
+        function formatItem(item) {
+            return item.FileName;
+            //return item.FileID + ": " + item.FileName + "(" + item.FileTypeID + ')' + " - " + item.GroupID + "(" + item.FileUrl + ")";
+        }
+
+        function find() {
+            var id = $('#prodId').val();
+            $.getJSON(url + '/' + id)
+                .done(function (data) {
+                    $('#player').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#player').text('Error: ' + err);
+                });
+        }
+        function fileUpload() {
+            var files = $("#file_fileupload").prop('files');
+            $.each(files, function (key, file) {
+                var formData = new FormData();
+                formData.append("FileData", file);
+                formData.append("UserID", 2);
+                formData.append("FolderID", 75);
+
+                $.ajax({
+                    url: url + '/UploadFile',
+                    type: "POST",
+                    //contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (data) {
+                        pageInit();
+                        //addElementToPlayer(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                    }
+                });
+            });
+            $("#file_fileupload").val('');
+        }
+        function deleteFile(obj,fileID){
+
+            $.ajax({
+                url: url + "/" + fileID,
+                type: "DELETE",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $(obj).parent().fadeOut(500, function() {
+                        $(obj).parent().remove();
+                    });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetPlayListByGroupID() {
+            $.ajax({
+                url: 'api/PlayListMasters/GetPlayListByGroupID/'+267,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetPlayListWithInheritForcedByGroupID() {
+            $.ajax({
+                url: 'api/PlayListMasters/GetPlayListWithInheritForcedByGroupID/' + 260,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+
+        function AddNewGroup() {
+            var newGroup = GroupMaster.create();
+            newGroup.GroupName = "tsx_test_01";   
+            newGroup.GroupParentID = "3";
+            $.ajax({
+                url: 'api/GroupMasters',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data:JSON.stringify(newGroup),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+
+        function EditGroup() {
+            var newGroup = GroupMaster.create();
+            newGroup.GroupID = 63;
+            newGroup.GroupName = "333333";
+            newGroup.GroupParentID = "2";
+            $.ajax({
+                url: 'api/GroupMasters/63',
+                type: "PUT",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(newGroup),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+
+        function GetTotalPlayListByPlayerID() {
+            $.ajax({
+                url: 'api/PlayListMasters/GetTotalPlayListByPlayerIDForClient/1',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetOwnPlayListByPlayerID() {
+            $.ajax({
+                url: 'api/PlayListMasters/GetOwnPlayListByPlayerID/1',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetForcedPlayListByGroupID() {
+            $.ajax({
+                url: 'api/PlayListMasters/GetForcedPlayListByGroupID/2',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetOwnPlayListWithInheritByGroupID() {
+            $.ajax({
+                url: 'api/PlayListMasters/GetOwnPlayListWithInheritByGroupID/2',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetGroupJSTreeDataWithChildByGroupID() {
+            $.ajax({
+                url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/5',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function DeleteGroupByGroupID() {
+            $.ajax({
+                url: 'api/GroupMasters/DeleteGroupByID/1',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function DeleteGroupPlayListLinkTableByGroupID() {
+            $.ajax({
+                url: 'api/GroupPlayListLinkTables/DeleteGroupPlayListLinkTableByGroupID/303',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function GetUserLoginInfo() {
+            $.ajax({
+                url: 'api/UserMasters/GetUserLoginInfo',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function getFilesByFolders() {
+            var arr = ["61", "69"];
+            $.ajax({
+                url: 'api/FileMasters/GetFilesByFolderIDArray',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(arr),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function createPlayList() {
+            var arr = [];
+            var settings = {
+                PlayHours: "0",
+                PlayMinites: "1",
+            }
+            arr.push(settings);
+            var newPL = PlayListMaster.create();
+            newPL.GroupID = 63;
+            newPL.PlayListName = "2333333";
+            newPL.Settings = JSON.stringify(arr);
+            $.ajax({
+                url: 'api/PlayListMasters',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(newPL),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function updatePlaylist() {
+
+            var PlaylistMaster = {
+                create: function () {
+                    GroupID: "";
+                    PlayListName: '';
+                    InheritForced: '';
+                    Settings: '';
+                    Comments: '';
+                    PlayListID: '';
+                    return PlaylistMaster;
+                }
+            }
+            var newPlaylist = PlaylistMaster.create();
+            newPlaylist.GroupID = 1;
+            newPlaylist.PlayListName = "Rootリスト１";
+            newPlaylist.PlayListID = 1;
+            newPlaylist.InheritForced = undefined;
+            newPlaylist.Settings = "";
+            newPlaylist.Comments = "Rootリスト１";
+
+            $.ajax({
+                url: 'api/PlayListMasters/1',
+                type: "PUT",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(newPlaylist),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function ajax(settings) {
+            $.ajax({
+                url: settings.url,
+                type: settings.type,
+                contentType: settings.contentType,
+                data:settings.data,
+                success: settings.success,
+                error: settings.error
+            });
+        }
+    </script>
+</body>
+</html>

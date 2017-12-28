@@ -33,16 +33,12 @@ namespace ToilluminateClient
         /// 設定ファイルの名
         /// </summary>
         public const string INI_NAME = "ToilluminateClient.ini";
-        /// <summary>
-        /// 設定ファイルの名
-        /// </summary>
-        public const string JSON_NAME = "ToilluminateClient.jsonstring";
 
         /// <summary>
         /// アプリケーション名
         /// </summary>
         public const string APPLICATION = "ToilluminateClient";
-
+        
         /// <summary>
         /// エクスポートフォルダ
         /// </summary>
@@ -53,14 +49,14 @@ namespace ToilluminateClient
         /// 言語辞書のフォルダ
         /// </summary>
         public const string MultiDictDir = "MultilingualDictionary";
-
+        
         /// <summary>
         /// バージョン情報
         /// </summary>
         public const string Version = "1.0.0";
 
         public const string LabelNameHead = "lblMessage";
-
+        
         #endregion
 
 
@@ -72,7 +68,7 @@ namespace ToilluminateClient
         public const string VAL_Dividing = "|";
         public const char SPACE_CHAR = (char)11;
         public const char SPACE_CHAR_UNDERLINE = '_';
-
+      
         /// <summary>
         /// 毎回ファイル だけ 3K 読み取り 最大数
         /// </summary>
@@ -81,24 +77,28 @@ namespace ToilluminateClient
 
 
         #region Message 
-
+#if DEBUG
+        public static readonly string MESSAGE_FONT_Family = "poppins";
+        public static readonly int MESSAGE_FONT_Size = 12;
+        public static readonly Color MESSAGE_FONT_Color = Color.Red;
+#else
         public static readonly string MESSAGE_FONT_Family = "poppins";
         public static readonly int MESSAGE_FONT_Size = 14;
-        public static readonly Color MESSAGE_FONT_Color = Color.Red;
-
+        public static readonly Color MESSAGE_FONT_Color = Color.Black;
+#endif
         #endregion Message
 
         #region パスワード
         public const int PASSWORD_LENGTH_MIN = 7;
-
+        
         /// <summary>
         /// クライアントの登録の暗号鍵
         /// </summary>
         public const string CRYPT_KEY_FOR_CLIENT_LOGIN = "1710";
 
-        #endregion
+#endregion
 
-        #region API Function
+#region API Function
 
         /// <summary>
         /// 播放器发送心跳包
@@ -114,13 +114,13 @@ namespace ToilluminateClient
         /// 得到player调用
         /// </summary>
         public const string API_PLAYERMASTERS_GET_INFO = "api/PlayerMasters/{0}";
+        
 
+#endregion
 
-        #endregion
+#region "Default Dictionary"
 
-        #region "Default Dictionary"
-
-        #region "Default Dictionary Message"
+#region "Default Dictionary Message"
         /// <summary>
         /// Message
         /// </summary>
@@ -153,7 +153,7 @@ namespace ToilluminateClient
                                           , new List<string> { "List", "リスト" }
                                           , new List<string> { "Stream", "ストリーム" }
                                           , new List<string> { "Factory", "工場" }
-                                          , new List<string> { "Vender", "ベンダー" }
+                                          , new List<string> { "Vender", "ベンダー" }                                          
                                           , new List<string> { "Protocol", "プロトコル" }
                                           , new List<string> { "Listen", "監視" }
                                           , new List<string> { "Guard", "警備" }
@@ -185,9 +185,9 @@ namespace ToilluminateClient
                                           , new List<string> { "Picture File", "写真ファイル" }
                                             };
 
-        #endregion
+#endregion
 
-        #region "Default Dictionary Client"
+#region "Default Dictionary Client"
         /// <summary>
         /// Message
         /// </summary>
@@ -261,9 +261,9 @@ namespace ToilluminateClient
                                             };
 
 
-        #endregion
+#endregion
 
-        #region "Default Dictionary Enum"
+#region "Default Dictionary Enum"
         /// <summary>
         /// Message
         /// </summary>
@@ -271,14 +271,14 @@ namespace ToilluminateClient
                                             new List<string> { "male", "Man" }
                                           , new List<string> { "female", "Woman" } };
 
-        #endregion
-
-        #endregion
+#endregion
+        
+#endregion
 
     }
-    #endregion
+#endregion
 
-    #region タイムアウト時間
+#region タイムアウト時間
     /// <summary>
     /// タイムアウト時間
     /// </summary>
@@ -291,10 +291,10 @@ namespace ToilluminateClient
         // 执行
         public static int Execting = 5;
     }
-    #endregion
+#endregion
 
 
-    #region ComboItem対象
+#region ComboItem対象
     public class ComboItem
     {
         public string Text = "";
@@ -311,9 +311,9 @@ namespace ToilluminateClient
             return Text;
         }
     }
-    #endregion
-
-    #region 属性は存在種別
+#endregion
+        
+#region 属性は存在種別
     /// <summary>
     /// 属性は存在種別
     /// </summary>
@@ -330,134 +330,32 @@ namespace ToilluminateClient
         [EnumDescription("Yes")]
         True = 1,
     }
-    #endregion
+#endregion
 
-
-    #region 视频设备種別
-
+#region 認証結果
     /// <summary>
-    /// 视频设备種別
+    /// 認証結果列挙
     /// </summary>
-    public enum MediaDeivceType
+    public enum LoginResult
     {
         /// <summary>
-        /// 
+        /// 認証成功
         /// </summary>
-        [EnumDescription("VideoLAN")]
-        VLC = 0,
+        Succeed,
         /// <summary>
-        /// 
+        /// 認証失敗
         /// </summary>
-        [EnumDescription("Wodows Media Play")]
-        WMP = 1,
+        Failed,
+        /// <summary>
+        /// 認証Err
+        /// </summary>
+        Error,
     }
-    #endregion
-
-    #region PlayApp
-
-    #region play状态类型
+#endregion
+    
+#region 填充模式
     /// <summary>
-    /// play状态类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum PlayListStateType
-    {
-        /// <summary>
-        /// 等待
-        /// </summary>
-        [EnumDescription("等待")]
-        Wait = 0,
-        /// <summary>
-        /// 播放
-        /// </summary>
-        [EnumDescription("放送")]
-        Execute = 1,
-        /// <summary>
-        /// 末尾
-        /// </summary>
-        [EnumDescription("末尾")]
-        Last = 2,
-        /// <summary>
-        /// 停止
-        /// </summary>
-        [EnumDescription("停止")]
-        Stop = 9,
-    }
-
-    #endregion
-
-    #region 模板类型
-    /// <summary>
-    /// 模板类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum TempleteItemType
-    {
-        /// <summary>
-        /// None
-        /// </summary>
-        [EnumDescription("")]
-        None = -1,
-        /// <summary>
-        /// 图片
-        /// </summary>
-        [EnumDescription("写真")]
-        Image = 0,
-        /// <summary>
-        /// 文字消息
-        /// </summary>
-        [EnumDescription("文字")]
-        Message = 1,
-        /// <summary>
-        /// 视频
-        /// </summary>
-        [EnumDescription("映像")]
-        Media = 2,
-        /// <summary>
-        /// 商标
-        /// </summary>
-        [EnumDescription("商标")]
-        Trademark = 3,
-
-    }
-
-    #endregion
-
-    #region templete状态类型
-    /// <summary>
-    /// templete状态类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum TempleteStateType
-    {
-        /// <summary>
-        /// 等待
-        /// </summary>
-        [EnumDescription("等待")]
-        Wait = 0,
-        /// <summary>
-        /// 播放
-        /// </summary>
-        [EnumDescription("放送")]
-        Execute = 1,
-        /// <summary>
-        /// 停止
-        /// </summary>
-        [EnumDescription("停止")]
-        Stop = 9,
-    }
-
-    #endregion
-
-    #endregion
-
-    #region ShowApp
-
-
-
-    #region 图片填充模式
-    /// <summary>
-    /// 图片填充模式
+    /// 填充模式
     /// </summary>
     /// <remarks></remarks>
     public enum FillOptionStyle
@@ -479,9 +377,9 @@ namespace ToilluminateClient
         Zoom = 2,
     }
 
-    #endregion
+#endregion
 
-    #region 图片显示模式
+#region 图片显示模式
 
     /// <summary>
     /// 图片显示模式
@@ -555,9 +453,9 @@ namespace ToilluminateClient
         /// </summary>
         None = 99,
     }
-    #endregion
+#endregion
 
-    #region 特效模式
+#region 特效模式
     /// <summary>
     /// 特效模式
     /// </summary>
@@ -589,42 +487,38 @@ namespace ToilluminateClient
         //Docking_DT = 14,
 
     }
-    #endregion
+#endregion
 
-    #region 移动方向类型
+
+#region 信息显示模式
+
     /// <summary>
-    ///移动方向类型
+    /// 信息显示模式
     /// </summary>
-    /// <remarks></remarks>
-    public enum MoveDirectionStyle
-    {
-        RightToLeft = 0,
-        LeftToRight = 1,
-        TopToDown = 2,
-        DownToTop = 3,
-        None = 9,
-    }
-
-    #endregion
-
-    #region 信息位置类型
-    /// <summary>
-    ///信息位置类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum MessagePositionType
+    public enum MessageShowStyle
     {
         Top = 0,
+        /// <summary>
+        /// 
+        /// </summary>
         Middle = 1,
+        /// <summary>
+        /// 
+        /// </summary>
         Bottom = 2,
-        Left = 3,
-        Center = 4,
-        Right = 5,
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <summary>
+        /// 
+        /// </summary>
+        Random = 99,
+       
     }
+#endregion
 
-    #endregion
 
-    #region 视频显示模式
+#region 视频显示模式
 
     /// <summary>
     /// 视频显示模式
@@ -644,81 +538,6 @@ namespace ToilluminateClient
         /// </summary>
         Full2 = 2,
     }
-    #endregion
-
-    #region 商标位置类型
-    /// <summary>
-    /// 商标位置类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum TrademarkPositionType
-    {
-        TopLeft = 0,
-        TopCenter = 1,
-        TopRight = 2,
-        MiddleLeft = 3,
-        MiddleCenter = 4,
-        MiddleRight = 5,
-        BottomLeft = 6,
-        BottomCenter = 7,
-        BottomRight = 8,
-        None = 9,
-    }
-
-    #endregion
-
-
-    #region 移动状态类型
-    /// <summary>
-    /// 移动状态类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum MoveStateType
-    {
-        /// <summary>
-        /// 等待
-        /// </summary>
-        [EnumDescription("等待")]
-        NotMove = 0,
-        /// <summary>
-        /// 移动
-        /// </summary>
-        [EnumDescription("移动")]
-        Moving = 1,
-        /// <summary>
-        /// 结束
-        /// </summary>
-        [EnumDescription("结束")]
-        MoveFinish = 2,
-    }
-
-    #endregion
-
-    #region 显示状态类型
-    /// <summary>
-    /// 显示状态类型
-    /// </summary>
-    /// <remarks></remarks>
-    public enum ShowStateType
-    {
-        /// <summary>
-        /// 等待
-        /// </summary>
-        [EnumDescription("等待")]
-        NotShow = 0,
-        /// <summary>
-        /// 显示
-        /// </summary>
-        [EnumDescription("显示")]
-        Showing = 1,
-        /// <summary>
-        /// 结束
-        /// </summary>
-        [EnumDescription("结束")]
-        ShowFinish = 2,
-    }
-
-    #endregion
-    #endregion
+#endregion
 }
 

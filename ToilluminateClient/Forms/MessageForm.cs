@@ -14,11 +14,10 @@ namespace ToilluminateClient
     public partial class MessageForm : Form
     {
         private bool showMessageFlag = false;
-        
+
+        private bool showMessageEnd = false;
 
         private MainForm parentForm;
-
-        private Control[] messageControls;
 
         #region " override "
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, System.Windows.Forms.Keys keyData)
@@ -56,25 +55,24 @@ namespace ToilluminateClient
             this.FormBorderStyle = FormBorderStyle.None;
 
 
+            this.pnlMessage.Left = 0;
+            this.pnlMessage.Top = 0;
+            this.pnlMessage.Width = this.Width;
+            this.pnlMessage.Height = this.Height;
+            this.pnlMessage.BackColor = ImageApp.BackClearColor;
+            this.pnlMessage.SendToBack();
 
-            messageControls = new Control[] { this.pnlMessage0, this.pnlMessage1, this.pnlMessage2, this.pnlMessage3, this.pnlMessage4, this.pnlMessage5 };
 
-            foreach (Control pnlMessage in messageControls)
-            {
-                pnlMessage.Left = -10;
-                pnlMessage.Top = -10;
-                pnlMessage.Width = 1;
-                pnlMessage.Height = 1;
-                pnlMessage.BackColor = ImageApp.BackClearColor;
-                pnlMessage.SendToBack();
-            }
+            this.pnlTrademark.BackColor = ImageApp.BackClearColor;
+            this.pnlTrademark.BringToFront();
+            this.pnlTrademark.Visible = false;
         }
 
-        public void tmrShow_Tick(object sender, EventArgs e)
+        public void tmrMessage_Tick(object sender, EventArgs e)
         {
             try
             {
-                this.tmrShow.Stop();
+                this.tmrMessage.Stop();
 
                 if (PlayApp.ExecutePlayList != null)
                 {
@@ -85,9 +83,9 @@ namespace ToilluminateClient
                     }
                 }
 
-                ThreadShow();
+                ThreadShowMessage();
 
-                ImageApp.MyDrawMessage(this.messageControls[0]);
+                ImageApp.MyDrawMessage(this.pnlMessage);
             }
             catch (Exception ex)
             {
@@ -95,18 +93,18 @@ namespace ToilluminateClient
             }
             finally
             {
-                this.tmrShow.Start();
+                this.tmrMessage.Start();
             }
         }
 
         private void MessageForm_Load(object sender, EventArgs e)
         {
-            this.tmrShow.Interval = 10;
+            this.tmrMessage.Interval = 10;
 
         }
         private void MessageForm_Shown(object sender, EventArgs e)
         {
-            ShowApp.MessageBackBitmap = new Bitmap(this.Width, this.Height);
+            PlayApp.MessageBackBitmap = new Bitmap(this.Width, this.Height);
         }
 
         private void MessageForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -116,11 +114,12 @@ namespace ToilluminateClient
 
         private void MessageForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            PlayApp.NowMediaIsShow = false;
         }
 
         #region " Show Message "
 
-        public void ThreadShow()
+        public void ThreadShowMessage()
         {
             Thread tmpThread = new Thread(this.ThreadShowMessageVoid);
             tmpThread.IsBackground = true;
@@ -175,14 +174,29 @@ namespace ToilluminateClient
         {
             try
             {
-                ShowApp.NowMessageIsShow = false;
-                this.tmrShow.Stop();
+                PlayApp.NowMediaIsShow = false;
+                this.tmrMessage.Stop();
 
                 foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
                 {
                     mtItem.ExecuteRefresh();
                 }
-                
+
+                Control objControl = this;
+
+                List<string> removeControlName = new List<string> { };
+                foreach (Control con in objControl.Controls)
+                {
+                    if (con.Name.Length > Constants.LabelNameHead.Length && Utility.GetLeftString(con.Name, Constants.LabelNameHead.Length) == Constants.LabelNameHead)
+                    {
+                        con.Visible = false;
+                        removeControlName.Add(con.Name);
+                    }
+                }
+                foreach (string controlName in removeControlName)
+                {
+                    objControl.Controls.RemoveByKey(controlName);
+                }
             }
             catch (Exception ex)
             {
@@ -191,7 +205,7 @@ namespace ToilluminateClient
         }
 
 
-        public void SetMainForm(MainForm mainForm)
+        public void SetParentForm(MainForm mainForm)
         {
             parentForm = mainForm;
         }
@@ -203,13 +217,9 @@ namespace ToilluminateClient
         {
             try
             {
-                foreach (DrawMessage dmItem in ShowApp.DrawMessageList)
+                foreach (DrawMessage dmItem in PlayApp.DrawMessageList)
                 {
                     dmItem.SetParentSize(this.Width, this.Height);
-                }
-                if (ShowApp.DownLoadDrawMessage != null && ShowApp.DownLoadDrawMessage.DrawStyleList.Count > 0)
-                {
-                    ShowApp.DownLoadDrawMessage.SetParentSize(this.Width, this.Height);
                 }
             }
             catch (Exception ex)

@@ -2221,7 +2221,7 @@ namespace ToilluminateClient
         private Font fontValue;
         private Color colorValue;
         private int widthValue;
-        private int heightValue;
+        private int heigthValue;
 
         #endregion
 
@@ -2249,24 +2249,24 @@ namespace ToilluminateClient
                 return widthValue;
             }
         }
-        public int Height
+        public int Heigth
         {
             get
             {
-                return heightValue;
+                return heigthValue;
             }
         }
 
         #endregion
 
-        public MessageStyle(Font font, Color color, int width, int height)
+        public MessageStyle(Font font, Color color, int width, int heigth)
         {
 
             this.fontValue = font;
             this.colorValue = color;
 
             this.widthValue = width;
-            this.heightValue = height;
+            this.heigthValue = heigth;
 
         }
     }
@@ -2391,7 +2391,7 @@ namespace ToilluminateClient
         #region " variable "
         private TrademarkPositionType trademarkPositionValue;
         private int widthValue;
-        private int heightValue;
+        private int heigthValue;
 
         #endregion
 
@@ -2412,22 +2412,22 @@ namespace ToilluminateClient
                 return widthValue;
             }
         }
-        public int Height
+        public int Heigth
         {
             get
             {
-                return heightValue;
+                return heigthValue;
             }
         }
 
         #endregion
 
-        public TrademarkStyle(int width, int height, TrademarkPositionType trademarkPosition)
+        public TrademarkStyle(int width, int heigth, TrademarkPositionType trademarkPosition)
         {
             this.trademarkPositionValue = trademarkPosition;
 
             this.widthValue = width;
-            this.heightValue = height;
+            this.heigthValue = heigth;
 
         }
     }

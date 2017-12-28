@@ -77,7 +77,6 @@
     <Compile Include="Commons\IniFileInfo.cs" />
     <Compile Include="Commons\LogApp.cs" />
     <Compile Include="Commons\PlayApp.cs" />
-    <Compile Include="Commons\ShowApp.cs" />
     <Compile Include="Commons\Utility.cs" />
     <Compile Include="Commons\VariableInfo.cs" />
     <Compile Include="Commons\VlcPlay.cs" />
@@ -93,12 +92,6 @@
     </Compile>
     <Compile Include="Forms\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TrademarkForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TrademarkForm.Designer.cs">
-      <DependentUpon>TrademarkForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MessageForm.cs">
       <SubType>Form</SubType>
@@ -158,9 +151,6 @@
     </Compile>
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TrademarkForm.resx">
-      <DependentUpon>TrademarkForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MessageForm.resx">
       <DependentUpon>MessageForm.cs</DependentUpon>
@@ -231,14 +221,6 @@
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="AxWMPLib">
-      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>aximp</WrapperTool>
-      <Isolated>False</Isolated>
     </COMReference>
     <COMReference Include="WMPLib">
       <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>

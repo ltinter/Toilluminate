@@ -1,0 +1,18 @@
+﻿.file-img {
+    border-radius: 6px;
+    cursor: pointer;
+}
+.file-mask {       
+            position: absolute; 
+            top: 0px; 
+            filter: alpha(opacity=60); 
+            background-color: #777;     
+            z-index: 1002; 
+            left: 0px;
+            background: rgba(0, 0, 0, 0.6);   
+}
+.file-mask-img {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}

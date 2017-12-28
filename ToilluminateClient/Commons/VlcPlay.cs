@@ -91,7 +91,6 @@ namespace ToilluminateClient
         /// </summary>
         public void Play()
         {
-            Console.WriteLine("Play");
             if (libVLCMediaPlayer != IntPtr.Zero)
             {
                 if (playState != VLCPlayState.STATE_Play)

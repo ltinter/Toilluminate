@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
@@ -23,17 +22,11 @@ namespace ToilluminateClient
 
         
         public static MessageForm messageFormInstance = new MessageForm();
-        public static TrademarkForm trademarkFormInstance = new TrademarkForm();
 
         /// <summary>
         /// システムのファイル
         /// </summary>
         private static string iniFile = string.Empty;
-
-        /// <summary>
-        /// システムのファイル
-        /// </summary>
-        private static string jsonFile = string.Empty;
 
         #region フィールド
         /// <summary>
@@ -68,23 +61,13 @@ namespace ToilluminateClient
             }
         }
         /// <summary>
-        /// ini ファイル
+        /// 放送リストID
         /// </summary>
         public static string IniFile
         {
             get
             {
                 return iniFile;
-            }
-        }
-        /// <summary>
-        /// Json ファイル
-        /// </summary>
-        public static string JsonFile
-        {
-            get
-            {
-                return jsonFile;
             }
         }
 
@@ -118,18 +101,7 @@ namespace ToilluminateClient
             {
                 clientPath = Application.StartupPath;
 
-#if DEBUG
                 iniFile = clientPath + "\\" + Constants.INI_NAME;
-                if (File.Exists(iniFile) == false)
-                {
-                    clientPath = Utility.GetFullFileName(new DirectoryInfo(Application.StartupPath).Parent.FullName, "Release");
-                }
-#endif
-
-                iniFile = clientPath + "\\" + Constants.INI_NAME;
-
-                jsonFile = clientPath + "\\" + Constants.JSON_NAME;
-
 
                 tempPath = Utility.GetFullFileName(clientPath, "Temp");
                 filesPath = Utility.GetFullFileName(clientPath, "Files");
@@ -158,33 +130,7 @@ namespace ToilluminateClient
         }
 
 
-        public static void ReSizeForm(Form main, Form layer)
-        {
-            try
-            {
-
-                if (layer != null && layer.IsDisposed == false)
-                {
-                    if (main.FormBorderStyle == layer.FormBorderStyle)
-                    {
-                        layer.Size = main.Size;
-                        layer.Location = main.Location;
-                    }
-                    else
-                    {
-                        layer.Size = new Size(main.Size.Width - 16, main.Size.Height - 38);
-                        layer.Location = new Point(main.Location.X + 8, main.Location.Y + 30);
-                    }
-                    layer.WindowState = main.WindowState;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogApp.OutputErrorLog("VariableInfo", "ReSizeForm", ex);
-            }
-        }
-
-#endregion
+        #endregion
     }
 
     public class PlayerInfo

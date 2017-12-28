@@ -55,8 +55,8 @@ namespace ToilluminateClient
                 int srcW = drawingBoard.Width;
                 int srcH = drawingBoard.Height;
 
-                ShowApp.MessageBackBitmap = new Bitmap(drawingBoard.Width, drawingBoard.Height);
-                gBmpBack = Graphics.FromImage(ShowApp.MessageBackBitmap);
+                PlayApp.MessageBackBitmap = new Bitmap(drawingBoard.Width, drawingBoard.Height);
+                gBmpBack = Graphics.FromImage(PlayApp.MessageBackBitmap);
                 gBmpBack.Clear(ImageApp.BackClearColor);
 
                 
@@ -73,7 +73,7 @@ namespace ToilluminateClient
                 // g = drawingBoard.CreateGraphics();
 
                 //g.DrawImage(PlayApp.MessageBackBitmap, 0, 0);
-                drawingBoard.BackgroundImage = ShowApp.MessageBackBitmap;
+                drawingBoard.BackgroundImage = PlayApp.MessageBackBitmap;
 
 
             }
@@ -83,7 +83,7 @@ namespace ToilluminateClient
             }
             finally
             {
-                ShowApp.DrawMessageFlag = false;
+                PlayApp.DrawMessageFlag = false;
                 if (null != g)
                 {
                     g.Dispose();

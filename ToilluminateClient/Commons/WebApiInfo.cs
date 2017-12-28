@@ -99,7 +99,6 @@ namespace ToilluminateClient
             }
             catch (Exception ex)
             {
-                PlayApp.CurrentPlayListNeedDownloadFile = true;
                 LogApp.OutputErrorLog("WebApiInfo", "DownloadFile", ex);
                 LogApp.OutputErrorLog("WebApiInfo", "DownloadFile", url);
                 return string.Empty;
