@@ -435,6 +435,11 @@
                                                             palylistItem: palylistItem
                                                         });
                                                         break;
+                                                    case "3":
+                                                        $.playlistEditor('greateNewItemQRCode', {
+                                                            palylistItem: palylistItem
+                                                        });
+                                                        break;
                                                 }
                                             }
                                         })
@@ -489,7 +494,8 @@
                 success: function (fileData) {
                     var supportedFileTypes = {
                         "image": [".jpg", ".gif", ".png", ".jpeg", ".bmp"],
-                        "video": [".mp4", ".wmv", ".mpeg", ".mpg", ".avi", ".mov", ".flv", ".mkv"]
+                        "video": [".mp4", ".wmv", ".mpeg", ".mpg", ".avi", ".mov", ".flv", ".mkv"],
+                        "qrcode": [".jpg", ".gif", ".png", ".jpeg", ".bmp"],
                     };
                     var tempFileData = [];
                     $.each(fileData, function (fileIndex, fileItem) {
@@ -514,23 +520,21 @@
                     if (currentNeededFileType === "video") {
                         divselectFile.empty();
                     }
-
-                    var screenshotDiv = $("<li/>").css({ "margin": "3px 3px 3px 0", "padding": "1px", "float": "left", "max-width": "200px", "height": "150px", "font-size": "4em", "text-align": "center", "cursor": "move" }).addClass("ui-state-default");
+                    if (currentNeededFileType === "qrcode") {
+                        divselectFile.empty();
+                    }
                     var screenshot = new Image();
                     screenshot.src = $(item).data().obj.FileThumbnailUrl;
                     screenshot.fileUrl = $(item).data().obj.FileUrl;
                     screenshot.id = $(item).data().obj.FileID;
-                    $(screenshot).css({ "max-height": "140px", "max-width": "190px", "padding": "5px", "vertical-align": "top" });
-                    screenshotDiv.append(screenshot);
-                    var deleteImg = $("<i class='fa fa-remove'></i>").css({ "background-color": "none", "cursor": "pointer", "vertical-align": "top" }).click(function () {
-                        $(this).parent().remove();
+                    $(screenshot).css({ "max-height": "150px", "max-width": "200px","padding":"5px" });
+                    divselectFile.append(screenshot);
+                    var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
+                        $(screenshot).remove();
+                        $(this).remove();
                     });
-
-                    screenshotDiv.append(deleteImg);
-                    divselectFile.append(screenshotDiv);
+                    divselectFile.append(deleteImg);
                 });
-                divselectFile.sortable();
-                divselectFile.disableSelection();
             }
         },
     greateNewItemPicture: function (options) {
@@ -615,7 +619,7 @@
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
 
-        var div_col_image = $('<ul/>').css({ "list-style-type": "none", "margin": "0", "padding": "0", "width": "100%" });
+        var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px').css("line-height", "150px");
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select images')).click(function () {
             divselectFile = div_col_image;
             currentNeededFileType = "image";
@@ -657,20 +661,18 @@
             if (options.palylistItem) {
                 if (options.palylistItem.itemData) {
                     $.each(options.palylistItem.itemData.id, function (index, item) {
-                        var screenshotDiv = $("<li/>").css({ "margin": "3px 3px 3px 0", "padding": "1px", "float": "left", "max-width": "200px", "height": "150px", "font-size": "4em", "text-align": "center", "cursor": "move" }).addClass("ui-state-default");
                         var screenshot = new Image();
-                        screenshot.src = options.palylistItem.itemData.src[index];
+                        screenshot.src = options.palylistItem.itemData.fileUrl[index];
                         screenshot.fileUrl = options.palylistItem.itemData.fileUrl[index];
                         screenshot.id = item;
-                        $(screenshot).css({ "max-height": "140px", "max-width": "185px", "padding": "5px", "vertical-align": "top" });
-                        screenshotDiv.append(screenshot);
-                        var deleteImg = $("<i class='fa fa-remove'></i>").css({ "background-color": "none", "cursor": "pointer", "vertical-align": "top" }).click(function () {
-                            $(this).parent().remove();
+                        $(screenshot).css({ "max-height": "150px", "max-width": "200px", "padding": "5px" });
+                        div_col_image.append(screenshot);
+                        var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
+                            $(screenshot).remove();
+                            $(this).remove();
                         });
-                        screenshotDiv.append(deleteImg);
-                        div_col_image.append(screenshotDiv);
+                        div_col_image.append(deleteImg);
                     });
-                    div_col_image.sortable();
                 }
             }
             if (options.palylistItem) {
@@ -854,7 +856,7 @@
         var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
         div_col4.append(div_col4_main);
 
-        var div_col_image = $('<ul/>').css({ "list-style-type": "none", "margin": "0", "padding": "0", "width": "100%" });
+        var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px');
         var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select video')).click(function () {
             divselectFile = div_col_image;
             currentNeededFileType = "video";
@@ -893,7 +895,154 @@
                 select_option.val(options.palylistItem.ZoomOption);
             }
         }
-    }
+    },
+    greateNewItemQRCode: function (options) {
+        var div_head = $('<div/>').addClass('m-portlet m-portlet--mobile m-portlet--sortable m-portlet--warning m-portlet--head-solid-bg');
+        var div_head_handle = $('<div/>').addClass('m-portlet__head ui-sortable-handle');
+        var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
+        var div_head_title = $('<div/>').addClass('m-portlet__head-title');
+        var span_head_title = $("<span />").addClass('m-portlet__head-icon');
+        var span_i = '<i class="fa fa-file-text"></i>';
+        var head_text = $('<h3 />').addClass('m-portlet__head-text');
+        var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
+        var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
+        var div_li = $('<li />').addClass('m-portlet__nav-item');
+        var href = $('<a href="#"/>').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+        var href_i = $('<i />').addClass("la la-close");
+        span_head_title.append(span_i);
+        div_head_title.append(span_head_title, head_text.append($.localize('translate', 'PlaylistItemQRCode<br>(Picture)')));
+        div_head_caption.append(div_head_title);
+        href.append(href_i)
+        div_li.append(href)
+        div_portlet_nav.append(div_li)
+        div_head_tools.append(div_portlet_nav)
+        div_head_handle.append(div_head_caption, div_head_tools)
+        var div_body = $('<div/>').addClass('m-portlet__body row').css('height', 'auto').css('overflow-y', 'auto').attr('type', '3');
+        var div_bodyMain = $('<div/>').addClass('col-xl-4');
+        var div_body_group = $('<div/>').addClass('form-group m-form__group');
+        var lable = $('<lable/>').text($.localize('translate', 'Playlist Item Name:'));
+        var input = $("<input type='text'/>").addClass('form-control m-input').val($.localize('translate', 'New Playlist Item')).val($.localize('translate', 'New Playlist Item'));
+
+        div_body_group.append(lable, input);
+        div_bodyMain.append(div_body_group);
+
+        var div_col = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var lable1 = $('<lable/>').text($.localize('translate', 'Display Inteval(Seconds):'));
+        div_col.append(lable1);
+        div_bodyMain.append(div_col);
+
+        var div_col1 = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var div_touchspin_brand = $('<div/>').addClass('m-bootstrap-touchspin-brand');
+        var input1 = $("<input type='text'/>").addClass('form-control bootstrap-touchspin-vertical-btn').attr("name", "demo1").val("5");
+
+        div_touchspin_brand.append(input1);
+        div_col1.append(div_touchspin_brand);
+        div_bodyMain.append(div_col1);
+
+        var div_colpicturetype = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var labletype = $('<lable/>').text($.localize('translate', 'Picture Postion:'));
+        div_colpicturetype.append(labletype);
+        div_bodyMain.append(div_colpicturetype);
+
+        var div_coltypedata = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var select_typeoption = $('<select/>');
+        select_typeoption.append("<option value='0'>" + $.localize('translate', 'Upper left') + "</option>");
+        select_typeoption.append("<option value='1'>" + $.localize('translate', 'Upper middle') + "</option>");
+        select_typeoption.append("<option value='2'>" + $.localize('translate', 'Upper right') + "</option>");
+        select_typeoption.append("<option value='3'>" + $.localize('translate', 'Left') + "</option>");
+        select_typeoption.append("<option value='4'>" + $.localize('translate', 'Middle') + "</option>");
+        select_typeoption.append("<option value='5'>" + $.localize('translate', 'Right') + "</option>");
+        select_typeoption.append("<option value='6'>" + $.localize('translate', 'Lower left') + "</option>");
+        select_typeoption.append("<option value='7'>" + $.localize('translate', 'Lower middle') + "</option>");
+        select_typeoption.append("<option value='8'>" + $.localize('translate', 'Lower right') + "</option>");
+        div_coltypedata.append(select_typeoption);
+        div_bodyMain.append(div_coltypedata);
+
+
+        var div_size= $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var lablesize = $('<lable/>').text($.localize('translate', 'size:'));
+        div_size.append(lablesize);
+        div_bodyMain.append(div_size);
+
+        var div_sizedata = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        var select_sizeoption = $('<select/>');
+        select_sizeoption.append("<option value='0'>" + $.localize('translate', 'Big') + "</option>");
+        select_sizeoption.append("<option value='1'>" + $.localize('translate', 'Median') + "</option>");
+        select_sizeoption.append("<option value='2'>" + $.localize('translate', 'Small') + "</option>");
+
+        div_sizedata.append(select_sizeoption);
+        div_bodyMain.append(div_sizedata);
+
+        var div_col4 = $('<div/>').addClass('col-xl-8');
+        var div_col4_main = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12');
+        div_col4.append(div_col4_main);
+
+        var div_col_image = $('<div/>').addClass('col-lg-12 col-md-12 col-sm-12').css('overflow-y', 'auto').css('max-height', '400px').css('margin-top', '5px').css("line-height", "150px");
+        var button_Selectimages = $("<button type='button'/>").attr("data-toggle", "modal").attr("data-target", "#m_modal_1").addClass('btn m-btn--pill m-btn--air         btn-outline-info btn-block').text($.localize('translate', 'Select QRCode')).click(function () {
+            divselectFile = div_col_image;
+            currentNeededFileType = "qrcode";
+            if ($("#datatable_file1").data("datatable")) {
+                $.playlistEditor('setfile');
+            }
+        });
+
+        div_col4_main.append(button_Selectimages);
+        div_col4.append(div_col_image);
+        div_body.append(div_bodyMain, div_col4);
+        div_head.append(div_head_handle, div_body)
+
+        div_li.click(function () {
+            div_head.remove();
+        });
+
+        var div_AddnewItem = $("#playlistItem");
+        div_AddnewItem.append(div_head);
+        //select_option.select2({
+        //    placeholder: $.localize('translate', "Select sildeshow effects")
+        //});
+        input1.TouchSpin({
+            buttondown_class: 'btn btn-secondary',
+            buttonup_class: 'btn btn-secondary',
+            verticalbuttons: true,
+            verticalupclass: 'la la-angle-up',
+            verticaldownclass: 'la la-angle-down',
+            min: 0,
+            max: 999999
+        });
+        if (options) {
+            if (options.palylistItem) {
+                input.val(options.palylistItem.PlaylistItemName);
+            }
+            if (options.palylistItem) {
+                input1.val(options.palylistItem.DisplayIntevalSeconds);
+            }
+            if (options.palylistItem) {
+                if (options.palylistItem.itemData) {
+                    $.each(options.palylistItem.itemData.id, function (index, item) {
+                        var screenshot = new Image();
+                        screenshot.src = options.palylistItem.itemData.fileUrl[index];
+                        screenshot.fileUrl = options.palylistItem.itemData.fileUrl[index];
+                        screenshot.id = item;
+                        $(screenshot).css({ "max-height": "150px", "max-width": "200px", "padding": "5px" });
+                        div_col_image.append(screenshot);
+                        var deleteImg = $("<i class='fa fa-remove'></i>").css({ "position": "relative", "left": "-17px", "background-color": "none", "cursor": "pointer", "top": "-64px" }).click(function () {
+                            $(screenshot).remove();
+                            $(this).remove();
+                        });
+                        div_col_image.append(deleteImg);
+                    });
+                }
+            }
+            if (options.palylistItem) {
+                if (options.palylistItem.SildeshowEffects) {
+                    select_option.val(options.palylistItem.SildeshowEffects).trigger('change');
+                }
+            }
+            if (options.palylistItem) {
+                select_typeoption.val(options.palylistItem.PicturePostion);
+            }
+        }
+    },
 }
 
     $.playlistEditor = function (method) {
@@ -934,7 +1083,7 @@
     });
 
     $("#playlist_save").click(function () {
-        $("#playlist_save").attr('disabled', true);
+        $("#playlist_save").css('display', 'none');
         var div_AddnewItem = $("#playlistItem");
         var palylistItemItems = div_AddnewItem.find(".m-portlet__body.row");
         var Settings = {};
@@ -1023,6 +1172,27 @@
                     imageItem.fileUrl = imagefileUrl;
                     playlistItem.itemData = imageItem;
                 }
+                if (playlistItem.type == '3') {
+                    playlistItem.DisplayIntevalSeconds = $(palylistItem).find('.form-control.bootstrap-touchspin-vertical-btn').val();
+                    playlistItem.DisplayPostion = $(palylistItem).find('select').val();
+                    playlistItem.DisplaySize = $(palylistItem).find('select').eq(1).val();
+                    var imageItem = {};
+                    var imageId = [];
+                    var imagesrc = [];
+                    var imagefileUrl = [];
+                    if ($(palylistItem).find("img").length > 0) {
+                        $.each($(palylistItem).find("img"), function (index, imgItem) {
+                            imageId.push(imgItem.id);
+                            imagesrc.push(imgItem.src);
+                            imagefileUrl.push(imgItem.fileUrl);
+                        });
+                    }
+                    imageItem.name = 'imageItem'
+                    imageItem.id = imageId;
+                    imageItem.src = imagesrc;
+                    imageItem.fileUrl = imagefileUrl;
+                    playlistItem.itemData = imageItem;
+                }
                 palylistItemItemsdata.push(playlistItem); 
             });
             Settings.PlaylistItems= palylistItemItemsdata;
@@ -1044,10 +1214,10 @@
                     editplaylistID = null;
                     deletepalylistItem = null;
                     toastr.success("操作が完了しました。");
-                    $("#playlist_save").attr('disabled', false);
+                    $("#playlist_save").css('display', '');
                 },
                 error: function () {
-                    $("#playlist_save").attr('disabled', false);
+                    $("#playlist_save").css('display', '');
                 }
             })
         } else {
@@ -1068,10 +1238,10 @@
                     editplaylistID = null;
                     deletepalylistItem = null;
                     toastr.success("操作が完了しました。");
-                    $("#playlist_save").attr('disabled', false);
+                    $("#playlist_save").css('display', '');
                 },
                 error: function () {
-                    $("#playlist_save").attr('disabled', false);
+                    $("#playlist_save").css('display', '');
                 }
             })
         }
@@ -1086,6 +1256,10 @@
     });
     $("#addVideo").click(function () {
         $.playlistEditor('greateNewItemvideo');
+    });
+    $("#addQRCode").click(function () {
+        $.playlistEditor('greateNewItemQRCode');
+
     });
     $("#playlist_delete").click(function () {
         if (edit_playlistId) {

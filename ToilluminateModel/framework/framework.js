@@ -45,7 +45,7 @@
                     //},
                     success: function (user) {
                         _plugin.settings.user = user;
-
+                        $.insmGroup({});
                         setTimeout(function () {
                         }, 2000);
                         $.insmGroup('initGroupTree', {
@@ -217,9 +217,10 @@
                 error: function (data) {
                     if (data.status == 401) {
                         $('#Logout').click();
-                    } else if (data.status == 404 || data.status == 500) {
-                        $("#mainDiv").hide();
-                        $("#divLogin").show();
+                    } else if (data.status == 404) {
+                        $.login({ checkLogout: false });
+                    } else if (data.status == 500) {
+                        $.login({ checkLogout: true });
                     }
                 }
                 //success: options.success,
@@ -530,17 +531,115 @@
                         options.error();
                     },
                 }
-                if (index == options.Playerdata.length - 1) {
-                    return $.insmFramework('ajax', ajaxOptions);
-                } else {
+                //if (index == options.Playerdata.length - 1) {
+                //    return $.insmFramework('ajax', ajaxOptions);
+                //} else {
                     $.insmFramework('ajax', ajaxOptions);
-                }
+                //}
             });
             $.when.apply(playerEditDeferredList).done(function () {
                 options.success();
             });
 
         },
+        deletePlayerPlayListLinkTableByPlayerID: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+            //var PlayerMaster = {
+            //    create: function () {
+            //        GroupID: '';
+            //        PlayerName: '';
+            //        PlayerAddress: '';
+            //        Comments: '';
+            //        ActiveFlag: '';
+            //        OnlineFlag: '';
+            //        Settings: '';
+            //        UseFlag: true;
+            //        return PlayerMaster;
+            //    }
+            //}
+            var playerEditDeferredList = [];
+            $.each(options.Playerdata, function (index, item) {
+                var tempPlayerEditDrferred = new $.Deferred();
+                playerEditDeferredList.push(tempPlayerEditDrferred);
+                //var Player = $(options.Playerdata[index]).data().obj;
+                //var newPlayer = PlayerMaster.create();
+                //newPlayer.PlayerID = Player.PlayerID;
+                var ajaxOptions = {
+                    success: function (result) {
+                        tempPlayerEditDrferred.resolve();
+                    },
+                    url: 'api/PlayerPlayListLinkTables/DeletePlayerPlayListLinkTableByPlayerID/' + $(options.Playerdata[index]).data().obj.PlayerID,
+                    format: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: '',
+                    type: "POST",
+                    denied: function () {
+                    },
+                    error: function () {
+                        options.error();
+                    },
+                }
+                $.insmFramework('ajax', ajaxOptions);
+            });
+            $.when.apply(playerEditDeferredList).done(function () {
+                options.success();
+            });
+        },
+
+        playerPlayListLinkTables: function (options) {
+            var $this = $('html').eq(0);
+            var _plugin = $this.data('insmFramework');
+
+            var PlayerPlayListLink = {
+                create: function () {
+                    Index: "";
+                    PlayerID: "";
+                    PlayListID: '';
+                    return PlayerPlayListLink;
+                }
+            }
+            var playerPlayListLinkList = [];
+            $.each(options.playerId, function (playerindex, playerobjId) {
+                $.each(options.PlayListID, function (index, objId) {
+                    var tempPlayerPlayListLinkDrferred = new $.Deferred();
+                    playerPlayListLinkList.push(tempPlayerPlayListLinkDrferred)
+
+                    var newPlayerPlayList = PlayerPlayListLink.create();
+                    newPlayerPlayList.Index = index + 1;
+                    newPlayerPlayList.PlayerID = playerobjId.playerId;
+                    newPlayerPlayList.PlayListID = objId;
+
+                    var ajaxOptions = {
+                        success: function (result) {
+                            tempPlayerPlayListLinkDrferred.resolve();
+                        },
+                        url: 'api/PlayerPlayListLinkTables',
+                        format: 'json',
+                        data: JSON.stringify(newPlayerPlayList),
+                        contentType: "application/json; charset=utf-8",
+                        type: "POST",
+                        denied: function () {
+                        },
+                        error: function () {
+                            options.error();
+                        },
+                    }
+                    if (index == options.PlayListID.length - 1) {
+                        return $.insmFramework('ajax', ajaxOptions);
+                    } else {
+                        $.insmFramework('ajax', ajaxOptions);
+                    }
+                });
+            })
+            
+            
+
+            $.when.apply(playerPlayListLinkList).done(function () {
+                options.success();
+            });
+        },
+
         getPlayerStaus: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
@@ -1005,53 +1104,7 @@
             }
             return $.insmFramework('ajax', ajaxOptions);
         },
-        playerPlayListLinkTables: function (options) {
-            var $this = $('html').eq(0);
-            var _plugin = $this.data('insmFramework');
-
-            var PlayerPlayListLink = {
-                create: function () {
-                    Index: "";
-                    PlayerID: "";
-                    PlayListID: '';
-                    return PlayerPlayListLink;
-                }
-            }
-            var playerPlayListLinkList = [];
-            $.each(options.PlayListID, function (index, objId) {
-                var tempPlayerPlayListLinkDrferred = new $.Deferred();
-                playerPlayListLinkList.push(tempPlayerPlayListLinkDrferred)
-
-                var newPlayerPlayList = PlayerPlayListLink.create();
-                newPlayerPlayList.Index = index + 1;
-                newPlayerPlayList.PlayerID = options.playerId;
-                newPlayerPlayList.PlayListID = objId;
-
-                var ajaxOptions = {
-                    success: function (result) {
-                        tempPlayerPlayListLinkDrferred.resolve();
-                    },
-                    url: 'api/PlayerPlayListLinkTables',
-                    format: 'json',
-                    data: JSON.stringify(newPlayerPlayList),
-                    contentType: "application/json; charset=utf-8",
-                    type: "POST",
-                    denied: function () {
-                    },
-                    error: function () {
-                        options.error();
-                    },
-                }
-                if (index == options.PlayListID.length - 1) {
-                    return $.insmFramework('ajax', ajaxOptions);
-                } else {
-                    $.insmFramework('ajax', ajaxOptions);
-                }
-            });
-            $.when.apply(playerPlayListLinkList).done(function () {
-                options.success();
-            });
-        },
+        
         GroupPlayListLinkTables: function (options) {
 
             var $this = $('html').eq(0);
@@ -1180,24 +1233,7 @@
             };
             return $.insmFramework('ajax', ajaxOptions);
         },
-        deletePlayerPlayListLinkTableByPlayerID: function (options) {
-            var $this = $('html').eq(0);
-            var _plugin = $this.data('insmFramework');
-
-            var ajaxOptions = {
-                success: function (result) {
-                    options.success(result);
-                },
-                url: 'api/PlayerPlayListLinkTables/DeletePlayerPlayListLinkTableByPlayerID/' + options.playerId,
-                format: 'json',
-                data: '',
-                contentType: "application/json; charset=utf-8",
-                type: "POST",
-                denied: function () {
-                }
-            };
-            return $.insmFramework('ajax', ajaxOptions);
-        },
+        
         playerStatusShare: function (options) {
             var $this = $('html').eq(0);
             var _plugin = $this.data('insmFramework');
