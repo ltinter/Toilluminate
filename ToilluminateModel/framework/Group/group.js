@@ -1,30 +1,7 @@
 ﻿(function ($) {
-    var GroupTreedata = [];
-    var GroupData;
-    var selectPlayerdata;
-    var playListgroup=[];
-    var editGroupID;
-    var selectedGroupID = null;
-    var selectedGroupIDparents;
-    var groupTreeForPlayerEditID = null;
-    //var div_main = $("#div_main");
-    //var div_edit = $("#div_edit");
-    //var div_groupTree = $("#groupTree");
-    //var div_groupTreeForPlayerEdit = $("#groupTreeForPlayerEdit");
+
     var div_groupTreeForFileManager = $("#groupTreeForFileManager");
     var div_groupTreeForPlaylistEditor = $("#groupTreeForPlaylistEditor");
-    var player_Alldata;
-
-    var ActivechangeFlg = false;
-    var OnlinechangeFlg = false;
-    var DisplayNamechangeFlg = false;
-    var NotechangeFlg = false;
-
-    var editPlayerFlg = false;
-    var editGroupFlg = false;
-    var datatable = null;
-    var temp_GroupTreeData;
-    var firstPageload = true;
     
     var methods = {
         init: function (options) {
@@ -236,7 +213,22 @@
                         loginFlag: false,
                         loginDeferred: new $.Deferred(),
                         retryFlag: false,
-                        selectedGroupID : null
+                        selectedGroupID: null,
+                        selectedGroupIDparents: null,
+                        groupTreeForPlayerEditID: null,
+                        player_Alldata: null,
+                        ActivechangeFlg: false,
+                        OnlinechangeFlg: false,
+                        DisplayNamechangeFlg : false,
+                        NotechangeFlg: false,
+                        editPlayerFlg : false,
+                        editGroupFlg : false,
+                        datatable : null,
+                        temp_GroupTreeData:null,
+                        firstPageload: true,
+                        selectPlayerdata,
+                        playListgroup:[],
+                        editGroupID
                     }
                 };
                 $this.find('.m-content.mainPageTabDiv').first().append(
@@ -457,7 +449,7 @@
                             url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/' + loginuser.GroupID,
                             //+ options.userGroupId,
                             dataFilter: function (data) {
-                                temp_GroupTreeData = JSON.parse(data);
+                                _plugin.data.temp_GroupTreeData = JSON.parse(data);
                                 return data;
                             }
                         }
@@ -495,10 +487,10 @@
                     var obj = inst.get_node(e.target.firstChild.firstChild.lastChild);
 
                     inst.select_node(obj);
-                    if (firstPageload) {
+                    if (_plugin.data.firstPageload) {
                         mApp.unblockPage();
                         $("#DisplayUnitsContent").show();
-                        firstPageload = false;
+                        _plugin.data.firstPageload = false;
                     }
                 })
 
@@ -506,7 +498,7 @@
                     //存储当前选中的区域的名称
                     if (data.node) {
                         _plugin.data.selectedGroupID = data.node.id;
-                        selectedGroupIDparents = data.node.parents
+                        _plugin.data.selectedGroupIDparents = data.node.parents
                         $.insmGroup('showPlayerDetail', { GroupID: _plugin.data.selectedGroupID });
                     }
                     _plugin.htmlElements.player.playerBody.playerbuttoncol.labelAll.click();
@@ -559,11 +551,11 @@
                         return;
                     }
                     $.insmGroup('defaultDataSet');
-                    editGroupFlg = true;
+                    _plugin.data.editGroupFlg = true;
                     _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.show();
                     _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.jstree(true).show_all();
                     _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.jstree(true).deselect_all(true);
-                    $.each(temp_GroupTreeData, function (index, item) {
+                    $.each(_plugin.data.temp_GroupTreeData, function (index, item) {
                         if (item.id == _plugin.htmlElements.grouptree.jstree(true).get_selected()) {
                             _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.jstree(true).select_node(item.parent);
                             if (item.parent == '#') {
@@ -572,7 +564,7 @@
                                 _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.jstree(true).hide_node(_plugin.htmlElements.grouptree.jstree(true).get_node(item.id));
                             }
                             
-                            groupTreeForPlayerEditID = item.parent;
+                            _plugin.data.groupTreeForPlayerEditID = item.parent;
                         }
                     });
 
@@ -605,7 +597,7 @@
                                     }
                                 }
 
-                                editGroupID = _plugin.data.selectedGroupID;
+                                _plugin.data.editGroupID = _plugin.data.selectedGroupID;
                                 //$("#div_edit .m-portlet__head-caption:first").find("h3:first").text(userGroupData.GroupName);
                                 _plugin.htmlElements.groupplayerDetail.detailBody.spanh.text(userGroupData.GroupName);
                             };
@@ -663,14 +655,14 @@
                     _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', 'none');
                     $.insmGroup('addNewGroup');
                     console.log("Group Save Button!");
-                    editGroupID = undefined;
+                    _plugin.data.editGroupID = undefined;
                 })
 
                 //AddPlayer
                 _plugin.htmlElements.player.playerBody.playerbuttoncol.buttonAdd.click(function () {
                     $.insmGroup('defaultDataSet');
 
-                    editPlayerFlg = false;
+                    _plugin.data.editPlayerFlg = false;
                     //$("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
                     _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css('display', 'block').removeClass('m-dropdown__toggle');
                     //$("#button_save")
@@ -682,7 +674,7 @@
 
                     //div_groupTreeForPlayerEdit.jstree(true).deselect_all(true);
                     //div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
-                    groupTreeForPlayerEditID = _plugin.htmlElements.grouptree.jstree(true).get_selected()[0];
+                    _plugin.data.groupTreeForPlayerEditID = _plugin.htmlElements.grouptree.jstree(true).get_selected()[0];
                     $.insmFramework('getPlaylistByGroup', {
                         GroupID: _plugin.data.selectedGroupID,
                         success: function (data) {
@@ -697,16 +689,16 @@
 
                 //Editplayer
                 _plugin.htmlElements.player.playerBody.playerbuttoncol.buttonEdit.click(function () {
-                    var selected = datatable.setSelectedRecords().getSelectedRecords();
-                    selectPlayerdata = selected;
-                    if (selectPlayerdata.length == 0) { return; }
+                    var selected = _plugin.data.datatable.setSelectedRecords().getSelectedRecords();
+                    _plugin.data.selectPlayerdata = selected;
+                    if (_plugin.data.selectPlayerdata.length == 0) { return; }
                     var allPlayerNames = "";
-                    $.each(selectPlayerdata, function (playerIndex, playerItem) {
+                    $.each(_plugin.data.selectPlayerdata, function (playerIndex, playerItem) {
                         allPlayerNames += ", " + $(playerItem).data().obj.PlayerName;
                     });
 
                     var allPlayerID = "";
-                    $.each(selectPlayerdata, function (playerIndex, playerItem) {
+                    $.each(_plugin.data.selectPlayerdata, function (playerIndex, playerItem) {
                         allPlayerID += ", " + $(playerItem).data().obj.PlayerID;
                     })
 
@@ -717,7 +709,7 @@
                                                         <span class="m-menu__link-wrap">\
                                                             <span class="m-menu__link-badge">\
                                                                 <span class="m-badge m-badge--success">'
-                                                                                + selectPlayerdata.length +
+                                                                                + _plugin.data.selectPlayerdata.length +
                                                                             '</span>\
                                                             </span>\
                                                             <span class="m-menu__link-text">'
@@ -727,14 +719,14 @@
                                                     </span>\
                                                 </a>\
                                             </li>');
-                    playerSelectionLi.find("a").data("playersData", $.extend(true, {}, selectPlayerdata)).click(function () {
-                        selectPlayerdata = $(this).data("playersData");
+                    playerSelectionLi.find("a").data("playersData", $.extend(true, {}, _plugin.data.selectPlayerdata)).click(function () {
+                        _plugin.data.selectPlayerdata = $(this).data("playersData");
                         //edit_player_click(selectPlayerdata);
-                        $.insmGroup('edit_player_click', selectPlayerdata);
+                        $.insmGroup('edit_player_click', _plugin.data.selectPlayerdata);
                     });
                     $("#playerSelectionHistroyUl").prepend(playerSelectionLi);
                     //edit_player_click(selectPlayerdata, allPlayerID);
-                    $.insmGroup('edit_player_click', selectPlayerdata, allPlayerID);
+                    $.insmGroup('edit_player_click', _plugin.data.selectPlayerdata, allPlayerID);
                 })
 
                 //savePlayer
@@ -763,36 +755,36 @@
                         resolution: $("#select_resolution").val()
                     };
 
-                    if (!editPlayerFlg) {
-                        if ($.trim(_plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val()) == '' || groupTreeForPlayerEditID == null) {
+                    if (!_plugin.data.editPlayerFlg) {
+                        if ($.trim(_plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val()) == '' || _plugin.data.groupTreeForPlayerEditID == null) {
                             toastr.warning("Player name is empty!");
                             return;
                         }
                         $.insmFramework('creatPlayer', {
-                            GroupID: groupTreeForPlayerEditID,
+                            GroupID: _plugin.data.groupTreeForPlayerEditID,
                             PlayerName: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val(),
                             active: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentActive.Active.find("input[name='radio_Active']:checked").val(),
                             onlineUnits: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentOnline.Online.find("input[name='radio_Online']:checked").val(),
                             note: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.commenttextarea.val(),
                             settings: JSON.stringify(Settings),
-                            ActivechangeFlg: ActivechangeFlg,
-                            OnlinechangeFlg: OnlinechangeFlg,
+                            ActivechangeFlg: _plugin.data.ActivechangeFlg,
+                            OnlinechangeFlg: _plugin.data.OnlinechangeFlg,
                             ActiveFlag: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentActive.Active.find("input[name='radio_Active']:checked").val(),
                             OnlineFlag: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentOnline.Online.find("input[name='radio_Online']:checked").val(),
-                            DisplayNamechangeFlg: DisplayNamechangeFlg,
-                            NotechangeFlg: NotechangeFlg,
+                            DisplayNamechangeFlg: _plugin.data.DisplayNamechangeFlg,
+                            NotechangeFlg: _plugin.data.NotechangeFlg,
                             success: function (data) {
                                 //$("#button_save_Player")
                                 _plugin.htmlElements.groupplayerDetail.detailBody.css("pointer-events", "");
                                 var div_forcedplaylists = _plugin.htmlElements.groupplayerDetail.detailBody.detail.showPlaylistForced.container;
                                 //$('#forcedplaylists');
                                 var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
-                                playListgroup = [];
+                                _plugin.data.playListgroup = [];
                                 if (forcedplaylists.length > 0) {
                                     $.each(forcedplaylists, function (index, forcedplaylist) {
                                         var playlistItem = {};
                                         var forcedplaylistID = $(forcedplaylist).attr('playlistId');
-                                        playListgroup.push(forcedplaylistID);
+                                        _plugin.data.playListgroup.push(forcedplaylistID);
                                     });
                                 }
                                 $.insmFramework('deletePlayerPlayListLinkTableByPlayerID', {
@@ -800,7 +792,7 @@
                                     success: function () {
                                         $.insmFramework('playerPlayListLinkTables', {
                                             playerId: data.PlayerID,
-                                            PlayListID: playListgroup,
+                                            PlayListID: _plugin.data.playListgroup,
                                             success: function (data) {
                                                 toastr.success("操作が完了しました。");
                                             },
@@ -819,7 +811,7 @@
                                 _plugin.htmlElements.container.show();
                                 _plugin.htmlElements.groupplayerDetail.container.hide();
                                 $.insmGroup('refreshTree');
-                                editGroupID = undefined;
+                                _plugin.data.editGroupID = undefined;
                                 //$("#button_save_Player")
                                 _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                             },
@@ -834,31 +826,31 @@
                     } else {
                         var div_forcedplaylists = _plugin.htmlElements.groupplayerDetail.detailBody.detail.showPlaylistForced.container;
                         var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
-                        playListgroup = [];
+                        _plugin.data.playListgroup = [];
                         if (forcedplaylists.length > 0) {
                             $.each(forcedplaylists, function (index, forcedplaylist) {
                                 var playlistItem = {};
                                 var forcedplaylistID = $(forcedplaylist).attr('playlistId');
-                                playListgroup.push(forcedplaylistID);
+                                _plugin.data.playListgroup.push(forcedplaylistID);
                             });
                         }
                         $.insmFramework('editGroupPlayers', {
-                            Playerdata: selectPlayerdata,
-                            ActivechangeFlg: ActivechangeFlg,
-                            OnlinechangeFlg: OnlinechangeFlg,
-                            DisplayNamechangeFlg: DisplayNamechangeFlg,
+                            Playerdata: _plugin.data.selectPlayerdata,
+                            ActivechangeFlg: _plugin.data.ActivechangeFlg,
+                            OnlinechangeFlg: _plugin.data.OnlinechangeFlg,
+                            DisplayNamechangeFlg: _plugin.data.DisplayNamechangeFlg,
                             ActiveFlag: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentActive.Active.find("input[name='radio_Active']:checked").val(),
                             OnlineFlag: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentOnline.Online.find("input[name='radio_Online']:checked").val(),
-                            NotechangeFlg: NotechangeFlg,
-                            newGroupID: groupTreeForPlayerEditID,
+                            NotechangeFlg: _plugin.data.NotechangeFlg,
+                            newGroupID: _plugin.data.groupTreeForPlayerEditID,
                             settings: JSON.stringify(Settings),
                             success: function (data) {
                                 $.insmFramework('deletePlayerPlayListLinkTableByPlayerID', {
-                                    playerId: selectPlayerdata,
+                                    playerId: _plugin.data.selectPlayerdata,
                                     success: function () {
                                         $.insmFramework('playerPlayListLinkTables', {
-                                            playerId: selectPlayerdata,
-                                            PlayListID: playListgroup,
+                                            playerId: _plugin.data.selectPlayerdata,
+                                            PlayListID: _plugin.data.playListgroup,
                                             success: function (data) {
                                                 setTimeout(function () {
                                                     _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
@@ -876,7 +868,7 @@
                                         _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                                     }
                                 })
-                                editGroupID = undefined;
+                                _plugin.data.editGroupID = undefined;
                             },
                             error: function () {
                                 //$("#button_save_Player")
@@ -898,13 +890,13 @@
                 //PlayerAll
                 _plugin.htmlElements.player.playerBody.playerbuttoncol.labelAll.click(function () {
                     $('#m_form_search_Player').val('');
-                    $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: player_Alldata });
+                    $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: _plugin.data.player_Alldata });
                 })
                 //PlayerCurrent
                 _plugin.htmlElements.player.playerBody.playerbuttoncol.labelCurrent.click(function () {
                     $('#m_form_search_Player').val('');
                     var Current_data = [];
-                    $.each(player_Alldata, function (key, item) {
+                    $.each(_plugin.data.player_Alldata, function (key, item) {
                         if (item.GroupID == _plugin.data.selectedGroupID) {
                             Current_data.push(item)
                         }
@@ -913,36 +905,36 @@
                 })
 
                 _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentActive.ActiveInherited.click(function () {
-                    if (editPlayerFlg) { $.insmGroup('activechange'); }
+                    if (_plugin.data.editPlayerFlg) { $.insmGroup('activechange'); }
                 })
 
                 _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentActive.ActiveOn.click(function () {
-                    if (editPlayerFlg) { $.insmGroup('activechange'); }
+                    if (_plugin.data.editPlayerFlg) { $.insmGroup('activechange'); }
                 })
 
                 _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentActive.ActiveOff.click(function () {
-                    if (editPlayerFlg) { $.insmGroup('activechange'); }
+                    if (_plugin.data.editPlayerFlg) { $.insmGroup('activechange'); }
                 })
                 _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentOnline.OnlineInherited.click(function () {
-                    if (editPlayerFlg) { $.insmGroup('onlinechange'); }
+                    if (_plugin.data.editPlayerFlg) { $.insmGroup('onlinechange'); }
                 })
                 _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentOnline.OnlineOn.click(function () {
-                    if (editPlayerFlg) { $.insmGroup('onlinechange'); }
+                    if (_plugin.data.editPlayerFlg) { $.insmGroup('onlinechange'); }
                 })
                 _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentOnline.OnlineOff.click(function () {
-                    if (editPlayerFlg) { $.insmGroup('onlinechange'); }
+                    if (_plugin.data.editPlayerFlg) { $.insmGroup('onlinechange'); }
                 })
 
                 _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.change(function () {
-                    DisplayNamechangeFlg = true;
-                    $.each(selectPlayerdata, function (index, item) {
-                        $(selectPlayerdata[index]).data().obj.PlayerName = _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val();
+                    _plugin.data.DisplayNamechangeFlg = true;
+                    $.each(_plugin.data.selectPlayerdata, function (index, item) {
+                        $(_plugin.data.selectPlayerdata[index]).data().obj.PlayerName = _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val();
                     });
                 })
                 _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.commenttextarea.change(function () {
-                    NotechangeFlg = true;
-                    $.each(selectPlayerdata, function (index, item) {
-                        $(selectPlayerdata[index]).data().obj.Comments = _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.commenttextarea.val();
+                    _plugin.data.NotechangeFlg = true;
+                    $.each(_plugin.data.selectPlayerdata, function (index, item) {
+                        $(_plugin.data.selectPlayerdata[index]).data().obj.Comments = _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.commenttextarea.val();
                     });
                 })
 
@@ -963,7 +955,7 @@
                 settings: options.Settings,
                 success: function (data) {
                     $.insmGroup('refreshTree');
-                    editGroupID = undefined;
+                    _plugin.data.editGroupID = undefined;
                     toastr.success("操作が完了しました。");
                 }
             })
@@ -1056,7 +1048,7 @@
                         url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/' + options.userGroupId,
                         //+ options.userGroupId,
                         dataFilter: function (data) {
-                            temp_GroupTreeData = JSON.parse(data);
+                            _plugin.data.temp_GroupTreeData = JSON.parse(data);
                             return data;
                         }
                     }
@@ -1094,17 +1086,17 @@
                 var obj = inst.get_node(e.target.firstChild.firstChild.lastChild);
 
                 inst.select_node(obj);
-                if (firstPageload) {
+                if (_plugin.data.firstPageload) {
                     mApp.unblockPage();
                     $("#DisplayUnitsContent").show();
-                    firstPageload = false;
+                    _plugin.data.firstPageload = false;
                 }
             })
             _plugin.htmlElements.grouptree.on("changed.jstree", function (e, data) {
                 //存储当前选中的区域的名称
                 if (data.node) {
                     _plugin.data.selectedGroupID = data.node.id;
-                    selectedGroupIDparents = data.node.parents
+                    _plugin.data.selectedGroupIDparents = data.node.parents
                     $.insmGroup('showPlayerDetail', { GroupID: _plugin.data.selectedGroupID });
                 }
                 //$("#radio_All").click();
@@ -1115,7 +1107,7 @@
             _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.on("changed.jstree", function (e, data) {
                 //存储当前选中的区域的名称
                 if (data.node) {
-                    groupTreeForPlayerEditID = data.node.id;
+                    _plugin.data.groupTreeForPlayerEditID = data.node.id;
                 }
             });
 
@@ -1203,14 +1195,17 @@
                 success: function (data) {
                     _plugin.htmlElements.container.show();
                     _plugin.htmlElements.groupplayerDetail.container.hide();
-                    player_Alldata = data;
+                    _plugin.data.player_Alldata = data;
                     $.insmGroup('DatatableResponsiveColumnsDemo', { PlayersData: data });
                 }
             })
         },
         DatatableResponsiveColumnsDemo: function (options) {
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('insmGroup');
+
             $('#base_responsive_columns').prop("outerHTML", "<div class='m_datatable' id='base_responsive_columns'></div>");
-            datatable = $('#base_responsive_columns').mDatatable({
+            _plugin.data.datatable = $('#base_responsive_columns').mDatatable({
                 // datasource definition
                 data: {
                     type: 'local',
@@ -1309,14 +1304,14 @@
                     width: 0,
                 }]
             });
-            datatable.on('m-datatable--on-check', function (e, args) {
+            _plugin.data.datatable.on('m-datatable--on-check', function (e, args) {
                 var selected = datatable.setSelectedRecords().getSelectedRecords();
-                selectPlayerdata = selected;
+                _plugin.data.selectPlayerdata = selected;
             })
 
 
             $('#m_form_search_Player').on('keyup', function (e) {
-                datatable.search($(this).val().toLowerCase(), "PlayerName");
+                _plugin.data.datatable.search($(this).val().toLowerCase(), "PlayerName");
             });
 
             $('#m_form_status, #m_form_type').selectpicker();
@@ -1330,13 +1325,13 @@
                 _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', '');
                 return;
             };
-            if (groupTreeForPlayerEditID == null) {
+            if (_plugin.data.groupTreeForPlayerEditID == null) {
                 toastr.warning("Please select new group's Parent Group !");
                 //$("#button_save")
                 _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', '');
                 return;
             };
-            if (editGroupID == groupTreeForPlayerEditID) {
+            if (_plugin.data.editGroupID == _plugin.data.groupTreeForPlayerEditID) {
                 toastr.warning("Group ID have same ID!");
                 //$("#button_save")
                 _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', '');
@@ -1365,25 +1360,25 @@
                 resolution: $("#select_resolution").val()
             };
             $.insmFramework('creatGroup', {
-                groupID: editGroupID,
+                groupID: _plugin.data.editGroupID,
                 newGroupName: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val(),
                 active: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentActive.Active.find("input[name='radio_Active']:checked").val(),
                 onlineUnits: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentOnline.Online.find("input[name='radio_Online']:checked").val(),
                 note: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.commenttextarea.val(),
                 settings: JSON.stringify(Settings),
-                newGroupNameParentID: groupTreeForPlayerEditID,
+                newGroupNameParentID: _plugin.data.groupTreeForPlayerEditID,
                 success: function (data) {
                     //$("#button_save")
                     _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', 'none');
                     var div_forcedplaylists = _plugin.htmlElements.groupplayerDetail.detailBody.detail.showPlaylistForced.container;
                         //$('#forcedplaylists');
                     var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
-                    playListgroup =[];
+                    _plugin.data.playListgroup = [];
                     if (forcedplaylists.length > 0) {
                         $.each(forcedplaylists, function (index, forcedplaylist) {
                             var playlistItem = {};
                             var forcedplaylistID = $(forcedplaylist).attr('playlistId');
-                            playListgroup.push(forcedplaylistID);
+                            _plugin.data.playListgroup.push(forcedplaylistID);
                         });
                     }
                     $.insmFramework('deleteGroupPlayListLinkTableByGroupID', {
@@ -1391,7 +1386,7 @@
                         success: function (data) {
                             $.insmFramework('GroupPlayListLinkTables', {
                                 groupID: _plugin.data.selectedGroupID,
-                                PlayListID: playListgroup,
+                                PlayListID: _plugin.data.playListgroup,
                                 success: function (data) {
                                     toastr.success("操作が完了しました。");
                                 },
@@ -1409,7 +1404,7 @@
                     _plugin.htmlElements.groupplayerDetail.container.hide();
 
                     $.insmGroup('refreshTree');
-                    editGroupID = undefined;
+                    _plugin.data.editGroupID = undefined;
                     //$("#button_save")
                     _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', '');
                 },
@@ -1423,20 +1418,20 @@
             var $this = $('body').eq(0);
             var _plugin = $this.data('insmGroup');
 
-            ActivechangeFlg = true;
-            if (selectPlayerdata) {
-                $.each(selectPlayerdata, function (index, item) {
-                    $(selectPlayerdata[index]).data().obj.ActiveFlag = _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentActive.Active.find("input[name='radio_Active']:checked").val();
+            _plugin.data.ActivechangeFlg = true;
+            if (_plugin.data.selectPlayerdata) {
+                $.each(_plugin.data.selectPlayerdata, function (index, item) {
+                    $(_plugin.data.selectPlayerdata[index]).data().obj.ActiveFlag = _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentActive.Active.find("input[name='radio_Active']:checked").val();
                 });
             }
         },
         onlinechange: function () {
             var $this = $('body').eq(0);
             var _plugin = $this.data('insmGroup');
-            OnlinechangeFlg = true;
-            if (selectPlayerdata) {
-                $.each(selectPlayerdata, function (index, item) {
-                    $(selectPlayerdata[index]).data().obj.OnlineFlag = _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentOnline.Online.find("input[name='radio_Online']:checked").val();
+            _plugin.data.OnlinechangeFlg = true;
+            if (_plugin.data.selectPlayerdata) {
+                $.each(_plugin.data.selectPlayerdata, function (index, item) {
+                    $(_plugin.data.selectPlayerdata[index]).data().obj.OnlineFlag = _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentOnline.Online.find("input[name='radio_Online']:checked").val();
                 });
             }
         },
@@ -1770,7 +1765,7 @@
             })
             allPlayerNames = allPlayerNames.substr(2);
             _plugin.htmlElements.groupplayerDetail.container.find("H3:first").text(selectPlayer.length + " Display Units / (" + allPlayerNames + ")");
-            groupTreeForPlayerEditID = _plugin.htmlElements.grouptree.jstree(true).get_selected()[0];
+            _plugin.data.groupTreeForPlayerEditID = _plugin.htmlElements.grouptree.jstree(true).get_selected()[0];
 
             var allPlayerID = "";
             $.each(selectPlayer, function (playerIndex, playerItem) {
@@ -1778,7 +1773,7 @@
             })
             allPlayerID = allPlayerID.substr(2);
 
-            editPlayerFlg = true;
+            _plugin.data.editPlayerFlg = true;
             $.insmGroup('defaultDataSet');
             _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css('display', 'block').removeClass('m-dropdown__toggle');
             //$("#button_save_Player").css('display', 'block').removeClass('m-dropdown__toggle');
@@ -1805,7 +1800,7 @@
                     _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.commenttextarea.val($(selectPlayer[index]).data().obj.Comments);
 
                     var Settings;
-                    $.each(player_Alldata, function (playerindex, playerdata) {
+                    $.each(_plugin.data.player_Alldata, function (playerindex, playerdata) {
                         if (playerdata.PlayerID == $(selectPlayer[index]).data().obj.PlayerID) {
                             Settings = JSON.parse(playerdata.Settings);
                         }
