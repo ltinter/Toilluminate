@@ -11,15 +11,14 @@ using System.Windows.Forms;
 
 namespace ToilluminateClient
 {
-    public partial class MessageForm : Form
+    public partial class TrademarkForm : Form
     {
-        private bool showMessageFlag = false;
+        private bool showTrademarkFlag = false;
         
 
         private MainForm parentForm;
 
-        private Control[] messageControls;
-
+        private Control[] trademarkControls;
         #region " override "
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, System.Windows.Forms.Keys keyData)
         {
@@ -44,7 +43,7 @@ namespace ToilluminateClient
         }
         #endregion
 
-        public MessageForm()
+        public TrademarkForm()
         {
             InitializeComponent();
 
@@ -55,19 +54,18 @@ namespace ToilluminateClient
             this.StartPosition = FormStartPosition.Manual;
             this.FormBorderStyle = FormBorderStyle.None;
 
+            trademarkControls = new Control[] { this.pnlTrademark0, this.pnlTrademark1, this.pnlTrademark2, this.pnlTrademark3, this.pnlTrademark4, this.pnlTrademark5, this.pnlTrademark6, this.pnlTrademark7, this.pnlTrademark8, this.pnlTrademark9 };
 
-
-            messageControls = new Control[] { this.pnlMessage0, this.pnlMessage1, this.pnlMessage2, this.pnlMessage3, this.pnlMessage4, this.pnlMessage5 };
-
-            foreach (Control pnlMessage in messageControls)
+            foreach (Control pnlTrademark in trademarkControls)
             {
-                pnlMessage.Left = -10;
-                pnlMessage.Top = -10;
-                pnlMessage.Width = 1;
-                pnlMessage.Height = 1;
-                pnlMessage.BackColor = ImageApp.BackClearColor;
-                pnlMessage.SendToBack();
+                pnlTrademark.Left = -10;
+                pnlTrademark.Top = -10;
+                pnlTrademark.Width = 1;
+                pnlTrademark.Height = 1;
+                pnlTrademark.BackColor = ImageApp.BackClearColor;
+                pnlTrademark.SendToBack();
             }
+
         }
 
         public void tmrShow_Tick(object sender, EventArgs e)
@@ -80,18 +78,19 @@ namespace ToilluminateClient
                 {
                     if (PlayApp.ExecutePlayList.PlayListState == PlayListStateType.Stop)
                     {
-                        CloseMessage();
+                        CloseTrademark();
                         return;
                     }
                 }
 
                 ThreadShow();
 
-                ImageApp.MyDrawMessage(this.messageControls[0]);
+                ImageApp.MyDrawTrademark(this.trademarkControls);
+               
             }
             catch (Exception ex)
             {
-                LogApp.OutputErrorLog("MessageForm", "tmrMessage_Tick", ex);
+                LogApp.OutputErrorLog("TrademarkForm", "tmrTrademark_Tick", ex);
             }
             finally
             {
@@ -99,57 +98,57 @@ namespace ToilluminateClient
             }
         }
 
-        private void MessageForm_Load(object sender, EventArgs e)
+        private void TrademarkForm_Load(object sender, EventArgs e)
         {
             this.tmrShow.Interval = 10;
 
         }
-        private void MessageForm_Shown(object sender, EventArgs e)
+        private void TrademarkForm_Shown(object sender, EventArgs e)
         {
-            ShowApp.MessageBackBitmap = new Bitmap(this.Width, this.Height);
+            
         }
 
-        private void MessageForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void TrademarkForm_FormClosing(object sender, FormClosingEventArgs e)
         {
 
         }
 
-        private void MessageForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void TrademarkForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            ShowApp.NowTrademarkIsShow = false;
         }
 
-        #region " Show Message "
+        #region " Show Trademark "
 
         public void ThreadShow()
         {
-            Thread tmpThread = new Thread(this.ThreadShowMessageVoid);
+            Thread tmpThread = new Thread(this.ThreadShowTrademarkVoid);
             tmpThread.IsBackground = true;
             tmpThread.Start();
         }
 
 
-        private void ThreadShowMessageVoid()
+        private void ThreadShowTrademarkVoid()
         {
-            if (showMessageFlag)
+            if (showTrademarkFlag)
             {
                 return;
             }
             try
             {
-                showMessageFlag = true;
+                showTrademarkFlag = true;
 
                 if (PlayApp.ExecutePlayList != null)
                 {
-
-                    foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
+                    foreach (TrademarkTempleteItem ttItem in PlayApp.ExecutePlayList.TrademarkTempleteItemList)
                     {
-                        if (mtItem.TempleteState != TempleteStateType.Stop)
+                        if (ttItem.TempleteState != TempleteStateType.Stop)
                         {
-                            if (mtItem.TempleteState == TempleteStateType.Wait)
+                            if (ttItem.TempleteState == TempleteStateType.Wait)
                             {
-                                mtItem.ExecuteStart();
+                                ttItem.ExecuteStart();
                             }
-                            mtItem.ShowCurrent(this);
+                            ttItem.ShowCurrent(this);
                             break;
                         }
                     }
@@ -158,11 +157,11 @@ namespace ToilluminateClient
             }
             catch (Exception ex)
             {
-                LogApp.OutputErrorLog("MessageForm", "ThreadShowMessageVoid", ex);
+                LogApp.OutputErrorLog("TrademarkForm", "ThreadShowTrademarkVoid", ex);
             }
             finally
             {
-                showMessageFlag = false;
+                showTrademarkFlag = false;
             }
         }
 
@@ -171,18 +170,33 @@ namespace ToilluminateClient
         /// </summary>
         /// <param name="mtItem"></param>
 
-        private void CloseMessage()
+        private void CloseTrademark()
         {
             try
             {
-                ShowApp.NowMessageIsShow = false;
+                ShowApp.NowTrademarkIsShow = false;
                 this.tmrShow.Stop();
 
-                foreach (MessageTempleteItem mtItem in PlayApp.ExecutePlayList.MessageTempleteItemList)
+                foreach (TrademarkTempleteItem ttItem in PlayApp.ExecutePlayList.TrademarkTempleteItemList)
                 {
-                    mtItem.ExecuteRefresh();
+                    ttItem.ExecuteRefresh();
                 }
-                
+
+                foreach (Control board in this.trademarkControls)
+                {
+                    if (board.BackgroundImage != null)
+                    {
+                        board.BackgroundImage = null;
+                    }
+                }
+                for (int boardIndex = 0; boardIndex < ShowApp.TrademarkBackBitmaps.Count(); boardIndex++)
+                {
+                    if (ShowApp.TrademarkBackBitmaps[boardIndex] != null)
+                    {
+                        ShowApp.TrademarkBackBitmaps[boardIndex].Dispose();
+                        ShowApp.TrademarkBackBitmaps[boardIndex] = null;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -199,22 +213,18 @@ namespace ToilluminateClient
 
         #endregion
 
-        private void MessageForm_SizeChanged(object sender, EventArgs e)
+        private void TrademarkForm_SizeChanged(object sender, EventArgs e)
         {
             try
             {
-                foreach (DrawMessage dmItem in ShowApp.DrawMessageList)
+                foreach (DrawTrademark dtItem in ShowApp.DrawTrademarkList)
                 {
-                    dmItem.SetParentSize(this.Width, this.Height);
-                }
-                if (ShowApp.DownLoadDrawMessage != null && ShowApp.DownLoadDrawMessage.DrawStyleList.Count > 0)
-                {
-                    ShowApp.DownLoadDrawMessage.SetParentSize(this.Width, this.Height);
+                    dtItem.SetParentSize(this.Width, this.Height);
                 }
             }
             catch (Exception ex)
             {
-                LogApp.OutputErrorLog("MessageForm", "MessageForm_SizeChanged", ex);
+                LogApp.OutputErrorLog("TrademarkForm", "TrademarkForm_SizeChanged", ex);
             }
         }
 

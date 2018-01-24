@@ -225,11 +225,13 @@ namespace ToilluminateClient
                     string[] files = Directory.GetFiles(trademarkDir, "*.*", SearchOption.AllDirectories)
                         .Where(s => s.EndsWith(".jpg") || s.EndsWith(".png") || s.EndsWith(".bmp")).ToArray();
 
+                    int trademarkSizeTypeIndex = 1;
                     int trademarkPositionTypeIndex = 8;
                     foreach (string file in files)
                     {
                         trademarkFileList.Add(file);
-                        trademarkStyleList.Add(new TrademarkStyle(80, 80, (TrademarkPositionType)trademarkPositionTypeIndex));
+
+                        trademarkStyleList.Add(new TrademarkStyle((TrademarkSizeType)trademarkSizeTypeIndex, (TrademarkPositionType)trademarkPositionTypeIndex));
                         trademarkPositionTypeIndex++;
                         if (trademarkPositionTypeIndex > 8)
                         {
@@ -330,7 +332,7 @@ namespace ToilluminateClient
 
                         if (PlayApp.CurrentPlayListJsonString != getJsonString || PlayApp.CurrentPlayListNeedDownloadFile)
                         {
-                            Utility.WriterFile(VariableInfo.JsonFile, getJsonString);
+                            Utility.WriterNewFile(VariableInfo.JsonFile, getJsonString);
                             PlayApp.CurrentPlayListNeedDownloadFile = false;
                             ShowApp.DownloadMessageRefresh();
 
@@ -365,9 +367,7 @@ namespace ToilluminateClient
                             }
 
                             ShowApp.DownloadMessageDispose();
-
-                            Utility.WriterFile(VariableInfo.JsonFile, getJsonString);
-
+                            
                             PlayApp.CurrentPlayListJsonString = getJsonString;
                             PlayApp.Clear();
 
@@ -870,8 +870,13 @@ namespace ToilluminateClient
                                     {
                                         trademarkFileList.Add(file);
 
-                                        trademarkStyleList.Add(new TrademarkStyle(160, 160, TrademarkPositionType.BottomRight));
+                                        TrademarkSizeType sizeType = (TrademarkSizeType)Utility.ToInt(pliTemlete.DisplaySize);
+
+                                        TrademarkPositionType positionType = (TrademarkPositionType)Utility.ToInt(pliTemlete.DisplayPostion);
+
+                                        trademarkStyleList.Add(new TrademarkStyle(sizeType, positionType));
                                     }
+
 
 
                                     ShowApp.DownLoadIndexNumber++;
@@ -2221,7 +2226,7 @@ namespace ToilluminateClient
         private Font fontValue;
         private Color colorValue;
         private int widthValue;
-        private int heigthValue;
+        private int heightValue;
 
         #endregion
 
@@ -2249,24 +2254,24 @@ namespace ToilluminateClient
                 return widthValue;
             }
         }
-        public int Heigth
+        public int Height
         {
             get
             {
-                return heigthValue;
+                return heightValue;
             }
         }
 
         #endregion
 
-        public MessageStyle(Font font, Color color, int width, int heigth)
+        public MessageStyle(Font font, Color color, int width, int height)
         {
 
             this.fontValue = font;
             this.colorValue = color;
 
             this.widthValue = width;
-            this.heigthValue = heigth;
+            this.heightValue = height;
 
         }
     }
@@ -2390,8 +2395,7 @@ namespace ToilluminateClient
 
         #region " variable "
         private TrademarkPositionType trademarkPositionValue;
-        private int widthValue;
-        private int heigthValue;
+        private int percentValue;
 
         #endregion
 
@@ -2405,29 +2409,21 @@ namespace ToilluminateClient
                 return trademarkPositionValue;
             }
         }
-        public int Width
+        public int Percent
         {
             get
             {
-                return widthValue;
-            }
-        }
-        public int Heigth
-        {
-            get
-            {
-                return heigthValue;
+                return percentValue;
             }
         }
 
         #endregion
 
-        public TrademarkStyle(int width, int heigth, TrademarkPositionType trademarkPosition)
+        public TrademarkStyle(TrademarkSizeType sizeType, TrademarkPositionType trademarkPosition)
         {
             this.trademarkPositionValue = trademarkPosition;
 
-            this.widthValue = width;
-            this.heigthValue = heigth;
+            this.percentValue = Utility.ToInt( EnumHelper.GetDescription(sizeType));
 
         }
     }
