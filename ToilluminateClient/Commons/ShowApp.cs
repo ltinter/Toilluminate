@@ -115,9 +115,27 @@ namespace ToilluminateClient
 
                             #endregion
                         }
+                        if (Utility.ToInt(pliTemlete.type) == TempleteItemType.Message.GetHashCode())
+                        {
+                            #region "Message"
+
+                            #endregion
+                        }
                         else if (Utility.ToInt(pliTemlete.type) == TempleteItemType.Media.GetHashCode())
                         {
                             #region "Media"
+                            if (pliTemlete.itemData != null)
+                            {
+                                foreach (string url in pliTemlete.itemData.fileUrl)
+                                {
+                                    totalNumber++;
+                                }
+                            }
+                            #endregion
+                        }
+                        else if (Utility.ToInt(pliTemlete.type) == TempleteItemType.Trademark.GetHashCode())
+                        {
+                            #region "Trademark"
                             if (pliTemlete.itemData != null)
                             {
                                 foreach (string url in pliTemlete.itemData.fileUrl)
@@ -170,10 +188,10 @@ namespace ToilluminateClient
         private int leftValue;
         private int topValue;
         private int widthValue;
-        private int heigthValue;
+        private int heightValue;
 
         private int parentWidthValue;
-        private int parentHeigthValue;
+        private int parentHeightValue;
         private bool needRefreshLocation = false;
 
         private int slidingSpeedValue = 10;
@@ -186,7 +204,7 @@ namespace ToilluminateClient
         /// <summary>
         /// 纵向分隔距离
         /// </summary>
-        private int verticalRangeValue=30;
+        private int verticalRangeValue = 30;
         /// <summary>
         /// 横向分隔距离
         /// </summary>
@@ -238,11 +256,11 @@ namespace ToilluminateClient
                 return leftValue;
             }
         }
-        public int Heigth
+        public int Height
         {
             get
             {
-                return heigthValue;
+                return heightValue;
             }
         }
         public int Top
@@ -269,8 +287,8 @@ namespace ToilluminateClient
         }
         #endregion
 
-        
-        public DrawMessage(int parentWidth, int parentHeigth, MessageTempleteItem parentTemplete, int verticalRange, int horizontalRange)
+
+        public DrawMessage(int parentWidth, int parentHeight, MessageTempleteItem parentTemplete, int verticalRange, int horizontalRange)
         {
             drawStyleListValue.Clear();
             this.widthValue = 0;
@@ -279,7 +297,7 @@ namespace ToilluminateClient
             this.parentTempleteValue = parentTemplete;
 
 
-            this.parentHeigthValue = parentHeigth;
+            this.parentHeightValue = parentHeight;
             this.parentWidthValue = parentWidth;
             this.slidingSpeedValue = parentTemplete.SlidingSpeed;
 
@@ -290,7 +308,7 @@ namespace ToilluminateClient
             this.needRefreshLocation = true;
             RefreshLocation();
         }
-        public DrawMessage(int parentWidth, int parentHeigth, MessageTempleteItem parentTemplete)
+        public DrawMessage(int parentWidth, int parentHeight, MessageTempleteItem parentTemplete)
         {
             drawStyleListValue.Clear();
             this.widthValue = 0;
@@ -299,7 +317,7 @@ namespace ToilluminateClient
             this.parentTempleteValue = parentTemplete;
 
 
-            this.parentHeigthValue = parentHeigth;
+            this.parentHeightValue = parentHeight;
             this.parentWidthValue = parentWidth;
             this.slidingSpeedValue = parentTemplete.SlidingSpeed;
 
@@ -310,11 +328,11 @@ namespace ToilluminateClient
         #region " void and function "
         public void AddDrawMessage(string message, MessageStyle drawStyle)
         {
-            this.drawStyleListValue.Add(new ToilluminateClient.DrawMessageStyle(message, widthValue, drawStyle.Font, drawStyle.Color, drawStyle.Width, drawStyle.Heigth));
+            this.drawStyleListValue.Add(new ToilluminateClient.DrawMessageStyle(message, widthValue, drawStyle.Font, drawStyle.Color, drawStyle.Width, drawStyle.Height));
             this.widthValue = this.widthValue + drawStyle.Width;
-            if (this.heigthValue < drawStyle.Heigth)
+            if (this.heightValue < drawStyle.Height)
             {
-                this.heigthValue = drawStyle.Heigth;
+                this.heightValue = drawStyle.Height;
             }
         }
 
@@ -328,18 +346,18 @@ namespace ToilluminateClient
 
                 this.widthValue = this.widthValue - oldWidthValue + drawMessageStyle.Width;
 
-                if (this.heigthValue < drawStyle.Heigth)
+                if (this.heightValue < drawStyle.Height)
                 {
-                    this.heigthValue = drawStyle.Heigth;
+                    this.heightValue = drawStyle.Height;
                 }
                 else
                 {
-                    this.heigthValue = 0;
+                    this.heightValue = 0;
                     foreach (DrawMessageStyle drawStyleTemp in this.drawStyleListValue)
                     {
-                        if (this.heigthValue < drawStyleTemp.Heigth)
+                        if (this.heightValue < drawStyleTemp.Height)
                         {
-                            this.heigthValue = drawStyleTemp.Heigth;
+                            this.heightValue = drawStyleTemp.Height;
                         }
                     }
                 }
@@ -349,9 +367,9 @@ namespace ToilluminateClient
         }
 
 
-        public void SetParentSize(int parentWidth, int parentHeigth)
+        public void SetParentSize(int parentWidth, int parentHeight)
         {
-            this.parentHeigthValue = parentHeigth;
+            this.parentHeightValue = parentHeight;
             this.parentWidthValue = parentWidth;
             this.needRefreshLocation = true;
         }
@@ -438,7 +456,7 @@ namespace ToilluminateClient
                 #region "down top "
                 if (moveDirectionValue == MoveDirectionStyle.DownToTop || moveDirectionValue == MoveDirectionStyle.TopToDown)
                 {
-                    int sepValue = (this.parentHeigthValue + this.heigthValue) / (moveNumber * this.slidingSpeedValue);
+                    int sepValue = (this.parentHeightValue + this.heightValue) / (moveNumber * this.slidingSpeedValue);
                     if (sepValue < 1)
                     {
                         sepValue = 1;
@@ -447,7 +465,7 @@ namespace ToilluminateClient
                     {
                         #region "down to top "
                         this.topValue = this.topValue - sepValue;
-                        if (this.topValue <= -this.heigthValue)
+                        if (this.topValue <= -this.heightValue)
                         {
                             if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
                             {
@@ -456,7 +474,7 @@ namespace ToilluminateClient
                             }
                             else
                             {
-                                this.topValue = this.parentHeigthValue;
+                                this.topValue = this.parentHeightValue;
                                 moveState = MoveStateType.Moving;
                             }
 
@@ -471,7 +489,7 @@ namespace ToilluminateClient
                     {
                         #region "right to left "
                         this.topValue = this.topValue + sepValue;
-                        if (this.topValue > this.parentHeigthValue)
+                        if (this.topValue > this.parentHeightValue)
                         {
                             if (parentTempleteValue.CheckTempleteState() == TempleteStateType.Stop)
                             {
@@ -480,7 +498,7 @@ namespace ToilluminateClient
                             }
                             else
                             {
-                                this.topValue = -this.heigthValue;
+                                this.topValue = -this.heightValue;
                                 moveState = MoveStateType.Moving;
                             }
                         }
@@ -507,12 +525,12 @@ namespace ToilluminateClient
             }
             else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Bottom)
             {
-                this.topValue = this.parentHeigthValue - verticalRangeValue;
+                this.topValue = this.parentHeightValue - verticalRangeValue;
             }
             else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Middle)
             {
-                this.topValue = this.parentHeigthValue / 2;
-            }            
+                this.topValue = this.parentHeightValue / 2;
+            }
             else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Left)
             {
                 this.leftValue = horizontalRangeValue;
@@ -525,11 +543,11 @@ namespace ToilluminateClient
             {
                 this.leftValue = this.parentWidthValue / 2;
             }
-            
+
             this.needRefreshLocation = false;
         }
 
-        public int GetStyleTop(int styleHeigth)
+        public int GetStyleTop(int styleHeight)
         {
             int top = this.topValue;
             if (this.parentTempleteValue.ShowStyle == MessagePositionType.Top)
@@ -538,11 +556,11 @@ namespace ToilluminateClient
             }
             else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Bottom)
             {
-                top = this.topValue - styleHeigth;
+                top = this.topValue - styleHeight;
             }
             else if (this.parentTempleteValue.ShowStyle == MessagePositionType.Middle)
             {
-                top = this.topValue - (styleHeigth / 2);
+                top = this.topValue - (styleHeight / 2);
             }
             return top;
         }
@@ -582,7 +600,7 @@ namespace ToilluminateClient
         private Font fontValue;
         private Color colorValue;
         private int widthValue;
-        private int heigthValue;
+        private int heightValue;
 
 
         #endregion
@@ -625,17 +643,17 @@ namespace ToilluminateClient
                 return widthValue;
             }
         }
-        public int Heigth
+        public int Height
         {
             get
             {
-                return heigthValue;
+                return heightValue;
             }
         }
 
         #endregion
 
-        public DrawMessageStyle(string message, int leftWidth, Font font, Color color, int width, int heigth)
+        public DrawMessageStyle(string message, int leftWidth, Font font, Color color, int width, int height)
         {
 
             this.messageValue = message;
@@ -645,7 +663,7 @@ namespace ToilluminateClient
             this.colorValue = color;
 
             this.widthValue = width;
-            this.heigthValue = heigth;
+            this.heightValue = height;
 
         }
         public void SetDrawMessageStyle(string message, int width)
@@ -669,8 +687,8 @@ namespace ToilluminateClient
         private ShowStateType showStateValue = ShowStateType.NotShow;
 
         private int parentWidthValue = 0;
-        private int parentHeigthValue = 0;
-
+        private int parentHeightValue = 0;
+        private bool            newParentSizeValue = true;
         /// <summary>
         /// 纵向分隔距离
         /// </summary>
@@ -719,53 +737,71 @@ namespace ToilluminateClient
                 return showStateValue;
             }
         }
-
+        public Size ParentSize
+        {
+            get
+            {
+                this.newParentSizeValue = false;
+                return new Size(this.parentWidthValue, this.parentHeightValue);
+            }
+        }
+        public bool NewParentSize
+        {
+            get
+            {
+                return this.newParentSizeValue;
+            }
+        }
         #endregion
 
-        public DrawTrademark(int parentWidth, int parentHeigth, TrademarkTempleteItem parentTemplete)
+        public DrawTrademark(int parentWidth, int parentHeight, TrademarkTempleteItem parentTemplete)
         {
             drawStyleListValue.Clear();
 
             this.parentTempleteValue = parentTemplete;
 
-            this.parentHeigthValue = parentHeigth;
+            this.parentHeightValue = parentHeight;
             this.parentWidthValue = parentWidth;
-            
+            this.newParentSizeValue = true;
 
         }
-        public DrawTrademark(int parentWidth, int parentHeigth, TrademarkTempleteItem parentTemplete, int verticalRange, int horizontalRange)
+        public DrawTrademark(int parentWidth, int parentHeight, TrademarkTempleteItem parentTemplete, int verticalRange, int horizontalRange)
         {
             drawStyleListValue.Clear();
 
             this.parentTempleteValue = parentTemplete;
 
-            this.parentHeigthValue = parentHeigth;
+            this.parentHeightValue = parentHeight;
             this.parentWidthValue = parentWidth;
+            this.newParentSizeValue = true;
 
             this.verticalRangeValue = verticalRange;
             this.horizontalRangeValue = horizontalRange;
 
-    }
+        }
 
         #region " void and function "
         public void AddDrawTrademark(string file, TrademarkStyle drawStyle)
         {
-            drawStyleListValue.Add(new ToilluminateClient.DrawTrademarkStyle(file, drawStyle.Width, drawStyle.Heigth, drawStyle.TrademarkPosition));
+            drawStyleListValue.Add(new ToilluminateClient.DrawTrademarkStyle(file, drawStyle.Percent, drawStyle.TrademarkPosition));
         }
 
 
-        public void SetParentSize(int parentWidth, int parentHeigth)
+        public void SetParentSize(int parentWidth, int parentHeight)
         {
-            this.parentHeigthValue = parentHeigth;
+            this.parentHeightValue = parentHeight;
             this.parentWidthValue = parentWidth;
+
+            this.newParentSizeValue = true;
         }
 
+    
 
         public Point GetStyleLocation(DrawTrademarkStyle style)
         {
             int left = style.Left;
             int top = style.Top;
-            
+
             if (style.TrademarkPosition == TrademarkPositionType.TopLeft
                 || style.TrademarkPosition == TrademarkPositionType.TopCenter
                 || style.TrademarkPosition == TrademarkPositionType.TopRight)
@@ -776,13 +812,13 @@ namespace ToilluminateClient
                 || style.TrademarkPosition == TrademarkPositionType.MiddleCenter
                 || style.TrademarkPosition == TrademarkPositionType.MiddleRight)
             {
-                top = (this.parentHeigthValue - style.Heigth) / 2;
+                top = (this.parentHeightValue - style.Height(this.ParentSize)) / 2;
             }
             else if (style.TrademarkPosition == TrademarkPositionType.BottomLeft
                 || style.TrademarkPosition == TrademarkPositionType.BottomCenter
                 || style.TrademarkPosition == TrademarkPositionType.BottomRight)
             {
-                top = this.parentHeigthValue - verticalRangeValue - style.Heigth;
+                top = this.parentHeightValue - verticalRangeValue - style.Height(this.ParentSize);
             }
 
 
@@ -796,13 +832,13 @@ namespace ToilluminateClient
                 || style.TrademarkPosition == TrademarkPositionType.MiddleCenter
                 || style.TrademarkPosition == TrademarkPositionType.BottomCenter)
             {
-                left = (this.parentWidthValue - style.Width) / 2;
+                left = (this.parentWidthValue - style.Width(this.ParentSize)) / 2;
             }
             else if (style.TrademarkPosition == TrademarkPositionType.TopRight
                 || style.TrademarkPosition == TrademarkPositionType.MiddleRight
                 || style.TrademarkPosition == TrademarkPositionType.BottomRight)
             {
-                left = this.parentWidthValue - horizontalRangeValue - style.Width;
+                left = this.parentWidthValue - horizontalRangeValue - style.Width(this.ParentSize);
             }
 
             if (left < 0) left = 0;
@@ -830,8 +866,9 @@ namespace ToilluminateClient
         private int leftValue = 0;
 
 
+        private int percentValue = 0;
         private int widthValue = 0;
-        private int heigthValue = 0;
+        private int heightValue = 0;
 
         private TrademarkPositionType trademarkPositionValue;
         #endregion
@@ -867,44 +904,63 @@ namespace ToilluminateClient
                 return topValue;
             }
         }
-        public int Width
+        public int SizePercent
         {
             get
             {
-                return widthValue;
+                return percentValue;
             }
         }
-        public int Heigth
-        {
-            get
-            {
-                return heigthValue;
-            }
-        }
+
 
         #endregion
 
-        public DrawTrademarkStyle(string file, int width, int heigth, int left, int top)
+        public DrawTrademarkStyle(string file, int percent, int left, int top)
         {
             this.fileValue = file;
-            this.widthValue = width;
-            this.heigthValue = heigth;
+            this.percentValue = percent;
 
+            Size size = ImageApp.GetBitmapSize(file);
+            this.widthValue = size.Width;
+            this.heightValue = size.Height;
 
             this.leftValue = left;
             this.topValue = top;
             this.trademarkPositionValue = TrademarkPositionType.None;
         }
-        public DrawTrademarkStyle(string file, int width, int heigth, TrademarkPositionType trademarkPosition)
+        public DrawTrademarkStyle(string file, int percent, TrademarkPositionType trademarkPosition)
         {
             this.fileValue = file;
-            this.widthValue = width;
-            this.heigthValue = heigth;
+            this.percentValue = percent;
 
+            Size size = ImageApp.GetBitmapSize(file);
+            this.widthValue = size.Width;
+            this.heightValue = size.Height;
 
             this.leftValue = 0;
             this.topValue = 0;
             this.trademarkPositionValue = trademarkPosition;
+        }
+
+
+        public int Width(Size parentSize)
+        {
+            int width = widthValue;
+            if (this.percentValue > 0)
+            {
+                width = parentSize.Width * percentValue / 100;
+            }
+            return width;
+
+        }
+        public int Height(Size parentSize)
+        {
+            int height = heightValue;
+            if (this.percentValue > 0)
+            {
+                height = heightValue * parentSize.Width * percentValue / widthValue / 100;
+            }
+            return height;
         }
     }
     #endregion

@@ -64,8 +64,7 @@ namespace ToilluminateClient
         /// <summary>
         /// web api 地址
         /// </summary>
-        private static string webApiAddress = "localhost:43315";
-        //private static string webApiAddress = "54.238.131.90"; 
+        private static string webApiAddress = "54.238.131.90";
 
         /// <summary>
         /// 
@@ -87,6 +86,19 @@ namespace ToilluminateClient
         /// 移动字幕
         /// </summary>
         private static bool moveMessage = false;
+
+        /// <summary>
+        /// 视频设备
+        /// </summary>
+        private static MediaDeivceType mediaDevice = MediaDeivceType.VLC;
+
+
+        /// <summary>
+        /// 预读時間
+        /// </summary>
+        private static int mediaReadaheadTime = 30;
+        
+
         #endregion 変数
 
         #region publicプロパティ
@@ -112,6 +124,16 @@ namespace ToilluminateClient
             }
         }
         /// <summary>
+        /// 视频设备
+        /// </summary>
+        public static MediaDeivceType MediaDevice
+        {
+            get
+            {
+                return mediaDevice;
+            }
+        }
+        /// <summary>
         /// logが出力することが
         /// </summary>
         public static Boolean CanOutputLog
@@ -119,6 +141,17 @@ namespace ToilluminateClient
             get
             {
                 return canOutputLog;
+            }
+        }
+
+        /// <summary>
+        /// 预读時間
+        /// </summary>
+        public static int MediaReadaheadTime
+        {
+            get
+            {
+                return mediaReadaheadTime;
             }
         }
 
@@ -201,12 +234,34 @@ namespace ToilluminateClient
         {
             //iniフォルダ
             iniFileDir = Path.GetDirectoryName(file);
-            
+
             //CanOutputLog
             canOutputLog = Utility.ToInt(GetIniFileString("MAINTE", "CanOutputLog", file)) == 0 ? false : true;
 
             //ShowExample
             showExample = Utility.ToInt(GetIniFileString("MAINTE", "ShowExample", file)) == 0 ? false : true;
+
+            //moveMessage
+            moveMessage = Utility.ToInt(GetIniFileString("MAINTE", "MoveMessage", file)) == 0 ? false : true;
+
+
+            //mediaDevice
+            string mediaDeviceValue = GetIniFileString("MAINTE", "MediaDevice", file);
+            foreach (MediaDeivceType type in Enum.GetValues(typeof(MediaDeivceType)))
+            {
+                if (mediaDeviceValue == type.ToString() || mediaDeviceValue == EnumHelper.GetDescription(type))
+                {
+                    mediaDevice = type;
+                    break;
+                }
+            }
+            
+            //MediaReadaheadTime
+            mediaReadaheadTime = Utility.ToInt(GetIniFileString("MAINTE", "MediaReadaheadTime", file));
+            if (mediaReadaheadTime <= 10)
+            {
+                mediaReadaheadTime = 10;
+            }
 
             //MultilingualDictionaryType
             string multiDictTypeValue = GetIniFileString("MAINTE", "MultilingualDictionaryType", file);
@@ -228,7 +283,7 @@ namespace ToilluminateClient
 
             playerID = GetIniFileString("MAINTE", "PlayerID", file);
 
-            
+
         }
 
         /// <summary>
@@ -253,36 +308,61 @@ namespace ToilluminateClient
                 }
 
                 //logが出力することが
-                WriteIniFileString("MAINTE", "CanOutputLog", CanOutputLog ? "1" : "0", file);
                 if (isNewFile)
                 {
+                    WriteIniFileString("MAINTE", "CanOutputLog", CanOutputLog ? "1" : "0", file);
                     WriteIniFileNotesString("MAINTE", "CanOutputLog", "logが出力することが", file);
                 }
 
                 //例表示
-                WriteIniFileString("MAINTE", "ShowExample", ShowExample ? "1" : "0", file);
                 if (isNewFile)
                 {
+                    WriteIniFileString("MAINTE", "ShowExample", ShowExample ? "1" : "0", file);
                     WriteIniFileNotesString("MAINTE", "ShowExample", "例表示", file);
                 }
-                
 
-                WriteIniFileString("MAINTE", "MultilingualDictionaryType", EnumHelper.GetDescription(MultiDictType), file);
+                //移動字幕
                 if (isNewFile)
                 {
+                    WriteIniFileString("MAINTE", "MoveMessage", MoveMessage ? "1" : "0", file);
+                    WriteIniFileNotesString("MAINTE", "MoveMessage", "移動字幕", file);
+                }
+
+                WriteIniFileString("MAINTE", "MediaDevice", MediaDevice.ToString(), file);
+                WriteIniFileNotesString("MAINTE", "MediaDevice", "视频设备 {VLC, WMP}", file);
+                //视频设备
+                if (isNewFile)
+                {
+                    WriteIniFileString("MAINTE", "MediaDevice", MediaDevice.ToString(), file);
+                    WriteIniFileNotesString("MAINTE", "MediaDevice", "视频设备 {VLC, WMP}", file);
+                }
+                
+                //预读時間
+                if (isNewFile)
+                {
+                    WriteIniFileString("MAINTE", "MediaReadaheadTime", MediaReadaheadTime.ToString(), file);
+                    WriteIniFileNotesString("MAINTE", "MediaReadaheadTime", "预读時間", file);
+                }
+
+
+                //表示言語選択
+                if (isNewFile)
+                {
+                    WriteIniFileString("MAINTE", "MultilingualDictionaryType", EnumHelper.GetDescription(MultiDictType), file);
                     WriteIniFileNotesString("MAINTE", "MultilingualDictionaryType", "表示言語選択 {JP, EN}", file);
                 }
 
-
-                WriteIniFileString("MAINTE", "WebApiAddress", webApiAddress, file);
+                //ウェブアドレス
                 if (isNewFile)
                 {
+                    WriteIniFileString("MAINTE", "WebApiAddress", webApiAddress, file);
                     WriteIniFileNotesString("MAINTE", "WebApiAddress", "ウェブアドレス", file);
                 }
 
-                WriteIniFileString("MAINTE", "PlayerID", playerID, file);
+                //プレイのid
                 if (isNewFile)
                 {
+                    WriteIniFileString("MAINTE", "PlayerID", playerID, file);
                     WriteIniFileNotesString("MAINTE", "PlayerID", "プレイのid", file);                    
                 }
                 

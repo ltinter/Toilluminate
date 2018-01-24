@@ -102,7 +102,7 @@ namespace ToilluminateClient
                         if (dmItem.MoveState == MoveStateType.NotMove)
                         {
                             newW = dmItem.Width;
-                            newH = dmItem.Heigth;
+                            newH = dmItem.Height;
                             ShowApp.MessageBackBitmap = new Bitmap(newW, newH);
                             gBmpBack = Graphics.FromImage(ShowApp.MessageBackBitmap);
                             gBmpBack.Clear(ImageApp.BackClearColor);
@@ -115,7 +115,7 @@ namespace ToilluminateClient
                             drawNewImage = true;
                             drawing = true;
                             controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlTop = dmItem.GetStyleTop(dmItem.Height);
                             controlShowStyle = dmItem.ShowStyle;
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
                         }
@@ -123,7 +123,7 @@ namespace ToilluminateClient
                         {
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
                             controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlTop = dmItem.GetStyleTop(dmItem.Height);
                             drawing = true;
                         }
                     }
@@ -135,7 +135,7 @@ namespace ToilluminateClient
                         if (dmItem.MoveState == MoveStateType.NotMove)
                         {
                             newW = dmItem.Width;
-                            newH = dmItem.Heigth;
+                            newH = dmItem.Height;
                             ShowApp.MessageBackBitmap = new Bitmap(newW, newH);
                             gBmpBack = Graphics.FromImage(ShowApp.MessageBackBitmap);
                             gBmpBack.Clear(ImageApp.BackClearColor);
@@ -148,7 +148,7 @@ namespace ToilluminateClient
                             drawNewImage = true;
                             drawing = true;
                             controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlTop = dmItem.GetStyleTop(dmItem.Height);
                             controlShowStyle = dmItem.ShowStyle;
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
                             break;
@@ -157,7 +157,7 @@ namespace ToilluminateClient
                         {
                             dmItem.MoveMessage(ImageApp.MessageSepNumber);
                             controlLeft = dmItem.Left;
-                            controlTop = dmItem.GetStyleTop(dmItem.Heigth);
+                            controlTop = dmItem.GetStyleTop(dmItem.Height);
                             drawing = true;
                             break;
                         }
@@ -250,15 +250,15 @@ namespace ToilluminateClient
                         foreach (DrawTrademarkStyle dtStyle in dtItem.DrawStyleList)
                         {
                             int trademarkBackBitmapIndex = dtStyle.TrademarkPosition.GetHashCode();
-                            newW = dtStyle.Width;
-                            newH = dtStyle.Heigth;
+                            newW = dtStyle.Width(dtItem.ParentSize);
+                            newH = dtStyle.Height(dtItem.ParentSize);
                             ShowApp.TrademarkBackBitmaps[trademarkBackBitmapIndex] = new Bitmap(newW, newH);
                             gBmpBack = Graphics.FromImage(ShowApp.TrademarkBackBitmaps[trademarkBackBitmapIndex]);
                             gBmpBack.Clear(ImageApp.BackClearColor);
 
                             //动态添加图片
                             using (Image imageTemp = ImageApp.GetBitmap(dtStyle.File))
-                            {                                
+                            {
                                 gBmpBack.DrawImage(imageTemp, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, imageTemp.Width, imageTemp.Height), GraphicsUnit.Pixel);
                             }
 
@@ -275,10 +275,29 @@ namespace ToilluminateClient
                     }
                     else if (dtItem.ShowState == ShowStateType.Showing)
                     {
+                        bool newParentSize = dtItem.NewParentSize;
                         foreach (DrawTrademarkStyle dtStyle in dtItem.DrawStyleList)
                         {
                             int trademarkBackBitmapIndex = dtStyle.TrademarkPosition.GetHashCode();
-                           
+                            if (newParentSize)
+                            {
+                                newW = dtStyle.Width(dtItem.ParentSize);
+                                newH = dtStyle.Height(dtItem.ParentSize);
+                                ShowApp.TrademarkBackBitmaps[trademarkBackBitmapIndex] = new Bitmap(newW, newH);
+                                gBmpBack = Graphics.FromImage(ShowApp.TrademarkBackBitmaps[trademarkBackBitmapIndex]);
+                                gBmpBack.Clear(ImageApp.BackClearColor);
+
+                                //动态添加图片
+                                using (Image imageTemp = ImageApp.GetBitmap(dtStyle.File))
+                                {
+                                    gBmpBack.DrawImage(imageTemp, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, imageTemp.Width, imageTemp.Height), GraphicsUnit.Pixel);
+                                }
+
+
+                                drawNewImage = true;
+                            }
+
+
                             Point location = dtItem.GetStyleLocation(dtStyle);
 
                             controlLefts[trademarkBackBitmapIndex] = location.X;
@@ -1733,6 +1752,35 @@ namespace ToilluminateClient
                 {
                     g.Dispose();
                 }
+            }
+        }
+        #endregion
+
+        #region " 读取图像 " 
+        /// <summary>
+        /// 从流中读取图像
+        /// </summary>
+        /// <param name="bmpFile"></param>
+        public static Size GetBitmapSize(string bmpFile)
+        {
+            try
+            {
+                Size size = new Size(0, 0);
+                using (FileStream pFileStream = new FileStream(bmpFile, FileMode.Open, FileAccess.Read))
+                {
+                    using (Image image = Image.FromStream(pFileStream))
+                    {
+                        size = new Size(image.Width, image.Height);
+                    }
+                    pFileStream.Close();
+                    pFileStream.Dispose();
+                }
+
+                return size;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
         #endregion
