@@ -677,23 +677,18 @@ namespace ToilluminateClient
         /// <summary>
         /// 小
         /// </summary>
-        [EnumDescription("8")]
+        [EnumDescription("10")]
         Small = 0,
         /// <summary>
         /// 中
         /// </summary>
-        [EnumDescription("16")]
+        [EnumDescription("15")]
         Medium = 1,
         /// <summary>
         /// 大
         /// </summary>
-        [EnumDescription("32")]
+        [EnumDescription("20")]
         Large = 2,
-        /// <summary>
-        /// 原比例
-        /// </summary>
-        [EnumDescription("0")]
-        None = 9,
     }
 
     #endregion
