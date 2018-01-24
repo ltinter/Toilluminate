@@ -179,12 +179,8 @@
                             loginUser = response.UserMaster;
                             // similate 2s delay
                             setTimeout(function () {
-                                //btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
                                 _plugin.htmlElements.logincontainer.form_action.button_SignIn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
-                                //showErrorMsg(form, 'danger', 'Incorrect username or password. Please try again.');
                             }, 2000);
-                            //btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
-                            _plugin.htmlElements.logincontainer.form_action.button_SignIn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
                             _plugin.htmlElements.logincontainer.form.inputusername.val('');
                             _plugin.htmlElements.logincontainer.form.inputpassword.val('');
                             $.insmGroup({});
@@ -194,7 +190,6 @@
                         },
                         error: function () {
                             toastr.warning("Incorrect username or password. Please try again.");
-                            //btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
                             _plugin.htmlElements.logincontainer.form_action.button_SignIn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
                         }
                     })

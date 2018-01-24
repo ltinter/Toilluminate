@@ -117,6 +117,9 @@ var playerStatusShare = function () {
 var changeTab = function (tabDivId) {
     $(".mainPageTabDiv").hide();
     $("#" + tabDivId).show();
+    if (tabDivId == 'PlaylistEditorContentDiv') {
+        $.playlist();
+    }
     $("#m_ver_menu").find("li.m-menu__item").removeClass("m-menu__item--active");
     $(event.currentTarget).parent("li").addClass("m-menu__item--active");
 }

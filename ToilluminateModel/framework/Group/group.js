@@ -226,9 +226,9 @@
                         datatable : null,
                         temp_GroupTreeData:null,
                         firstPageload: true,
-                        selectPlayerdata,
+                        selectPlayerdata:null,
                         playListgroup:[],
-                        editGroupID
+                        editGroupID:null
                     }
                 };
                 $this.find('.m-content.mainPageTabDiv').first().append(
@@ -775,7 +775,7 @@
                             NotechangeFlg: _plugin.data.NotechangeFlg,
                             success: function (data) {
                                 //$("#button_save_Player")
-                                _plugin.htmlElements.groupplayerDetail.detailBody.css("pointer-events", "");
+                                _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                                 var div_forcedplaylists = _plugin.htmlElements.groupplayerDetail.detailBody.detail.showPlaylistForced.container;
                                 //$('#forcedplaylists');
                                 var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
@@ -856,7 +856,7 @@
                                                     _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                                                     $.insmGroup('showPlayerDetail', { GroupID: _plugin.data.selectedGroupID });
                                                     toastr.success("操作が完了しました。");
-                                                    $.insmGroup('refreshTree');
+                                                    //$.insmGroup('refreshTree');
                                                 }, 2000);
                                             },
                                             error: function () {
@@ -1120,14 +1120,14 @@
                 }
             });
 
-            $(div_groupTreeForPlaylistEditor).on("changed.jstree", function (e, data) {
-                //存储当前选中的区域的名称
-                if (data.node) {
-                    $.playlistEditor('init', {
-                        selectedGroupID: data.node.id
-                    });
-                }
-            });
+            //$(div_groupTreeForPlaylistEditor).on("changed.jstree", function (e, data) {
+            //    //存储当前选中的区域的名称
+            //    if (data.node) {
+            //        $.playlistEditor('init', {
+            //            selectedGroupID: data.node.id
+            //        });
+            //    }
+            //});
 
             tree.on("move_node.jstree", function (e, data) {
                 var node = data.node;
@@ -1807,7 +1807,6 @@
                     
                     });
                     if (Settings != null) {
-
                         if (Object.getOwnPropertyNames(Settings).length > 0) {
                             $.insmGroup('setTimeOptions', Settings);
 

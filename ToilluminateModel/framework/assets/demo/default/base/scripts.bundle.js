@@ -1233,7 +1233,8 @@ jQuery.fn.extend({
 			 * Note: selector checkbox, subtable toggle
 			 */
 			setupSystemColumn: function () {
-				// no records available
+			    // no records available
+			    if (!datatable.jsonData) return;
 				if (datatable.jsonData.length === 0) return;
 
 				var columns = options.columns;
@@ -1639,11 +1640,14 @@ jQuery.fn.extend({
 					$(tr).appendTo(tableBody);
 				});
 
-				// display no records message
-				if (datatable.jsonData.length === 0) {
-					$('<span/>').addClass('m-datatable--error').width('100%').html(API.getOption('translate.records.noRecords')).appendTo(tableBody);
-					$(datatable).addClass('m-datatable--error');
+			    // display no records message
+				if (datatable.jsonData) {
+				    if (datatable.jsonData.length === 0) {
+				        $('<span/>').addClass('m-datatable--error').width('100%').html(API.getOption('translate.records.noRecords')).appendTo(tableBody);
+				        $(datatable).addClass('m-datatable--error');
+				    }
 				}
+				
 
 				// replace existing table body
 				$(datatable.tableBody).replaceWith(tableBody);

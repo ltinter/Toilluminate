@@ -559,7 +559,7 @@
             //    }
             //}
             var playerEditDeferredList = [];
-            $.each(options.Playerdata, function (index, item) {
+            $.each(options.playerId, function (index, item) {
                 var tempPlayerEditDrferred = new $.Deferred();
                 playerEditDeferredList.push(tempPlayerEditDrferred);
                 //var Player = $(options.Playerdata[index]).data().obj;
@@ -569,7 +569,7 @@
                     success: function (result) {
                         tempPlayerEditDrferred.resolve();
                     },
-                    url: 'api/PlayerPlayListLinkTables/DeletePlayerPlayListLinkTableByPlayerID/' + $(options.Playerdata[index]).data().obj.PlayerID,
+                    url: 'api/PlayerPlayListLinkTables/DeletePlayerPlayListLinkTableByPlayerID/' + item.PlayerID,
                     format: 'json',
                     contentType: "application/json; charset=utf-8",
                     data: '',

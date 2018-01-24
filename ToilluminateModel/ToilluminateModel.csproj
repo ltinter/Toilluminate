@@ -663,6 +663,7 @@
     <Content Include="framework\plugins\jquerycookie\jquery.cookie.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="framework\plugins\Playlist\playlist.js" />
     <Content Include="framework\plugins\timeOptions\timeOptions.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
