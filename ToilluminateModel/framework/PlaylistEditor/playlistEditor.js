@@ -128,15 +128,14 @@
     var div_playlist = $('#div_playlist');
     var div_Mainplaylist = $('#div_Mainplaylist');
     var edit_playlistId = null;
-    var tempselectedGroupID = null;
+    //var tempselectedGroupID = null;
     var selectedFolderID = null;
     var currentNeededFileType = "image";
-    var editplaylistID = null;
+    //var editplaylistID = null;
     var select_palylistItem = null;
     var methods = {
         init: function (options) {
             // Global vars
-            //var $this = $('html').eq(0);
             var $this = $('body').eq(0);
             var _plugin = $this.data('playlistEditor');
 
@@ -307,7 +306,8 @@
                         }
                     },
                     cache: {
-                        players: {}
+                        players: {},
+                        editflg : false
                     },
                     locks: {
                         getPlayers: {
@@ -483,12 +483,15 @@
                             onOk: function () {
                                 $.insmFramework('deletePlaylist', {
                                     deletePlaylistId: edit_playlistId,
-                                    deletepalylistItem: select_palylistItem,
+                                    deletepalylistItem: $.playlist('getselect_palylistItem'),
                                     success: function (fileData) {
-                                        deletepalylistItem = null;
+                                        //deletepalylistItem = null;
                                         div_playlist.hide();
                                         div_Mainplaylist.show();
-                                        $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: tempselectedGroupID });
+                                        $.playlist('init', {
+                                            selectedGroupID: $.playlist('getselectGroupId')
+                                        });
+                                        $.playlist('getPlaylistByGroupID', { selectedGroupID: $.playlist('getselectGroupId') });
                                         edit_playlistId = null;
                                         toastr.success("操作が完了しました。");
                                     },
@@ -523,9 +526,6 @@
                         SundayisCheck: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaytimes.timebody.Sundaycontainer.find('input:checkbox').is(':checked'),
                         Sunday: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaytimes.timebody.Sundaycontainer.find("input:hidden").val(),
 
-                        //Loop: $("input[name='playlist_loop']:checked").val(),
-                        //Playtime: $("input[name='playlist_playtime']:checked").val(),
-
                         PlayHours: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.hoursinput.val(),
                         PlayMinites: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.minitesinput.val(),
                         PlaySeconds: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.secondsinput.val(),
@@ -534,34 +534,6 @@
                         Playtime: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentPlaytime.Playtime.find("input[name='playlist_playtime']:checked").val()
                     };
 
-                    //Settings = {
-                    //    Loop: $("input[name='playlist_loop']:checked").val(),
-                    //    Playtime: $("input[name='playlist_playtime']:checked").val(),
-                    //    PlayHours:_plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.hoursinput.val(),
-                    //    PlayMinites:_plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.minitesinput.val(),
-                    //    PlaySeconds: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.secondsinput.val(),
-                    //    //Monday
-                    //    Monday: $("#playlist_monday_value").val(),
-                    //    MondayisCheck: $("#playlist_monday").is(':checked'),
-                    //    //Tuesday
-                    //    Tuesday: $("#playlist_tuesday_value").val(),
-                    //    TuesdayisCheck: $("#playlist_tuesday").is(':checked'),
-                    //    //Wednesday
-                    //    Wednesday: $("#playlist_wednesday_value").val(),
-                    //    WednesdayisCheck: $("#playlist_wednesday").is(':checked'),
-                    //    //Thursday
-                    //    Thursday: $("#playlist_thursday_value").val(),
-                    //    ThursdayisCheck: $("#playlist_thursday").is(':checked'),
-                    //    //Friday
-                    //    Friday: $("#playlist_friday_value").val(),
-                    //    FridayisCheck: $("#playlist_friday").is(':checked'),
-                    //    //Saturday
-                    //    Saturday: $("#playlist_saturday_value").val(),
-                    //    SaturdayisCheck: $("#playlist_saturday").is(':checked'),
-                    //    //Sunday
-                    //    Sunday: $("#playlist_sunday_value").val(),
-                    //    SundayisCheck: $("#playlist_sunday").is(':checked'),
-                    //};
                     var palylistItemItemsdata = [];
                     if (palylistItemItems.length > 0) {
                         $.each(palylistItemItems, function (index, palylistItem) {
@@ -640,10 +612,10 @@
                         });
                         Settings.PlaylistItems = palylistItemItemsdata;
                     }
-                    if (editflg) {
+                    if (_plugin.cache.editflg) {
                         $.insmFramework('editPlaylist', {
-                            GroupID: tempselectedGroupID,
-                            playlistId: editplaylistID,
+                            GroupID: $.playlist('getselectGroupId'),
+                            playlistId: $.playlist('getselect_palylistItem').PlayListID,
                             //PlayListName: $("#playlist_name").val(),
                             PlayListName: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val(),
                             InheritForced: '',
@@ -651,13 +623,14 @@
                             //Comments: $("#playlist_note").val(),
                             Comments: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.commenttextarea.val(),
                             success: function (playlistData) {
+
                                 div_playlist.hide();
                                 div_Mainplaylist.show();
-                                $.playlistEditor('init', {
-                                    selectedGroupID: tempselectedGroupID
+                                $.playlist('init', {
+                                    selectedGroupID: $.playlist('getselectGroupId')
                                 });
-                                editplaylistID = null;
-                                deletepalylistItem = null;
+                                $.playlist('getPlaylistByGroupID', { selectedGroupID: $.playlist('getselectGroupId') });
+
                                 toastr.success("操作が完了しました。");
                                 $("#playlist_save").css('display', '');
                             },
@@ -667,7 +640,7 @@
                         })
                     } else {
                         $.insmFramework('creatPlaylist', {
-                            GroupID: tempselectedGroupID,
+                            GroupID: $.playlist('getselectGroupId'),
                             //PlayListName: $("#playlist_name").val(),
                             PlayListName: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val(),
                             InheritForced: '',
@@ -675,15 +648,14 @@
                             //Comments: $("#playlist_note").val(),
                             Comments: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.commenttextarea.val(),
                             success: function (playlistData) {
-                                if (playlistData) {
-                                    div_playlist.hide();
-                                    div_Mainplaylist.show();
-                                }
-                                $.playlistEditor('init', {
-                                    selectedGroupID: tempselectedGroupID
+
+                                div_playlist.hide();
+                                div_Mainplaylist.show();
+                                $.playlist('init', {
+                                    selectedGroupID: $.playlist('getselectGroupId')
                                 });
-                                editplaylistID = null;
-                                deletepalylistItem = null;
+                                $.playlist('getPlaylistByGroupID', { selectedGroupID: $.playlist('getselectGroupId') });
+
                                 toastr.success("操作が完了しました。");
                                 $("#playlist_save").css('display', '');
                             },
@@ -699,6 +671,29 @@
                     div_playlist.hide();
                     div_Mainplaylist.show();
                 });
+
+                _plugin.htmlElements.groupplayerDetail.playlistItem.playlistcontainer.sortable({
+                    connectWith: ".m-portlet__head",
+                    items: "div.m-portlet.m-portlet--mobile.m-portlet--sortable.m-portlet--warning.m-portlet--head-solid-bg",
+                    opacity: 0.8,
+                    handle: '.m-portlet__head',
+                    coneHelperSize: true,
+                    placeholder: 'm-portlet--sortable-placeholder',
+                    forcePlaceholderSize: true,
+                    tolerance: "pointer",
+                    helper: "clone",
+                    tolerance: "pointer",
+                    forcePlaceholderSize: !0,
+                    helper: "clone",
+                    cancel: ".m-portlet--sortable-empty", // cancel dragging if portlet is in fullscreen mode
+                    revert: 250, // animation in milliseconds
+                    update: function (b, c) {
+                        if (c.item.prev().hasClass("m-portlet--sortable-empty")) {
+                            c.item.prev().before(c.item);
+                        }
+                    }
+                });
+
                 //NewItemPicture
                 _plugin.htmlElements.groupplayerDetail.playlistItem.addItem.itemSelect.selectItembody.liaddPicture.click(function () {
                     $.playlistEditor('greateNewItemPicture');
@@ -719,131 +714,15 @@
                     $.playlistEditor('greateNewItemQRCode');
 
                 });
-                //add New playlist
-                $("#add_playlist").click(function () {
-                    if (tempselectedGroupID == null) {
-                        toastr.warning("Please select playlist's group!");
-                        return;
-                    }
-                    if ($("#groupTreeForPlaylistEditor").jstree(true).get_selected().length == 0) {
-                        toastr.warning("Please select playlist's group!");
-                        return;
-                    }
-
-                    $.playlistEditor('setfolder', { selectedGroupID: tempselectedGroupID });
-                    $.playlistEditor('playlistDefaultvalue');
-                    div_playlist.show();
-                    div_Mainplaylist.hide();
-                    deletepalylistItem = null;
-                    editflg = false;
-                });
+                
             }
 
-            tempselectedGroupID = options.selectedGroupID;
-            $.playlistEditor('getPlaylistByGroupID', { selectedGroupID: options.selectedGroupID });
+            //tempselectedGroupID = options.selectedGroupID;
+            //$.playlistEditor('getPlaylistByGroupID', { selectedGroupID: options.selectedGroupID });
 
             return $this;
         },
-        getPlaylistByGroupID: function (options) {
-            var $this = $('body').eq(0);
-            var _plugin = $this.data('insmGroup');
-
-            div_PlaylistEditorContent = $this.find('#div_PlaylistEditorContent');
-
-            div_PlaylistEditorContent.empty();
-            $.insmFramework('getPlaylistByGroupID', {
-                GroupID: options.selectedGroupID,
-                success: function (playlistData) {
-                    if (playlistData) {
-                        $.each(playlistData, function (index, item) {
-
-                            var div_PlaylistEditor = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
-                            var div_head = $('<div/>').addClass('m-portlet__head');
-                            var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
-                            var div_head_title = $('<div/>').addClass("m-portlet__head-title");
-                            var spantitle = $("<span />").addClass('m-portlet__head-icon');
-                            var span_i = '<i class="fa fa-file-text"></i>';
-                            var head_text = $('<h3 />').addClass('m-portlet__head-text').text(item.PlayListName);
-
-                            var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
-                            var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
-                            var div_li = $('<li />').addClass('m-portlet__nav-item');
-                            var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
-                            var href_i = $('<i />').addClass("fa fa-calendar");
-
-                            var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push")
-                            div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
-
-                            var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
-                            var div_li_i = $('<i />').addClass('la la-ellipsis-v');
-                            var div_m_dropdown_wrapper = $('<div/>').addClass('m-dropdown__wrapper');
-
-                            var wrappe_spantitle = $("<span style='left: auto; right: 18.5px;'/>").addClass('m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust');
-                            var div_m_dropdown_inner = $('<div/>').addClass("m-dropdown__inner");
-                            var div_m_dropdown_bodyr = $('<div/>').addClass("m-dropdown__body");
-                            var div_m_dropdown_content = $('<div/>').addClass("m-dropdown__content");
-
-                            spantitle.append(span_i);
-                            div_head_title.append(spantitle);
-                            div_head_title.append(head_text);
-                            div_head_caption.append(div_head_title);
-                            div_head.append(div_head_caption)
-
-                            var ul = $('<ul>').addClass("m-nav");
-                            //Item
-                            if (item.Settings) {
-                                var playlistSetting = JSON.parse(item.Settings);
-                                $.each(playlistSetting.PlaylistItems, function (index, PlaylistItem) {
-                                    var ul_li = $('<li />').addClass('m-nav__item');
-                                    var ul_li_href = $('<a />').addClass("m-nav__link");
-                                    var ul_li_a = $('<i />').addClass("m-nav__link-icon flaticon-share");
-                                    var ul_li_href_span = $("<span />").addClass('m-nav__link-text');
-
-                                    ul_li_href_span.text(PlaylistItem.PlaylistItemName);
-                                    ul_li_href.append(ul_li_a, ul_li_href_span);
-                                    ul_li.append(ul_li_href);
-                                    ul.append(ul_li);
-                                })
-                            }
-
-                            div_m_dropdown_content.append(ul);
-                            div_m_dropdown_bodyr.append(div_m_dropdown_content);
-                            div_m_dropdown_inner.append(div_m_dropdown_bodyr);
-
-                            div_m_dropdown_wrapper.append(wrappe_spantitle);
-                            div_m_dropdown_wrapper.append(div_m_dropdown_inner);
-                            div_li_a_toggle.append(div_li_i);
-                            div_li_list.append(div_li_a_toggle, div_m_dropdown_wrapper)
-
-                            var datetime = new Date(item.UpdateDate).toLocaleDateString()
-                            href.append(href_i.text(datetime));
-                            div_li.append(href);
-
-                            var div_li_edit = $('<li />').addClass('m-portlet__nav-item');
-                            var edit_href = $('<a />').addClass("btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm").text($.localize('translate', 'Edit'));
-
-                            edit_href.click(function () {
-                                editplaylistID = item.PlayListID;
-                                select_palylistItem = item;
-                                $.playlistEditor('setfolder', { selectedGroupID: tempselectedGroupID });
-                                $.playlistEditor('editPlaylist', { playlistID: item.PlayListID, playlistDate: item });
-                            });
-
-                            div_li_edit.append(edit_href);
-                            div_portlet_nav.append(div_li);
-                            div_portlet_nav.append(div_li_edit);
-
-                            div_portlet_nav.append(div_li_list);
-                            div_head_tools.append(div_portlet_nav);
-
-                            div_head.append(div_head_tools);
-                            div_PlaylistEditor.append(div_head);
-                            div_PlaylistEditorContent.append(div_PlaylistEditor);
-                        })
-                    }
-                }
-            })
-        },
+        
         short: function (options) {
         },
         initTimeOptionsInPlayerEdit: function () {
@@ -864,9 +743,14 @@
                 });
             })
         },
-        playlistDefaultvalue: function () {
+        playlistDefaultvalue: function (options) {
             var $this = $('body').eq(0);
             var _plugin = $this.data('playlistEditor');
+            if (options) {
+                _plugin.cache.editflg = options.editflg;
+                if (!options.editflg) { _plugin.htmlElements.groupplayerDetail.detailBody.toolsSave.hide()}
+                
+            }
             //$('#playlist_name').val('New Playlist Name');
             _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val('New Playlist Name');
             //$('#playlist_note').val('');
@@ -920,7 +804,7 @@
             var $this = $('body').eq(0);
             var _plugin = $this.data('playlistEditor');
 
-            editflg = true;
+            _plugin.cache.editflg = true;
             if (options.playlistID) {
                 $.playlistEditor('playlistDefaultvalue');
 
@@ -948,86 +832,11 @@
                                 $("#label_loop_" + Settings.LoopFlag).click();
                                 $("#label_Playtime_" + Settings.PlaytimeFlag).click();
                             }
-
-                            //if (Object.getOwnPropertyNames(Settings).length > 0) {
-                            //    //Monday
-                            //    $("#playlist_monday").attr("checked", Settings.MondayisCheck);
-                            //    if(Settings.MondayisCheck){
-                            //        $("#label_playlist_monday_value").addClass('Loop');
-                            //    } else {
-                            //        $("#label_playlist_monday_value").removeClass('Loop');
-                            //    }
-                            //    $("#playlist_monday_value").data("ionRangeSlider").update({
-                            //        from: Settings.Monday.split(';')[0], to: Settings.Monday.split(';')[1]
-                            //    });
-                            //    //Tuesday
-                            //    $("#playlist_tuesday").attr("checked", Settings.TuesdayisCheck);
-                            //    if (Settings.TuesdayisCheck) {
-                            //        $("#label_playlist_tuesday_value").addClass('Loop');
-                            //    } else {
-                            //        $("#label_playlist_tuesday_value").removeClass('Loop');
-                            //    }
-                            //    $("#playlist_tuesday_value").data("ionRangeSlider").update({
-                            //        from: Settings.Tuesday.split(';')[0], to: Settings.Tuesday.split(';')[1]
-                            //    });
-                            //    //Wednesday
-                            //    $("#playlist_tuesday").attr("checked", Settings.WednesdayisCheck);
-                            //    if (Settings.WednesdayisCheck) {
-                            //        $("#label_playlist_wednesday_value").addClass('Loop');
-                            //    } else {
-                            //        $("#label_playlist_wednesday_value").removeClass('Loop');
-                            //    }
-                            //    $("#playlist_wednesday_value").data("ionRangeSlider").update({
-                            //        from: Settings.Wednesday.split(';')[0], to: Settings.Wednesday.split(';')[1]
-                            //    });
-                            //    //Thursday
-                            //    $("#playlist_tuesday").attr("checked", Settings.ThursdayisCheck);
-                            //    if (Settings.ThursdayisCheck) {
-                            //        $("#label_playlist_thursday_value").addClass('Loop');
-                            //    } else {
-                            //        $("#label_playlist_thursday_value").removeClass('Loop');
-                            //    }
-                            //    $("#playlist_thursday_value").data("ionRangeSlider").update({
-                            //        from: Settings.Thursday.split(';')[0], to: Settings.Thursday.split(';')[1]
-                            //    });
-                            //    //Friday
-                            //    $("#playlist_tuesday").attr("checked", Settings.FridayisCheck);
-                            //    if (Settings.FridayisCheck) {
-                            //        $("#label_playlist_friday_value").addClass('Loop');
-                            //    } else {
-                            //        $("#label_playlist_friday_value").removeClass('Loop');
-                            //    }
-                            //    $("#playlist_friday_value").data("ionRangeSlider").update({
-                            //        from: Settings.Friday.split(';')[0], to: Settings.Friday.split(';')[1]
-                            //    });
-                            //    //Saturday
-                            //    $("#playlist_tuesday").attr("checked", Settings.SaturdayisCheck);
-                            //    if (Settings.SaturdayisCheck) {
-                            //        $("#label_playlist_saturday_value").addClass('Loop');
-                            //    } else {
-                            //        $("#label_playlist_saturday_value").removeClass('Loop');
-                            //    }
-                            //    $("#playlist_saturday_value").data("ionRangeSlider").update({
-                            //        from: Settings.Saturday.split(';')[0], to: Settings.Saturday.split(';')[1]
-                            //    });
-                            //    //Sunday
-                            //    $("#playlist_tuesday").attr("checked", Settings.SundayisCheck);
-                            //    if (Settings.SundayisCheck) {
-                            //        $("#label_playlist_sunday_value").addClass('Loop');
-                            //    } else {
-                            //        $("#label_playlist_sunday_value").removeClass('Loop');
-                            //    }
-                            //    $("#playlist_sunday_value").data("ionRangeSlider").update({
-                            //        from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1]
-                            //    });
-
+                            
                             $("#label_loop_" + Settings.Loop).click();
                             $("#label_playtime_" + Settings.Playtime).click();
-                            //$("#m_touchspin_1").val(Settings.PlayHours);
                             _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.hoursinput.val(Settings.PlayHours);
-                            //$("#m_touchspin_2").val(Settings.PlayMinites);
                             _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.minitesinput.val(Settings.PlayMinites);
-                            //$("#m_touchspin_3").val(Settings.PlaySeconds);
                             _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.secondsinput.val(Settings.PlaySeconds);
 
                             if (Settings.PlaylistItems) {
@@ -1060,7 +869,6 @@
                                     })
                                 }
                             }
-                            //}
                         }
 
                     }
@@ -1159,10 +967,10 @@
             _plugin.htmlElements.groupplayerDetail.detailBody.detail.displaytimes.timebody.Sundaycontainer.find("input:eq(1)").data("ionRangeSlider").update({ from: Settings.Sunday.split(';')[0], to: Settings.Sunday.split(';')[1] });
         },
         setfolder: function (options) {
-            selectedGroupID = tempselectedGroupID;
+            selectedGroupID = $.playlist('getselectGroupId');
             $.playlistEditor('fileDataTableDestroy');
             $.insmFramework('getFolderTreeDataForPlaylist', {
-                groupID: tempselectedGroupID,
+                groupID: $.playlist('getselectGroupId'),
                 success: function (tempdataFolderTreeData) {
                     if (tempdataFolderTreeData) {
                         var tree = $('.tree-demo.folderTreePlaylist');
@@ -1771,98 +1579,6 @@
     };
     $("#save_change").click(function () {
         $.playlistEditor('selectfile');
-    });
-
-    $("#playlist_expandAll").click(function () {
-        $('#groupTreeForPlaylistEditor').jstree('open_all');
-    });
-    $("#playlist_collapseAll").click(function () {
-        $('#groupTreeForPlaylistEditor').jstree('close_all');
-    });
-
-    $("#m_form_search").keyup(function () {
-        $.each($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"), function (index, item) {
-            if ($(item).find("h3").text().trim().toLowerCase().indexOf($("#m_form_search").val().toLowerCase()) > -1) {
-                $(item).show();
-            }
-            else {
-                $(item).hide();
-            }
-        })
-    });
-
-    $("#sort-alpha-asc").click(function () {
-        var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
-        playlistDivs.sort(function (a, b) {
-            var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
-            var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
-            if (aPlaylistName == bPlaylistName) return 0;
-            return (aPlaylistName < bPlaylistName) ? 1 : -1;
-        })
-        $.each(playlistDivs, function (playlistIndex, playlistItem) {
-            $("#div_PlaylistEditorContent").append($(playlistItem));
-        })
-    });
-
-    $("#sort-alpha-desc").click(function () {
-        var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
-        playlistDivs.sort(function (a, b) {
-            var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
-            var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
-            if (aPlaylistName == bPlaylistName) return 0;
-            return (aPlaylistName > bPlaylistName) ? 1 : -1;
-        })
-        $.each(playlistDivs, function (playlistIndex, playlistItem) {
-            $("#div_PlaylistEditorContent").append($(playlistItem));
-        })
-    });
-
-    $("#sort-numeric-asc").click(function () {
-        var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
-        playlistDivs.sort(function (a, b) {
-            var aPlaylistName = new Date($(a).find("i.fa.fa-calendar").text().trim().toLowerCase());
-            var bPlaylistName = new Date($(b).find("i.fa.fa-calendar").text().trim().toLowerCase());
-            if (aPlaylistName == bPlaylistName) return 0;
-            return (aPlaylistName < bPlaylistName) ? 1 : -1;
-        })
-        $.each(playlistDivs, function (playlistIndex, playlistItem) {
-            $("#div_PlaylistEditorContent").append($(playlistItem));
-        })
-    });
-
-    $("#sort-numeric-desc").click(function () {
-        var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
-        playlistDivs.sort(function (a, b) {
-            var aPlaylistName = new Date($(a).find("i.fa.fa-calendar").text().trim().toLowerCase());
-            var bPlaylistName = new Date($(b).find("i.fa.fa-calendar").text().trim().toLowerCase());
-            if (aPlaylistName == bPlaylistName) return 0;
-            return (aPlaylistName > bPlaylistName) ? 1 : -1;
-        })
-        $.each(playlistDivs, function (playlistIndex, playlistItem) {
-            $("#div_PlaylistEditorContent").append($(playlistItem));
-        })
-    });
-
-    $("#playlistItem").sortable({
-        connectWith: ".m-portlet__head",
-        items: "div.m-portlet.m-portlet--mobile.m-portlet--sortable.m-portlet--warning.m-portlet--head-solid-bg",
-        opacity: 0.8,
-        handle: '.m-portlet__head',
-        coneHelperSize: true,
-        placeholder: 'm-portlet--sortable-placeholder',
-        forcePlaceholderSize: true,
-        tolerance: "pointer",
-        helper: "clone",
-        tolerance: "pointer",
-        forcePlaceholderSize: !0,
-        helper: "clone",
-        cancel: ".m-portlet--sortable-empty", // cancel dragging if portlet is in fullscreen mode
-        revert: 250, // animation in milliseconds
-        update: function (b, c) {
-            if (c.item.prev().hasClass("m-portlet--sortable-empty")) {
-                c.item.prev().before(c.item);
-            }
-        }
     });
 
     toastr.options = {
