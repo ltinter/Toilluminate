@@ -652,7 +652,7 @@
                 _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.click(function (e) {
                     _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', 'none');
                     $.insmGroup('addNewGroup');
-                    _plugin.data.editGroupID = undefined;
+                    _plugin.data.editGroupID = null;
                 })
 
                 //AddPlayer
@@ -799,7 +799,7 @@
                                 _plugin.htmlElements.container.show();
                                 _plugin.htmlElements.groupplayerDetail.container.hide();
                                 $.insmGroup('refreshTree');
-                                _plugin.data.editGroupID = undefined;
+                                _plugin.data.editGroupID = null;
                                 _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                             },
                             error: function () {
@@ -846,7 +846,7 @@
                                     error: function () {
                                     }
                                 })
-                                _plugin.data.editGroupID = undefined;
+                                _plugin.data.editGroupID = null;
                             },
                             error: function () {
                                 _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
@@ -932,16 +932,16 @@
                 settings: options.Settings,
                 success: function (data) {
                     $.insmGroup('refreshTree');
-                    _plugin.data.editGroupID = undefined;
+                    _plugin.data.editGroupID = null;
                     toastr.success("操作が完了しました。");
                 }
             })
         },
         refreshTree: function () {
-            var tree = $('.tree-demo.groupTree');
-            $.each(tree, function (key, item) {
-                $(item).jstree(true).refresh();
-            });
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('insmGroup');
+            _plugin.htmlElements.grouptree.jstree(true).refresh();
+            _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.jstree(true).refresh();
         },
         setTimeOptions: function (Settings) {
             var $this = $('body').eq(0);
@@ -1333,7 +1333,13 @@
                 settings: JSON.stringify(Settings),
                 newGroupNameParentID: _plugin.data.groupTreeForPlayerEditID,
                 success: function (data) {
-                    var editGroupID = data.GroupID;
+                    var editGroupID = null;
+                    if (_plugin.data.editGroupFlg) {
+                        editGroupID = _plugin.data.selectedGroupID;
+                    } else {
+                        editGroupID = data.GroupID;
+                    }
+                    
                     _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', 'none');
                     var div_forcedplaylists = _plugin.htmlElements.groupplayerDetail.detailBody.detail.showPlaylistForced.container;
                     var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
@@ -1346,12 +1352,13 @@
                         });
                     }
                     $.insmFramework('deleteGroupPlayListLinkTableByGroupID', {
-                        groupID: _plugin.data.selectedGroupID,
+                        groupID: editGroupID,
                         success: function (data) {
                             $.insmFramework('GroupPlayListLinkTables', {
                                 groupID: editGroupID,
                                 PlayListID: _plugin.data.playListgroup,
                                 success: function (data) {
+                                    _plugin.data.editGroupFlg = false;
                                     toastr.success("操作が完了しました。");
                                 },
                                 error: function () {

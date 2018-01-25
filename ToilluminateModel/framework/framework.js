@@ -287,7 +287,7 @@
                 }
             }
             var newGroup = GroupMaster.create();
-            if (options.groupID != undefined) {
+            if (options.groupID != null) {
                 newGroup.GroupID = options.groupID;
             }
             newGroup.GroupName = options.newGroupName;
@@ -306,11 +306,11 @@
                 success: function (result) {
                     options.success(result);
                 },
-                url: options.groupID == undefined ? 'api/GroupMasters' : 'api/GroupMasters' + "/" + options.groupID,
+                url: options.groupID == null ? 'api/GroupMasters' : 'api/GroupMasters' + "/" + options.groupID,
                 format: 'json',
                 data: JSON.stringify(newGroup),
                 contentType: "application/json; charset=utf-8",
-                type: options.groupID == undefined ? 'POST' : 'PUT',
+                type: options.groupID == null ? 'POST' : 'PUT',
                 denied: function () {
                     // Just do it again and we should land in the success callback next time
                     //$.insmFramework('getUsers', options);

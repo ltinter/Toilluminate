@@ -530,8 +530,8 @@
                         PlayMinites: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.minitesinput.val(),
                         PlaySeconds: _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.secondsinput.val(),
 
-                        Loop: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentLoop.Loop.find("input[name='playlist_loop']:checked").val(),
-                        Playtime: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentPlaytime.Playtime.find("input[name='playlist_playtime']:checked").val()
+                        Loop: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentLoop.Loop.find("input[name='radio_Loop']:checked").val(),
+                        Playtime: _plugin.htmlElements.groupplayerDetail.detailBody.detail.contentPlaytime.Playtime.find("input[name='radio_Playtime']:checked").val()
                     };
 
                     var palylistItemItemsdata = [];
@@ -717,9 +717,6 @@
                 
             }
 
-            //tempselectedGroupID = options.selectedGroupID;
-            //$.playlistEditor('getPlaylistByGroupID', { selectedGroupID: options.selectedGroupID });
-
             return $this;
         },
         
@@ -829,12 +826,12 @@
                                 if (Settings.resolution) {
                                     $('#select_resolution').val(Settings.resolution);
                                 }
-                                $("#label_loop_" + Settings.LoopFlag).click();
-                                $("#label_Playtime_" + Settings.PlaytimeFlag).click();
-                            }
-                            
+                                
+                            }                           
+
                             $("#label_loop_" + Settings.Loop).click();
                             $("#label_playtime_" + Settings.Playtime).click();
+
                             _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.hoursinput.val(Settings.PlayHours);
                             _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.minitesinput.val(Settings.PlayMinites);
                             _plugin.htmlElements.groupplayerDetail.detailBody.detail.displayunits.secondsinput.val(Settings.PlaySeconds);
@@ -1516,12 +1513,9 @@
                 div_head.remove();
             });
 
-            //var div_AddnewItem = $("#playlistItem");
             var div_AddnewItem = _plugin.htmlElements.groupplayerDetail.playlistItem.playlistcontainer;
             div_AddnewItem.append(div_head);
-            //select_option.select2({
-            //    placeholder: $.localize('translate', "Select sildeshow effects")
-            //});
+
             input1.TouchSpin({
                 buttondown_class: 'btn btn-secondary',
                 buttonup_class: 'btn btn-secondary',
@@ -1556,12 +1550,8 @@
                     }
                 }
                 if (options.palylistItem) {
-                    if (options.palylistItem.SildeshowEffects) {
-                        select_option.val(options.palylistItem.SildeshowEffects).trigger('change');
-                    }
-                }
-                if (options.palylistItem) {
-                    select_typeoption.val(options.palylistItem.PicturePostion);
+                    select_typeoption.val(options.palylistItem.DisplayPostion);
+                    select_sizeoption.val(options.palylistItem.DisplaySize);
                 }
             }
         },
