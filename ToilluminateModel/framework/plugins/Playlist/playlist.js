@@ -3,7 +3,7 @@
     var methods = {
         init: function (options) {
             // Global vars
-            var $this = $('html').eq(0);
+            var $this = $('body').eq(0);
             var _plugin = $this.data('playlist');
 
             // If the plugin hasn't been initialized yet
@@ -99,7 +99,10 @@
                         initialized: new $.Deferred(),
                         loginFlag: false,
                         loginDeferred: new $.Deferred(),
-                        retryFlag: false
+                        retryFlag: false,
+                        selectedGroupID: null,
+                        div_playlist: $('#div_playlist'),
+                        select_palylistItem: null,
                     }
                 };
                 
@@ -207,8 +210,7 @@
 
                 };
 
-                //var tree = $('.tree-demo.groupTree');
-                //tree.jstree(groupJstreeData);
+
                 _plugin.htmlElements.playelist.playelistGroup.playelistGrouptree.jstree(groupJstreeData);
 
                 _plugin.htmlElements.playelist.playelistGroup.playelistGrouptree.bind("refresh.jstree", function (e, data) {
@@ -219,10 +221,96 @@
                 _plugin.htmlElements.playelist.playelistGroup.playelistGrouptree.on("changed.jstree", function (e, data) {
                     //存储当前选中的区域的名称
                     if (data.node) {
-                        $.playlistEditor('init', {
-                            selectedGroupID: data.node.id
-                        });
+                        _plugin.data.selectedGroupID = data.node.id;
+                        $.playlist('getPlaylistByGroupID', { selectedGroupID: data.node.id });
+                        $.playlistEditor();
                     }
+                });
+
+                //add New playlist
+                _plugin.htmlElements.playelist.playelistmenu.buttons.addplaylist.click(function () {
+                    if (_plugin.data.selectedGroupID == null) {
+                        toastr.warning("Please select playlist's group!");
+                        return;
+                    }
+                    if (_plugin.htmlElements.playelist.playelistGroup.playelistGrouptree.jstree(true).get_selected().length == 0) {
+                        toastr.warning("Please select playlist's group!");
+                        return;
+                    }
+
+                    $.playlistEditor('setfolder', { selectedGroupID: _plugin.data.selectedGroupID });
+                    $.playlistEditor('playlistDefaultvalue', { editflg:false});
+                    _plugin.data.div_playlist.show();
+                });
+                //a-->z
+                _plugin.htmlElements.playelist.playelistmenu.buttons.sortascplaylist.click(function () {
+                    var playlistDivs = $.makeArray(_plugin.htmlElements.playelist.playlists.playlistsBody.find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
+                    playlistDivs.sort(function (a, b) {
+                        var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
+                        var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
+                        if (aPlaylistName == bPlaylistName) return 0;
+                        return (aPlaylistName < bPlaylistName) ? 1 : -1;
+                    })
+                    $.each(playlistDivs, function (playlistIndex, playlistItem) {
+                        _plugin.htmlElements.playelist.playlists.playlistsBody.append($(playlistItem));
+                    })
+                });
+                //z-->a
+                _plugin.htmlElements.playelist.playelistmenu.buttons.sortdescplaylist.click(function () {
+                    var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
+                    playlistDivs.sort(function (a, b) {
+                        var aPlaylistName = $(a).find("h3").text().trim().toLowerCase();
+                        var bPlaylistName = $(b).find("h3").text().trim().toLowerCase();
+                        if (aPlaylistName == bPlaylistName) return 0;
+                        return (aPlaylistName > bPlaylistName) ? 1 : -1;
+                    })
+                    $.each(playlistDivs, function (playlistIndex, playlistItem) {
+                        $("#div_PlaylistEditorContent").append($(playlistItem));
+                    })
+                });
+                //1-->9
+                _plugin.htmlElements.playelist.playelistmenu.buttons.sortnumericasc.click(function () {
+                    var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
+                    playlistDivs.sort(function (a, b) {
+                        var aPlaylistName = new Date($(a).find("i.fa.fa-calendar").text().trim().toLowerCase());
+                        var bPlaylistName = new Date($(b).find("i.fa.fa-calendar").text().trim().toLowerCase());
+                        if (aPlaylistName == bPlaylistName) return 0;
+                        return (aPlaylistName < bPlaylistName) ? 1 : -1;
+                    })
+                    $.each(playlistDivs, function (playlistIndex, playlistItem) {
+                        $("#div_PlaylistEditorContent").append($(playlistItem));
+                    })
+                });
+                //9-->1
+                _plugin.htmlElements.playelist.playelistmenu.buttons.sortnumericdesc.click(function () {
+                    var playlistDivs = $.makeArray($("#div_PlaylistEditorContent").find(".m-portlet.m-portlet--warning.m-portlet--head-sm"));
+                    playlistDivs.sort(function (a, b) {
+                        var aPlaylistName = new Date($(a).find("i.fa.fa-calendar").text().trim().toLowerCase());
+                        var bPlaylistName = new Date($(b).find("i.fa.fa-calendar").text().trim().toLowerCase());
+                        if (aPlaylistName == bPlaylistName) return 0;
+                        return (aPlaylistName > bPlaylistName) ? 1 : -1;
+                    })
+                    $.each(playlistDivs, function (playlistIndex, playlistItem) {
+                        $("#div_PlaylistEditorContent").append($(playlistItem));
+                    })
+                });
+
+                _plugin.htmlElements.playelist.playelistGroup.headButtonExpandAll.click(function () {
+                    _plugin.htmlElements.playelist.playelistGroup.playelistGrouptree.jstree('open_all');
+                });
+                _plugin.htmlElements.playelist.playelistGroup.headButtonCollapseAll.click(function () {
+                    _plugin.htmlElements.playelist.playelistGroup.playelistGrouptree.jstree('close_all');
+                });
+
+                _plugin.htmlElements.playelist.playelistmenu.search.input.keyup(function () {
+                    $.each(_plugin.htmlElements.playelist.playlists.playlistsBody.find(".m-portlet.m-portlet--warning.m-portlet--head-sm"), function (index, item) {
+                        if ($(item).find("h3").text().trim().toLowerCase().indexOf($("#m_form_search").val().toLowerCase()) > -1) {
+                            $(item).show();
+                        }
+                        else {
+                            $(item).hide();
+                        }
+                    })
                 });
 
                 $this.data('playlist', _plugin);
@@ -230,6 +318,117 @@
 
             return $this;
         },
+        getPlaylistByGroupID: function (options) {
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('playlist');
+            _plugin.htmlElements.playelist.playlists.playlistsBody.empty();
+            //div_PlaylistEditorContent = $this.find('#div_PlaylistEditorContent');
+
+            //div_PlaylistEditorContent
+            $.insmFramework('getPlaylistByGroupID', {
+                GroupID: options.selectedGroupID,
+                success: function (playlistData) {
+                    if (playlistData) {
+                        $.each(playlistData, function (index, item) {
+                            var div_PlaylistEditor = $('<div/>').addClass('m-portlet m-portlet--warning m-portlet--head-sm');
+                            var div_head = $('<div/>').addClass('m-portlet__head');
+                            var div_head_caption = $('<div/>').addClass('m-portlet__head-caption');
+                            var div_head_title = $('<div/>').addClass("m-portlet__head-title");
+                            var spantitle = $("<span />").addClass('m-portlet__head-icon');
+                            var span_i = '<i class="fa fa-file-text"></i>';
+                            var head_text = $('<h3 />').addClass('m-portlet__head-text').text(item.PlayListName);
+
+                            var div_head_tools = $('<div/>').addClass('m-portlet__head-tools');
+                            var div_portlet_nav = $('<ul>').addClass("m-portlet__nav");
+                            var div_li = $('<li />').addClass('m-portlet__nav-item');
+                            var href = $('<a />').addClass("m-portlet__nav-link m-portlet__nav-link--icon");
+                            var href_i = $('<i />').addClass("fa fa-calendar");
+
+                            var div_li_list = $('<li />').addClass("m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push")
+                            div_li_list.attr('data-dropdown-toggle', 'hover').attr('aria-expanded', 'true');
+
+                            var div_li_a_toggle = $('<a href="#"/>').addClass('m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle');
+                            var div_li_i = $('<i />').addClass('la la-ellipsis-v');
+                            var div_m_dropdown_wrapper = $('<div/>').addClass('m-dropdown__wrapper');
+
+                            var wrappe_spantitle = $("<span style='left: auto; right: 18.5px;'/>").addClass('m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust');
+                            var div_m_dropdown_inner = $('<div/>').addClass("m-dropdown__inner");
+                            var div_m_dropdown_bodyr = $('<div/>').addClass("m-dropdown__body");
+                            var div_m_dropdown_content = $('<div/>').addClass("m-dropdown__content");
+
+                            spantitle.append(span_i);
+                            div_head_title.append(spantitle);
+                            div_head_title.append(head_text);
+                            div_head_caption.append(div_head_title);
+                            div_head.append(div_head_caption)
+
+                            var ul = $('<ul>').addClass("m-nav");
+                            //Item
+                            if (item.Settings) {
+                                var playlistSetting = JSON.parse(item.Settings);
+                                $.each(playlistSetting.PlaylistItems, function (index, PlaylistItem) {
+                                    var ul_li = $('<li />').addClass('m-nav__item');
+                                    var ul_li_href = $('<a />').addClass("m-nav__link");
+                                    var ul_li_a = $('<i />').addClass("m-nav__link-icon flaticon-share");
+                                    var ul_li_href_span = $("<span />").addClass('m-nav__link-text');
+
+                                    ul_li_href_span.text(PlaylistItem.PlaylistItemName);
+                                    ul_li_href.append(ul_li_a, ul_li_href_span);
+                                    ul_li.append(ul_li_href);
+                                    ul.append(ul_li);
+                                })
+                            }
+
+                            div_m_dropdown_content.append(ul);
+                            div_m_dropdown_bodyr.append(div_m_dropdown_content);
+                            div_m_dropdown_inner.append(div_m_dropdown_bodyr);
+
+                            div_m_dropdown_wrapper.append(wrappe_spantitle);
+                            div_m_dropdown_wrapper.append(div_m_dropdown_inner);
+                            div_li_a_toggle.append(div_li_i);
+                            div_li_list.append(div_li_a_toggle, div_m_dropdown_wrapper)
+
+                            var datetime = new Date(item.UpdateDate).toLocaleDateString()
+                            href.append(href_i.text(datetime));
+                            div_li.append(href);
+
+                            var div_li_edit = $('<li />').addClass('m-portlet__nav-item');
+                            var edit_href = $('<a />').addClass("btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm").text($.localize('translate', 'Edit'));
+
+                            edit_href.click(function () {
+                                editplaylistID = item.PlayListID;
+                                _plugin.data.select_palylistItem = item;
+                                $.playlistEditor('setfolder', { selectedGroupID: _plugin.data.selectedGroupID });
+                                $.playlistEditor('editPlaylist', { playlistID: item.PlayListID, playlistDate: item });
+                            });
+
+                            div_li_edit.append(edit_href);
+                            div_portlet_nav.append(div_li);
+                            div_portlet_nav.append(div_li_edit);
+
+                            div_portlet_nav.append(div_li_list);
+                            div_head_tools.append(div_portlet_nav);
+
+                            div_head.append(div_head_tools);
+                            div_PlaylistEditor.append(div_head);
+                            _plugin.htmlElements.playelist.playlists.playlistsBody.append(div_PlaylistEditor);
+                        })
+                    }
+                }
+            })
+        },
+        getselectGroupId: function () {
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('playlist');
+            
+            return _plugin.data.selectedGroupID;
+        },
+        getselect_palylistItem: function () {
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('playlist');
+
+            return _plugin.data.select_palylistItem;
+        }
 }
 
 

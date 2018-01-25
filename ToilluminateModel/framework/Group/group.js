@@ -1,7 +1,5 @@
 ﻿(function ($) {
-
     var div_groupTreeForFileManager = $("#groupTreeForFileManager");
-    var div_groupTreeForPlaylistEditor = $("#groupTreeForPlaylistEditor");
     
     var methods = {
         init: function (options) {
@@ -654,8 +652,7 @@
                 _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.click(function (e) {
                     _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', 'none');
                     $.insmGroup('addNewGroup');
-                    console.log("Group Save Button!");
-                    _plugin.data.editGroupID = undefined;
+                    _plugin.data.editGroupID = null;
                 })
 
                 //AddPlayer
@@ -672,8 +669,6 @@
                     _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.jstree(true).deselect_all(true);
                     _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.jstree(true).select_node(_plugin.htmlElements.grouptree.jstree(true).get_selected());
 
-                    //div_groupTreeForPlayerEdit.jstree(true).deselect_all(true);
-                    //div_groupTreeForPlayerEdit.jstree(true).select_node(div_groupTree.jstree(true).get_selected());
                     _plugin.data.groupTreeForPlayerEditID = _plugin.htmlElements.grouptree.jstree(true).get_selected()[0];
                     $.insmFramework('getPlaylistByGroup', {
                         GroupID: _plugin.data.selectedGroupID,
@@ -758,6 +753,7 @@
                     if (!_plugin.data.editPlayerFlg) {
                         if ($.trim(_plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val()) == '' || _plugin.data.groupTreeForPlayerEditID == null) {
                             toastr.warning("Player name is empty!");
+                            _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                             return;
                         }
                         $.insmFramework('creatPlayer', {
@@ -787,36 +783,26 @@
                                         _plugin.data.playListgroup.push(forcedplaylistID);
                                     });
                                 }
-                                $.insmFramework('deletePlayerPlayListLinkTableByPlayerID', {
+
+                                $.insmFramework('playerPlayListLinkTables', {
                                     playerId: data.PlayerID,
-                                    success: function () {
-                                        $.insmFramework('playerPlayListLinkTables', {
-                                            playerId: data.PlayerID,
-                                            PlayListID: _plugin.data.playListgroup,
-                                            success: function (data) {
-                                                toastr.success("操作が完了しました。");
-                                            },
-                                            error: function () {
-                                            }
-                                        })
+                                    isedit: false,
+                                    PlayListID: _plugin.data.playListgroup,
+                                    success: function (data) {
+                                        setTimeout(function () {
+                                            toastr.success("操作が完了しました。");
+                                        }, 2000);
                                     },
                                     error: function () {
-                                        //$("#button_save_Player")
-                                        _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                                     }
                                 })
-
-                                //div_main.show();
-                                //div_edit.hide();
                                 _plugin.htmlElements.container.show();
                                 _plugin.htmlElements.groupplayerDetail.container.hide();
                                 $.insmGroup('refreshTree');
-                                _plugin.data.editGroupID = undefined;
-                                //$("#button_save_Player")
+                                _plugin.data.editGroupID = null;
                                 _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                             },
                             error: function () {
-                                //$("#button_save_Player")
                                 _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                             }
 
@@ -845,33 +831,24 @@
                             newGroupID: _plugin.data.groupTreeForPlayerEditID,
                             settings: JSON.stringify(Settings),
                             success: function (data) {
-                                $.insmFramework('deletePlayerPlayListLinkTableByPlayerID', {
+                                $.insmFramework('playerPlayListLinkTables', {
                                     playerId: _plugin.data.selectPlayerdata,
-                                    success: function () {
-                                        $.insmFramework('playerPlayListLinkTables', {
-                                            playerId: _plugin.data.selectPlayerdata,
-                                            PlayListID: _plugin.data.playListgroup,
-                                            success: function (data) {
-                                                setTimeout(function () {
-                                                    _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
-                                                    $.insmGroup('showPlayerDetail', { GroupID: _plugin.data.selectedGroupID });
-                                                    toastr.success("操作が完了しました。");
-                                                    //$.insmGroup('refreshTree');
-                                                }, 2000);
-                                            },
-                                            error: function () {
-                                            }
-                                        })
+                                    isedit: true,
+                                    PlayListID: _plugin.data.playListgroup,
+                                    success: function (data) {
+                                        setTimeout(function () {
+                                            _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
+                                            $.insmGroup('showPlayerDetail', { GroupID: _plugin.data.selectedGroupID });
+                                            toastr.success("操作が完了しました。");
+                                            $.insmGroup('refreshTree');
+                                        }, 2000);
                                     },
                                     error: function () {
-                                        //$("#button_save_Player")
-                                        _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                                     }
                                 })
-                                _plugin.data.editGroupID = undefined;
+                                _plugin.data.editGroupID = null;
                             },
                             error: function () {
-                                //$("#button_save_Player")
                                 _plugin.htmlElements.groupplayerDetail.detailBody.savePlayerbutton.css("pointer-events", "");
                             }
                         })
@@ -955,16 +932,16 @@
                 settings: options.Settings,
                 success: function (data) {
                     $.insmGroup('refreshTree');
-                    _plugin.data.editGroupID = undefined;
+                    _plugin.data.editGroupID = null;
                     toastr.success("操作が完了しました。");
                 }
             })
         },
         refreshTree: function () {
-            var tree = $('.tree-demo.groupTree');
-            $.each(tree, function (key, item) {
-                $(item).jstree(true).refresh();
-            });
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('insmGroup');
+            _plugin.htmlElements.grouptree.jstree(true).refresh();
+            _plugin.htmlElements.groupplayerDetail.detailBody.detail.editGroup.tree.jstree(true).refresh();
         },
         setTimeOptions: function (Settings) {
             var $this = $('body').eq(0);
@@ -1119,15 +1096,6 @@
                     });
                 }
             });
-
-            //$(div_groupTreeForPlaylistEditor).on("changed.jstree", function (e, data) {
-            //    //存储当前选中的区域的名称
-            //    if (data.node) {
-            //        $.playlistEditor('init', {
-            //            selectedGroupID: data.node.id
-            //        });
-            //    }
-            //});
 
             tree.on("move_node.jstree", function (e, data) {
                 var node = data.node;
@@ -1305,7 +1273,7 @@
                 }]
             });
             _plugin.data.datatable.on('m-datatable--on-check', function (e, args) {
-                var selected = datatable.setSelectedRecords().getSelectedRecords();
+                var selected = _plugin.data.datatable.setSelectedRecords().getSelectedRecords();
                 _plugin.data.selectPlayerdata = selected;
             })
 
@@ -1321,19 +1289,16 @@
             var _plugin = $this.data('insmGroup');
             if ($.trim(_plugin.htmlElements.groupplayerDetail.detailBody.detail.displaylabel.input.val()) == '') {
                 toastr.warning("Group name is empty!");
-                //$("#button_save")
                 _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', '');
                 return;
             };
             if (_plugin.data.groupTreeForPlayerEditID == null) {
                 toastr.warning("Please select new group's Parent Group !");
-                //$("#button_save")
                 _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', '');
                 return;
             };
             if (_plugin.data.editGroupID == _plugin.data.groupTreeForPlayerEditID) {
                 toastr.warning("Group ID have same ID!");
-                //$("#button_save")
                 _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', '');
                 return;
             };
@@ -1368,10 +1333,15 @@
                 settings: JSON.stringify(Settings),
                 newGroupNameParentID: _plugin.data.groupTreeForPlayerEditID,
                 success: function (data) {
-                    //$("#button_save")
+                    var editGroupID = null;
+                    if (_plugin.data.editGroupFlg) {
+                        editGroupID = _plugin.data.selectedGroupID;
+                    } else {
+                        editGroupID = data.GroupID;
+                    }
+                    
                     _plugin.htmlElements.groupplayerDetail.detailBody.savebutton.css('display', 'none');
                     var div_forcedplaylists = _plugin.htmlElements.groupplayerDetail.detailBody.detail.showPlaylistForced.container;
-                        //$('#forcedplaylists');
                     var forcedplaylists = div_forcedplaylists.find(".m-portlet.m-portlet--warning.m-portlet--head-sm");
                     _plugin.data.playListgroup = [];
                     if (forcedplaylists.length > 0) {
@@ -1382,12 +1352,13 @@
                         });
                     }
                     $.insmFramework('deleteGroupPlayListLinkTableByGroupID', {
-                        groupID: _plugin.data.selectedGroupID,
+                        groupID: editGroupID,
                         success: function (data) {
                             $.insmFramework('GroupPlayListLinkTables', {
-                                groupID: _plugin.data.selectedGroupID,
+                                groupID: editGroupID,
                                 PlayListID: _plugin.data.playListgroup,
                                 success: function (data) {
+                                    _plugin.data.editGroupFlg = false;
                                     toastr.success("操作が完了しました。");
                                 },
                                 error: function () {
