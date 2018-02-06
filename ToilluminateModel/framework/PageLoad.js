@@ -119,6 +119,11 @@ var changeTab = function (tabDivId) {
     $("#" + tabDivId).show();
     if (tabDivId == 'PlaylistEditorContentDiv') {
         $.playlist();
+    } else if (tabDivId == 'FileManagementContent') {
+        $.playlist();
+        $.folder('init', {
+            //selectedGroupID: data.node.id
+        });
     }
     $("#m_ver_menu").find("li.m-menu__item").removeClass("m-menu__item--active");
     $(event.currentTarget).parent("li").addClass("m-menu__item--active");

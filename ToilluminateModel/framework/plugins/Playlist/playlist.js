@@ -209,8 +209,6 @@
                     "plugins": ["dnd", "types"]
 
                 };
-
-
                 _plugin.htmlElements.playelist.playelistGroup.playelistGrouptree.jstree(groupJstreeData);
 
                 _plugin.htmlElements.playelist.playelistGroup.playelistGrouptree.bind("refresh.jstree", function (e, data) {
@@ -241,6 +239,7 @@
                     $.playlistEditor('setfolder', { selectedGroupID: _plugin.data.selectedGroupID });
                     $.playlistEditor('playlistDefaultvalue', { editflg:false});
                     _plugin.data.div_playlist.show();
+                    _plugin.htmlElements.playelist.container.hide();
                 });
                 //a-->z
                 _plugin.htmlElements.playelist.playelistmenu.buttons.sortascplaylist.click(function () {
@@ -398,6 +397,7 @@
                             edit_href.click(function () {
                                 editplaylistID = item.PlayListID;
                                 _plugin.data.select_palylistItem = item;
+                                _plugin.htmlElements.playelist.container.hide();
                                 $.playlistEditor('setfolder', { selectedGroupID: _plugin.data.selectedGroupID });
                                 $.playlistEditor('editPlaylist', { playlistID: item.PlayListID, playlistDate: item });
                             });
