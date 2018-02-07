@@ -117,12 +117,13 @@ var playerStatusShare = function () {
 var changeTab = function (tabDivId) {
     $(".mainPageTabDiv").hide();
     $("#" + tabDivId).show();
+    var loginuser = $.insmFramework('user');
     if (tabDivId == 'PlaylistEditorContentDiv') {
         $.playlist();
     } else if (tabDivId == 'FileManagementContent') {
         $.playlist();
         $.folder('init', {
-            //selectedGroupID: data.node.id
+            selectedGroupID: loginuser.GroupID
         });
     }
     $("#m_ver_menu").find("li.m-menu__item").removeClass("m-menu__item--active");

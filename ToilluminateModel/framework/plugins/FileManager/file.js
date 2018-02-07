@@ -229,21 +229,21 @@
         return $.file('uploadFile');
     });
 
-    $("#btn_delete").click(function () {
-        $.file('remove');
-    });
+    //$("#btn_delete").click(function () {
+    //    $.file('remove');
+    //});
 
-    $("#btn_paste").click(function () {
-        $.file('pasteFile');
-    });
+    //$("#btn_paste").click(function () {
+    //    $.file('pasteFile');
+    //});
 
-    $("#btn_copy").click(function () {
-        $.file('copyFile');
-    });
+    //$("#btn_copy").click(function () {
+    //    $.file('copyFile');
+    //});
 
-    $("#btn_cut").click(function () {
-        $.file('cutFile');
-    });
+    //$("#btn_cut").click(function () {
+    //    $.file('cutFile');
+    //});
     $(".file-img").click(function (obj) {
     });
 
