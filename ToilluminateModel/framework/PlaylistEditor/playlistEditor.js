@@ -487,7 +487,7 @@
                                     success: function (fileData) {
                                         //deletepalylistItem = null;
                                         div_playlist.hide();
-                                        div_Mainplaylist.show();
+                                        $('#div_Mainplaylist').show();
                                         $.playlist('init', {
                                             selectedGroupID: $.playlist('getselectGroupId')
                                         });
@@ -625,7 +625,7 @@
                             success: function (playlistData) {
 
                                 div_playlist.hide();
-                                div_Mainplaylist.show();
+                                $('#div_Mainplaylist').show();
                                 $.playlist('init', {
                                     selectedGroupID: $.playlist('getselectGroupId')
                                 });
@@ -650,7 +650,7 @@
                             success: function (playlistData) {
 
                                 div_playlist.hide();
-                                div_Mainplaylist.show();
+                                $('#div_Mainplaylist').show();
                                 $.playlist('init', {
                                     selectedGroupID: $.playlist('getselectGroupId')
                                 });
@@ -669,7 +669,7 @@
                 //back
                 _plugin.htmlElements.groupplayerDetail.detailBody.backbutton.click(function () {
                     div_playlist.hide();
-                    div_Mainplaylist.show();
+                    $('#div_Mainplaylist').show();
                 });
 
                 _plugin.htmlElements.groupplayerDetail.playlistItem.playlistcontainer.sortable({
@@ -806,7 +806,7 @@
                 $.playlistEditor('playlistDefaultvalue');
 
                 div_playlist.show();
-                div_Mainplaylist.hide();
+                $('#div_Mainplaylist').hide();
                 edit_playlistId = options.playlistID;
                 $.insmFramework('getPlaylistByPlaylistID', {
                     playlistID: options.playlistID,

@@ -55,61 +55,136 @@
             }
         }
     };
-    var selectedGroupID = null;
+    //var selectedGroupID = null;
     var selectedFolderID = null;
     var selectedFolderData = null;
-    var div_groupTreeForFileManager = $("#groupTreeForFileManager");
+    //var div_groupTreeForFileManager = $("#groupTreeForFileManager");
     var div_folderTreeForFileManager = $("#folderTreeForFileManager");
     //folder tree
 
     var methods = {
         init: function (options) {
-            selectedGroupID = options.selectedGroupID;
-            $.file('destroyFileTableData');
-            $.insmFramework('getFolderTreeData', {
-                groupID: options.selectedGroupID,
-                success: function (tempdataFolderTreeData) {
-                    if (tempdataFolderTreeData) {
-                        var tree = $('.tree-demo.folderTree');
-                        folderJstreeData.core.data = tempdataFolderTreeData;
-                        tree.jstree("destroy");
-                        tree.jstree(folderJstreeData);
-                        tree.jstree(true).refresh();
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('folder');
 
-                        tree.on("changed.jstree", function (e, data) {
-                            if (data.node) {
-                                selectedFolderID = data.node.id;
-                                selectedFolderData = data.node;
-                                $.file('init', {
-                                    selectedFolderID: selectedFolderID
-                                });
-                            }
-                        });
-                        tree.on("move_node.jstree", function (e, data) {
-                            var node = data.node;
-                            if (node) {
-                                $.folder('editFolder', node);
-                            }
-                        });
+            if (!_plugin) {
+                _plugin = {
+                    settings: $.extend({
+                        apiUrl: '',
+                        applicationName: '',
+                        version: '',
+                        links: {},
+                        session: '',
+                        timeout: 20000,
+                        username: '',
+                        user: {}
+                    }, options),
+                    htmlElements: {
+                        groupTreecontainer: $('<div />').addClass('tree-demo  groupTree').attr('id', 'groupTreeForFileManager'),
+                    },
+                    data: {
+                        selectedGroupID: null
+                    }
+                }
+            }
+            $this.find('#tempforfoder').append(_plugin.htmlElements.groupTreecontainer);
+            $this.data('folder', _plugin);
+            var loginuser = $.insmFramework('user');;
+            var groupJstreeData = {
+                "core": {
+                    "multiple": false,
+                    "themes": {
+                        "responsive": true
+                    },
+                    // so that create works
+                    "check_callback": true,
+                    'data': {
+                        url: 'api/GroupMasters/GetGroupJSTreeDataWithChildByGroupID/' + loginuser.GroupID,
+                        //+ options.userGroupId,
+                        dataFilter: function (data) {
+                            _plugin.data.temp_GroupTreeData = JSON.parse(data);
+                            return data;
+                        }
                     }
                 },
-                invalid: function () {
-                    invalid = true;
+                "types": {
+                    "default": {
+                        "icon": "fa fa-sitemap m--font-success"
+                    },
+                    "file": {
+                        "icon": "fa fa-sitemap m--font-success"
+                    }
                 },
-                error: function () {
-                    options.error();
+                "state": {
+                    "key": "demo2"
                 },
+                "plugins": ["dnd", "types"]
+
+            };
+            //var div_groupTreeForFileManager = $("#groupTreeForFileManager");
+
+            _plugin.htmlElements.groupTreecontainer.jstree(groupJstreeData);
+
+            _plugin.htmlElements.groupTreecontainer.on("changed.jstree", function (e, data) {
+                //存储当前选中的区域的名称
+                if (data.node) {
+                    $.file('destroyFileTableData');
+                    $.insmFramework('getFolderTreeData', {
+                        groupID: data.node.id,
+                        success: function (tempdataFolderTreeData) {
+                            if (tempdataFolderTreeData) {
+                                var tree = $('.tree-demo.folderTree');
+                                folderJstreeData.core.data = tempdataFolderTreeData;
+                                tree.jstree("destroy");
+                                tree.jstree(folderJstreeData);
+                                tree.jstree(true).refresh();
+
+                                tree.on("changed.jstree", function (e, data) {
+                                    if (data.node) {
+                                        selectedFolderID = data.node.id;
+                                        selectedFolderData = data.node;
+                                        $.file('init', {
+                                            selectedFolderID: selectedFolderID
+                                        });
+                                    }
+                                });
+                                tree.on("move_node.jstree", function (e, data) {
+                                    var node = data.node;
+                                    if (node) {
+                                        $.folder('editFolder', node);
+                                    }
+                                });
+                            }
+                        },
+                        invalid: function () {
+                            invalid = true;
+                        },
+                        error: function () {
+                            options.error();
+                        },
+                    });
+
+                    //$.folder('init', {
+                    //    selectedGroupID: data.node.id
+                    //});
+                }
             });
+
+            _plugin.data.selectedGroupID = options.selectedGroupID == undefined ? loginuser.GroupID : options.selectedGroupID;
+            
         },
         createFolder: function () {
-            var groupRef = div_groupTreeForFileManager.jstree(true),
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('folder');
+
+            var groupRef = _plugin.htmlElements.groupTreecontainer.jstree(true),
             groupSel = groupRef.get_selected();
             if (!groupSel.length) { return false; }// no group selected
             var folderRef = div_folderTreeForFileManager.jstree(true),
                 folderSef = folderRef.get_selected();
 
             $.insmFramework('createFolder', {
-                groupID: selectedGroupID,
+                groupID: _plugin.data.selectedGroupID,
                 folderName: "New Folder",
                 folderParentID: folderSef[0],
                 success: function (data) {
@@ -128,8 +203,11 @@
             });
         },
         editFolder: function (node) {
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('folder');
+
             $.insmFramework('editFolder', {
-                groupID: selectedGroupID,
+                groupID: _plugin.data.selectedGroupID,
                 folderID: node.id,
                 folderName: node.text,
                 folderParentID: node.parent,
@@ -139,6 +217,9 @@
             });
         },
         deleteFolder: function (node) {
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('folder');
+
             //toastr.warning("使用中ですので、削除できない。");
             //return false;
             if (node == undefined) {
@@ -153,7 +234,7 @@
                 message: '削除しても宜しいでしょうか？',
                 onOk: function () {
                     $.insmFramework('deleteFolder', {
-                        groupID: selectedGroupID,
+                        groupID: _plugin.data.selectedGroupID,
                         folderID: node.id,
                         folderName: node.text,
                         folderParentID: node.parent,
@@ -173,13 +254,20 @@
             return selectedFolderID;
         },
         getSelectedGroupID: function () {
-            return selectedGroupID;
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('folder');
+
+            return _plugin.data.selectedGroupID;
         },
         expandAllFolder: function () {
-            div_groupTreeForFileManager.jstree('open_all');
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('folder');
+            _plugin.htmlElements.groupTreecontainer.jstree('open_all');
         },
         collapseAllFolder: function () {
-            div_groupTreeForFileManager.jstree('close_all');
+            var $this = $('body').eq(0);
+            var _plugin = $this.data('folder');
+            _plugin.htmlElements.groupTreecontainer.jstree('close_all');
         }
     };
     $("#btn_create").click(function () {

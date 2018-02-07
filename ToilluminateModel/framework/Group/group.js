@@ -1,5 +1,5 @@
 ﻿(function ($) {
-    var div_groupTreeForFileManager = $("#groupTreeForFileManager");
+    //var div_groupTreeForFileManager = $("#groupTreeForFileManager");
     
     var methods = {
         init: function (options) {
@@ -1076,7 +1076,6 @@
                     _plugin.data.selectedGroupIDparents = data.node.parents
                     $.insmGroup('showPlayerDetail', { GroupID: _plugin.data.selectedGroupID });
                 }
-                //$("#radio_All").click();
                 _plugin.htmlElements.player.playerBody.playerbuttoncol.labelAll.click();
             });
 
@@ -1088,14 +1087,14 @@
                 }
             });
 
-            $(div_groupTreeForFileManager).on("changed.jstree", function (e, data) {
-                //存储当前选中的区域的名称
-                if (data.node) {
-                    $.folder('init', {
-                        selectedGroupID: data.node.id
-                    });
-                }
-            });
+            //$(div_groupTreeForFileManager).on("changed.jstree", function (e, data) {
+            //    //存储当前选中的区域的名称
+            //    if (data.node) {
+            //        $.folder('init', {
+            //            selectedGroupID: data.node.id
+            //        });
+            //    }
+            //});
 
             tree.on("move_node.jstree", function (e, data) {
                 var node = data.node;
