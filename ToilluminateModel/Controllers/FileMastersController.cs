@@ -197,6 +197,7 @@ namespace ToilluminateModel.Controllers
                 newFile.FileName = fileMaster.FileName;
                 newFile.FileUrl = FORLDER + filePathName;
                 newFile.FileThumbnailUrl = THUMBNAILFORLDER + thumbnailFilePathName;
+                newFile.UseFlag = fileMaster.UseFlag;
                 newFile.UpdateDate = DateTime.Now;
                 newFile.InsertDate = DateTime.Now;
                 db.FileMaster.Add(newFile);

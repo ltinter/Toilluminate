@@ -131,6 +131,10 @@
             <input type="button" value="GetUserLoginInfo" onclick="GetUserLoginInfo();" />
             <div id="rst2" />
         </div>
+        <div>
+            <input type="button" value="VantecLoginText" onclick="vantecLoginTest();" />
+            <div id="rst2" />
+        </div>
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
@@ -453,6 +457,25 @@
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(newPL),
+                success: function (data) {
+                    var aa = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("请求失败，消息：" + textStatus + "  " + errorThrown);
+                }
+            });
+        }
+        function vantecLoginTest() {
+            var user = {
+                Password: "1",
+                code:"1",
+                UserId:"111",
+            }
+            $.ajax({
+                url: 'http://192.168.1.35:8046/ScSystem/api/Login',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(user),
                 success: function (data) {
                     var aa = data;
                 },
